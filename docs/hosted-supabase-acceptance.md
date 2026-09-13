@@ -1,6 +1,6 @@
 # Hosted Supabase acceptance — M1 hardening
 
-**PENDING EXTERNAL ACCEPTANCE.** No hosted environment or credentials were configured for this run. PGlite and the HTTP contract double do not satisfy this gate.
+**Hosted automated acceptance executed; email acceptance remains pending.** See [the execution report](M1-hosted-acceptance-report.md). PGlite and the HTTP contract double alone do not satisfy this gate.
 
 Use a dedicated, disposable **hosted development project with fictional records only**. Record project reference, app URL, Git commit, UTC time, operator and each expected/actual result privately. Never record passwords, tokens, headers or raw private rows in Git.
 
@@ -15,7 +15,7 @@ Use a dedicated, disposable **hosted development project with fictional records 
    supabase db push
    supabase migration list
    ```
-   Confirm all three migrations including 202609130002_m1_hardening.sql. Do not reset an existing environment. If needed, execute `NOTIFY pgrst, 'reload schema';` through trusted SQL administration.
+   Confirm all five migrations through 202609130004_m1_conflict_status.sql. Do not reset an existing environment. If needed, execute `NOTIFY pgrst, 'reload schema';` through trusted SQL administration.
 4. Disable signups, set the exact Auth Site URL, install invite/recovery templates and configure SMTP following README.
 5. Invite six fictional test identities through deliverable aliases in a domain you control: Owner, Sales, Admin, Marketing, Designer and Staging Crew. Add separate unassigned and archived-Sales negative-test identities. Do not use actual customer/employee accounts.
 6. Assign each actual Auth UUID exactly one matching role through trusted administration:
@@ -165,7 +165,7 @@ Read current detail.version, archive as Sales through realtor_archive. Confirm a
 
 1. Read crm_query brokerage with id=$office.id. Open its edit page in two tabs at the same version.
 2. Save tab A; version increments once. Save tab B; stale message, no overwrite.
-3. Repeat directly with brokerage_save using the same captured version, distinct names and two independent signed-in sessions. Submit close together: exactly one succeeds, the stale competitor returns 40001. Verify winning name/version. Missing version and nonexistent IDs must not upsert silently.
+3. Repeat directly with brokerage_save using the same captured version, distinct names and two independent signed-in sessions. Submit close together: exactly one succeeds, the stale competitor returns PT409. Verify winning name/version. Missing version and nonexistent IDs must not upsert silently.
 4. Archive this uniquely labelled office through **trusted SQL administration only**:
    ```sql
    update public.brokerages set deleted_at=now()
@@ -226,3 +226,24 @@ Live mode skips isolated CRM fixture tests. This command alone does not complete
 Mark hosted PASS only after all required steps were actually run and evidence reviewed. Record failures and rerun affected checks after fixes. Until then retain **PENDING EXTERNAL ACCEPTANCE** and withhold release/M2 readiness approval.
 
 Retain or retire only the disposable fixtures/project as agreed. Do not delete unrelated records. Close sessions and remove temporary credentials. No passwords/tokens/private row dumps belong in Git.
+
+## Automated hosted runner
+
+The executed results and remaining email gate are recorded in [M1-hosted-acceptance-report.md](M1-hosted-acceptance-report.md). Apply **all five** current migrations, including the additive search and HTTP-conflict fixes. Existing migration files must not be rewritten.
+
+Use `tests/support/hosted-acceptance.mjs` only against the dedicated disposable project. It creates fictional CRM fixtures, archives the extra Sales profile through trusted SQL and logs out all eight test identities. Run API and browser suites sequentially because logout revokes sessions.
+
+Supply secrets through temporary process environment variables from your secret store, never command-line literals or tracked files:
+
+- `GLARA_ACCEPTANCE_ALLOW_DISPOSABLE=yes`
+- `GLARA_ACCEPTANCE_PROJECT_REF`: linked disposable project ref
+- `GLARA_ACCEPTANCE_CLI`: installed Supabase CLI executable path, authenticated for trusted test administration
+- `GLARA_ACCEPTANCE_KEY`: that project's publishable key
+- `GLARA_ACCEPTANCE_COMMIT`: source revision under test
+- `GLARA_ACCEPTANCE_IDENTITIES`: JSON object with `project_ref` and `users`; keys are `owner`, `sales`, `admin`, `marketing`, `designer`, `staging_crew`, `unassigned`, `archived`; each value has `id`, `email`, `password`. Accounts must use reserved `@accounts.example.test` emails and must be created through trusted Auth administration, not public signup.
+
+Run `node tests/support/hosted-acceptance.mjs`. The result file contains check names/statuses only. Required login or fixture setup failure stops dependent checks.
+
+For hosted browser workflows, retain the identity JSON and opt-in, configure `.env.local` with the same hosted project, set `E2E_LIVE=1` and `PLAYWRIGHT_CHANNEL=chrome`, then run `npm run test:e2e -- tests/e2e/hosted.spec.ts`. For `tests/e2e/auth.spec.ts`, also supply the fictional Owner through `E2E_EMAIL` and `E2E_PASSWORD`. Live traces are disabled. These suites do not verify delivered emails.
+
+For isolated regression, clear the live flags/credentials, then run `npm run test:e2e`. If bundled Chromium is unavailable, set `PLAYWRIGHT_CHANNEL=chrome` to use installed Chrome. The runner overrides both build and runtime API variables with the local double so it cannot write hosted fixtures.

@@ -10,7 +10,7 @@ Requirements: Node.js 22.9+, npm, Git and a development Supabase project.
 2. Run `npm ci`.
 3. Copy `.env.example` to `.env.local`.
 4. Set the Supabase URL and publishable key.
-5. Apply all three migrations and configure invite-only Auth below.
+5. Apply all five migrations and configure invite-only Auth below.
 6. Run `npm run dev`; open http://localhost:3000.
 7. Sign in as an invited user with an active profile and an assigned role.
 8. Open Realtors. Create a brokerage if needed, then a fictional development Realtor. Prospects require an initial next action with a date.
@@ -179,4 +179,6 @@ Complete the live acceptance and backup/restore checklist in `docs/operations.md
 
 Cancellation and rescheduling now preserve cancelled history and original due dates; rescheduling creates a linked replacement atomically. Brokerage edits require the loaded version and reject archived records. Marketing uses a sources-only query, without the operational roster. CRM logs contain only safe operation/code/category context.
 
-See [M1 hardening report](docs/M1-hardening-report.md) and [hosted acceptance procedure](docs/hosted-supabase-acceptance.md). Hosted status: **PENDING EXTERNAL ACCEPTANCE**. Complete that gate before release or M2 readiness approval.
+See [M1 hardening report](docs/M1-hardening-report.md) and [hosted acceptance procedure](docs/hosted-supabase-acceptance.md). Hosted status: **AUTOMATED ACCEPTANCE PASSED; EMAIL ACCEPTANCE PENDING**. See [the hosted execution report](docs/M1-hosted-acceptance-report.md). Complete that gate before release or M2 readiness approval.
+
+Hosted acceptance added two forward-only fixes: consistent search tokens in "202609130003_m1_search_tokens.sql" and non-retrying HTTP conflict responses in "202609130004_m1_conflict_status.sql". Keep global Auth signup disabled while the email/password provider remains enabled for invited users.

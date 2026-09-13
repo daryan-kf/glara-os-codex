@@ -1,0 +1,256 @@
+{
+  "project_ref": "jymmquptpbzwpionmhvj",
+  "project_name": "glara-os-acceptance",
+  "started_from_commit": "9d168ab99307957f5f541071eea5f8ce2b54b410",
+  "date": "2026-09-13T08:34:06.706Z",
+  "fictional_data_only": true,
+  "checks": [
+    {
+      "name": "owner: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "sales: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "admin: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "marketing: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "designer: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "staging_crew: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "archived: Auth password login",
+      "status": "PASS"
+    },
+    {
+      "name": "Archive extra Sales profile after token issuance",
+      "status": "PASS"
+    },
+    {
+      "name": "Public signup remains disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "Create fictional brokerage, source, assigned prospect and initial next action",
+      "status": "PASS"
+    },
+    {
+      "name": "owner: operational reads, create and edit",
+      "status": "PASS"
+    },
+    {
+      "name": "sales: operational reads, create and edit",
+      "status": "PASS"
+    },
+    {
+      "name": "admin: operational reads, create and edit",
+      "status": "PASS"
+    },
+    {
+      "name": "Marketing safe directory, source and owner display; no roster or private fields",
+      "status": "PASS"
+    },
+    {
+      "name": "designer: RPC and direct RLS denial",
+      "status": "PASS"
+    },
+    {
+      "name": "staging_crew: RPC and direct RLS denial",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned: RPC and direct RLS denial",
+      "status": "PASS"
+    },
+    {
+      "name": "archived: RPC and direct RLS denial",
+      "status": "PASS"
+    },
+    {
+      "name": "Anonymous table and RPC access denied",
+      "status": "PASS"
+    },
+    {
+      "name": "owner: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "sales: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "admin: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "marketing: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "designer: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "staging_crew: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "archived: direct table DML denied",
+      "status": "PASS"
+    },
+    {
+      "name": "Sales cannot manage sources; Owner and Admin can",
+      "status": "PASS"
+    },
+    {
+      "name": "Search and combined filters",
+      "status": "PASS"
+    },
+    {
+      "name": "Edit, stale version, duplicate email/phone and failed-write audit rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "Last-action cancellation and invalid reschedule roll back without audit",
+      "status": "PASS"
+    },
+    {
+      "name": "Atomic reschedule preserves original due date, cancelled status and replacement link",
+      "status": "PASS"
+    },
+    {
+      "name": "Create task/follow-up, complete, cancel without replacement and cancel with replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "Realtor archive, archived edit denial and Sales restore denial; Admin/Owner recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "Brokerage real concurrent writers, missing version and stale rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "Archived brokerage rejects Owner/Admin/Sales crafted edits and preserves audit",
+      "status": "PASS"
+    },
+    {
+      "name": "Audit actors cannot be forged; original/replacement, archive/restore and offices recorded",
+      "status": "PASS"
+    },
+    {
+      "name": "sales: audit logs hidden",
+      "status": "PASS"
+    },
+    {
+      "name": "admin: audit logs hidden",
+      "status": "PASS"
+    },
+    {
+      "name": "marketing: audit logs hidden",
+      "status": "PASS"
+    },
+    {
+      "name": "designer: audit logs hidden",
+      "status": "PASS"
+    },
+    {
+      "name": "staging_crew: audit logs hidden",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned: audit logs hidden",
+      "status": "PASS"
+    },
+    {
+      "name": "archived: audit logs hidden",
+      "status": "PASS"
+    },
+    {
+      "name": "owner: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "sales: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "admin: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "marketing: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "designer: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "staging_crew: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "archived: session refresh preserves scope",
+      "status": "PASS"
+    },
+    {
+      "name": "owner: Auth logout invalidates session",
+      "status": "PASS"
+    },
+    {
+      "name": "sales: Auth logout invalidates session",
+      "status": "PASS"
+    },
+    {
+      "name": "admin: Auth logout invalidates session",
+      "status": "PASS"
+    },
+    {
+      "name": "marketing: Auth logout invalidates session",
+      "status": "PASS"
+    },
+    {
+      "name": "designer: Auth logout invalidates session",
+      "status": "PASS"
+    },
+    {
+      "name": "staging_crew: Auth logout invalidates session",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned: Auth logout invalidates session",
+      "status": "PASS"
+    },
+    {
+      "name": "archived: Auth logout invalidates session",
+      "status": "PASS"
+    }
+  ],
+  "passed": 61,
+  "failed": 0,
+  "tested_implementation_commit": "8e14a19e9961e27110c59e321c5e42f3677ce9fc"
+}
