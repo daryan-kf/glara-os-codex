@@ -1,39 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { randomUUID } from "node:crypto";
-import { readFileSync } from "node:fs";
-function credentials(role = "owner") {
-  const value: unknown = JSON.parse(
-    process.env.GLARA_ACCEPTANCE_IDENTITIES ?? "{}",
-  );
-  if (!value || typeof value !== "object" || !("users" in value))
-    throw new Error("Fictional hosted identities required");
-  if (
-    !("project_ref" in value) ||
-    typeof value.project_ref !== "string" ||
-    value.project_ref !==
-      readFileSync("supabase/.temp/project-ref", "utf8").trim()
-  )
-    throw new Error("Disposable project mismatch");
-  const configuredUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ??
-    readFileSync(".env.local", "utf8").match(
-      /^NEXT_PUBLIC_SUPABASE_URL=["']?([^"'\r\n]+)/m,
-    )?.[1];
-  if (configuredUrl !== "https://" + value.project_ref + ".supabase.co")
-    throw new Error("Application must target the disposable identity project");
-  const users = value.users as Record<
-    string,
-    { email: string; password: string }
-  >;
-  const owner = users[role];
-  if (!owner?.email.endsWith("@accounts.example.test"))
-    throw new Error("Reserved fictional account required");
-  return owner;
-}
+import { credentials } from "../support/identities";
 test.describe("Hosted M1 workflows", () => {
   test.skip(
-    process.env.E2E_LIVE !== "1" ||
-      process.env.GLARA_ACCEPTANCE_ALLOW_DISPOSABLE !== "yes",
+    process.env.GLARA_CONVEX_ACCEPTANCE !== "yes",
     "Requires explicit disposable hosted project opt-in",
   );
   test.setTimeout(90000);
@@ -291,8 +261,7 @@ test.describe("Hosted M1 workflows", () => {
 
 test.describe("Hosted role boundaries", () => {
   test.skip(
-    process.env.E2E_LIVE !== "1" ||
-      process.env.GLARA_ACCEPTANCE_ALLOW_DISPOSABLE !== "yes",
+    process.env.GLARA_CONVEX_ACCEPTANCE !== "yes",
     "Requires disposable hosted opt-in",
   );
   for (const role of [

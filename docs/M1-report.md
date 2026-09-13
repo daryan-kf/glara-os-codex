@@ -1,3 +1,5 @@
+> Historical Supabase evidence. The active backend is now Convex; see [current migration report](convex-migration-report.md).
+
 # M1 completion report — Realtor CRM
 
 Reviewed September 13, 2026. **M1 implementation and isolated quality gates pass. Hosted Supabase acceptance remains outstanding. M2 has not begun.**

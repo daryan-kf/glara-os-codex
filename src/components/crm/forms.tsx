@@ -9,6 +9,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { mutateCrm } from "@/app/(workspace)/realtors/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -126,8 +127,16 @@ export function MutationForm({
   submit: string;
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   const [state, dispatch, pending] = useActionState(
-    mutateCrm.bind(null, kind, id, version),
+    async (previous: MutationState, form: FormData) => {
+      const result = await mutateCrm(kind, id, version, previous, form);
+      if (result.destination) {
+        router.replace(result.destination);
+        router.refresh();
+      }
+      return result;
+    },
     {} as MutationState,
   );
   const [transition, startTransition] = useTransition();

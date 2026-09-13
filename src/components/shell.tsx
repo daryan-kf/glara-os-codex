@@ -1,4 +1,5 @@
 "use client";
+import { reloadAfterAuth } from "@/lib/auth-navigation";
 import { RealtorSearchResults } from "@/components/crm/search-results";
 import { CrmQuickCreate } from "@/components/crm/forms";
 import { canWriteCrm } from "@/lib/crm/model";
@@ -30,7 +31,7 @@ import {
 } from "lucide-react";
 import { modules, canAccess, type Module, type Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
-import { logout } from "@/app/auth/actions";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { Avatar } from "@/components/primitives";
 import { Button } from "@/components/ui/button";
 import {
@@ -191,6 +192,15 @@ function QuickCreate({ roles }: { roles: Role[] }) {
   );
 }
 function SignOut() {
+  const { signOut } = useAuthActions();
+  async function logout() {
+    try {
+      await signOut();
+      reloadAfterAuth("/login");
+    } catch {
+      reloadAfterAuth("/login?status=logout-error");
+    }
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>

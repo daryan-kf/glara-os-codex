@@ -1,3 +1,5 @@
+> Historical Supabase evidence. The active backend is now Convex; see [current migration report](convex-migration-report.md).
+
 # M1 hosted Supabase acceptance report
 
 ## A. Environment

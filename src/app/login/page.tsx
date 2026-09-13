@@ -4,7 +4,7 @@ import { AuthLayout } from "@/components/auth-layout";
 import { isConfigured } from "@/lib/env";
 const messages: Record<string, string> = {
   "invalid-link":
-    "This link is invalid or has expired. Request a new password reset link.",
+    "This link is invalid or has expired. Request a new password reset code.",
   "password-updated": "Password updated. Sign in with your new password.",
   "logout-error":
     "Sign out could not be completed. Please try signing out again.",

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { z } from "zod";
+import { recordId } from "@/lib/crm/model";
 import { PageTitle } from "@/components/primitives";
 import { CrmNav } from "@/components/crm/display";
 import { RealtorForm } from "@/components/crm/forms";
@@ -11,7 +11,7 @@ export default async function Page({
 }) {
   const user = await requireCrmWrite();
   const { id } = await params;
-  if (!z.uuid().safeParse(id).success) notFound();
+  if (!recordId.safeParse(id).success) notFound();
   const [record, choices] = await Promise.all([getRealtor(id), getChoices()]);
   if (!record || record.deleted_at) notFound();
   return (

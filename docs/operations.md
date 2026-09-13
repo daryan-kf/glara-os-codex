@@ -1,22 +1,11 @@
-# Before production use
+# Convex operations
 
-M0 and M1 establish the application foundation and Realtor CRM; production readiness also depends on the configured infrastructure.
+Use the root README for exact development setup and environment variables. Keep development and production deployments separate. Deploy reviewed schema/functions using the Convex CLI and bind Vercel to the matching backend. Signing keys and deployment credentials are backend/build secrets only.
 
-1. Apply migrations to a development Supabase project, then run the live browser checks. Verify owner, sales, designer, crew, admin and marketing access. Verify an unassigned and archived account cannot access the workspace.
-2. Disable signup, set exact application Site URL, install token-hash email templates, configure SMTP and Auth rate limits, and verify invitation/recovery flows in a real mailbox. Test expired and already-used links.
-3. Provision the owner through trusted administration. Do not share owner accounts. Keep at least one active owner; review access on employee departure and revoke sessions.
-4. Enable the appropriate Supabase backup/PITR plan for the company's recovery requirements. Proposed initial targets for owner approval: RPO 24 hours, RTO 4 hours. Test restoration into a separate project before relying on backups, then quarterly. Supabase Storage files will need a separate backup plan once introduced.
-5. Review Vercel/Supabase account access, deploy over HTTPS, use separate environments, and enable platform security notifications. Confirm the actual region, data residency and retention choices before storing client data.
-6. Logs intentionally include only allowlisted event names and timestamps. Do not add passwords, tokens, full form data, or personal data to logs. Auth logs live in Supabase; application audit rows cover identity/role changes and M1 CRM changes, including sensitive old/new values. Audit access remains owner-only; include these records in retention and backup planning.
-7. Future financial changes, discounts, payment state and asset movements require transactional business audit events. Database audit records are not proof of real-world payment or physical inventory movement.
-8. Configure monitoring and backup failure alerts through platform tooling. No future third-party integration is included through M1.
-9. MFA support is deferred; add enrollment, recovery, and assurance-level enforcement before claiming owner/admin two-factor protection.
-10. Storage buckets/policies are intentionally absent. Do not introduce public client-document buckets.
+Provision users through internal `admin:provision`; change roles or archive through internal `admin:setProfile`. Confirm the target deployment before administrative changes. Do not use client metadata as a role source. Email delivery requires a verified sender and provider credential; invitation/recovery acceptance is still pending.
 
-## M1 live acceptance
+Before schema changes, export a backup using the Convex dashboard or `npx convex export --path <backup-path>`, store it outside the repository in protected storage and test restoration to a separate disposable deployment. A backup or restore drill has not been performed as part of this migration. Never import over a populated production deployment as a routine migration.
 
-Apply the ordered M1 migration without resetting an existing M0 database. In a disposable development project, create a fictional brokerage and Realtor, log a call and a note, add and complete a follow-up, test the last-action replacement rule, search/filter the list, edit, archive and restore. Repeat role checks using direct Supabase APIs as well as routes: Marketing must not retrieve private notes/scores or activities; crew, anonymous and archived users must be denied. Confirm audit actor IDs and that all failed mutations roll back. Only promote after reviewing these results and testing backups.
+CRM audit rows identify app users for business changes and null actors for trusted deployment administration. Safe application error logs exclude payloads and credentials. Do not enable verbose auth token logging. Test reports/traces and `.env.local` are ignored.
 
-## Hosted M1 hardening release gate
-
-Status: **PENDING EXTERNAL ACCEPTANCE** until the [hosted procedure](hosted-supabase-acceptance.md) is executed. Apply 202609130002_m1_hardening.sql after the existing migrations. CRM structured logs now include allowlisted operation, sanitized database code and fixed category, never raw message/details or records. Complete all six-role REST, lifecycle, archive/version, audit and session checks before approval.
+The current acceptance deployment contains fictional users/records only and is in eu-west-1. Regional choice, production hosting, backup scheduling, load testing and email delivery must be settled before staff rollout. The previous Supabase project remains available for rollback; the original code is commit `a6ee904` and archived migrations/tests remain in source control.

@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <AuthLayout
       title="A fresh start."
-      description="Enter your work email and we’ll send a secure password reset link."
+      description="Enter your work email and we’ll send a secure password reset code."
     >
       <AuthForm mode="reset" disabled={!isConfigured()} />
       <Link href="/login" className="mt-5 inline-block py-2 text-sm underline">

@@ -1,3 +1,5 @@
+> Historical Supabase evidence. The active backend is now Convex; see [current migration report](convex-migration-report.md).
+
 # Final email / SMTP acceptance addendum
 
 Date: 2026-09-13 UTC. Reviewed source: `2f5734e` on `daryan-kf/glara-os-codex`.

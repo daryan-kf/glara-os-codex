@@ -1,3 +1,5 @@
+> Historical Supabase evidence. The active backend is now Convex; see [current migration report](convex-migration-report.md).
+
 # M1 Hardening Report
 
 Date: September 13, 2026. Scope: narrowly bounded M1 hardening; no M2 functionality or architectural rewrite.

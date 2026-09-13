@@ -3,9 +3,10 @@ import { classifyCrmError } from "./errors";
 import { redirect } from "next/navigation";
 import "server-only";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
+import { readCrm } from "@/lib/convex";
+import { recordId } from "./model";
 import { requireModule } from "@/lib/auth";
-import type { Json } from "@/lib/supabase/database.types";
+
 import {
   realtorRow,
   activityRow,
@@ -15,18 +16,23 @@ import {
   canWriteCrm,
   type CrmFilters,
 } from "./model";
-async function query<T>(input: Json, schema: z.ZodType<T>): Promise<T> {
+async function query<T>(input: unknown, schema: z.ZodType<T>): Promise<T> {
   await requireModule("realtors");
-  const db = await createClient();
-  const { data, error } = await Promise.resolve(
-    db.rpc("crm_query", { p_input: input }),
-  ).catch(() => ({ data: null, error: { code: "UNKNOWN" } }));
+  let data: unknown = null,
+    error: unknown = null;
+  try {
+    data = await readCrm(input);
+  } catch (failure) {
+    error = failure;
+  }
   const parsed = error ? null : schema.safeParse(data);
   const failure = error ?? (parsed?.success ? null : { code: "CONFIG_SHAPE" });
   if (failure) {
     const operation =
       input && typeof input === "object" && !Array.isArray(input)
-        ? input.op
+        ? "op" in input
+          ? input.op
+          : "unknown"
         : "unknown";
     logCrmFailure(operation, failure);
     redirect(
@@ -43,7 +49,7 @@ export function listRealtors(filters: CrmFilters) {
   );
 }
 export function getRealtor(id: string) {
-  return query({ op: "detail", id: z.uuid().parse(id) }, realtorRow.nullable());
+  return query({ op: "detail", id: recordId.parse(id) }, realtorRow.nullable());
 }
 export async function getChoices() {
   const user = await requireModule("realtors");
@@ -72,7 +78,7 @@ export function getBrokerages(q = "", page = 1) {
 }
 export function getBrokerage(id: string) {
   return query(
-    { op: "brokerage", id: z.uuid().parse(id) },
+    { op: "brokerage", id: recordId.parse(id) },
     brokerageRow.nullable(),
   );
 }

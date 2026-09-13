@@ -1,3 +1,5 @@
+> Historical Supabase evidence. The active backend is now Convex; see [current migration report](convex-migration-report.md).
+
 # Glara OS — M0 completion report
 
 Date: 12 September 2026

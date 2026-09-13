@@ -8,7 +8,7 @@ import {
   canManageCrm,
   followupState,
 } from "../src/lib/crm/model";
-const assigned = "10000000-0000-4000-8000-000000000001";
+const assigned = "j57examplefictional00000000000000";
 test("Realtor validation rejects invalid contact data, scores, URLs and incomplete next actions", () => {
   const valid = {
     first_name: "Sarah",

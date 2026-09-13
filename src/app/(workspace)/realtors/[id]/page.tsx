@@ -1,6 +1,7 @@
+import { z } from "zod";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { z } from "zod";
+import { recordId } from "@/lib/crm/model";
 import { requireModule } from "@/lib/auth";
 import { getRealtor, getChoices, getActivities } from "@/lib/crm/data";
 import { canWriteCrm, canManageCrm, label, formatDate } from "@/lib/crm/model";
@@ -45,7 +46,7 @@ export default async function Page({
 }) {
   const user = await requireModule("realtors");
   const { id } = await params;
-  if (!z.uuid().safeParse(id).success) notFound();
+  if (!recordId.safeParse(id).success) notFound();
   const record = await getRealtor(id);
   if (!record) notFound();
   const writable = canWriteCrm(user.roles);
@@ -170,7 +171,10 @@ export default async function Page({
             </section>
           )}
           {writable && (!record.deleted_at || canManageCrm(user.roles)) && (
-            <ArchiveDialog record={record} />
+            <ArchiveDialog
+              key={record.deleted_at ?? "active"}
+              record={record}
+            />
           )}
         </aside>
         <div className="order-first min-w-0 space-y-6 xl:order-none">

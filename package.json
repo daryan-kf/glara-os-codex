@@ -6,23 +6,26 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "tsx --test tests/*.test.ts && vitest run",
     "test:e2e": "node tests/support/run-e2e.mjs",
     "build": "next build",
     "dev": "next dev",
-    "format": "prettier --write src tests *.ts *.json *.mjs docs README.md",
-    "format:check": "prettier --check src tests *.ts *.json *.mjs docs README.md"
+    "format": "prettier --write src tests convex/*.ts *.ts *.json *.mjs docs README.md",
+    "format:check": "prettier --check src tests convex/*.ts *.ts *.json *.mjs docs README.md",
+    "convex:dev": "convex dev",
+    "convex:deploy": "convex deploy"
   },
   "keywords": [],
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "@auth/core": "^0.41.3",
+    "@convex-dev/auth": "^0.0.95",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-slot": "^1.3.3",
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.116.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "convex": "^1.45.0",
     "lucide-react": "^1.45.0",
     "next": "^16.3.5",
     "react": "^19.3.0",
@@ -36,17 +39,18 @@
     "node": ">=22.9.0"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.8",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.20.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "convex-test": "^0.0.58",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.5",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.0"
   }
 }

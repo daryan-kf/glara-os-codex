@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Role } from "@/lib/permissions";
+import type { Role } from "../permissions";
 export const relationshipStates = [
   "prospect",
   "new_partner",
@@ -29,7 +29,10 @@ export function canManageCrm(roles: readonly Role[]) {
 export const label = (value: string) =>
   value.replaceAll("_", " ").replace(/\b\w/g, (char) => char.toUpperCase());
 const optionalText = (max: number) => z.string().trim().max(max).default("");
-const optionalId = z.union([z.uuid(), z.literal("")]).default("");
+export const recordId = z
+  .string()
+  .regex(/^[a-z0-9_]{20,64}$/, "Invalid record ID.");
+const optionalId = z.union([recordId, z.literal("")]).default("");
 const optionalNumber = (max: number, integer = false) =>
   z
     .string()
@@ -78,7 +81,7 @@ export const realtorInput = z
     luxury_agent: z.boolean().default(false),
     relationship_status: z.enum(relationshipStates),
     lead_source_id: optionalId,
-    assigned_to: z.uuid("Select a team member."),
+    assigned_to: recordId,
     notes: optionalText(10000),
     estimated_listings_per_year: optionalNumber(100000, true),
     average_listing_price: optionalNumber(99999999999999.99),
@@ -92,7 +95,7 @@ export const realtorInput = z
   });
 export const activityInput = z
   .object({
-    realtor_id: z.uuid(),
+    realtor_id: recordId,
     type: z.enum(activityTypes),
     title: z.string().trim().min(1).max(200),
     description: optionalText(10000),
@@ -100,7 +103,7 @@ export const activityInput = z
     completed_at: timestamp,
     status: z.enum(["open", "completed"]),
     priority: z.enum(priorities),
-    assigned_to: z.uuid(),
+    assigned_to: recordId,
   })
   .refine((d) => d.status !== "open" || Boolean(d.due_at), {
     message: "Open activities need a due date.",
@@ -159,7 +162,7 @@ export type CrmFilters = z.infer<typeof queryInput>;
 export type RealtorInput = z.infer<typeof realtorInput>;
 const nullable = z.string().nullable();
 export const realtorRow = z.object({
-  id: z.uuid(),
+  id: recordId,
   first_name: z.string(),
   last_name: z.string(),
   email: nullable,
@@ -175,7 +178,7 @@ export const realtorRow = z.object({
   relationship_status: z.enum(relationshipStates),
   lead_source_id: nullable,
   lead_source_name: nullable,
-  assigned_to: z.uuid(),
+  assigned_to: recordId,
   owner_name: nullable,
   version: z.number(),
   created_at: z.string(),
@@ -196,8 +199,8 @@ export const realtorRow = z.object({
 });
 export type Realtor = z.infer<typeof realtorRow>;
 export const activityRow = z.object({
-  id: z.uuid(),
-  realtor_id: z.uuid(),
+  id: recordId,
+  realtor_id: recordId,
   type: z.enum(activityTypes),
   title: z.string(),
   description: nullable,
@@ -205,8 +208,8 @@ export const activityRow = z.object({
   completed_at: nullable,
   status: z.enum(["open", "completed", "cancelled"]),
   priority: z.enum(priorities),
-  assigned_to: z.uuid(),
-  created_by: z.uuid(),
+  assigned_to: recordId,
+  created_by: recordId,
   created_at: z.string(),
   updated_at: z.string(),
   deleted_at: nullable,
@@ -216,7 +219,7 @@ export const activityRow = z.object({
 export type Activity = z.infer<typeof activityRow>;
 export const brokerageRow = z.object({
   version: z.number().int().positive(),
-  id: z.uuid(),
+  id: recordId,
   name: z.string(),
   office_name: nullable,
   website: nullable,
@@ -231,7 +234,7 @@ export const brokerageRow = z.object({
   deleted_at: nullable,
 });
 export type Brokerage = z.infer<typeof brokerageRow>;
-export const optionRow = z.object({ id: z.uuid(), name: z.string() });
+export const optionRow = z.object({ id: recordId, name: z.string() });
 export type Option = z.infer<typeof optionRow>;
 export const choicesSchema = z.object({
   owners: z.array(optionRow),
@@ -239,6 +242,7 @@ export const choicesSchema = z.object({
 });
 export type Choices = z.infer<typeof choicesSchema>;
 export type MutationState = {
+  destination?: string;
   error?: string;
   fields?: Record<string, string[]>;
   success?: string;

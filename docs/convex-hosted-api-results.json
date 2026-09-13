@@ -1,0 +1,190 @@
+{
+  "timestamp": "2026-09-13T18:59:17.141Z",
+  "deployment": "woozy-jaguar-392",
+  "results": [
+    {
+      "name": "owner password authentication",
+      "passed": true
+    },
+    {
+      "name": "archived password authentication",
+      "passed": true
+    },
+    {
+      "name": "staging_crew password authentication",
+      "passed": true
+    },
+    {
+      "name": "admin password authentication",
+      "passed": true
+    },
+    {
+      "name": "designer password authentication",
+      "passed": true
+    },
+    {
+      "name": "unassigned password authentication",
+      "passed": true
+    },
+    {
+      "name": "marketing password authentication",
+      "passed": true
+    },
+    {
+      "name": "sales password authentication",
+      "passed": true
+    },
+    {
+      "name": "anonymous read denied",
+      "passed": true
+    },
+    {
+      "name": "public registration denied",
+      "passed": true
+    },
+    {
+      "name": "public internal provisioning denied",
+      "passed": true
+    },
+    {
+      "name": "designer CRM read denied",
+      "passed": true
+    },
+    {
+      "name": "designer CRM write denied",
+      "passed": true
+    },
+    {
+      "name": "staging_crew CRM read denied",
+      "passed": true
+    },
+    {
+      "name": "staging_crew CRM write denied",
+      "passed": true
+    },
+    {
+      "name": "unassigned CRM read denied",
+      "passed": true
+    },
+    {
+      "name": "unassigned CRM write denied",
+      "passed": true
+    },
+    {
+      "name": "archived CRM read denied",
+      "passed": true
+    },
+    {
+      "name": "archived CRM write denied",
+      "passed": true
+    },
+    {
+      "name": "initial next action enforced",
+      "passed": true
+    },
+    {
+      "name": "failed creation rolls back",
+      "passed": true
+    },
+    {
+      "name": "sales creates prospect atomically",
+      "passed": true
+    },
+    {
+      "name": "exact decimal retained",
+      "passed": true
+    },
+    {
+      "name": "duplicate email denied",
+      "passed": true
+    },
+    {
+      "name": "Marketing fields restricted",
+      "passed": true
+    },
+    {
+      "name": "Marketing roster restricted",
+      "passed": true
+    },
+    {
+      "name": "Marketing writes denied",
+      "passed": true
+    },
+    {
+      "name": "sales audit denied",
+      "passed": true
+    },
+    {
+      "name": "admin audit denied",
+      "passed": true
+    },
+    {
+      "name": "marketing audit denied",
+      "passed": true
+    },
+    {
+      "name": "designer audit denied",
+      "passed": true
+    },
+    {
+      "name": "staging_crew audit denied",
+      "passed": true
+    },
+    {
+      "name": "unassigned audit denied",
+      "passed": true
+    },
+    {
+      "name": "archived audit denied",
+      "passed": true
+    },
+    {
+      "name": "audit actor derived from session",
+      "passed": true
+    },
+    {
+      "name": "initial activity created",
+      "passed": true
+    },
+    {
+      "name": "last action cancellation denied",
+      "passed": true
+    },
+    {
+      "name": "failed cancellation keeps activity open",
+      "passed": true
+    },
+    {
+      "name": "reschedule retains cancelled original",
+      "passed": true
+    },
+    {
+      "name": "concurrent stale edits only commit once",
+      "passed": true
+    },
+    {
+      "name": "sales archives",
+      "passed": true
+    },
+    {
+      "name": "sales restore denied",
+      "passed": true
+    },
+    {
+      "name": "admin restore preserves next action",
+      "passed": true
+    },
+    {
+      "name": "token refresh works",
+      "passed": true
+    },
+    {
+      "name": "logout immediately revokes old JWT access",
+      "passed": true
+    },
+    {
+      "name": "logout revokes refresh token",
+      "passed": true
+    }
+  ]
+}

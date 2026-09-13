@@ -23,7 +23,7 @@ const operations = new Set([
 export const crmMessages = {
   permission: "Your account cannot access or change this CRM record.",
   configuration:
-    "CRM configuration needs attention. Ask your administrator to apply the current migrations and refresh the API schema.",
+    "CRM configuration needs attention. Ask your administrator to verify the backend deployment.",
   validation: "Some fields are invalid. Review the form and try again.",
   duplicate:
     "An active record already uses this email, phone, or name. Review the existing record; records are never merged automatically.",
@@ -41,9 +41,11 @@ export function classifyCrmError(error: unknown): {
   category: CrmErrorCategory;
   message: string;
 } {
+  const candidate =
+    error && typeof error === "object" && "data" in error ? error.data : error;
   const value =
-    error && typeof error === "object"
-      ? (error as Record<string, unknown>)
+    candidate && typeof candidate === "object"
+      ? (candidate as Record<string, unknown>)
       : {};
   const code =
     typeof value.code === "string" &&

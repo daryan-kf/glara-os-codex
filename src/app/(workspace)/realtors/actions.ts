@@ -3,9 +3,10 @@ import { logCrmFailure } from "@/lib/logger";
 import { classifyCrmError } from "@/lib/crm/errors";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+
 import { requireCrmWrite } from "@/lib/crm/data";
-import { createClient } from "@/lib/supabase/server";
+import { writeCrm } from "@/lib/convex";
+import { recordId } from "@/lib/crm/model";
 import {
   realtorInput,
   activityInput,
@@ -17,7 +18,7 @@ import {
   type MutationState,
   type MutationKind,
 } from "@/lib/crm/model";
-import type { Json } from "@/lib/supabase/database.types";
+
 export async function mutateCrm(
   kind: MutationKind,
   id: string,
@@ -31,7 +32,7 @@ export async function mutateCrm(
     !canManageCrm(user.roles)
   )
     return { error: "Only owner or admin can perform this action." };
-  if (id && !z.uuid().safeParse(id).success)
+  if (id && !recordId.safeParse(id).success)
     return { error: "Invalid record." };
   const raw: Record<string, unknown> = {};
   for (const [key, value] of form.entries())
@@ -58,18 +59,19 @@ export async function mutateCrm(
         string[]
       >,
     };
-  const db = await createClient();
-  const { data, error } = await Promise.resolve(
-    db.rpc("crm_mutate", {
-      p_input: { op: kind, id, version, data: parsed.data as Json },
-    }),
-  ).catch(() => ({ data: null, error: { code: "UNKNOWN" } }));
+  let data: unknown = null,
+    error: unknown = null;
+  try {
+    data = await writeCrm({ op: kind, id, version, data: parsed.data });
+  } catch (failure) {
+    error = failure;
+  }
   if (error) {
     logCrmFailure(kind, error);
     return { error: classifyCrmError(error).message };
   }
   const checked = z
-    .object({ id: z.uuid(), realtor_id: z.uuid().optional() })
+    .object({ id: recordId, realtor_id: recordId.optional() })
     .safeParse(data);
   if (!checked.success) {
     logCrmFailure(kind, { code: "CONFIG_SHAPE" });
@@ -84,7 +86,7 @@ export async function mutateCrm(
     revalidatePath("/realtors/sources");
     return { success: "Saved successfully." };
   }
-  if (kind === "realtor_archive") redirect("/realtors");
+  if (kind === "realtor_archive") return { destination: "/realtors" };
   const target = result.realtor_id ?? result.id;
   revalidatePath("/realtors/" + target);
   if (
@@ -92,6 +94,6 @@ export async function mutateCrm(
     kind === "realtor_update" ||
     kind === "realtor_restore"
   )
-    redirect("/realtors/" + target);
+    return { destination: "/realtors/" + target };
   return { success: "Saved to the relationship timeline." };
 }

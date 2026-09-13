@@ -1,3 +1,5 @@
+> Historical Supabase evidence. The active backend is now Convex; see [current migration report](convex-migration-report.md).
+
 # Hosted Supabase acceptance — M1 hardening
 
 **Hosted automated acceptance executed; email acceptance remains pending.** See [the execution report](M1-hosted-acceptance-report.md). PGlite and the HTTP contract double alone do not satisfy this gate.

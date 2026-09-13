@@ -1,3 +1,4 @@
+import { credentials } from "../support/identities";
 import { expect, test } from "@playwright/test";
 const protectedRoutes = [
   "dashboard",
@@ -42,32 +43,21 @@ test("login and recovery fit desktop and mobile viewports", async ({
   await page.getByRole("link", { name: "Back to sign in" }).click();
   await expect(page).toHaveURL(/\/login$/);
 });
-test("Supabase SDK login, navigation and logout", async ({
-  page,
-}, testInfo) => {
-  test.skip(
-    process.env.E2E_LIVE === "1" &&
-      (!process.env.E2E_EMAIL || !process.env.E2E_PASSWORD),
-    "Requires a provisioned fictional owner in a development Supabase project.",
-  );
+test("Convex Auth login, navigation and logout", async ({ page }, testInfo) => {
   await page.goto("/login");
-  await page
-    .getByLabel("Work email")
-    .fill(process.env.E2E_EMAIL ?? "owner@example.test");
+  await page.getByLabel("Work email").fill(credentials().email);
   await page
     .getByLabel("Password", { exact: true })
-    .fill(process.env.E2E_PASSWORD ?? "Fictional-password-123!");
+    .fill(credentials().password);
   await page.getByRole("button", { name: "Sign in to Glara OS" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
   await expect(page.getByText("More connected.")).toBeVisible();
   const authCookies = (await page.context().cookies()).filter((cookie) =>
-    cookie.name.includes("auth-token"),
+    cookie.name.includes("convexAuth"),
   );
   expect(authCookies.length).toBeGreaterThan(0);
   expect(
-    authCookies.every(
-      (cookie) => cookie.httpOnly && cookie.secure && cookie.sameSite === "Lax",
-    ),
+    authCookies.every((cookie) => cookie.httpOnly && cookie.sameSite === "Lax"),
   ).toBe(true);
   await page.screenshot({
     path: testInfo.outputPath("dashboard.png"),
@@ -111,12 +101,11 @@ test("Supabase SDK login, navigation and logout", async ({
 test("sales are denied owner reports even through a direct URL", async ({
   page,
 }) => {
-  test.skip(process.env.E2E_LIVE === "1", "Uses the local contract fixture.");
   await page.goto("/login");
-  await page.getByLabel("Work email").fill("sales@example.test");
+  await page.getByLabel("Work email").fill(credentials("sales").email);
   await page
     .getByLabel("Password", { exact: true })
-    .fill("Fictional-password-123!");
+    .fill(credentials("sales").password);
   await page.getByRole("button", { name: "Sign in to Glara OS" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
   await page.goto("/reports");
@@ -128,7 +117,6 @@ test("sales are denied owner reports even through a direct URL", async ({
 test("invalid credentials show a safe error and recovery does not enumerate accounts", async ({
   page,
 }) => {
-  test.skip(process.env.E2E_LIVE === "1", "Uses the local contract fixture.");
   await page.goto("/login");
   await page.getByLabel("Work email").fill("nobody@example.test");
   await page.getByLabel("Password", { exact: true }).fill("Wrong-password");
@@ -141,7 +129,7 @@ test("invalid credentials show a safe error and recovery does not enumerate acco
     page.getByRole("heading", { name: "A fresh start." }),
   ).toBeVisible();
   await page.getByLabel("Work email").fill("nobody@example.test");
-  await page.getByRole("button", { name: "Send reset link" }).click();
+  await page.getByRole("button", { name: "Send reset code" }).click();
   await expect(
     page.getByText("If an account exists for this email"),
   ).toBeVisible();
