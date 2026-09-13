@@ -56,7 +56,7 @@ The reset form returns the same response whether an account exists. A configured
 
 ## Data and business rules
 
-`convex/schema.ts` defines Auth tables plus profiles, brokerages, lead_sources, realtors, realtor_private, activities and audit_logs. Native Convex IDs replace UUIDs; references are validated in mutations. M2 adds properties, opportunities, consultations, quotes/items and sales counter/metric/settings tables. See `docs/M2-report.md` for the implementation and outstanding acceptance gates. Average listing prices are validated decimal strings to preserve cents without floating-point storage; future financial calculations must use an exact decimal representation.
+`convex/schema.ts` defines Auth tables plus profiles, brokerages, lead_sources, realtors, realtor_private, activities and audit_logs. Native Convex IDs replace UUIDs; references are validated in mutations. M2 adds properties, opportunities, consultations, quotes/items and sales counter/metric/settings tables. See `docs/M2-report.md` for implementation, acceptance results and outstanding production gates. Average listing prices are validated decimal strings to preserve cents without floating-point storage; future financial calculations must use an exact decimal representation.
 
 Mutations validate inputs on the backend and commit business changes and audit events atomically. Prospect creation requires a dated next action; completion/cancellation cannot remove the last one without replacement. Rescheduling preserves the original due date, cancels the original and links its replacement. Case-normalized emails and normalized phone numbers prevent active duplicates. Version checks reject stale Realtor and brokerage edits. Archiving retains activity history; restoring requires Owner/Admin and rechecks next-action, assignment and contact invariants. Clients cannot supply audit actors.
 
@@ -111,6 +111,12 @@ The product owner has superseded all Supabase-specific acceptance gates. Invitat
 
 ## M2 Sales CRM development
 
-The M2 implementation is present locally; hosted acceptance is not yet certified. Read [the M2 report](docs/M2-report.md) before deploying or beginning M3. Sales schemas and money rules are in `src/lib/sales`, backend functions in `convex/sales.ts`, and UI in `src/components/sales`. After an approved development deployment, run the internal paginated `admin:backfillSalesSearch` function for existing Realtors.
+The M2 implementation is deployed to the approved Convex development environment and has passed hosted API and desktop/mobile acceptance. Read [the M2 report](docs/M2-report.md) before deploying or beginning M3. Sales schemas and money rules are in `src/lib/sales`, backend functions in `convex/sales.ts`, and UI in `src/components/sales`. After an approved development deployment, run the internal paginated `admin:backfillSalesSearch` function for existing Realtors.
 
 With the existing fictional acceptance identities configured (never commit credentials), run `node tests/support/m2-hosted-acceptance.mjs` and `npm run test:e2e`. Both require `GLARA_CONVEX_ACCEPTANCE=yes`; browser tests can use `PLAYWRIGHT_CHANNEL=chrome`. The browser runner builds and starts a production Next server on port 3000, so stop any current server first. Production email/auth gates remain deferred and required before production.
+
+## Convex Auth memory-storage compatibility fix
+
+`@convex-dev/auth` is pinned to `0.0.95`. Its memoized in-memory storage captures the initial React state, so later token reads can return an empty value during a forced WebSocket refresh. `scripts/patch-convex-auth.mjs` replaces only that storage helper with a ref-backed implementation in the SDK source and distribution. `npm ci` runs this idempotent postinstall fix; version and original-source hashes fail closed if the upstream implementation changes. Review/remove the fix when upgrading the SDK. Do not install with lifecycle scripts disabled unless you subsequently run `npm run postinstall`.
+
+Workspace client queries also wait for Convex authentication confirmation. Backend session/profile/role checks remain mandatory. Access tokens remain in memory, refresh credentials remain in HttpOnly cookies, and no auth token is persisted to local storage. Browser regression checks cover the live sales summary, navigation/search, cookie attributes, empty auth local storage and logout. See [Convex authentication guidance](https://docs.convex.dev/client/nextjs/app-router/) and the installed SDK source for context.

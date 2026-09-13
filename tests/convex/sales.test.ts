@@ -87,6 +87,13 @@ async function fixture() {
   return { t, c, who, realtor, data, pid, oppData, oid, quoteData };
 }
 describe("M2 Convex sales security and integrity", () => {
+  it("makes newly created Realtors immediately searchable in sales pickers", async () => {
+    const f = await fixture();
+    const rows = await f
+      .c("sales")
+      .query(api.sales.options, { kind: "realtors", q: "Fictional" });
+    expect(rows.some((r) => r.id === f.realtor.id)).toBe(true);
+  });
   it("denies direct commercial functions to non-sales roles and anonymous callers", async () => {
     const f = await fixture();
     for (const role of ["marketing", "designer", "staging_crew"] as Role[]) {

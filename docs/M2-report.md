@@ -1,6 +1,6 @@
 # M2 Sales CRM — implementation and release-gate report
 
-Status: **IMPLEMENTED LOCALLY — ACCEPTANCE INCOMPLETE**. M2 is not certified complete and is not approved for operational deployment. The current source still requires deployment to the named Convex development environment and execution of hosted/browser acceptance. M3 has not started.
+Status: **DEVELOPMENT ACCEPTANCE PASSED — NOT APPROVED FOR PRODUCTION**. M2 is deployed to the explicitly approved Daryan Convex development deployment. The API and browser acceptance results below replace the earlier pending status. M3 has not started.
 
 ## A. Summary
 
@@ -84,25 +84,35 @@ Local checks on 2026-09-13:
 - TypeScript strict: passed.
 - ESLint zero warnings: passed.
 - Node tests: **10 passed, 0 failed** (existing M1 plus exact money/stages).
-- Convex-test: **26 passed, 0 failed** (13 M1 and 13 M2).
+- Convex-test: **27 passed, 0 failed** (13 M1 and 14 M2).
 - Production build: passed.
 - Production dependency audit: **0 vulnerabilities**.
 - Formatting: passed.
 
 M2 backend tests cover role denial and safe projections, duplicate/stale property changes, initial next-action rollback, stage/won/lost/reopen, concurrent writes/metrics, M1 bypass prevention, consultation state, discount authority, exact quote totals, revision/immutability, numbering collisions, expiry, archive/restore, audit identity and bounded responses.
 
-Hosted runners are prepared, **NOT PASSED**:
+Hosted acceptance on 2026-09-13, against development deployment `woozy-jaguar-392`:
 
-- Existing M1 hosted API runner: `tests/support/convex-hosted-acceptance.mjs`.
-- New M2 runner: `tests/support/m2-hosted-acceptance.mjs`.
-- Existing M0/M1 desktop/mobile suites and new `tests/e2e/sales.spec.ts`.
-- New browser suite captures fictional property, quote editor, opportunity and pipeline screenshots in ignored test artifacts when executed.
+- M1 hosted API: **48/48 passed**.
+- M2 hosted API: **20/20 passed**. Results: [M2-hosted-api-results.json](M2-hosted-api-results.json).
+- M0/M1 desktop/mobile browser scenarios: **30/30 passed**.
+- M2 desktop/mobile scenarios: **8/8 passed** on corrective rerun, including property → opportunity → consultation → exact quote → sent → won, list search, layout overflow and direct-route role denial.
+- The earlier combined run had 36 passes and two M2 failures; the failures were corrected and rerun, not disabled. All **38 unique browser scenarios** now have passing results. Targeted screenshot-readiness checks also wait for actual pipeline cards instead of capturing loading placeholders.
+- Fictional screenshots exist under ignored `test-results/m2-visual` (property, quote editor, opportunity, pipeline on desktop/mobile). They contain fictional acceptance data, not real client records.
 
-Deployment of final M2 source to `woozy-jaguar-392` (Daryan's `glara-os` development project) awaits explicit approval. Automatic approval review rejected source-code upload even after the exact development target was verified. Do not substitute a different deployment or claim hosted acceptance from local tests. No final-source hosted or browser acceptance result exists yet.
+The user explicitly approved uploading source to the named development environment. Deployment and both paginated backfills completed successfully. Tests used the existing production Next build at localhost:3000 via a temporary Playwright configuration that omitted its server launcher; this avoided rebuilding files under a live server. Real operations and production deployment remain prohibited.
+
+Acceptance fixes:
+
+1. Deployed missing M2 functions that caused the dashboard summary request to fail.
+2. Workspace client components wait for Convex's authenticated connection before subscribing to protected queries; backend authorization is unchanged.
+3. Pinned Convex Auth 0.0.95 and added a version/hash-checked postinstall compatibility fix. Its memoized in-memory storage retained an initial empty state, so forced token refresh could return null and remove WebSocket authentication. The replacement uses a ref-backed store. This preserves in-memory access tokens and HttpOnly refresh cookies, without local-storage persistence. See README for upgrade instructions.
+4. Realtor create/update now maintains the derived native sales search field; a new backend regression test verifies newly created Realtors appear immediately.
+5. Browser tests use the dropdown's accessible combobox role and wait for loaded pipeline cards. No business rule or permission test was relaxed.
 
 ## M. Known limitations and pre-production dependencies
 
-- Hosted acceptance and actual visual/browser verification are outstanding. M2 release gate is incomplete.
+- Development acceptance is complete; independent review and the production prerequisites below remain necessary.
 - Value-range filters, fractional quantities, broad calendar UI and general property/quote/consultation restore UI are not implemented. A top-five Realtor ranking uses transactional counts and an ordered index, with links to scoped opportunity lists.
 - Detail previews and operational due/awaiting checks are deliberately bounded as described above. Deep histories require further pagination UX; the current implementation must not be described as displaying unlimited history.
 - No file/media changes, projects, inventory, agreements, invoices, payments, AI, external messaging or calendar integrations were introduced.
@@ -110,4 +120,4 @@ Deployment of final M2 source to `woozy-jaguar-392` (Daryan's `glara-os` develop
 
 ## N. M3 readiness
 
-The code establishes stable property/opportunity IDs, explicit won state, quotes with immutable commercial terms, authenticated transactional mutation boundaries and audit history. It is suitable for M2 review after outstanding acceptance and product gaps are closed. **Do not begin M3 or use this build for real operations yet.**
+The code establishes stable property/opportunity IDs, explicit won state, quotes with immutable commercial terms, authenticated transactional mutation boundaries and audit history. It is ready for independent M2 review with the documented bounds and limitations. **Do not begin M3 or use this build for real operations yet.**

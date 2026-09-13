@@ -52,6 +52,16 @@ test("Convex Auth login, navigation and logout", async ({ page }, testInfo) => {
   await page.getByRole("button", { name: "Sign in to Glara OS" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
   await expect(page.getByText("More connected.")).toBeVisible();
+  await expect(
+    page.getByText("Quotes awaiting response", { exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(() =>
+      Object.keys(localStorage).filter((key) =>
+        key.toLowerCase().includes("convex"),
+      ),
+    ),
+  ).toEqual([]);
   const authCookies = (await page.context().cookies()).filter((cookie) =>
     cookie.name.includes("convexAuth"),
   );

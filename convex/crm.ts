@@ -427,6 +427,12 @@ export const write = mutation({
         phone = d.phone.replace(/\D/g, "") || null;
       await uniqueContacts(ctx, email, phone, old?._id);
       const safe = {
+        sales_search_text: [
+          d.first_name,
+          d.last_name,
+          email ?? "",
+          d.phone,
+        ].join(" "),
         first_name: d.first_name,
         last_name: d.last_name,
         email,

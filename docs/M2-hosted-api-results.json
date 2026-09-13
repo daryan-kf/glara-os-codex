@@ -1,0 +1,86 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "executedAt": "2026-09-13T20:48:44.755Z",
+  "results": [
+    {
+      "name": "active opportunity requires next action",
+      "passed": true
+    },
+    {
+      "name": "anonymous sales query denied",
+      "passed": true
+    },
+    {
+      "name": "marketing direct commercial read/write denied",
+      "passed": true
+    },
+    {
+      "name": "designer direct commercial read/write denied",
+      "passed": true
+    },
+    {
+      "name": "staging_crew direct commercial read/write denied",
+      "passed": true
+    },
+    {
+      "name": "unassigned direct commercial read/write denied",
+      "passed": true
+    },
+    {
+      "name": "archived direct commercial read/write denied",
+      "passed": true
+    },
+    {
+      "name": "marketing property projection excludes private fields",
+      "passed": true
+    },
+    {
+      "name": "designer property projection excludes private fields",
+      "passed": true
+    },
+    {
+      "name": "duplicate address prevented",
+      "passed": true
+    },
+    {
+      "name": "stale property edits rejected",
+      "passed": true
+    },
+    {
+      "name": "last next action cannot be closed without replacement",
+      "passed": true
+    },
+    {
+      "name": "stage concurrency has one winner",
+      "passed": true
+    },
+    {
+      "name": "lost reason mandatory",
+      "passed": true
+    },
+    {
+      "name": "exact cents and tax rounding",
+      "passed": true
+    },
+    {
+      "name": "issued quote terms immutable",
+      "passed": true
+    },
+    {
+      "name": "revision creates separately numbered draft",
+      "passed": true
+    },
+    {
+      "name": "consultation status and stale edits",
+      "passed": true
+    },
+    {
+      "name": "indexed property/Realtor filter returns linked opportunity",
+      "passed": true
+    },
+    {
+      "name": "archive preserves quote history",
+      "passed": true
+    }
+  ]
+}

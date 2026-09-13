@@ -11,6 +11,7 @@ test.describe("Hosted M2 sales workflows", () => {
     "Requires fictional hosted identity opt-in",
   );
   test.setTimeout(120000);
+  test.use({ actionTimeout: 15000 });
   test("property to opportunity, consultation, exact quote and won deal", async ({
     page,
   }, info) => {
@@ -81,14 +82,14 @@ test.describe("Hosted M2 sales workflows", () => {
     const opportunityUrl = page.url();
     for (const stage of ["contacted", "interested", "consultation"]) {
       await page
-        .getByLabel("Move to stage", { exact: true })
+        .getByRole("combobox", { name: "Move to stage", exact: true })
         .selectOption(stage);
       await page
         .getByRole("button", { name: "Change stage", exact: true })
         .click();
       await expect(
         page
-          .getByLabel("Move to stage", { exact: true })
+          .getByRole("combobox", { name: "Move to stage", exact: true })
           .locator(`option[value="${stage}"]`),
       ).toHaveCount(0);
     }
@@ -125,20 +126,20 @@ test.describe("Hosted M2 sales workflows", () => {
     await page
       .getByRole("button", { name: "Confirm quote status", exact: true })
       .click();
-    await expect(page.getByLabel("Quote status", { exact: true })).toHaveValue(
-      "accepted",
-    );
+    await expect(
+      page.getByRole("combobox", { name: "Quote status", exact: true }),
+    ).toHaveValue("accepted");
     await page.goto(opportunityUrl);
     for (const stage of ["quote_sent", "negotiation", "won"]) {
       await page
-        .getByLabel("Move to stage", { exact: true })
+        .getByRole("combobox", { name: "Move to stage", exact: true })
         .selectOption(stage);
       await page
         .getByRole("button", { name: "Change stage", exact: true })
         .click();
       await expect(
         page
-          .getByLabel("Move to stage", { exact: true })
+          .getByRole("combobox", { name: "Move to stage", exact: true })
           .locator(`option[value="${stage}"]`),
       ).toHaveCount(0);
     }
@@ -154,6 +155,16 @@ test.describe("Hosted M2 sales workflows", () => {
     await page.goto("/opportunities");
     await expect(
       page.getByRole("heading", { name: "Sales pipeline", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Loading your sales workspace…", { exact: true }),
+    ).toHaveCount(0);
+    if (info.project.name === "mobile")
+      await page
+        .getByRole("combobox", { name: "Stage", exact: true })
+        .selectOption("won");
+    await expect(
+      page.getByRole("link", { name: address, exact: true }),
     ).toBeVisible();
     await page.screenshot({
       path: info.outputPath("pipeline.png"),
