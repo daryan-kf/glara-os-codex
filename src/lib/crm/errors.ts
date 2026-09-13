@@ -47,54 +47,31 @@ export function classifyCrmError(error: unknown): {
     candidate && typeof candidate === "object"
       ? (candidate as Record<string, unknown>)
       : {};
+  const categories: Record<string, CrmErrorCategory> = {
+    FORBIDDEN: "permission",
+    CONFIGURATION: "configuration",
+    INVALID_INPUT: "validation",
+    DUPLICATE: "duplicate",
+    CONFLICT: "conflict",
+    NEXT_ACTION_REQUIRED: "next_action",
+    UNAVAILABLE: "unavailable",
+  };
   const code =
-    typeof value.code === "string" &&
-    /^(?:[0-9A-Z]{5}|PGRST[0-9]{3}|CONFIG_SHAPE)$/.test(value.code)
+    typeof value.code === "string" && Object.hasOwn(categories, value.code)
       ? value.code
       : "UNKNOWN";
-  const message = typeof value.message === "string" ? value.message : "";
-  let category: CrmErrorCategory = "retry";
-  if (code === "42501") category = "permission";
-  else if (
-    ["42883", "42P01", "PGRST202", "PGRST204", "CONFIG_SHAPE"].includes(code)
-  )
-    category = "configuration";
-  else if (code === "23505") category = "duplicate";
-  else if (
-    code === "40001" ||
-    code === "PT409" ||
-    message.startsWith("This record changed.")
-  )
-    category = "conflict";
-  else if (
-    code === "P0001" &&
-    message.startsWith("A prospect needs a next action.")
-  )
-    category = "next_action";
-  else if (
-    code === "P0001" &&
-    /^(Realtor is archived|This activity is no longer open|Realtor unavailable)/.test(
-      message,
-    )
-  )
-    category = "unavailable";
-  else if (
-    /^(22|23)/.test(code) ||
-    (code === "P0001" &&
-      /^(Select an active|Contact completion cannot)/.test(message))
-  )
-    category = "validation";
+  const category = categories[code] ?? "retry";
   return { code, category, message: crmMessages[category] };
 }
 export function crmLogContext(operation: unknown, error: unknown) {
   const classified = classifyCrmError(error);
   return {
-    event: "crm_database_failure",
+    event: "crm_backend_failure",
     operation:
       typeof operation === "string" && operations.has(operation)
         ? operation
         : "unknown",
-    database_code: classified.code,
+    error_code: classified.code,
     category: classified.category,
   };
 }

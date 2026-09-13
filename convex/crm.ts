@@ -26,7 +26,7 @@ const envelope = z.object({
 type Ctx = QueryCtx | MutationCtx;
 function parse<T>(schema: z.ZodType<T>, value: unknown): T {
   const result = schema.safeParse(value);
-  if (!result.success) return deny("23514", "Invalid input.");
+  if (!result.success) return deny("INVALID_INPUT", "Invalid input.");
   return result.data;
 }
 function docId<T extends TableNames>(
@@ -35,7 +35,7 @@ function docId<T extends TableNames>(
   value: string | undefined,
 ): Id<T> {
   const id = ctx.db.normalizeId(table, value ?? "");
-  if (!id) return deny("23514", "Invalid record.");
+  if (!id) return deny("INVALID_INPUT", "Invalid record.");
   return id;
 }
 const stamp = () => {
@@ -92,7 +92,7 @@ async function invariant(ctx: MutationCtx, id: Id<"realtors">) {
     row.relationship_status === "prospect" &&
     !(await activities(ctx, id)).some((a) => a.status === "open" && a.due_at)
   )
-    deny("P0001", "A prospect needs a next action.");
+    deny("NEXT_ACTION_REQUIRED", "A prospect needs a next action.");
 }
 async function directory(
   ctx: Ctx,
@@ -159,14 +159,14 @@ async function uniqueContacts(
         .withIndex("by_email", (q) => q.eq("email", email))
         .collect()
     : [])
-    if (!row.deleted_at && row._id !== exclude) deny("23505");
+    if (!row.deleted_at && row._id !== exclude) deny("DUPLICATE");
   for (const row of phone
     ? await ctx.db
         .query("realtors")
         .withIndex("by_phone", (q) => q.eq("phone_key", phone))
         .collect()
     : [])
-    if (!row.deleted_at && row._id !== exclude) deny("23505");
+    if (!row.deleted_at && row._id !== exclude) deny("DUPLICATE");
 }
 async function addActivity(
   ctx: MutationCtx,
@@ -177,7 +177,8 @@ async function addActivity(
   const rid = docId(ctx, "realtors", data.realtor_id),
     assigned = docId(ctx, "users", data.assigned_to);
   const realtor = await ctx.db.get(rid);
-  if (!realtor || realtor.deleted_at) deny("P0001", "Realtor unavailable");
+  if (!realtor || realtor.deleted_at)
+    deny("UNAVAILABLE", "Realtor unavailable");
   await assignee(ctx, assigned);
   const id = await ctx.db.insert("activities", {
     ...data,
@@ -202,15 +203,15 @@ export const read = query({
   args: { input: v.string() },
   handler: async (ctx, { input }) => {
     const profile = await requireRoles(ctx, [...operational, "marketing"]);
-    if (input.length > 10000) return deny("23514");
+    if (input.length > 10000) return deny("INVALID_INPUT");
     let raw: Record<string, unknown>;
     try {
       raw = JSON.parse(input);
     } catch {
-      return deny("23514");
+      return deny("INVALID_INPUT");
     }
     if (!raw || typeof raw !== "object" || Array.isArray(raw))
-      return deny("23514");
+      return deny("INVALID_INPUT");
     const op = raw.op,
       write = profile.roles.some((r) => operational.includes(r)),
       manage = profile.roles.some((r) => ["owner", "admin"].includes(r));
@@ -227,7 +228,7 @@ export const read = query({
       const all = await ctx.db.query("realtors").take(10001);
       if (all.length > 10000)
         return deny(
-          "CONFIG_SHAPE",
+          "CONFIGURATION",
           "CRM list capacity requires indexed pagination.",
         );
       const q = filters.q.toLowerCase(),
@@ -236,9 +237,13 @@ export const read = query({
         (r) =>
           Boolean(r.deleted_at) === (filters.archived === "true") &&
           (!q ||
-            (r.first_name + " " + r.last_name + " " + (r.email ?? ""))
-              .toLowerCase()
-              .includes(q) ||
+            q
+              .split(/\s+/)
+              .every((term) =>
+                (r.first_name + " " + r.last_name + " " + (r.email ?? ""))
+                  .toLowerCase()
+                  .includes(term),
+              ) ||
             (/^[+0-9 ()-]+$/.test(q) &&
               digits.length >= 3 &&
               r.phone_key?.includes(digits))) &&
@@ -310,7 +315,7 @@ export const read = query({
           : [];
       return { owners, sources };
     }
-    if (!write) return deny();
+    if (!write && op !== "brokerage_options") return deny();
     if (op === "activities") {
       const rid = docId(ctx, "realtors", String(raw.id ?? "")),
         r = await ctx.db.get(rid);
@@ -371,7 +376,7 @@ export const read = query({
           }))
         : { rows: rows.slice((page - 1) * 25, page * 25).map(clean) };
     }
-    return deny("23514", "Unsupported query.");
+    return deny("INVALID_INPUT", "Unsupported query.");
   },
 });
 export const write = mutation({
@@ -382,12 +387,12 @@ export const write = mutation({
   ): Promise<{ id: string; realtor_id?: string }> => {
     const profile = await requireRoles(ctx, operational),
       actor = profile.userId;
-    if (input.length > 60000) return deny("23514");
+    if (input.length > 60000) return deny("INVALID_INPUT");
     let raw: unknown;
     try {
       raw = JSON.parse(input);
     } catch {
-      return deny("23514");
+      return deny("INVALID_INPUT");
     }
     const { op, id, version, data } = parse(envelope, raw);
     if (op === "realtor_create" || op === "realtor_update") {
@@ -402,19 +407,21 @@ export const write = mutation({
           : null;
       if (brokerage) {
         const b = await ctx.db.get(brokerage);
-        if (!b || b.deleted_at) deny("23514", "Select an active brokerage.");
+        if (!b || b.deleted_at)
+          deny("INVALID_INPUT", "Select an active brokerage.");
       }
       if (source) {
         const s = await ctx.db.get(source);
-        if (!s || s.deleted_at) deny("23514", "Select an active lead source.");
+        if (!s || s.deleted_at)
+          deny("INVALID_INPUT", "Select an active lead source.");
       }
       const old =
         op === "realtor_update"
           ? await ctx.db.get(docId(ctx, "realtors", id))
           : null;
       if (op === "realtor_update" && (!old || old.deleted_at))
-        return deny("P0001", "Realtor is archived or unavailable.");
-      if (old && old.version !== version) return deny("PT409");
+        return deny("UNAVAILABLE", "Realtor is archived or unavailable.");
+      if (old && old.version !== version) return deny("CONFLICT");
       const email = d.email.trim().toLowerCase() || null,
         phone = d.phone.replace(/\D/g, "") || null;
       await uniqueContacts(ctx, email, phone, old?._id);
@@ -487,7 +494,7 @@ export const write = mutation({
       const rid = docId(ctx, "realtors", id),
         old = await ctx.db.get(rid);
       if (!old) return deny();
-      if (old.version !== version) return deny("PT409");
+      if (old.version !== version) return deny("CONFLICT");
       if (op === "realtor_restore") {
         await assignee(ctx, old.assigned_to);
         await uniqueContacts(ctx, old.email, old.phone_key, rid);
@@ -519,9 +526,9 @@ export const write = mutation({
         aid = docId(ctx, "activities", id),
         old = await ctx.db.get(aid);
       if (!old || old.deleted_at || old.status !== "open")
-        return deny("P0001", "This activity is no longer open.");
+        return deny("UNAVAILABLE", "This activity is no longer open.");
       const r = await ctx.db.get(old.realtor_id);
-      if (!r || r.deleted_at) return deny("P0001", "Realtor unavailable");
+      if (!r || r.deleted_at) return deny("UNAVAILABLE", "Realtor unavailable");
       await ctx.db.patch(aid, {
         status: op === "activity_complete" ? "completed" : "cancelled",
         completed_at:
@@ -554,7 +561,7 @@ export const write = mutation({
       const d = parse(brokerageInput, data),
         old = id ? await ctx.db.get(docId(ctx, "brokerages", id)) : null;
       if (id && (!old || old.deleted_at)) return deny();
-      if (old && old.version !== version) return deny("PT409");
+      if (old && old.version !== version) return deny("CONFLICT");
       const value = {
         ...d,
         office_name: nullable(d.office_name),
@@ -588,7 +595,7 @@ export const write = mutation({
             s.name.toLowerCase() === d.name.toLowerCase(),
         )
       )
-        return deny("23505");
+        return deny("DUPLICATE");
       const sid = old
         ? old._id
         : await ctx.db.insert("lead_sources", { ...stamp(), name: d.name });
@@ -600,6 +607,6 @@ export const write = mutation({
       await audited(ctx, "lead_sources", sid, actor, old);
       return { id: sid };
     }
-    return deny("23514", "Unsupported mutation.");
+    return deny("INVALID_INPUT", "Unsupported mutation.");
   },
 });

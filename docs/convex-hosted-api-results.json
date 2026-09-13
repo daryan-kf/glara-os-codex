@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-13T18:59:17.141Z",
+  "timestamp": "2026-09-13T19:14:55.530Z",
   "deployment": "woozy-jaguar-392",
   "results": [
     {
@@ -184,6 +184,14 @@
     },
     {
       "name": "logout revokes refresh token",
+      "passed": true
+    },
+    {
+      "name": "Marketing brokerage options preserve filter access without private fields",
+      "passed": true
+    },
+    {
+      "name": "multi-word search is independent of name order",
       "passed": true
     }
   ]

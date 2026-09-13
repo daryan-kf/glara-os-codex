@@ -4,7 +4,7 @@ import type { QueryCtx, MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import type { Role } from "../src/lib/permissions";
 export const operational: readonly Role[] = ["owner", "sales", "admin"];
-export function deny(code = "42501", message = "Access denied"): never {
+export function deny(code = "FORBIDDEN", message = "Access denied"): never {
   throw new ConvexError({ code, message });
 }
 export async function currentProfile(ctx: QueryCtx | MutationCtx) {
@@ -46,5 +46,5 @@ export async function assignee(
     .withIndex("by_user", (q) => q.eq("userId", userId))
     .unique();
   if (!row || row.deleted_at || !row.roles.some((r) => operational.includes(r)))
-    deny("23514", "Select an active CRM team member.");
+    deny("INVALID_INPUT", "Select an active CRM team member.");
 }

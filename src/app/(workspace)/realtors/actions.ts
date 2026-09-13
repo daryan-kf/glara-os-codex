@@ -74,8 +74,8 @@ export async function mutateCrm(
     .object({ id: recordId, realtor_id: recordId.optional() })
     .safeParse(data);
   if (!checked.success) {
-    logCrmFailure(kind, { code: "CONFIG_SHAPE" });
-    return { error: classifyCrmError({ code: "CONFIG_SHAPE" }).message };
+    logCrmFailure(kind, { code: "CONFIGURATION" });
+    return { error: classifyCrmError({ code: "CONFIGURATION" }).message };
   }
   const result = checked.data;
   revalidatePath("/realtors", "layout");

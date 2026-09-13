@@ -26,7 +26,7 @@ async function query<T>(input: unknown, schema: z.ZodType<T>): Promise<T> {
     error = failure;
   }
   const parsed = error ? null : schema.safeParse(data);
-  const failure = error ?? (parsed?.success ? null : { code: "CONFIG_SHAPE" });
+  const failure = error ?? (parsed?.success ? null : { code: "CONFIGURATION" });
   if (failure) {
     const operation =
       input && typeof input === "object" && !Array.isArray(input)

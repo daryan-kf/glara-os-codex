@@ -231,6 +231,30 @@ await check("logout revokes refresh token", async () => {
     .catch(() => null);
   assert.ok(!response?.tokens);
 });
+
+await check(
+  "Marketing brokerage options preserve filter access without private fields",
+  async () => {
+    const b = await write("owner", {
+      op: "brokerage_save",
+      data: {
+        name: "Filter " + suffix,
+        province: "BC",
+        notes: "Private office",
+      },
+    });
+    const options = await read("marketing", {
+      op: "brokerage_options",
+      q: suffix,
+    });
+    assert.deepEqual(options, [{ id: b.id, name: "Filter " + suffix }]);
+    await assert.rejects(read("marketing", { op: "brokerage", id: b.id }));
+  },
+);
+await check("multi-word search is independent of name order", async () => {
+  const result = await read("owner", { op: "list", q: suffix + " Fict" });
+  assert.ok(result.rows.some((r) => r.id === id));
+});
 for (const [role, c] of Object.entries(clients))
   if (role !== "sales") await c.action(ref("auth:signOut"), {});
 mkdirSync("test-results", { recursive: true });

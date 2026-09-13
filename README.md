@@ -52,7 +52,7 @@ User administration remains a trusted deployment operation, with no public role-
 
 The reset form returns the same response whether an account exists. A configured Resend credential and verified `Support@glarahome.com` sender are required for delivery. Recipients enter their email, single-use code and new password at `/update-password`; codes expire after 15 minutes. Public registration remains disabled. Legacy Supabase recovery URLs do not create Convex sessions.
 
-**Email acceptance is still pending.** A missing provider is handled safely but is not successful email delivery. Before release, verify invitation and recovery delivery to an authorized test inbox, expiry, reuse rejection, password change and old-session invalidation. No customer email was sent during this migration. MFA/magic-link expansion remains deferred.
+**Email acceptance: DEFERRED — REQUIRED BEFORE PRODUCTION.** A missing provider is handled safely but is not successful email delivery. Before release, verify invitation and recovery delivery to an authorized test inbox, expiry, reuse rejection, password change and old-session invalidation. No customer email was sent during this migration. MFA/magic-link expansion remains deferred.
 
 ## Data and business rules
 
@@ -106,3 +106,5 @@ The current hosted backend is a **development deployment in eu-west-1**, not Can
 Current CRM filtering/derived follow-up sorting performs bounded scans (explicit failure above 10,000 Realtor records), and broad activity/choice queries remain appropriate only for an initial small internal deployment. Indexed cursor pagination and load testing are required before a large import; the UI does not silently truncate Realtor totals. Storage/media workflows, commercial modules, automation and AI are intentionally deferred.
 
 The old Supabase project is untouched. Historical reports describe that backend and do not certify Convex. See [Convex migration acceptance](docs/convex-migration-report.md) for current evidence. Full rollback baseline: commit `a6ee904`; use a separate checkout with its original lockfile/configuration. No M2 work is included.
+
+The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. No M2 implementation may begin before independent migration review.

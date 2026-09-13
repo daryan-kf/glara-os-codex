@@ -1,62 +1,44 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { classifyCrmError, crmLogContext } from "../src/lib/crm/errors";
-test("CRM error categories separate permissions, schema, constraints and transient failures", () => {
-  for (const [code, category] of [
-    ["42501", "permission"],
-    ["42883", "configuration"],
-    ["PGRST202", "configuration"],
-    ["42P01", "configuration"],
-    ["23514", "validation"],
-    ["23505", "duplicate"],
-    ["40001", "conflict"],
-    ["PT409", "conflict"],
-    ["08006", "retry"],
-  ] as const)
+test("Convex domain errors map to safe business messages", () => {
+  for (const [code, category] of Object.entries({
+    FORBIDDEN: "permission",
+    CONFIGURATION: "configuration",
+    INVALID_INPUT: "validation",
+    DUPLICATE: "duplicate",
+    CONFLICT: "conflict",
+    NEXT_ACTION_REQUIRED: "next_action",
+    UNAVAILABLE: "unavailable",
+    UNKNOWN: "retry",
+  })) {
     assert.equal(
-      classifyCrmError({ code, message: "Sensitive raw database text" })
+      classifyCrmError({ data: { code, message: "Sensitive backend details" } })
         .category,
       category,
     );
-  assert.equal(
-    classifyCrmError({
-      code: "P0001",
-      message: "A prospect needs a next action. PRIVATE",
-    }).category,
-    "next_action",
-  );
+  }
 });
-test("CRM logging and user messages never include raw records, payloads or arbitrary operation text", () => {
+test("CRM errors and logs exclude payloads and arbitrary codes or operations", () => {
   const sensitive = "PRIVATE notes bearer-token email@example.test";
-  const raw = {
-    code: "23505",
-    message: sensitive,
-    details: sensitive,
-    hint: sensitive,
-    notes: sensitive,
+  const error = {
+    data: { code: "DUPLICATE", message: sensitive, details: sensitive },
   };
-  const log = crmLogContext("brokerage_save", raw);
+  const log = crmLogContext("brokerage_save", error);
   assert.deepEqual(Object.keys(log).sort(), [
     "category",
-    "database_code",
+    "error_code",
     "event",
     "operation",
   ]);
   assert.equal(JSON.stringify(log).includes(sensitive), false);
-  assert.equal(classifyCrmError(raw).message.includes(sensitive), false);
+  assert.equal(classifyCrmError(error).message.includes(sensitive), false);
   assert.equal(
-    crmLogContext(sensitive, { code: sensitive }).operation,
+    crmLogContext(sensitive, { data: { code: sensitive } }).operation,
     "unknown",
   );
   assert.equal(
-    crmLogContext(sensitive, { code: sensitive }).database_code,
+    crmLogContext(sensitive, { data: { code: sensitive } }).error_code,
     "UNKNOWN",
-  );
-  assert.equal(
-    classifyCrmError({
-      code: "P0001",
-      message: "This record changed. " + sensitive,
-    }).message.includes(sensitive),
-    false,
   );
 });

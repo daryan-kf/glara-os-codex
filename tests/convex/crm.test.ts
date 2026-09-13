@@ -318,4 +318,164 @@ describe("Convex M1 transactional security", () => {
       ).every((a) => a.actor_id === f.users.sales),
     ).toBe(true);
   });
+
+  it("revokes an existing identity immediately after profile archiving or role removal", async () => {
+    for (const archived of [true, false]) {
+      const f = await fixture();
+      await f.read("sales", { op: "list" });
+      await f.t.run(async (ctx) => {
+        const row = await ctx.db
+          .query("profiles")
+          .withIndex("by_user", (q) =>
+            q.eq("userId", ctx.db.normalizeId("users", f.users.sales)!),
+          )
+          .unique();
+        await ctx.db.patch(
+          row!._id,
+          archived ? { deleted_at: new Date().toISOString() } : { roles: [] },
+        );
+      });
+      await expect(f.read("sales", { op: "list" })).rejects.toThrow();
+      await expect(
+        f.write("sales", { op: "realtor_create", data: f.data }),
+      ).rejects.toThrow();
+    }
+  });
+  it("rejects deleted and expired sessions despite a valid identity subject", async () => {
+    for (const expired of [true, false]) {
+      const f = await fixture();
+      await f.read("owner", { op: "list" });
+      await f.t.run(async (ctx) => {
+        const session = await ctx.db
+          .query("authSessions")
+          .withIndex("userId", (q) =>
+            q.eq("userId", ctx.db.normalizeId("users", f.users.owner)!),
+          )
+          .first();
+        if (expired)
+          await ctx.db.patch(session!._id, {
+            expirationTime: Date.now() - 1000,
+          });
+        else await ctx.db.delete(session!._id);
+      });
+      await expect(f.read("owner", { op: "list" })).rejects.toThrow();
+    }
+  });
+  it("concurrent task completion preserves one open next action and its audit integrity", async () => {
+    const f = await fixture();
+    const r = await f.write("sales", { op: "realtor_create", data: f.data });
+    await f.write("sales", {
+      op: "activity_create",
+      data: {
+        realtor_id: r.id,
+        assigned_to: f.users.sales,
+        type: "task",
+        title: "Second action",
+        status: "open",
+        priority: "normal",
+        due_at: "2026-10-05T10:00:00-07:00",
+      },
+    });
+    const list = z.object({ rows: z.array(activityRow) });
+    const tasks = list.parse(
+      await f.read("sales", { op: "followups", assigned_to: f.users.sales }),
+    ).rows;
+    expect(tasks.find((a) => a.title === "Second action")?.due_at).toBe(
+      "2026-10-05T17:00:00.000Z",
+    );
+    const outcomes = await Promise.allSettled(
+      tasks.map((a) =>
+        f.write("sales", { op: "activity_complete", id: a.id, data: {} }),
+      ),
+    );
+    expect(outcomes.filter((o) => o.status === "fulfilled")).toHaveLength(1);
+    const rows = list.parse(
+      await f.read("sales", { op: "activities", id: r.id }),
+    ).rows;
+    expect(rows.filter((a) => a.status === "open")).toHaveLength(1);
+    expect(rows.filter((a) => a.status === "completed")).toHaveLength(1);
+    const logs = await f.t.run((ctx) => ctx.db.query("audit_logs").collect());
+    expect(
+      logs.filter((a) => a.entity === "activities" && a.action === "UPDATE"),
+    ).toHaveLength(1);
+  });
+
+  it("preserves Marketing brokerage filter options without exposing brokerage records", async () => {
+    const f = await fixture();
+    const b = await f.write("sales", {
+      op: "brokerage_save",
+      data: {
+        name: "Fictional Office",
+        province: "BC",
+        notes: "Private office note",
+      },
+    });
+    expect(
+      await f.read("marketing", { op: "brokerage_options", q: "Fictional" }),
+    ).toEqual([{ id: b.id, name: "Fictional Office" }]);
+    await expect(
+      f.read("marketing", { op: "brokerage", id: b.id }),
+    ).rejects.toThrow();
+    await expect(f.read("marketing", { op: "brokerages" })).rejects.toThrow();
+    for (const role of ["designer", "staging_crew"] as const)
+      await expect(f.read(role, { op: "brokerage_options" })).rejects.toThrow();
+  });
+  it("retains combined filters, token search, phone search and paged totals", async () => {
+    const f = await fixture();
+    const b = await f.write("owner", {
+      op: "brokerage_save",
+      data: { name: "Fictional", province: "BC" },
+    });
+    const source = await f.write("admin", {
+      op: "source_save",
+      data: { name: "Fictional Campaign" },
+    });
+    for (let i = 0; i < 28; i++)
+      await f.write("sales", {
+        op: "realtor_create",
+        data: {
+          ...f.data,
+          last_name: "Partner" + i,
+          email: "fictional" + i + "@accounts.example.test",
+          phone: i === 0 ? f.data.phone : "",
+          brokerage_id: b.id,
+          lead_source_id: source.id,
+          primary_area: "Kitsilano",
+        },
+      });
+    const filters = {
+      op: "list",
+      q: "Part Fict",
+      brokerage_id: b.id,
+      lead_source_id: source.id,
+      assigned_to: f.users.sales,
+      area: "kits",
+      status: "prospect",
+    };
+    const result = z.object({ rows: z.array(realtorRow), total: z.number() });
+    const first = result.parse(await f.read("marketing", filters)),
+      second = result.parse(await f.read("marketing", { ...filters, page: 2 }));
+    expect(first.total).toBe(28);
+    expect(first.rows).toHaveLength(25);
+    expect(second.rows).toHaveLength(3);
+    expect(new Set([...first.rows, ...second.rows].map((r) => r.id)).size).toBe(
+      28,
+    );
+    expect(
+      result.parse(await f.read("sales", { op: "search", q: "Fictional" }))
+        .rows,
+    ).toHaveLength(8);
+    expect(
+      result.parse(await f.read("sales", { op: "list", q: "6045550101" }))
+        .total,
+    ).toBe(1);
+    expect(
+      result.parse(
+        await f.read("sales", {
+          op: "list",
+          q: "fictional0@accounts.example.test",
+        }),
+      ).total,
+    ).toBe(1);
+  });
 });
