@@ -1,4 +1,8 @@
 "use client";
+import { RealtorSearchResults } from "@/components/crm/search-results";
+import { CrmQuickCreate } from "@/components/crm/forms";
+import { canWriteCrm } from "@/lib/crm/model";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -67,10 +71,14 @@ function Navigation({ roles, close }: { roles: Role[]; close?: () => void }) {
               key={module}
               href={`/${module}`}
               onClick={close}
-              aria-current={path === `/${module}` ? "page" : undefined}
+              aria-current={
+                path === `/${module}` || path.startsWith(`/${module}/`)
+                  ? "page"
+                  : undefined
+              }
               className={cn(
                 "flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-                path === `/${module}` &&
+                (path === `/${module}` || path.startsWith(`/${module}/`)) &&
                   "bg-primary/10 font-semibold text-primary",
                 module === "notifications" && "mt-6 border-t pt-4",
               )}
@@ -108,10 +116,10 @@ function SearchShell({ roles }: { roles: Role[] }) {
           Search workspace
         </DialogTitle>
         <DialogDescription className="mb-5 mt-2 text-sm text-muted-foreground">
-          Find a module. Record search will arrive with CRM.
+          Find a module or search your realtor relationships.
         </DialogDescription>
         <label htmlFor="global-search" className="sr-only">
-          Search modules
+          Search modules and realtors
         </label>
         <input
           id="global-search"
@@ -132,6 +140,11 @@ function SearchShell({ roles }: { roles: Role[] }) {
               <ArrowUpRight className="size-4" />
             </Link>
           ))}
+          <RealtorSearchResults
+            query={query}
+            enabled={open && canAccess(roles, "realtors")}
+            onSelect={() => setOpen(false)}
+          />
           {!results.length && (
             <p className="p-4 text-sm text-muted-foreground">
               No matching modules.
@@ -142,7 +155,7 @@ function SearchShell({ roles }: { roles: Role[] }) {
     </Dialog>
   );
 }
-function QuickCreate() {
+function QuickCreate({ roles }: { roles: Role[] }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -156,27 +169,22 @@ function QuickCreate() {
           A place for every new beginning
         </DialogTitle>
         <DialogDescription className="mt-3 text-sm leading-6 text-muted-foreground">
-          Quick create will become available as each module launches. Your
-          workspace is currently in its foundation phase.
+          Create a relationship or plan a follow-up. Other actions will become
+          available as each module launches. Your Realtor CRM is ready.
         </DialogDescription>
+        <CrmQuickCreate enabled={canWriteCrm(roles)} />
         <div className="mt-6 grid grid-cols-2 gap-2">
-          {[
-            "Realtor",
-            "Opportunity",
-            "Property",
-            "Consultation",
-            "Quote",
-            "Project",
-            "Task",
-          ].map((label) => (
-            <div
-              key={label}
-              className="rounded-lg border p-3 text-sm text-muted-foreground"
-            >
-              {label}
-              <span className="mt-1 block text-xs">Coming later</span>
-            </div>
-          ))}
+          {["Opportunity", "Property", "Consultation", "Quote", "Project"].map(
+            (label) => (
+              <div
+                key={label}
+                className="rounded-lg border p-3 text-sm text-muted-foreground"
+              >
+                {label}
+                <span className="mt-1 block text-xs">Coming later</span>
+              </div>
+            ),
+          )}
         </div>
       </DialogContent>
     </Dialog>
@@ -284,7 +292,7 @@ export function Shell({
             <SearchShell roles={user.roles} />
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-            <QuickCreate />
+            <QuickCreate roles={user.roles} />
             <Link
               href="/notifications"
               aria-label="Notifications"

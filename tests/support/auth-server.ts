@@ -1,18 +1,9 @@
+import { fixtureUsers, createTestDatabase, rpc, asUser } from "./database";
 // Test-only HTTP contract double. Never imported by the application.
 import { createServer } from "node:http";
 import { createHmac, randomUUID } from "node:crypto";
-const users = {
-  "owner@example.test": {
-    id: "10000000-0000-0000-0000-000000000001",
-    name: "Demo Owner",
-    role: "owner",
-  },
-  "sales@example.test": {
-    id: "10000000-0000-0000-0000-000000000002",
-    name: "Demo Sales",
-    role: "sales",
-  },
-};
+const users = fixtureUsers;
+const database = createTestDatabase();
 const revoked = new Set<string>();
 function token(id: string) {
   const encode = (value: object) =>
@@ -66,7 +57,10 @@ createServer(async (request, response) => {
         user_metadata: {},
       }
     : null;
-  if (url.pathname === "/health") return send(200, { ok: true });
+  if (url.pathname === "/health") {
+    await database;
+    return send(200, { ok: true });
+  }
   if (url.pathname === "/auth/v1/token") {
     const user = users[body.email as keyof typeof users];
     if (!user || body.password !== "Fictional-password-123!")
@@ -98,12 +92,31 @@ createServer(async (request, response) => {
     revoked.add(jwt);
     return send(200, {});
   }
+  if (url.pathname.startsWith("/rest/v1/rpc/")) {
+    const name = url.pathname.split("/").pop();
+    if (name !== "crm_query" && name !== "crm_mutate") return send(404, {});
+    try {
+      return send(
+        200,
+        await rpc(await database, identity.id, name, body.p_input),
+      );
+    } catch (error) {
+      const err = error as { message: string; code?: string };
+      return send(400, { message: err.message, code: err.code ?? "P0001" });
+    }
+  }
   if (url.pathname === "/rest/v1/profiles")
-    return send(200, {
-      id: identity.id,
-      display_name: entry![1].name,
-      deleted_at: null,
-    });
+    return send(
+      200,
+      (
+        await asUser(await database, identity.id, (tx) =>
+          tx.query(
+            "select id,display_name,deleted_at from profiles where id=$1",
+            [identity.id],
+          ),
+        )
+      ).rows[0] ?? null,
+    );
   if (url.pathname === "/rest/v1/user_roles")
     return send(200, [{ role: entry![1].role }]);
   return send(404, { message: "No test fixture for this endpoint" });

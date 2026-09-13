@@ -1,13 +1,13 @@
 {
   "name": "glara-os",
   "version": "0.1.0",
-  "description": "Private operating system for Glara Home Staging — M0 foundation",
+  "description": "Private operating system for Glara Home Staging — M1 Realtor CRM",
   "scripts": {
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "test:e2e": "npm run build && playwright test",
+    "test:e2e": "node tests/support/run-e2e.mjs",
     "build": "next build",
     "dev": "next dev",
     "format": "prettier --write src tests *.ts *.json *.mjs docs README.md",

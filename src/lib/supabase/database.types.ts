@@ -34,7 +34,10 @@ export type Database = {
       }>;
     };
     Views: { [_ in never]: never };
-    Functions: { [_ in never]: never };
+    Functions: {
+      crm_query: { Args: { p_input: Json }; Returns: Json };
+      crm_mutate: { Args: { p_input: Json }; Returns: Json };
+    };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };
   };

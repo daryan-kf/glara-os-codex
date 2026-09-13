@@ -81,7 +81,7 @@ test("Supabase SDK login, navigation and logout", async ({
     .getByRole("link", { name: "Realtors", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Realtors, coming into focus" }),
+    page.getByRole("heading", { name: "Realtor relationships" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Search workspace" }).click();
   await page.getByLabel("Search modules").fill("Inventory");

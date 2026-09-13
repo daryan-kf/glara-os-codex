@@ -79,7 +79,7 @@ export default async function ModulePage({
           }
           description={info.description}
         />
-        <StatusBadge>Foundation workspace</StatusBadge>
+        <StatusBadge>Connected workspace</StatusBadge>
       </div>
       {moduleKey === "dashboard" ? (
         <>
@@ -87,7 +87,7 @@ export default async function ModulePage({
             <div className="absolute -right-20 -top-36 size-96 rounded-full border border-white/15" />
             <div className="relative max-w-xl">
               <p className="mb-5 text-xs uppercase tracking-[.2em] text-white/65">
-                A considered foundation
+                A connected team
               </p>
               <h2 className="font-display text-3xl leading-tight sm:text-4xl">
                 More connected.
@@ -95,16 +95,16 @@ export default async function ModulePage({
                 More room to grow.
               </h2>
               <p className="mt-5 max-w-md text-sm leading-7 text-white/75">
-                Your workspace brings the Glara team together. Relationships,
-                projects, and operations will take shape here as each module
-                launches.
+                Your workspace brings the Glara team together. Manage realtor
+                relationships today; projects and operations will take shape
+                here as each module launches.
               </p>
             </div>
           </section>
           <div className="mb-5 flex items-center justify-between">
             <SectionHeading>Explore your workspace</SectionHeading>
             <span className="text-xs text-muted-foreground">
-              Modules in preparation
+              Your workspace modules
             </span>
           </div>
           <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -127,14 +127,16 @@ export default async function ModulePage({
                     {modules[item].description}
                   </p>
                   <p className="mt-5 text-xs text-muted-foreground">
-                    Planned · {modules[item].milestone}
+                    {item === "realtors"
+                      ? "Available now · M1"
+                      : "Planned · " + modules[item].milestone}
                   </p>
                 </Link>
               ))}
           </div>
           <EmptyState
             title="Your daily overview will live here"
-            description="Stagings, consultations, follow-ups, and company insights will appear once their modules are connected. No live business data is available yet."
+            description="Use the Realtor CRM for relationship history and follow-ups. Project schedules and company insights will join this overview in future milestones."
           />
         </>
       ) : (
@@ -155,7 +157,7 @@ export default async function ModulePage({
       )}
       <div className="mt-7 flex items-center gap-2 text-xs text-muted-foreground">
         <ShieldCheck className="size-4" />
-        <span>Private team access · No business records have been added</span>
+        <span>Private team access · Glara Home Staging</span>
       </div>
     </>
   );
