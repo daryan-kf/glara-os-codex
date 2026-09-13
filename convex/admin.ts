@@ -153,3 +153,24 @@ export const initializeSources = internalMutation({
     }
   },
 });
+
+// Additive, restartable M2 search backfill. No business values or audit history are rewritten.
+export const backfillSalesSearch = internalMutation({
+  args: { cursor: v.union(v.string(), v.null()) },
+  handler: async (ctx, { cursor }) => {
+    const page = await ctx.db
+      .query("realtors")
+      .paginate({ numItems: 100, cursor });
+    for (const r of page.page)
+      if (r.sales_search_text === undefined)
+        await ctx.db.patch(r._id, {
+          sales_search_text: [
+            r.first_name,
+            r.last_name,
+            r.email ?? "",
+            r.phone ?? "",
+          ].join(" "),
+        });
+    return { cursor: page.continueCursor, done: page.isDone };
+  },
+});

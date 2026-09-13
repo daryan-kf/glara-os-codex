@@ -1,3 +1,4 @@
+import { SalesSummary } from "@/components/sales/opportunities";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, ShieldCheck, Compass } from "lucide-react";
@@ -81,6 +82,10 @@ export default async function ModulePage({
         />
         <StatusBadge>Connected workspace</StatusBadge>
       </div>
+      {moduleKey === "dashboard" &&
+        user.roles.some((r) => ["owner", "sales", "admin"].includes(r)) && (
+          <SalesSummary />
+        )}
       {moduleKey === "dashboard" ? (
         <>
           <section className="relative mb-8 overflow-hidden rounded-2xl bg-primary px-7 py-10 text-primary-foreground sm:p-10">

@@ -89,6 +89,13 @@ export default async function Page({
         </div>
       </div>
       <CrmNav operational={writable} />
+      {writable && (
+        <div className="mb-6 flex gap-4 text-sm">
+          <Link className="underline" href={"/opportunities?realtor=" + id}>
+            Linked sales opportunities
+          </Link>
+        </div>
+      )}
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         <aside className="space-y-6">
           <section className="rounded-2xl border bg-card p-6">

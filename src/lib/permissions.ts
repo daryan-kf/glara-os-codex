@@ -137,6 +137,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   admin: [
+    "opportunities",
     "dashboard",
     "realtors",
     "properties",
@@ -147,7 +148,14 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "notifications",
     "profile",
   ],
-  marketing: ["dashboard", "realtors", "marketing", "notifications", "profile"],
+  marketing: [
+    "properties",
+    "dashboard",
+    "realtors",
+    "marketing",
+    "notifications",
+    "profile",
+  ],
 };
 export function isRole(value: string): value is Role {
   return roles.some((role) => role === value);

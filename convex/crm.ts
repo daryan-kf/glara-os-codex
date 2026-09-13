@@ -339,6 +339,7 @@ export const read = query({
           q.eq("status", "open").eq("deleted_at", null),
         )
         .collect()) {
+        if (!a.realtor_id) continue;
         const r = await ctx.db.get(a.realtor_id);
         if (
           r &&
@@ -495,6 +496,16 @@ export const write = mutation({
         old = await ctx.db.get(rid);
       if (!old) return deny();
       if (old.version !== version) return deny("CONFLICT");
+      if (
+        op === "realtor_archive" &&
+        (await ctx.db
+          .query("properties")
+          .withIndex("by_realtor", (q) =>
+            q.eq("realtor_id", rid).eq("deleted_at", null),
+          )
+          .first())
+      )
+        deny("INVALID_INPUT", "Archive associated sales properties first.");
       if (op === "realtor_restore") {
         await assignee(ctx, old.assigned_to);
         await uniqueContacts(ctx, old.email, old.phone_key, rid);
@@ -525,7 +536,7 @@ export const write = mutation({
         ),
         aid = docId(ctx, "activities", id),
         old = await ctx.db.get(aid);
-      if (!old || old.deleted_at || old.status !== "open")
+      if (!old || !old.realtor_id || old.deleted_at || old.status !== "open")
         return deny("UNAVAILABLE", "This activity is no longer open.");
       const r = await ctx.db.get(old.realtor_id);
       if (!r || r.deleted_at) return deny("UNAVAILABLE", "Realtor unavailable");

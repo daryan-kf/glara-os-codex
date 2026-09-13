@@ -1,4 +1,5 @@
 "use client";
+import { SalesSearchResults } from "@/components/sales/search";
 import { reloadAfterAuth } from "@/lib/auth-navigation";
 import { RealtorSearchResults } from "@/components/crm/search-results";
 import { CrmQuickCreate } from "@/components/crm/forms";
@@ -146,6 +147,11 @@ function SearchShell({ roles }: { roles: Role[] }) {
             enabled={open && canAccess(roles, "realtors")}
             onSelect={() => setOpen(false)}
           />
+          <SalesSearchResults
+            query={query}
+            enabled={open && canAccess(roles, "properties")}
+            onSelect={() => setOpen(false)}
+          />
           {!results.length && (
             <p className="p-4 text-sm text-muted-foreground">
               No matching modules.
@@ -170,22 +176,32 @@ function QuickCreate({ roles }: { roles: Role[] }) {
           A place for every new beginning
         </DialogTitle>
         <DialogDescription className="mt-3 text-sm leading-6 text-muted-foreground">
-          Create a relationship or plan a follow-up. Other actions will become
-          available as each module launches. Your Realtor CRM is ready.
+          Create a relationship, property or sales opportunity. Schedule
+          consultations and prepare quotes within their opportunity.
         </DialogDescription>
         <CrmQuickCreate enabled={canWriteCrm(roles)} />
         <div className="mt-6 grid grid-cols-2 gap-2">
-          {["Opportunity", "Property", "Consultation", "Quote", "Project"].map(
-            (label) => (
-              <div
-                key={label}
-                className="rounded-lg border p-3 text-sm text-muted-foreground"
-              >
-                {label}
-                <span className="mt-1 block text-xs">Coming later</span>
-              </div>
-            ),
-          )}
+          {canWriteCrm(roles) &&
+            [
+              ["Opportunity", "/opportunities/new"],
+              ["Property", "/properties/new"],
+              ["Quote", "/quotes/new"],
+            ].map(([label, href]) => (
+              <DialogClose asChild key={href}>
+                <Link
+                  href={href}
+                  className="rounded-lg border p-3 text-sm hover:bg-muted"
+                >
+                  New {label}
+                </Link>
+              </DialogClose>
+            ))}
+          <p className="rounded-lg border p-3 text-xs text-muted-foreground">
+            Consultations: schedule from an opportunity.
+          </p>
+          <p className="rounded-lg border p-3 text-xs text-muted-foreground">
+            Staging projects: available in M3.
+          </p>
         </div>
       </DialogContent>
     </Dialog>

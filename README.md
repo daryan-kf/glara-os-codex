@@ -56,7 +56,7 @@ The reset form returns the same response whether an account exists. A configured
 
 ## Data and business rules
 
-`convex/schema.ts` defines Auth tables plus profiles, brokerages, lead_sources, realtors, realtor_private, activities and audit_logs. Native Convex IDs replace UUIDs; references are validated in mutations. No financial module was added. Average listing prices are validated decimal strings to preserve cents without floating-point storage; future financial calculations must use an exact decimal representation.
+`convex/schema.ts` defines Auth tables plus profiles, brokerages, lead_sources, realtors, realtor_private, activities and audit_logs. Native Convex IDs replace UUIDs; references are validated in mutations. M2 adds properties, opportunities, consultations, quotes/items and sales counter/metric/settings tables. See `docs/M2-report.md` for the implementation and outstanding acceptance gates. Average listing prices are validated decimal strings to preserve cents without floating-point storage; future financial calculations must use an exact decimal representation.
 
 Mutations validate inputs on the backend and commit business changes and audit events atomically. Prospect creation requires a dated next action; completion/cancellation cannot remove the last one without replacement. Rescheduling preserves the original due date, cancels the original and links its replacement. Case-normalized emails and normalized phone numbers prevent active duplicates. Version checks reject stale Realtor and brokerage edits. Archiving retains activity history; restoring requires Owner/Admin and rechecks next-action, assignment and contact invariants. Clients cannot supply audit actors.
 
@@ -108,3 +108,9 @@ Current CRM filtering/derived follow-up sorting performs bounded scans (explicit
 The old Supabase project is untouched. Historical reports describe that backend and do not certify Convex. See [Convex migration acceptance](docs/convex-migration-report.md) for current evidence. Full rollback baseline: commit `a6ee904`; use a separate checkout with its original lockfile/configuration. No M2 work is included.
 
 The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. No M2 implementation may begin before independent migration review.
+
+## M2 Sales CRM development
+
+The M2 implementation is present locally; hosted acceptance is not yet certified. Read [the M2 report](docs/M2-report.md) before deploying or beginning M3. Sales schemas and money rules are in `src/lib/sales`, backend functions in `convex/sales.ts`, and UI in `src/components/sales`. After an approved development deployment, run the internal paginated `admin:backfillSalesSearch` function for existing Realtors.
+
+With the existing fictional acceptance identities configured (never commit credentials), run `node tests/support/m2-hosted-acceptance.mjs` and `npm run test:e2e`. Both require `GLARA_CONVEX_ACCEPTANCE=yes`; browser tests can use `PLAYWRIGHT_CHANNEL=chrome`. The browser runner builds and starts a production Next server on port 3000, so stop any current server first. Production email/auth gates remain deferred and required before production.

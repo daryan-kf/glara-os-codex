@@ -14,6 +14,7 @@ import type * as auth from "../auth.js";
 import type * as crm from "../crm.js";
 import type * as http from "../http.js";
 import type * as profiles from "../profiles.js";
+import type * as sales from "../sales.js";
 
 import type {
   ApiFromModules,
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   crm: typeof crm;
   http: typeof http;
   profiles: typeof profiles;
+  sales: typeof sales;
 }>;
 
 /**
