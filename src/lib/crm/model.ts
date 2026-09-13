@@ -122,6 +122,13 @@ export const completionInput = z
     message: "A next action needs both a title and date.",
     path: ["next_due_at"],
   });
+export const rescheduleInput = completionInput.refine(
+  (d) => Boolean(d.next_title) && Boolean(d.next_due_at),
+  {
+    message: "A replacement action needs a title and date.",
+    path: ["next_due_at"],
+  },
+);
 export const brokerageInput = z.object({
   name: z.string().trim().min(1).max(160),
   office_name: optionalText(160),
@@ -208,6 +215,7 @@ export const activityRow = z.object({
 });
 export type Activity = z.infer<typeof activityRow>;
 export const brokerageRow = z.object({
+  version: z.number().int().positive(),
   id: z.uuid(),
   name: z.string(),
   office_name: nullable,
@@ -243,6 +251,7 @@ export type MutationKind =
   | "activity_create"
   | "activity_complete"
   | "activity_cancel"
+  | "activity_reschedule"
   | "brokerage_save"
   | "source_save";
 export function formatDate(value?: string | null, time = true) {

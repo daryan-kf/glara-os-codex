@@ -58,3 +58,13 @@ No automation engine, outbound communications, AI, media workflow, opportunity p
 M0 palette, system fonts, layout and accessible Radix primitives are retained. Desktop uses tables and a two-column profile; mobile uses cards and places next actions/history first. Forms retain values on validation errors and show pending/success states. Dialogs, keyboard navigation, focus rings, semantic labels and touch targets remain available.
 
 Production browser tests exercise real pages/server actions/Supabase SDK with isolated PGlite-backed RPCs. The test Auth service is only a contract double; hosted Auth/PostgREST, email delivery and deployment must still be accepted in a disposable real Supabase environment.
+
+## M1 hardening amendments
+
+Brokerage edits now use row locks and optimistic versions, and reject archived/missing offices. Cancellation never means completion. Rescheduling atomically cancels the original and creates an action linked through replaces_activity_id, preserving due-date history and audit records.
+
+Marketing cannot read the operational roster through profiles/user_roles or choices. Its sources query returns no owners; directory owner names use a narrow active-relationship projection. Operational roster access remains owner/sales/admin only.
+
+Safe CRM logging maps database failures to fixed categories and records only operation, code, category and timestamp. Read failures use an authenticated safe-state route; mutation errors return static form messages.
+
+Scaling follow-ups are documented in [M1 hardening report](M1-hardening-report.md#9-remaining-p2-items): lateral aggregation, exact counts, lower-case name/index alignment, phone substring search, offset paging, archive management and exact-limit continuation. No performance rewrite was performed.

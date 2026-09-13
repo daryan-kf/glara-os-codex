@@ -7,7 +7,7 @@ import {
   followupState,
   type Activity,
 } from "@/lib/crm/model";
-import { CompleteDialog } from "./forms";
+import { CompleteDialog, ChangeActionDialog } from "./forms";
 export function CrmNav({ operational = true }: { operational?: boolean }) {
   return (
     <nav aria-label="Realtor CRM" className="mb-7 flex flex-wrap gap-2">
@@ -98,7 +98,12 @@ export function ActivityList({
             <p className="mt-2 text-xs text-muted-foreground">
               {a.status === "open"
                 ? "Due " + formatDate(a.due_at)
-                : formatDate(a.completed_at ?? a.created_at)}
+                : a.status === "cancelled"
+                  ? "Cancelled " +
+                    formatDate(a.updated_at) +
+                    " · Originally due " +
+                    formatDate(a.due_at)
+                  : formatDate(a.completed_at ?? a.created_at)}
             </p>
             {a.description && (
               <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">
@@ -112,7 +117,11 @@ export function ActivityList({
             )}
           </div>
           {complete && a.status === "open" && (
-            <CompleteDialog id={a.id} title={a.title} />
+            <div className="flex flex-wrap gap-2">
+              <CompleteDialog id={a.id} title={a.title} />
+              <ChangeActionDialog id={a.id} title={a.title} reschedule />
+              <ChangeActionDialog id={a.id} title={a.title} />
+            </div>
           )}
         </article>
       ))}

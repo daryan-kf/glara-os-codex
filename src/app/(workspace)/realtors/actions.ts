@@ -1,4 +1,6 @@
 "use server";
+import { logCrmFailure } from "@/lib/logger";
+import { classifyCrmError } from "@/lib/crm/errors";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -8,6 +10,7 @@ import {
   realtorInput,
   activityInput,
   completionInput,
+  rescheduleInput,
   brokerageInput,
   sourceInput,
   canManageCrm,
@@ -15,23 +18,6 @@ import {
   type MutationKind,
 } from "@/lib/crm/model";
 import type { Json } from "@/lib/supabase/database.types";
-function friendlyError(message: string, code?: string) {
-  if (code === "23505")
-    return "An active record already uses this email, phone, or name. Review the existing record; records are never merged automatically.";
-  if (code === "23514" || code === "23502" || code === "22P02")
-    return "Some fields are invalid. Review the form and try again.";
-  if (code === "42501") return "Your account cannot perform this action.";
-  const safe = [
-    "A prospect needs a next action.",
-    "This record changed.",
-    "This activity is no longer open.",
-    "Select an active",
-    "Realtor is archived",
-  ];
-  return safe.some((prefix) => message.startsWith(prefix))
-    ? message
-    : "Unable to save. Please reload and try again.";
-}
 export async function mutateCrm(
   kind: MutationKind,
   id: string,
@@ -59,6 +45,7 @@ export async function mutateCrm(
       .filter(Boolean);
     schema = realtorInput;
   } else if (kind === "activity_create") schema = activityInput;
+  else if (kind === "activity_reschedule") schema = rescheduleInput;
   else if (kind === "brokerage_save") schema = brokerageInput;
   else if (kind === "source_save") schema = sourceInput;
   else schema = completionInput;
@@ -72,13 +59,23 @@ export async function mutateCrm(
       >,
     };
   const db = await createClient();
-  const { data, error } = await db.rpc("crm_mutate", {
-    p_input: { op: kind, id, version, data: parsed.data as Json },
-  });
-  if (error) return { error: friendlyError(error.message, error.code) };
-  const result = z
+  const { data, error } = await Promise.resolve(
+    db.rpc("crm_mutate", {
+      p_input: { op: kind, id, version, data: parsed.data as Json },
+    }),
+  ).catch(() => ({ data: null, error: { code: "UNKNOWN" } }));
+  if (error) {
+    logCrmFailure(kind, error);
+    return { error: classifyCrmError(error).message };
+  }
+  const checked = z
     .object({ id: z.uuid(), realtor_id: z.uuid().optional() })
-    .parse(data);
+    .safeParse(data);
+  if (!checked.success) {
+    logCrmFailure(kind, { code: "CONFIG_SHAPE" });
+    return { error: classifyCrmError({ code: "CONFIG_SHAPE" }).message };
+  }
+  const result = checked.data;
   revalidatePath("/realtors", "layout");
   revalidatePath("/realtors");
   revalidatePath("/dashboard");

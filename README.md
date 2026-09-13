@@ -10,7 +10,7 @@ Requirements: Node.js 22.9+, npm, Git and a development Supabase project.
 2. Run `npm ci`.
 3. Copy `.env.example` to `.env.local`.
 4. Set the Supabase URL and publishable key.
-5. Apply both migrations and configure invite-only Auth below.
+5. Apply all three migrations and configure invite-only Auth below.
 6. Run `npm run dev`; open http://localhost:3000.
 7. Sign in as an invited user with an active profile and an assigned role.
 8. Open Realtors. Create a brokerage if needed, then a fictional development Realtor. Prospects require an initial next action with a date.
@@ -43,7 +43,7 @@ supabase link --project-ref YOUR_DEVELOPMENT_PROJECT_REF
 supabase db push
 ```
 
-Verify the linked project before pushing. Review its schema and backup before applying changes to an existing environment. An existing M0 installation needs only the new M1 migration; do not reset it.
+Verify the linked project before pushing. Review its schema and backup before applying changes to an existing environment. An existing installation applies only pending migrations, including M1 hardening; do not reset it.
 
 For a fully local backend, install Docker and the Supabase CLI, then run `supabase start`. Use its local URL and publishable/anon key. `supabase db reset` rebuilds local development data from migrations and destroys local records; it is not a production deployment command.
 
@@ -54,7 +54,7 @@ Ordered migrations:
 | 202609120001_foundation.sql  | Profiles, roles, user_roles, audit_logs, identity provisioning, RLS                                                   |
 | 202609130001_realtor_crm.sql | Brokerages, lead_sources, realtors, realtor_private, activities; query/mutation RPCs, RLS and next-action constraints |
 
-M0 migration history is unchanged. Supabase owns `auth.users`; Glara never stores passwords. UUIDs, foreign keys, timestamps, constraints, relevant indexes and audit triggers are reproducible from migrations. M1 seeds only 12 reusable lead-source names; no client or Realtor records are seeded.
+The additional 202609130002_m1_hardening.sql adds brokerage version/archive protection, linked atomic rescheduling and narrower Marketing roster access. M0/M1 migration history is unchanged. Supabase owns `auth.users`; Glara never stores passwords. UUIDs, foreign keys, timestamps, constraints, relevant indexes and audit triggers are reproducible from migrations. M1 seeds only 12 reusable lead-source names; no client or Realtor records are seeded.
 
 ## Invite-only authentication
 
@@ -152,7 +152,7 @@ $env:PLAYWRIGHT_CHANNEL='chrome'
 npm run test:e2e
 ```
 
-Database tests run the actual M0+M1 migrations in PGlite PostgreSQL with a minimal Auth schema harness. Browser tests run the production application and real Supabase SDK against a **test-only HTTP Auth/PostgREST double backed by that same database and RPCs**. This is not a substitute for hosted Supabase acceptance.
+Database tests run all M0+M1+hardening migrations in PGlite PostgreSQL with a minimal Auth schema harness. Browser tests run the production application and real Supabase SDK against a **test-only HTTP Auth/PostgREST double backed by that same database and RPCs**. This is not a substitute for hosted Supabase acceptance.
 
 The isolated browser runner overrides public Supabase settings at **build time and runtime**, preventing accidental use of a developer's real database. It builds a test-configured `.next`; run `npm run build` with your real environment before using `npm start` for deployment. Test server code is never imported by the application.
 
@@ -174,3 +174,9 @@ See [M1 report](docs/M1-report.md), [architecture](docs/architecture.md), and [o
 Vercel remains the target. Configure the two environment variables separately for preview and production; apply reviewed migrations; configure Supabase origin/email templates; use HTTPS. No hosted deployment or live database migration is performed by the local build.
 
 Complete the live acceptance and backup/restore checklist in `docs/operations.md` before real team use. **M1 stops here; do not begin M2 without explicit authorization.**
+
+## M1 hardening release gate
+
+Cancellation and rescheduling now preserve cancelled history and original due dates; rescheduling creates a linked replacement atomically. Brokerage edits require the loaded version and reject archived records. Marketing uses a sources-only query, without the operational roster. CRM logs contain only safe operation/code/category context.
+
+See [M1 hardening report](docs/M1-hardening-report.md) and [hosted acceptance procedure](docs/hosted-supabase-acceptance.md). Hosted status: **PENDING EXTERNAL ACCEPTANCE**. Complete that gate before release or M2 readiness approval.

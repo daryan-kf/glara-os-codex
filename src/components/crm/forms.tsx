@@ -287,16 +287,26 @@ export function Lookup({
     </div>
   );
 }
-export function NextActionFields() {
+export function NextActionFields({
+  required = false,
+  title = "",
+}: { required?: boolean; title?: string } = {}) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field
         name="next_title"
+        required={required}
+        defaultValue={title}
         title="Next action"
         maxLength={200}
         placeholder="Call to arrange an introduction"
       />
-      <Field name="next_due_at" title="Next action due" type="datetime-local" />
+      <Field
+        name="next_due_at"
+        title="Next action due"
+        type="datetime-local"
+        required={required}
+      />
       <p className="text-xs text-muted-foreground sm:col-span-2">
         Enter times in your device’s timezone. Dates are displayed in Vancouver
         time.
@@ -630,6 +640,45 @@ export function CompleteDialog({ id, title }: { id: string; title: string }) {
     </Dialog>
   );
 }
+export function ChangeActionDialog({
+  id,
+  title,
+  reschedule = false,
+}: {
+  id: string;
+  title: string;
+  reschedule?: boolean;
+}) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          {reschedule ? "Reschedule" : "Cancel action"}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90svh] overflow-y-auto">
+        <DialogTitle className="pr-10 text-xl font-semibold">
+          {reschedule ? "Reschedule follow-up" : "Cancel follow-up"}
+        </DialogTitle>
+        <DialogDescription className="my-4 text-sm text-muted-foreground">
+          {reschedule
+            ? "The original action and due date stay in history as cancelled. A replacement keeps its type, owner, priority and notes."
+            : "Cancellation does not mark this action completed. A prospect's last action needs a replacement, or a relationship-status change first."}
+        </DialogDescription>
+        <MutationForm
+          kind={reschedule ? "activity_reschedule" : "activity_cancel"}
+          id={id}
+          submit={reschedule ? "Confirm reschedule" : "Confirm cancellation"}
+        >
+          <NextActionFields
+            required={reschedule}
+            title={reschedule ? title : ""}
+          />
+        </MutationForm>
+      </DialogContent>
+    </Dialog>
+  );
+}
 export function ArchiveDialog({ record }: { record: Realtor }) {
   const archived = Boolean(record.deleted_at);
   return (
@@ -665,6 +714,7 @@ export function BrokerageForm({ record }: { record?: Brokerage }) {
     <MutationForm
       kind="brokerage_save"
       id={record?.id}
+      version={record?.version}
       submit={record ? "Save brokerage" : "Create brokerage"}
     >
       <div className="grid gap-4 sm:grid-cols-2">

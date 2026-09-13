@@ -97,21 +97,23 @@ export default async function RealtorsPage({
               placeholder="Vancouver, Kitsilano…"
             />
           </label>
-          <label className="space-y-2 text-sm">
-            Assigned owner
-            <select
-              name="assigned_to"
-              defaultValue={filters.assigned_to}
-              className="block min-h-11 w-full rounded-lg border px-3"
-            >
-              <option value="">Everyone</option>
-              {choices.owners.map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.name}
-                </option>
-              ))}
-            </select>
-          </label>
+          {writable && (
+            <label className="space-y-2 text-sm">
+              Assigned owner
+              <select
+                name="assigned_to"
+                defaultValue={filters.assigned_to}
+                className="block min-h-11 w-full rounded-lg border px-3"
+              >
+                <option value="">Everyone</option>
+                {choices.owners.map((o) => (
+                  <option key={o.id} value={o.id}>
+                    {o.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <Lookup
             name="brokerage_id"
             title="Brokerage"

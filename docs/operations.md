@@ -16,3 +16,7 @@ M0 and M1 establish the application foundation and Realtor CRM; production readi
 ## M1 live acceptance
 
 Apply the ordered M1 migration without resetting an existing M0 database. In a disposable development project, create a fictional brokerage and Realtor, log a call and a note, add and complete a follow-up, test the last-action replacement rule, search/filter the list, edit, archive and restore. Repeat role checks using direct Supabase APIs as well as routes: Marketing must not retrieve private notes/scores or activities; crew, anonymous and archived users must be denied. Confirm audit actor IDs and that all failed mutations roll back. Only promote after reviewing these results and testing backups.
+
+## Hosted M1 hardening release gate
+
+Status: **PENDING EXTERNAL ACCEPTANCE** until the [hosted procedure](hosted-supabase-acceptance.md) is executed. Apply 202609130002_m1_hardening.sql after the existing migrations. CRM structured logs now include allowlisted operation, sanitized database code and fixed category, never raw message/details or records. Complete all six-role REST, lifecycle, archive/version, audit and session checks before approval.
