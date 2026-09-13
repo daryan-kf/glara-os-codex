@@ -7,7 +7,7 @@ export default defineConfig({
   use: {
     channel: process.env.PLAYWRIGHT_CHANNEL,
     baseURL: "http://localhost:3000",
-    trace: "retain-on-failure",
+    trace: live ? "off" : "retain-on-failure",
   },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },

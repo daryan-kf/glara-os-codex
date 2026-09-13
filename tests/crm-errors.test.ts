@@ -10,6 +10,7 @@ test("CRM error categories separate permissions, schema, constraints and transie
     ["23514", "validation"],
     ["23505", "duplicate"],
     ["40001", "conflict"],
+    ["PT409", "conflict"],
     ["08006", "retry"],
   ] as const)
     assert.equal(

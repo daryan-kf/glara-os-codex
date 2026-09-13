@@ -47,6 +47,8 @@ export async function createTestDatabase() {
     "202609120001_foundation.sql",
     "202609130001_realtor_crm.sql",
     "202609130002_m1_hardening.sql",
+    "202609130003_m1_search_tokens.sql",
+    "202609130004_m1_conflict_status.sql",
   ])
     await db.exec(await readFile("supabase/migrations/" + name, "utf8"));
   for (const user of Object.values(fixtureUsers)) {

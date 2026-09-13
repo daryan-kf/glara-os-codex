@@ -58,7 +58,11 @@ export function classifyCrmError(error: unknown): {
   )
     category = "configuration";
   else if (code === "23505") category = "duplicate";
-  else if (code === "40001" || message.startsWith("This record changed."))
+  else if (
+    code === "40001" ||
+    code === "PT409" ||
+    message.startsWith("This record changed.")
+  )
     category = "conflict";
   else if (
     code === "P0001" &&
