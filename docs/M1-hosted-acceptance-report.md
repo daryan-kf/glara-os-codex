@@ -113,3 +113,5 @@ No application hosting/production rollout was performed. Re-run applicable origi
 **RELEASE GATE PENDING EXTERNAL ACTION**
 
 Automated hosted database, security, workflow and browser acceptance passes after the scoped fixes. Email delivery and delivered-link acceptance are still untested and must be completed before declaring the release gate passed.
+
+Latest email gate inspection: see [Final email / SMTP acceptance addendum](M1-email-acceptance-addendum.md). Provider information, secure SMTP configuration and a controlled deliverable test inbox are required; no delivered-email PASS is claimed.
