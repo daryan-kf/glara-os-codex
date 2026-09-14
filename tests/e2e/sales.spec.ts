@@ -144,9 +144,7 @@ test.describe("Hosted M2 sales workflows", () => {
       ).toHaveCount(0);
     }
     await expect(
-      page.getByText("Create Staging Project — available in M3", {
-        exact: true,
-      }),
+      page.getByRole("link", { name: "Create staging project →", exact: true }),
     ).toBeVisible();
     await page.screenshot({
       path: info.outputPath("opportunity.png"),

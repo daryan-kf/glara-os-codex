@@ -110,6 +110,7 @@ export const modules = {
 export type Module = keyof typeof modules;
 const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
   sales: [
+    "projects",
     "dashboard",
     "realtors",
     "opportunities",
@@ -149,6 +150,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   marketing: [
+    "projects",
     "properties",
     "dashboard",
     "realtors",

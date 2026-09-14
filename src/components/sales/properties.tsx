@@ -443,7 +443,9 @@ export function PropertyDetail({
         </>
       )}
       <p className="mt-8 rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
-        Create Staging Project — available in M3
+        <Link href={`/projects?property=${id}`} className="text-primary">
+          View associated staging projects →
+        </Link>
       </p>
     </>
   );

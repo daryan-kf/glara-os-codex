@@ -1,4 +1,5 @@
 "use client";
+import { ProjectSearchResults } from "@/components/operations/list";
 import { SalesSearchResults } from "@/components/sales/search";
 import { reloadAfterAuth } from "@/lib/auth-navigation";
 import { RealtorSearchResults } from "@/components/crm/search-results";
@@ -147,6 +148,11 @@ function SearchShell({ roles }: { roles: Role[] }) {
             enabled={open && canAccess(roles, "realtors")}
             onSelect={() => setOpen(false)}
           />
+          <ProjectSearchResults
+            query={query}
+            enabled={open && canAccess(roles, "projects")}
+            onSelect={() => setOpen(false)}
+          />
           <SalesSearchResults
             query={query}
             enabled={open && canAccess(roles, "properties")}
@@ -200,7 +206,7 @@ function QuickCreate({ roles }: { roles: Role[] }) {
             Consultations: schedule from an opportunity.
           </p>
           <p className="rounded-lg border p-3 text-xs text-muted-foreground">
-            Staging projects: available in M3.
+            Staging projects: create from a won opportunity.
           </p>
         </div>
       </DialogContent>

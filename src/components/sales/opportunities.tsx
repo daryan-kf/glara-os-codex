@@ -1,4 +1,5 @@
 "use client";
+import { Handoff } from "@/components/operations/create";
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -581,11 +582,7 @@ export function OpportunityDetail({ id }: { id: string }) {
           Lost: {label(o.lost_reason)} · {o.lost_notes}
         </p>
       )}
-      {o.stage === "won" && (
-        <p className="mb-6 rounded-xl border border-dashed p-5">
-          Create Staging Project — available in M3
-        </p>
-      )}
+      {o.stage === "won" && <Handoff id={o._id} />}
       <div className="grid gap-6 xl:grid-cols-2">
         <Panel title="Stage & sales notes">
           <p className="mb-4 whitespace-pre-wrap text-sm">

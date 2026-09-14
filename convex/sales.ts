@@ -853,6 +853,17 @@ export const transition = mutation({
       old = await opportunity(ctx, a.id),
       d = parse(stageInput, a.input);
     version(old, a.version);
+    if (
+      old.stage === "won" &&
+      (await ctx.db
+        .query("projects")
+        .withIndex("by_opportunity", (q) => q.eq("opportunity_id", old._id))
+        .first())
+    )
+      deny(
+        "INVALID_INPUT",
+        "A project preserves this won commercial handoff. Cancel the project through operations instead.",
+      );
     if (!transitions(old.stage as Stage).includes(d.stage))
       deny("INVALID_INPUT", "Stage transition not allowed.");
     if (!active(old.stage as Stage) && active(d.stage)) {
@@ -1415,6 +1426,42 @@ export const archive = mutation({
     const old = await ctx.db.get(id);
     if (!old) return deny("UNAVAILABLE");
     version(old, a.version);
+    if (!a.restore) {
+      const linked =
+        a.kind === "opportunities"
+          ? await ctx.db
+              .query("projects")
+              .withIndex("by_opportunity", (q) =>
+                q.eq(
+                  "opportunity_id",
+                  ctx.db.normalizeId("opportunities", a.id)!,
+                ),
+              )
+              .first()
+          : a.kind === "properties"
+            ? await ctx.db
+                .query("projects")
+                .withIndex("by_property", (q) =>
+                  q.eq("property_id", ctx.db.normalizeId("properties", a.id)!),
+                )
+                .first()
+            : a.kind === "quotes"
+              ? await ctx.db
+                  .query("projects")
+                  .withIndex("by_source_quote", (q) =>
+                    q.eq(
+                      "source_quote_id",
+                      ctx.db.normalizeId("quotes", a.id)!,
+                    ),
+                  )
+                  .first()
+              : null;
+      if (linked)
+        deny(
+          "INVALID_INPUT",
+          "This record is retained by project history and cannot be archived.",
+        );
+    }
     if (a.kind === "properties") {
       const pid = ctx.db.normalizeId("properties", a.id)!;
       if (

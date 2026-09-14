@@ -1,6 +1,7 @@
 import { defineSchema, defineTable } from "convex/server";
 import { authTables } from "@convex-dev/auth/server";
 import { v } from "convex/values";
+import { operationsTables } from "./operationsSchema";
 const nullable = v.union(v.string(), v.null());
 const stamps = {
   created_at: v.string(),
@@ -17,6 +18,7 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  ...operationsTables,
   profiles: defineTable({
     userId: v.id("users"),
     display_name: v.string(),
@@ -83,6 +85,10 @@ export default defineSchema({
     ...stamps,
   }).index("by_realtor", ["realtor_id"]),
   activities: defineTable({
+    project_id: v.optional(v.id("projects")),
+    project_room_id: v.optional(v.id("project_rooms")),
+    version: v.optional(v.number()),
+    completed_by: v.optional(v.id("users")),
     realtor_id: v.optional(v.id("realtors")),
     opportunity_id: v.optional(v.id("opportunities")),
     property_id: v.optional(v.id("properties")),
@@ -113,6 +119,8 @@ export default defineSchema({
     ...stamps,
   })
     .index("by_realtor", ["realtor_id"])
+    .index("by_project", ["project_id", "deleted_at"])
+    .index("by_project_room", ["project_room_id", "status", "deleted_at"])
     .index("by_status", ["status", "deleted_at"])
     .index("by_opportunity", [
       "opportunity_id",

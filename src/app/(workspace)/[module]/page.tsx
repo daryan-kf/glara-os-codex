@@ -1,3 +1,4 @@
+import { OperationsToday } from "@/components/operations/list";
 import { SalesSummary } from "@/components/sales/opportunities";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -82,6 +83,9 @@ export default async function ModulePage({
         />
         <StatusBadge>Connected workspace</StatusBadge>
       </div>
+      {moduleKey === "dashboard" && canAccess(user.roles, "projects") && (
+        <OperationsToday />
+      )}
       {moduleKey === "dashboard" &&
         user.roles.some((r) => ["owner", "sales", "admin"].includes(r)) && (
           <SalesSummary />
@@ -101,8 +105,7 @@ export default async function ModulePage({
               </h2>
               <p className="mt-5 max-w-md text-sm leading-7 text-white/75">
                 Your workspace brings the Glara team together. Manage realtor
-                relationships today; projects and operations will take shape
-                here as each module launches.
+                relationships, sales and daily staging operations in one place.
               </p>
             </div>
           </section>
@@ -132,17 +135,13 @@ export default async function ModulePage({
                     {modules[item].description}
                   </p>
                   <p className="mt-5 text-xs text-muted-foreground">
-                    {item === "realtors"
-                      ? "Available now · M1"
+                    {item === "realtors" || item === "projects"
+                      ? "Available now · " + modules[item].milestone
                       : "Planned · " + modules[item].milestone}
                   </p>
                 </Link>
               ))}
           </div>
-          <EmptyState
-            title="Your daily overview will live here"
-            description="Use the Realtor CRM for relationship history and follow-ups. Project schedules and company insights will join this overview in future milestones."
-          />
         </>
       ) : (
         <EmptyState

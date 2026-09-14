@@ -1,0 +1,26 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "executedAt": "2026-09-14T06:38:33.372Z",
+  "results": [
+    {
+      "name": "archived status filter returns matching history",
+      "passed": true
+    },
+    {
+      "name": "manager designer and property filters combine",
+      "passed": true
+    },
+    {
+      "name": "mismatched combined designer excludes manager matches",
+      "passed": true
+    },
+    {
+      "name": "active list excludes archives and clamps page size",
+      "passed": true
+    },
+    {
+      "name": "marketing cannot retrieve archived operational projects",
+      "passed": true
+    }
+  ]
+}

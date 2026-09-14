@@ -13,6 +13,9 @@ import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as crm from "../crm.js";
 import type * as http from "../http.js";
+import type * as operations from "../operations.js";
+import type * as operationsCore from "../operationsCore.js";
+import type * as operationsSchema from "../operationsSchema.js";
 import type * as profiles from "../profiles.js";
 import type * as sales from "../sales.js";
 
@@ -28,6 +31,9 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   crm: typeof crm;
   http: typeof http;
+  operations: typeof operations;
+  operationsCore: typeof operationsCore;
+  operationsSchema: typeof operationsSchema;
   profiles: typeof profiles;
   sales: typeof sales;
 }>;
