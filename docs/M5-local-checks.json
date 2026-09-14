@@ -2,8 +2,8 @@
   "milestone": "M5",
   "date": "2026-09-14",
   "node_tests_passed": 13,
-  "vitest_tests_passed": 186,
-  "m5_tests_included": 53,
+  "vitest_tests_passed": 188,
+  "m5_tests_included": 55,
   "typescript": "passed",
   "eslint_zero_warnings": "passed",
   "production_next_build": "passed",
@@ -11,11 +11,30 @@
   "dependency_audit_all_vulnerabilities": 0,
   "dependency_audit_production_vulnerabilities": 0,
   "secret_scan": {
-    "checked_files": 242,
-    "credential_pattern_matches": 0,
-    "tracked_environment_files": 0
+    "checked_files": 252,
+    "credential_pattern_or_known_secret_matches": [],
+    "tracked_environment_files": [],
+    "known_fictional_passwords_checked": 8,
+    "scope": "tracked and nonignored files; known environment secrets and fictional acceptance passwords compared without disclosure"
   },
-  "hosted_m5": "not run: deployment approval pending",
-  "hosted_m1_m4_regression_against_m5": "not run: deployment approval pending",
-  "desktop_mobile_e2e_against_m5": "not run: deployment approval pending"
+  "hosted_m5": "29 passed; 0 failed",
+  "hosted_m1_m4_regression_against_m5": "121 passed; 0 failed",
+  "desktop_mobile_e2e_against_m5": {
+    "full_desktop": {
+      "passed": 23,
+      "failed": 1
+    },
+    "full_mobile": {
+      "passed": 24,
+      "failed": 0
+    },
+    "unchanged_marketing_rechecks": {
+      "desktop_passed": 2,
+      "mobile_passed": 2,
+      "failed": 0
+    },
+    "unique_scenarios_with_successful_final_source_validation": 48
+  },
+  "verification_date_utc": "2026-09-14T13:51:33.281Z",
+  "development_gate": "M5 DEVELOPMENT GATE PASSED"
 }

@@ -371,7 +371,13 @@ export function OpportunityEditor({
       propertyId ? { id: propertyId as Id<"properties"> } : "skip",
     ),
     choices = useQuery(api.crm.read, { input: '{"op":"choices"}' });
-  if (id && !result) return <Loading />;
+  if (
+    (id && !result) ||
+    viewer === undefined ||
+    choices === undefined ||
+    (propertyId && p === undefined)
+  )
+    return <Loading />;
   const o = result?.opportunity;
   const c = choices as
     | {

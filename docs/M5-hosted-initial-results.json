@@ -1,6 +1,6 @@
 {
   "deployment": "woozy-jaguar-392",
-  "timestamp": "2026-09-14T13:45:09.014Z",
+  "timestamp": "2026-09-14T13:27:21.365Z",
   "results": [
     {
       "name": "hosted concurrent deposit requests produce one document",
@@ -60,10 +60,10 @@
     },
     {
       "name": "hosted M4 reconciliation still controls completion with unpaid commercial warning",
-      "passed": true
+      "passed": false
     }
   ],
-  "passed": 15,
-  "failed": 0,
-  "completed": true
+  "passed": 14,
+  "failed": 1,
+  "completed": false
 }

@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { api } from "../../convex/_generated/api";
 import { operationsClient, wonFixture } from "../support/operations-fixture";
 import { credentials } from "../support/identities";
+import { acceptanceDate } from "../support/acceptance-date";
 import { day } from "../../src/lib/operations/model";
 import type { Id } from "../../convex/_generated/dataModel";
 
@@ -14,6 +15,12 @@ test.describe("M4 mixed inventory operations", () => {
   test("serialized identity, installation, damaged return, missing quantity, repair, search and transfer", async ({
     page,
   }, info) => {
+    const eventDay = acceptanceDate(
+      info.project.name === "mobile"
+        ? "GLARA_M4_MOBILE_DAY"
+        : "GLARA_M4_DESKTOP_DAY",
+      info.project.name === "mobile" ? "2026-09-02" : "2026-09-01",
+    );
     const { client: c } = await operationsClient();
     const f = await wonFixture(c);
     const project = (await c.mutation(api.operations.create, f.createArgs)).id;
@@ -86,7 +93,7 @@ test.describe("M4 mixed inventory operations", () => {
     };
     const schedule = async (type: "staging" | "destaging") => {
       // Historical fictional event dates avoid consuming today's operating capacity.
-      const d = info.project.name === "mobile" ? "2026-09-02" : "2026-09-01";
+      const d = eventDay;
       for (let h = 10; h < 23; h++) {
         try {
           return await c.mutation(api.operations.schedule, {
@@ -308,14 +315,8 @@ test.describe("M4 mixed inventory operations", () => {
     await act(qr, "install", 3);
     await checks("staging");
     await transition("staged");
-    await transition(
-      "listing_live",
-      info.project.name === "mobile" ? "2026-09-02" : "2026-09-01",
-    );
-    await transition(
-      "sold",
-      info.project.name === "mobile" ? "2026-09-02" : "2026-09-01",
-    );
+    await transition("listing_live", eventDay);
+    await transition("sold", eventDay);
     await schedule("destaging");
     await checks("destaging");
     await transition("destaging");

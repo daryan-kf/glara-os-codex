@@ -1,0 +1,14 @@
+{
+  "project": "pd78mknr15ta46thhjhrct3p0s8edtss",
+  "agreement": "qs78mrv75a7xwk0ds3rpr6tsyh8ec4rj",
+  "deposit": "rn76jpzpf00n6y5tsgx4z15fas8edqzr",
+  "balance": "rn7dtfe3wbqwrgfs3m0vs3007x8ed8h8",
+  "damageInvoice": "rn790ge0pgw8fybxpg1pzyk5918ed41a",
+  "missingInvoice": "rn75hs1nsxaxp7fra4rqz0swp98ecg40",
+  "assessments": [
+    "rd78jce1w7d7py8w9pc4knpe5n8ed31y",
+    "rd7b43731a7z1qwb0v4p5k2y6x8ecvev",
+    "rd7e82enx7dfj6xcmy9eb2wjjn8ecq03"
+  ],
+  "fictional": true
+}

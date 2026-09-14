@@ -1,0 +1,70 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "executedAt": "2026-09-14T13:34:28.860Z",
+  "results": [
+    {
+      "name": "won handoff derives property and Realtor and retains accepted quote",
+      "passed": true
+    },
+    {
+      "name": "duplicate creation returns original project",
+      "passed": true
+    },
+    {
+      "name": "anonymous project read denied",
+      "passed": true
+    },
+    {
+      "name": "designer operational projection excludes commercial and private manager data",
+      "passed": true
+    },
+    {
+      "name": "staging_crew operational projection excludes commercial and private manager data",
+      "passed": true
+    },
+    {
+      "name": "sales operational projection excludes commercial and private manager data",
+      "passed": true
+    },
+    {
+      "name": "marketing cannot access planning project",
+      "passed": true
+    },
+    {
+      "name": "unassigned cannot access planning project",
+      "passed": true
+    },
+    {
+      "name": "archived cannot access planning project",
+      "passed": true
+    },
+    {
+      "name": "restricted access is absent from generic reads and audit",
+      "passed": true
+    },
+    {
+      "name": "required preparation blocks readiness",
+      "passed": true
+    },
+    {
+      "name": "stale project versions rejected",
+      "passed": true
+    },
+    {
+      "name": "schedule creates canonical staging date and detects overlap",
+      "passed": false
+    },
+    {
+      "name": "staged transition requires walkthrough and staging checklist",
+      "passed": false
+    },
+    {
+      "name": "marketing receives only content-stage safe projection",
+      "passed": false
+    },
+    {
+      "name": "sold requires explicit destaging, completion gates preserve quote terms",
+      "passed": false
+    }
+  ]
+}

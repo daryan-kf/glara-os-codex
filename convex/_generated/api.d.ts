@@ -8,12 +8,12 @@
  * @module
  */
 
-import type * as commercial from "../commercial.js";
-import type * as commercialCore from "../commercialCore.js";
-import type * as commercialSchema from "../commercialSchema.js";
 import type * as access from "../access.js";
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
+import type * as commercial from "../commercial.js";
+import type * as commercialCore from "../commercialCore.js";
+import type * as commercialSchema from "../commercialSchema.js";
 import type * as crm from "../crm.js";
 import type * as http from "../http.js";
 import type * as inventory from "../inventory.js";
@@ -32,12 +32,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  commercial: typeof commercial;
-  commercialCore: typeof commercialCore;
-  commercialSchema: typeof commercialSchema;
   access: typeof access;
   admin: typeof admin;
   auth: typeof auth;
+  commercial: typeof commercial;
+  commercialCore: typeof commercialCore;
+  commercialSchema: typeof commercialSchema;
   crm: typeof crm;
   http: typeof http;
   inventory: typeof inventory;

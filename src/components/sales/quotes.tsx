@@ -162,7 +162,11 @@ export function QuoteEditor({
       api.sales.getOpportunity,
       opportunityId ? { id: opportunityId as Id<"opportunities"> } : "skip",
     );
-  if (id && record === undefined) return <Loading />;
+  if (
+    (id && record === undefined) ||
+    (opportunityId && opportunity === undefined)
+  )
+    return <Loading />;
   if (id && !record)
     return (
       <EmptyState
@@ -179,7 +183,7 @@ export function QuoteEditor({
     );
   return (
     <QuoteForm
-      key={record?.quote._id ?? opportunity?.opportunity._id ?? "new"}
+      key={record?.quote._id ?? opportunityId ?? "new"}
       record={record ?? undefined}
       opportunityId={opportunityId}
       opportunityLabel={opportunity?.opportunity.address}

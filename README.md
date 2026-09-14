@@ -1,6 +1,6 @@
 # Glara OS
 
-Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM, M3 Staging Operations and M4 Inventory Management are implemented. M4 passed its development gate; see [the M4 report](docs/M4-report.md) for the exact evidence, limits and deferred production requirements. M5 Commercial Operations is implemented locally and its development gate is pending explicit M5 deployment approval and hosted/browser acceptance; see [the M5 report](docs/M5-report.md). M6 has not started.
+Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM, M3 Staging Operations and M4 Inventory Management are implemented. M4 passed its development gate; see [the M4 report](docs/M4-report.md) for the exact evidence, limits and deferred production requirements. M5 Commercial Operations has passed its development gate on the authorized Convex environment; see [the M5 report](docs/M5-report.md) for exact results, initial failures and limitations. M6 has not started.
 
 ## Local setup
 
@@ -103,11 +103,11 @@ Vercel remains the frontend target. Use a separate production Convex deployment 
 
 The current hosted backend is a **development deployment in eu-west-1**, not Canada. Only fictional test records were created; no company data was transferred. Production deployment, regional placement, backups/restoration testing and email acceptance are not complete.
 
-Current CRM filtering/derived follow-up sorting performs bounded scans (explicit failure above 10,000 Realtor records), and broad activity/choice queries remain appropriate only for an initial small internal deployment. Indexed cursor pagination and load testing are required before a large import; the UI does not silently truncate Realtor totals. Storage/media workflows, agreements/invoices/payments, automation and AI are intentionally deferred. M3 operational bounds are documented in its report.
+Current CRM filtering/derived follow-up sorting performs bounded scans (explicit failure above 10,000 Realtor records), and broad activity/choice queries remain appropriate only for an initial small internal deployment. Indexed cursor pagination and load testing are required before a large import; the UI does not silently truncate Realtor totals. Storage/media workflows, automation and AI are intentionally deferred; M5 implements agreements, invoices and recorded payments. M3 operational bounds are documented in its report.
 
 The old Supabase project is untouched. Historical reports describe that backend and do not certify Convex. See [Convex migration acceptance](docs/convex-migration-report.md) for current evidence. Full rollback baseline: commit `a6ee904`; use a separate checkout with its original lockfile/configuration. That historical rollback baseline predates M2; the current repository includes M2 and M3.
 
-The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 was subsequently authorized. Do not begin M5.
+The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 and M5 were subsequently authorized. Do not begin M6.
 
 ## M2 Sales CRM development
 
@@ -144,10 +144,10 @@ M4 uses existing Convex sessions and server-side project access. Owner/Admin man
 
 Run local regression with `npm run test`, `npm run typecheck`, `npm run lint`, `npm run format:check` and `npm run build`. Hosted M4 acceptance is `npx tsx tests/support/m4-hosted-acceptance.ts`; it requires the existing fictional identity opt-in and the explicitly authorized development deployment. Additional hosted quantity acceptance is `npx tsx tests/support/m4-quantity-hosted.ts`. Browser coverage is in `tests/e2e/inventory.spec.ts` and `tests/e2e/inventory-mixed.spec.ts`. Never run a production build over a running Next server: stop it first, build, then restart.
 
-Both M4 attachments (sections 1–130) are covered by the report, including explicit limits and optional features. No M5 feature is implemented. Invitation/recovery email delivery, production auth/origin verification and sender/provider configuration remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
+Both M4 attachments (sections 1–130) are covered by the report, including explicit limits and optional features. M5 was subsequently implemented under its separate authorization. Invitation/recovery email delivery, production auth/origin verification and sender/provider configuration remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
 
 ## M5 commercial operations
 
 Owner/Admin can manage billing customers and defaults under Payments → Billing customers & defaults. Open a Project → Commercial for agreements, source/manual invoices, received payments, extensions and inventory-charge assessments. Assigned Sales has read-only commercial access. Designer, Crew and Marketing are denied commercial data. All issued amounts are snapshots and balances derive from immutable payment/credit records. No email or money transfer is performed by these workflows.
 
-The M5 backend must be deployed to your authorized development environment before running the updated frontend. The existing shared deployment remains on its previously approved version until M5-specific upload approval and acceptance are completed. No additional environment secret is required for M5.
+M5 is deployed to the explicitly authorized Convex development deployment `woozy-jaguar-392`. The corrected production frontend build is used for desktop/mobile acceptance. See [the M5 report](docs/M5-report.md) for results and corrections. No additional environment secret is required for M5. Production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. M6 has not started.

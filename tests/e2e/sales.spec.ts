@@ -66,6 +66,9 @@ test.describe("Hosted M2 sales workflows", () => {
     await page
       .getByRole("link", { name: "New opportunity", exact: true })
       .click();
+    await expect(
+      page.getByRole("combobox", { name: "Assigned salesperson", exact: true }),
+    ).toHaveValue(who.id);
     await page
       .getByLabel("Estimated value (CAD)", { exact: true })
       .fill("5000.01");
@@ -120,6 +123,12 @@ test.describe("Hosted M2 sales workflows", () => {
       path: info.outputPath("quote-editor.png"),
       fullPage: true,
     });
+    await expect(page.getByLabel("Description 1", { exact: true })).toHaveValue(
+      "Fictional staging service",
+    );
+    await expect(page.getByLabel("Unit price 1", { exact: false })).toHaveValue(
+      "100.01",
+    );
     await page.getByRole("button", { name: "Save quote", exact: true }).click();
     await expect(page).toHaveURL(/\/quotes\/[a-z0-9]+$/);
     await expect(page.getByText("$210.02", { exact: true })).toBeVisible();

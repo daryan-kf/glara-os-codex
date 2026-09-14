@@ -14,67 +14,97 @@ async function main() {
     suffix = randomUUID().slice(0, 8),
     f = await wonFixture(c),
     f2 = await wonFixture(c);
-  const p = (await c.mutation(api.operations.create, f.createArgs)).id,
-    p2 = (await c.mutation(api.operations.create, f2.createArgs)).id;
+  const p = (
+      await c.mutation(api.operations.create, f.createArgs, { skipQueue: true })
+    ).id,
+    p2 = (
+      await c.mutation(api.operations.create, f2.createArgs, {
+        skipQueue: true,
+      })
+    ).id;
   const get = () => c.query(api.operations.get, { id: p }),
     room = (await get()).rooms[0]._id,
     room2 = (await c.query(api.operations.get, { id: p2 })).rooms[0]._id;
-  const category = await c.mutation(api.inventory.saveCategory, {
-      version: 0,
-      name: `Fictional M4 ${suffix}`,
-      active: true,
-    }),
-    location = await c.mutation(api.inventory.saveLocation, {
-      version: 0,
-      input: JSON.stringify({
-        name: `Fictional warehouse ${suffix}`,
-        type: "warehouse",
-        address: "Fictional acceptance",
+  const category = await c.mutation(
+      api.inventory.saveCategory,
+      {
+        version: 0,
+        name: `Fictional M4 ${suffix}`,
         active: true,
-        staging_source: true,
-        retail_source: true,
+      },
+      { skipQueue: true },
+    ),
+    location = await c.mutation(
+      api.inventory.saveLocation,
+      {
+        version: 0,
+        input: JSON.stringify({
+          name: `Fictional warehouse ${suffix}`,
+          type: "warehouse",
+          address: "Fictional acceptance",
+          active: true,
+          staging_source: true,
+          retail_source: true,
+        }),
+      },
+      { skipQueue: true },
+    );
+  const product = await c.mutation(
+    api.inventory.saveProduct,
+    {
+      version: 0,
+      category_id: category,
+      input: JSON.stringify({
+        sku: `M4-Q-${suffix}`,
+        name: `Fictional pillows ${suffix}`,
+        track_mode: "quantity",
+        active: true,
+        staging_eligible: true,
+        retail_eligible: true,
       }),
-    });
-  const product = await c.mutation(api.inventory.saveProduct, {
-    version: 0,
-    category_id: category,
-    input: JSON.stringify({
-      sku: `M4-Q-${suffix}`,
-      name: `Fictional pillows ${suffix}`,
-      track_mode: "quantity",
-      active: true,
-      staging_eligible: true,
-      retail_eligible: true,
-    }),
-  });
-  const serialized = await c.mutation(api.inventory.saveProduct, {
-    version: 0,
-    category_id: category,
-    input: JSON.stringify({
-      sku: `M4-A-${suffix}`,
-      name: `Fictional chair ${suffix}`,
-      track_mode: "serialized",
-      active: true,
-      staging_eligible: true,
-      retail_eligible: true,
-    }),
-  });
-  await c.mutation(api.inventory.receive, {
-    product_id: product,
-    location_id: location,
-    quantity: 10,
-    condition: "good",
-    acquisition_date: day(),
-    reason: "Fictional M4 acceptance receipt",
-  });
-  const asset = (await c.mutation(api.inventory.receive, {
-    product_id: serialized,
-    location_id: location,
-    quantity: 1,
-    condition: "good",
-    acquisition_date: day(),
-    reason: "Fictional M4 acceptance receipt",
-  }))!;
+    },
+    { skipQueue: true },
+  );
+  const serialized = await c.mutation(
+    api.inventory.saveProduct,
+    {
+      version: 0,
+      category_id: category,
+      input: JSON.stringify({
+        sku: `M4-A-${suffix}`,
+        name: `Fictional chair ${suffix}`,
+        track_mode: "serialized",
+        active: true,
+        staging_eligible: true,
+        retail_eligible: true,
+      }),
+    },
+    { skipQueue: true },
+  );
+  await c.mutation(
+    api.inventory.receive,
+    {
+      product_id: product,
+      location_id: location,
+      quantity: 10,
+      condition: "good",
+      acquisition_date: day(),
+      reason: "Fictional M4 acceptance receipt",
+    },
+    { skipQueue: true },
+  );
+  const asset = (await c.mutation(
+    api.inventory.receive,
+    {
+      product_id: serialized,
+      location_id: location,
+      quantity: 1,
+      condition: "good",
+      acquisition_date: day(),
+      reason: "Fictional M4 acceptance receipt",
+    },
+    { skipQueue: true },
+  ))!;
   const results: { name: string; passed: boolean }[] = [];
   const check = async (name: string, fn: () => Promise<unknown>) => {
     try {
@@ -94,17 +124,21 @@ async function main() {
       needed_until: "2099-01-01",
     });
   const reserve = (count: number, project = p, roomId = room) =>
-    c.mutation(api.inventory.reserve, {
-      project_id: project,
-      project_room_id: roomId,
-      product_id: product,
-      location_id: location,
-      quantity: count,
-      needed_from: day(),
-      needed_until: "2099-01-01",
-      notes: "Fictional acceptance",
-      planned: false,
-    });
+    c.mutation(
+      api.inventory.reserve,
+      {
+        project_id: project,
+        project_room_id: roomId,
+        product_id: product,
+        location_id: location,
+        quantity: count,
+        needed_from: day(),
+        needed_until: "2099-01-01",
+        notes: "Fictional acceptance",
+        planned: false,
+      },
+      { skipQueue: true },
+    );
   const lines = (id = p) =>
     c.query(api.inventory.projectInventory, { project_id: id });
   const row = async (id: Id<"inventory_reservations">) =>
@@ -117,15 +151,19 @@ async function main() {
     count = 1,
   ) => {
     const r = await row(id);
-    return c.mutation(api.inventory.moveReservation, {
-      id,
-      version: r.version,
-      action,
-      quantity: count,
-      asset_confirmation: r.asset_number ?? "",
-      location_id: location,
-      reason: "Fictional M4 acceptance movement",
-    });
+    return c.mutation(
+      api.inventory.moveReservation,
+      {
+        id,
+        version: r.version,
+        action,
+        quantity: count,
+        asset_confirmation: r.asset_number ?? "",
+        location_id: location,
+        reason: "Fictional M4 acceptance movement",
+      },
+      { skipQueue: true },
+    );
   };
   const advance = async (
     status: Parameters<
@@ -133,37 +171,49 @@ async function main() {
     >[1]["status"],
     date?: string,
   ) =>
-    c.mutation(api.operations.transition, {
-      id: p,
-      version: (await get()).version,
-      status,
-      date,
-    });
+    c.mutation(
+      api.operations.transition,
+      {
+        id: p,
+        version: (await get()).version,
+        status,
+        date,
+      },
+      { skipQueue: true },
+    );
   const complete = async (category: string) => {
     for (const item of (await get()).checklist.filter(
       (x) => x.category === category && x.required && x.status !== "completed",
     ))
-      await c.mutation(api.operations.checklist, {
-        id: item._id,
-        version: item.version,
-        status: "completed",
-      });
+      await c.mutation(
+        api.operations.checklist,
+        {
+          id: item._id,
+          version: item.version,
+          status: "completed",
+        },
+        { skipQueue: true },
+      );
   };
   const schedule = async (type: "staging" | "destaging", start = 10) => {
     for (let hour = start; hour < 22; hour++) {
       try {
-        return await c.mutation(api.operations.schedule, {
-          project_id: p,
-          project_version: (await get()).version,
-          version: 0,
-          event_type: type,
-          title: "Fictional M4 " + type,
-          description: "",
-          location_note: "",
-          start_at: eventDay + `T${String(hour).padStart(2, "0")}:00:00Z`,
-          end_at: eventDay + `T${String(hour + 1).padStart(2, "0")}:00:00Z`,
-          assigned_lead_id: f.createArgs.staging_lead_id!,
-        });
+        return await c.mutation(
+          api.operations.schedule,
+          {
+            project_id: p,
+            project_version: (await get()).version,
+            version: 0,
+            event_type: type,
+            title: "Fictional M4 " + type,
+            description: "",
+            location_note: "",
+            start_at: eventDay + `T${String(hour).padStart(2, "0")}:00:00Z`,
+            end_at: eventDay + `T${String(hour + 1).padStart(2, "0")}:00:00Z`,
+            assigned_lead_id: f.createArgs.staging_lead_id!,
+          },
+          { skipQueue: true },
+        );
       } catch (e) {
         const code = (e as { data?: { code?: string } }).data?.code;
         if (code !== "SCHEDULE_CONFLICT") throw e;
@@ -203,14 +253,18 @@ async function main() {
         /acquisition_cost|PRIVATE|discount|seller_name/,
       );
       await assert.rejects(
-        designer.mutation(api.inventory.receive, {
-          product_id: product,
-          location_id: location,
-          quantity: 1,
-          condition: "good",
-          acquisition_date: day(),
-          reason: "Forbidden receipt",
-        }),
+        designer.mutation(
+          api.inventory.receive,
+          {
+            product_id: product,
+            location_id: location,
+            quantity: 1,
+            condition: "good",
+            acquisition_date: day(),
+            reason: "Forbidden receipt",
+          },
+          { skipQueue: true },
+        ),
       );
     },
   );
@@ -237,32 +291,40 @@ async function main() {
       for (const project of [p, p2])
         for (const r of (await lines(project)).lines)
           if (r.active)
-            await c.mutation(api.inventory.moveReservation, {
-              id: r._id,
-              version: r.version,
-              action: "release",
-              quantity: r.quantity,
-              asset_confirmation: "",
-              reason: "Fictional concurrency cleanup",
-            });
+            await c.mutation(
+              api.inventory.moveReservation,
+              {
+                id: r._id,
+                version: r.version,
+                action: "release",
+                quantity: r.quantity,
+                asset_confirmation: "",
+                reason: "Fictional concurrency cleanup",
+              },
+              { skipQueue: true },
+            );
     },
   );
   await check(
     "SKU normalization and uniqueness enforced server-side",
     async () => {
       await assert.rejects(
-        c.mutation(api.inventory.saveProduct, {
-          version: 0,
-          category_id: category,
-          input: JSON.stringify({
-            sku: ` m4-q-${suffix} `,
-            name: "Duplicate",
-            track_mode: "quantity",
-            active: true,
-            staging_eligible: true,
-            retail_eligible: true,
-          }),
-        }),
+        c.mutation(
+          api.inventory.saveProduct,
+          {
+            version: 0,
+            category_id: category,
+            input: JSON.stringify({
+              sku: ` m4-q-${suffix} `,
+              name: "Duplicate",
+              track_mode: "quantity",
+              active: true,
+              staging_eligible: true,
+              retail_eligible: true,
+            }),
+          },
+          { skipQueue: true },
+        ),
       );
     },
   );
@@ -270,70 +332,90 @@ async function main() {
   await check(
     "serialized date overlap and inclusive boundary protection",
     async () => {
-      serializedLine = await c.mutation(api.inventory.reserve, {
-        project_id: p,
-        project_room_id: room,
-        product_id: serialized,
-        asset_id: asset,
-        location_id: location,
-        quantity: 1,
-        needed_from: day(),
-        needed_until: "2098-01-10",
-        notes: "",
-        planned: false,
-      });
-      await assert.rejects(
-        c.mutation(api.inventory.reserve, {
-          project_id: p2,
-          project_room_id: room2,
+      serializedLine = await c.mutation(
+        api.inventory.reserve,
+        {
+          project_id: p,
+          project_room_id: room,
           product_id: serialized,
           asset_id: asset,
           location_id: location,
           quantity: 1,
-          needed_from: "2098-01-10",
-          needed_until: "2098-02-01",
+          needed_from: day(),
+          needed_until: "2098-01-10",
           notes: "",
           planned: false,
-        }),
+        },
+        { skipQueue: true },
+      );
+      await assert.rejects(
+        c.mutation(
+          api.inventory.reserve,
+          {
+            project_id: p2,
+            project_room_id: room2,
+            product_id: serialized,
+            asset_id: asset,
+            location_id: location,
+            quantity: 1,
+            needed_from: "2098-01-10",
+            needed_until: "2098-02-01",
+            notes: "",
+            planned: false,
+          },
+          { skipQueue: true },
+        ),
       );
     },
   );
   await check(
     "nonoverlapping future asset reservation is accepted",
     async () => {
-      const r = await c.mutation(api.inventory.reserve, {
-        project_id: p2,
-        project_room_id: room2,
-        product_id: serialized,
-        asset_id: asset,
-        location_id: location,
-        quantity: 1,
-        needed_from: "2098-01-11",
-        needed_until: "2098-02-01",
-        notes: "",
-        planned: false,
-      });
-      await c.mutation(api.inventory.moveReservation, {
-        id: r,
-        version: 1,
-        action: "release",
-        quantity: 1,
-        asset_confirmation: "",
-        reason: "Fictional future booking cleanup",
-      });
+      const r = await c.mutation(
+        api.inventory.reserve,
+        {
+          project_id: p2,
+          project_room_id: room2,
+          product_id: serialized,
+          asset_id: asset,
+          location_id: location,
+          quantity: 1,
+          needed_from: "2098-01-11",
+          needed_until: "2098-02-01",
+          notes: "",
+          planned: false,
+        },
+        { skipQueue: true },
+      );
+      await c.mutation(
+        api.inventory.moveReservation,
+        {
+          id: r,
+          version: 1,
+          action: "release",
+          quantity: 1,
+          asset_confirmation: "",
+          reason: "Fictional future booking cleanup",
+        },
+        { skipQueue: true },
+      );
     },
   );
   await check("reserved asset cannot be sold", () =>
     assert.rejects(
-      c.mutation(api.inventory.transferOrDispose, {
-        product_id: serialized,
-        asset_id: asset,
-        location_id: location,
-        version: 1,
-        quantity: 1,
-        action: "sold",
-        reason: "Must be denied",
-      }),
+      c.mutation(
+        api.inventory.transferOrDispose,
+        {
+          product_id: serialized,
+          asset_id: asset,
+          location_id: location,
+          version: 1,
+          quantity: 1,
+          action: "sold",
+          reason: "Must be denied",
+        },
+        { skipQueue: true },
+      ),
     ),
   );
   await check(
@@ -367,28 +449,36 @@ async function main() {
       ]) {
         const { client } = await operationsClient(role);
         await assert.rejects(
-          client.mutation(api.inventory.transferOrDispose, {
-            product_id: product,
-            location_id: location,
-            version: (await available()).stock!.version,
-            quantity: 1,
-            action: "retired",
-            reason: "Forbidden direct mutation",
-          }),
+          client.mutation(
+            api.inventory.transferOrDispose,
+            {
+              product_id: product,
+              location_id: location,
+              version: (await available()).stock!.version,
+              quantity: 1,
+              action: "retired",
+              reason: "Forbidden direct mutation",
+            },
+            { skipQueue: true },
+          ),
         );
       }
       await assert.rejects(
-        c.mutation(api.inventory.reserve, {
-          project_id: p,
-          project_room_id: room2,
-          product_id: product,
-          location_id: location,
-          quantity: 1,
-          needed_from: day(),
-          needed_until: day(),
-          notes: "Foreign room attack",
-          planned: false,
-        }),
+        c.mutation(
+          api.inventory.reserve,
+          {
+            project_id: p,
+            project_room_id: room2,
+            product_id: product,
+            location_id: location,
+            quantity: 1,
+            needed_from: day(),
+            needed_until: day(),
+            notes: "Foreign room attack",
+            planned: false,
+          },
+          { skipQueue: true },
+        ),
       );
       assert.equal((await available()).stock!.available, 10);
     },
@@ -396,25 +486,33 @@ async function main() {
   await check(
     "hosted concurrent serialized transfers preserve one location and identity",
     async () => {
-      const tempAsset = (await c.mutation(api.inventory.receive, {
-        product_id: serialized,
-        location_id: location,
-        quantity: 1,
-        condition: "good",
-        acquisition_date: day(),
-        reason: "Fictional transfer test",
-      }))!;
-      const dest = await c.mutation(api.inventory.saveLocation, {
-        version: 0,
-        input: JSON.stringify({
-          name: `Fictional transfer ${suffix}`,
-          type: "warehouse",
-          address: "Fictional",
-          active: true,
-          staging_source: true,
-          retail_source: true,
-        }),
-      });
+      const tempAsset = (await c.mutation(
+        api.inventory.receive,
+        {
+          product_id: serialized,
+          location_id: location,
+          quantity: 1,
+          condition: "good",
+          acquisition_date: day(),
+          reason: "Fictional transfer test",
+        },
+        { skipQueue: true },
+      ))!;
+      const dest = await c.mutation(
+        api.inventory.saveLocation,
+        {
+          version: 0,
+          input: JSON.stringify({
+            name: `Fictional transfer ${suffix}`,
+            type: "warehouse",
+            address: "Fictional",
+            active: true,
+            staging_source: true,
+            retail_source: true,
+          }),
+        },
+        { skipQueue: true },
+      );
       const a = await c.query(api.inventory.asset, { id: tempAsset });
       const args = {
         product_id: serialized,
@@ -427,52 +525,64 @@ async function main() {
         reason: "Fictional competing transfers",
       };
       const results = await Promise.allSettled([
-        c.mutation(api.inventory.transferOrDispose, args),
-        c.mutation(api.inventory.transferOrDispose, args),
+        c.mutation(api.inventory.transferOrDispose, args, { skipQueue: true }),
+        c.mutation(api.inventory.transferOrDispose, args, { skipQueue: true }),
       ]);
       assert.equal(results.filter((r) => r.status === "fulfilled").length, 1);
       const after = await c.query(api.inventory.asset, { id: tempAsset });
       assert.equal(after.location_id, dest);
       assert.equal(after.asset_number, a.asset_number);
-      await c.mutation(api.inventory.holdStock, {
-        product_id: serialized,
-        asset_id: tempAsset,
-        location_id: dest,
-        version: after.version,
-        quantity: 1,
-        action: "inspection_hold",
-        reason: "Fictional concurrency inspection",
-      });
+      await c.mutation(
+        api.inventory.holdStock,
+        {
+          product_id: serialized,
+          asset_id: tempAsset,
+          location_id: dest,
+          version: after.version,
+          quantity: 1,
+          action: "inspection_hold",
+          reason: "Fictional concurrency inspection",
+        },
+        { skipQueue: true },
+      );
       const held = await c.query(api.inventory.asset, { id: tempAsset });
       const decisions = await Promise.allSettled(
         (["available", "repair"] as const).map((result) =>
-          c.mutation(api.inventory.inspect, {
-            product_id: serialized,
-            asset_id: tempAsset,
-            location_id: dest,
-            version: held.version,
-            quantity: 1,
-            from_state: "inspection",
-            result,
-            condition: "good",
-            notes: "Fictional competing inspection",
-          }),
+          c.mutation(
+            api.inventory.inspect,
+            {
+              product_id: serialized,
+              asset_id: tempAsset,
+              location_id: dest,
+              version: held.version,
+              quantity: 1,
+              from_state: "inspection",
+              result,
+              condition: "good",
+              notes: "Fictional competing inspection",
+            },
+            { skipQueue: true },
+          ),
         ),
       );
       assert.equal(decisions.filter((r) => r.status === "fulfilled").length, 1);
       const final = await c.query(api.inventory.asset, { id: tempAsset });
       if (final.status === "repair")
-        await c.mutation(api.inventory.inspect, {
-          product_id: serialized,
-          asset_id: tempAsset,
-          location_id: dest,
-          version: final.version,
-          quantity: 1,
-          from_state: "repair",
-          result: "available",
-          condition: "good",
-          notes: "Fictional repair complete",
-        });
+        await c.mutation(
+          api.inventory.inspect,
+          {
+            product_id: serialized,
+            asset_id: tempAsset,
+            location_id: dest,
+            version: final.version,
+            quantity: 1,
+            from_state: "repair",
+            result: "available",
+            condition: "good",
+            notes: "Fictional repair complete",
+          },
+          { skipQueue: true },
+        );
     },
   );
   const reservation = await reserve(5);
@@ -486,14 +596,18 @@ async function main() {
     async () => {
       const r = await row(serializedLine);
       await assert.rejects(
-        c.mutation(api.inventory.moveReservation, {
-          id: r._id,
-          version: r.version,
-          action: "pick",
-          quantity: 1,
-          asset_confirmation: "GLA-WRONG",
-          reason: "Wrong identity",
-        }),
+        c.mutation(
+          api.inventory.moveReservation,
+          {
+            id: r._id,
+            version: r.version,
+            action: "pick",
+            quantity: 1,
+            asset_confirmation: "GLA-WRONG",
+            reason: "Wrong identity",
+          },
+          { skipQueue: true },
+        ),
       );
     },
   );
@@ -505,14 +619,18 @@ async function main() {
       assert.equal((await row(reservation)).quantity, 2);
       assert.equal((await available()).stock?.available, 7);
       await assert.rejects(
-        c.mutation(api.inventory.moveReservation, {
-          id: reservation,
-          version,
-          action: "pick",
-          quantity: 3,
-          asset_confirmation: "",
-          reason: "Stale replay",
-        }),
+        c.mutation(
+          api.inventory.moveReservation,
+          {
+            id: reservation,
+            version,
+            action: "pick",
+            quantity: 3,
+            asset_confirmation: "",
+            reason: "Stale replay",
+          },
+          { skipQueue: true },
+        ),
       );
       await move(picked, "install", 3);
     },
@@ -546,16 +664,20 @@ async function main() {
         await move(r._id, "destage", r.quantity);
         if (r.asset_id) {
           const live = await row(r._id);
-          await c.mutation(api.inventory.moveReservation, {
-            id: r._id,
-            version: live.version,
-            action: "return",
-            return_outcome: "damaged",
-            quantity: 1,
-            asset_confirmation: r.asset_number!,
-            location_id: location,
-            reason: "Fictional damaged return",
-          });
+          await c.mutation(
+            api.inventory.moveReservation,
+            {
+              id: r._id,
+              version: live.version,
+              action: "return",
+              return_outcome: "damaged",
+              quantity: 1,
+              asset_confirmation: r.asset_number!,
+              location_id: location,
+              reason: "Fictional damaged return",
+            },
+            { skipQueue: true },
+          );
         } else {
           await move(r._id, "return", r.quantity - 1);
           await move(r._id, "missing", 1);
@@ -569,11 +691,15 @@ async function main() {
   );
   await check("project cannot archive while care holds remain", async () => {
     await assert.rejects(
-      c.mutation(api.operations.archive, {
-        id: p,
-        version: (await get()).version,
-        restore: false,
-      }),
+      c.mutation(
+        api.operations.archive,
+        {
+          id: p,
+          version: (await get()).version,
+          restore: false,
+        },
+        { skipQueue: true },
+      ),
     );
   });
   await check(
@@ -586,18 +712,22 @@ async function main() {
       const damagedAsset = await c.query(api.inventory.asset, { id: asset });
       assert.equal(damagedAsset.condition, "damaged");
       const ar = await row(serializedLine!);
-      await c.mutation(api.inventory.inspect, {
-        reservation_id: ar._id,
-        asset_id: asset,
-        product_id: serialized,
-        location_id: location,
-        version: ar.version,
-        quantity: 1,
-        from_state: "inspection",
-        result: "repair",
-        condition: "damaged",
-        notes: "Fictional repair assessment",
-      });
+      await c.mutation(
+        api.inventory.inspect,
+        {
+          reservation_id: ar._id,
+          asset_id: asset,
+          product_id: serialized,
+          location_id: location,
+          version: ar.version,
+          quantity: 1,
+          from_state: "inspection",
+          result: "repair",
+          condition: "damaged",
+          notes: "Fictional repair assessment",
+        },
+        { skipQueue: true },
+      );
       assert.equal(
         (await c.query(api.inventory.asset, { id: asset })).status,
         "repair",
@@ -605,18 +735,22 @@ async function main() {
       for (const r of (await lines()).lines.filter((x) =>
         ["inspection", "repair"].includes(x.state),
       ))
-        await c.mutation(api.inventory.inspect, {
-          reservation_id: r._id,
-          asset_id: r.asset_id ?? undefined,
-          product_id: r.product_id,
-          location_id: location,
-          version: r.version,
-          quantity: r.quantity,
-          from_state: r.state as "inspection" | "repair",
-          result: "available",
-          condition: "good",
-          notes: "Fictional final inspection",
-        });
+        await c.mutation(
+          api.inventory.inspect,
+          {
+            reservation_id: r._id,
+            asset_id: r.asset_id ?? undefined,
+            product_id: r.product_id,
+            location_id: location,
+            version: r.version,
+            quantity: r.quantity,
+            from_state: r.state as "inspection" | "repair",
+            result: "available",
+            condition: "good",
+            notes: "Fictional final inspection",
+          },
+          { skipQueue: true },
+        );
       assert.equal((await available()).stock?.available, 10);
       assert.equal(
         (await c.query(api.inventory.asset, { id: asset })).status,
@@ -650,21 +784,29 @@ async function main() {
   );
   await advance("completed");
   await check("archival preserves project inventory history", async () => {
-    await c.mutation(api.operations.archive, {
-      id: p,
-      version: (await get()).version,
-      restore: false,
-    });
+    await c.mutation(
+      api.operations.archive,
+      {
+        id: p,
+        version: (await get()).version,
+        restore: false,
+      },
+      { skipQueue: true },
+    );
     assert.ok((await lines()).lines.length);
   });
   const cancelledReservation = await reserve(2, p2, room2);
   const other = await c.query(api.operations.get, { id: p2 });
-  await c.mutation(api.operations.transition, {
-    id: p2,
-    version: other.version,
-    status: "cancelled",
-    reason: "Fictional M4 cleanup",
-  });
+  await c.mutation(
+    api.operations.transition,
+    {
+      id: p2,
+      version: other.version,
+      status: "cancelled",
+      reason: "Fictional M4 cleanup",
+    },
+    { skipQueue: true },
+  );
   await check(
     "cancelling an unpicked project releases its stock automatically",
     async () => {
@@ -676,11 +818,15 @@ async function main() {
       assert.equal((await available()).available, 10);
     },
   );
-  await c.mutation(api.operations.archive, {
-    id: p2,
-    version: (await c.query(api.operations.get, { id: p2 })).version,
-    restore: false,
-  });
+  await c.mutation(
+    api.operations.archive,
+    {
+      id: p2,
+      version: (await c.query(api.operations.get, { id: p2 })).version,
+      restore: false,
+    },
+    { skipQueue: true },
+  );
   // Fictional stock remains visible, labelled clearly, as a reviewable acceptance example.
   mkdirSync("test-results", { recursive: true });
   writeFileSync(

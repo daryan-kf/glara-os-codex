@@ -1,0 +1,724 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "build": "Corrected production Next build included in this acceptance commit",
+  "full_suite": {
+    "stats": {
+      "startTime": "2026-09-14T13:46:19.405Z",
+      "duration": 515549.263,
+      "expected": 47,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "projects": [
+      {
+        "name": "desktop"
+      },
+      {
+        "name": "mobile"
+      }
+    ],
+    "tests": [
+      {
+        "file": "auth.spec.ts",
+        "name": "private routes never expose their content without authentication",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1409,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "login and recovery fit desktop and mobile viewports",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 659,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "Convex Auth login, navigation and logout",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3875,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "sales are denied owner reports even through a direct URL",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 2489,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "invalid credentials show a safe error and recovery does not enumerate accounts",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1188,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "private routes never expose their content without authentication",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1270,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "login and recovery fit desktop and mobile viewports",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 670,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "Convex Auth login, navigation and logout",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 4313,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "sales are denied owner reports even through a direct URL",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 5046,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "auth.spec.ts",
+        "name": "invalid credentials show a safe error and recovery does not enumerate accounts",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1185,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "commercial.spec.ts",
+        "name": "billing identity, accepted agreement, deposit, payment receipt and credit",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 33145,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "commercial.spec.ts",
+        "name": "damage review, approved charge invoice and restricted-role denial",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 17572,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "commercial.spec.ts",
+        "name": "billing identity, accepted agreement, deposit, payment receipt and credit",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 32056,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "commercial.spec.ts",
+        "name": "damage review, approved charge invoice and restricted-role denial",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 17517,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 21544,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "cancel and reschedule preserve the prospect next action and visible history",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 8077,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 22088,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "cancel and reschedule preserve the prospect next action and visible history",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 8203,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "owner workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 4832,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "sales workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3924,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "admin workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3938,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "marketing workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "unexpected",
+        "attempts": [
+          {
+            "status": "failed",
+            "duration_ms": 8024,
+            "errors": [
+              "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /unauthorized$/\nReceived string:  \"http://localhost:3000/realtors/new\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    14 × locator resolved to <html lang=\"en-CA\">…</html>\n       - unexpected value \"http://localhost:3000/realtors/new\"\n\n\n  297 |         ).toBeVisible();\n  298 |         await page.goto(\"/realtors/new\");\n> 299 |         if (role === \"marketing\") await expect(page).toHaveURL(/unauthorized$/);\n      |                                                      ^\n  300 |         else\n  301 |           await expect(\n  302 |             page.getByRole(\"heading\", { name: \"A new relationship\" }),\n    at D:\\Glara Home Staging 2026\\GLARA OS\\tests\\e2e\\hosted.spec.ts:299:54"
+            ]
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "designer workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 2583,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "staging_crew workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 2482,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "unassigned workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1661,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "archived workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1648,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "owner workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3913,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "sales workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3969,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "admin workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3953,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "marketing workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3739,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "designer workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 2447,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "staging_crew workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 2465,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "unassigned workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1666,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "archived workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 1642,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "inventory-mixed.spec.ts",
+        "name": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 56379,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "inventory-mixed.spec.ts",
+        "name": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 57695,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "inventory.spec.ts",
+        "name": "catalog receipt, designer reservation, crew partial picking and inspection",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 24974,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "inventory.spec.ts",
+        "name": "catalog receipt, designer reservation, crew partial picking and inspection",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 26129,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "operations.spec.ts",
+        "name": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 29693,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "operations.spec.ts",
+        "name": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 26010,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "property to opportunity, consultation, exact quote and won deal",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 16360,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "marketing cannot open commercial routes",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3570,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "designer cannot open commercial routes",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 4043,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "staging_crew cannot open commercial routes",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3743,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "property to opportunity, consultation, exact quote and won deal",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 17336,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "marketing cannot open commercial routes",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3651,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "designer cannot open commercial routes",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3499,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "sales.spec.ts",
+        "name": "staging_crew cannot open commercial routes",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3482,
+            "errors": []
+          }
+        ]
+      }
+    ]
+  },
+  "unchanged_marketing_rechecks": {
+    "stats": {
+      "startTime": "2026-09-14T13:50:01.017Z",
+      "duration": 22134.554,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "projects": [
+      {
+        "name": "desktop"
+      },
+      {
+        "name": "mobile"
+      }
+    ],
+    "tests": [
+      {
+        "file": "hosted.spec.ts",
+        "name": "marketing workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 6792,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "marketing workspace and CRM boundaries",
+        "project": "desktop",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3830,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "marketing workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3915,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "file": "hosted.spec.ts",
+        "name": "marketing workspace and CRM boundaries",
+        "project": "mobile",
+        "status": "expected",
+        "attempts": [
+          {
+            "status": "passed",
+            "duration_ms": 3969,
+            "errors": []
+          }
+        ]
+      }
+    ]
+  },
+  "resolved_unique_scenarios": 48,
+  "note": "One five-second connection timeout in the full run; unchanged Marketing checks passed twice per viewport. Initial timeout retained, no assertions weakened."
+}

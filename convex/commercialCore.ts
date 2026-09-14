@@ -1,7 +1,7 @@
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx } from "./_generated/server";
 import { deny, requireRoles } from "./access";
-import { type Ctx, access, isAdmin, now } from "./operationsCore";
+import { type Ctx, isAdmin, now } from "./operationsCore";
 import { day } from "../src/lib/operations/model";
 import { balances } from "../src/lib/commercial/model";
 export { deny, now };
@@ -13,11 +13,18 @@ export async function scope(ctx: Ctx, id: Id<"projects">, write = false) {
   );
   const p = await ctx.db.get(id);
   if (!p) deny("UNAVAILABLE");
-  if (
-    !isAdmin(u) &&
-    !["sales", "manage"].includes((await access(ctx, p, u)) ?? "")
-  )
-    deny();
+  // Commercial Sales scope is independent of the user's operational team role.
+  if (!isAdmin(u) && p.project_manager_id !== u.userId) {
+    const [opportunity, realtor] = await Promise.all([
+      ctx.db.get(p.opportunity_id),
+      ctx.db.get(p.realtor_id),
+    ]);
+    if (
+      opportunity?.assigned_to !== u.userId &&
+      realtor?.assigned_to !== u.userId
+    )
+      deny();
+  }
   if (write && p.deleted_at) deny("UNAVAILABLE");
   return { u, p, manage: isAdmin(u) };
 }

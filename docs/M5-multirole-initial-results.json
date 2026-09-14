@@ -1,0 +1,165 @@
+{
+  "numTotalTestSuites": 2,
+  "numPassedTestSuites": 0,
+  "numFailedTestSuites": 2,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 11,
+  "numPassedTests": 9,
+  "numFailedTests": 2,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1789393204994,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions preserves assigned Sales read scope when also assigned as designer",
+          "status": "failed",
+          "title": "preserves assigned Sales read scope when also assigned as designer",
+          "duration": 257.6118,
+          "failureMessages": [
+            "ConvexError: {\"code\":\"FORBIDDEN\",\"message\":\"Access denied\"}\n    at deny (D:/Glara Home Staging 2026/GLARA OS/convex/access.ts:8:9)\n    at Module.scope (D:/Glara Home Staging 2026/GLARA OS/convex/commercialCore.ts:20:5)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at handler (D:/Glara Home Staging 2026/GLARA OS/convex/commercial.ts:1263:24)\n    at invokeFunction (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex/dist/esm/server/impl/registration_impl.js:56:14)\n    at invokeQuery (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex/dist/esm/server/impl/registration_impl.js:163:18)\n    at runQueryWithHandler (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex-test/dist/index.js:1848:31)\n    at Object.queryFromPath (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex-test/dist/index.js:1907:32)\n    at query (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex-test/dist/index.js:1992:20)\n    at D:/Glara Home Staging 2026/GLARA OS/tests/convex/commercial-boundaries.test.ts:19:15"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions preserves assigned Sales read scope when also assigned as staging_crew",
+          "status": "failed",
+          "title": "preserves assigned Sales read scope when also assigned as staging_crew",
+          "duration": 23.79079999999999,
+          "failureMessages": [
+            "ConvexError: {\"code\":\"FORBIDDEN\",\"message\":\"Access denied\"}\n    at deny (D:/Glara Home Staging 2026/GLARA OS/convex/access.ts:8:9)\n    at Module.scope (D:/Glara Home Staging 2026/GLARA OS/convex/commercialCore.ts:20:5)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at handler (D:/Glara Home Staging 2026/GLARA OS/convex/commercial.ts:1263:24)\n    at invokeFunction (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex/dist/esm/server/impl/registration_impl.js:56:14)\n    at invokeQuery (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex/dist/esm/server/impl/registration_impl.js:163:18)\n    at runQueryWithHandler (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex-test/dist/index.js:1848:31)\n    at Object.queryFromPath (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex-test/dist/index.js:1907:32)\n    at query (file:///D:/Glara%20Home%20Staging%202026/GLARA%20OS/node_modules/convex-test/dist/index.js:1992:20)\n    at D:/Glara Home Staging 2026/GLARA OS/tests/convex/commercial-boundaries.test.ts:19:15"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions reconciles tiny multi-tax deposits without negative subtotals",
+          "status": "passed",
+          "title": "reconciles tiny multi-tax deposits without negative subtotals",
+          "duration": 26.962400000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions rejects agreement acceptance after operational completion",
+          "status": "passed",
+          "title": "rejects agreement acceptance after operational completion",
+          "duration": 21.8741,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions prevents direct M3 overwrite and concurrent extensions of the same period",
+          "status": "passed",
+          "title": "prevents direct M3 overwrite and concurrent extensions of the same period",
+          "duration": 26.65319999999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions rejects concurrent credit amounts that exceed the remaining collectible value",
+          "status": "passed",
+          "title": "rejects concurrent credit amounts that exceed the remaining collectible value",
+          "duration": 24.541600000000017,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions retains old agreement snapshots after a controlled replacement",
+          "status": "passed",
+          "title": "retains old agreement snapshots after a controlled replacement",
+          "duration": 25.93119999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions keeps source defaults separate from accepted documents",
+          "status": "passed",
+          "title": "keeps source defaults separate from accepted documents",
+          "duration": 27.73249999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions returns exact indexed balances at representative project volume and paginates without dropping records",
+          "status": "passed",
+          "title": "returns exact indexed balances at representative project volume and paginates without dropping records",
+          "duration": 195.3279,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions counts accepted deposits even before creating a deposit invoice",
+          "status": "passed",
+          "title": "counts accepted deposits even before creating a deposit invoice",
+          "duration": 22.121200000000044,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["M5 boundary, concurrency and scale regressions"],
+          "fullName": "M5 boundary, concurrency and scale regressions restricts commercial audit and review queues to financial administrators",
+          "status": "passed",
+          "title": "restricts commercial audit and review queues to financial administrators",
+          "duration": 26.050199999999904,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1789393205627,
+      "endTime": 1789393206306.0503,
+      "status": "failed",
+      "message": "",
+      "name": "D:/Glara Home Staging 2026/GLARA OS/tests/convex/commercial-boundaries.test.ts"
+    }
+  ]
+}

@@ -143,11 +143,37 @@ test.describe("M5 commercial desktop and mobile", () => {
       .fill("3000");
     await page
       .getByRole("textbox", { name: new RegExp(row.number) })
-      .fill("2625");
+      .fill("2500");
     await page
       .getByRole("button", { name: "Record payment", exact: true })
       .click();
     await expect(page).toHaveURL(/\/payments\/[a-z0-9]+$/);
+    await expect(
+      page.getByText("Unallocated: $500.00", { exact: true }),
+    ).toBeVisible();
+    await expect
+      .poll(
+        async () =>
+          (await c.query(api.commercial.invoice, { id: invoice }))
+            .balance_cents,
+      )
+      .toBe("12500");
+    const allocate = page
+      .getByRole("heading", { name: "Allocate remaining payment", exact: true })
+      .locator("..");
+    await allocate
+      .getByRole("textbox", { name: new RegExp(row.number) })
+      .fill("125");
+    await allocate
+      .getByRole("button", { name: "Confirm allocation", exact: true })
+      .click();
+    await expect
+      .poll(
+        async () =>
+          (await c.query(api.commercial.invoice, { id: invoice }))
+            .effective_status,
+      )
+      .toBe("paid");
     await expect(
       page.getByText("Unallocated: $375.00", { exact: true }),
     ).toBeVisible();
@@ -192,6 +218,73 @@ test.describe("M5 commercial desktop and mobile", () => {
     ).toBe(true);
     await page.screenshot({
       path: info.outputPath("m5-commercial.png"),
+      fullPage: true,
+    });
+    await page
+      .locator("summary")
+      .filter({ hasText: /^Propose extension$/ })
+      .click();
+    await page
+      .getByLabel("New package end date", { exact: true })
+      .fill("2100-01-31");
+    await page
+      .getByRole("textbox", { name: "Extension rate (CAD)", exact: true })
+      .fill("100");
+    await page
+      .getByRole("textbox", { name: "Extension reason", exact: true })
+      .fill("Fictional browser extension");
+    await page
+      .getByRole("button", { name: "Save extension proposal", exact: true })
+      .click();
+    await expect
+      .poll(
+        async () =>
+          (await c.query(api.commercial.project, { project_id: project }))
+            .extensions.length,
+      )
+      .toBe(1);
+    await page.reload();
+    const extension = page
+      .getByRole("heading", { name: "Package extensions", exact: true })
+      .locator("..");
+    await extension
+      .getByRole("textbox", { name: "Decision reason", exact: true })
+      .fill("Fictional accepted extension");
+    await extension
+      .getByRole("textbox", { name: "Accepted by", exact: true })
+      .fill("Fictional Seller");
+    await extension
+      .getByRole("textbox", { name: "Evidence reference", exact: true })
+      .fill("Fictional extension acknowledgement");
+    await extension
+      .getByRole("button", { name: "Record extension decision", exact: true })
+      .click();
+    await expect
+      .poll(
+        async () =>
+          (await c.query(api.operations.get, { id: project })).planned_end_date,
+      )
+      .toBe("2100-01-31");
+    await page.goto("/payments");
+    await page
+      .getByRole("combobox", { name: "Invoice status", exact: true })
+      .selectOption("");
+    await page
+      .getByRole("combobox", { name: "Customer filter", exact: true })
+      .selectOption(customer._id);
+    await page
+      .getByRole("button", { name: "Apply receivable filters", exact: true })
+      .click();
+    await expect(
+      page.getByRole("link").filter({ hasText: row.number }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: info.outputPath("m5-receivables.png"),
       fullPage: true,
     });
     const sales = credentials("sales");

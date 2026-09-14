@@ -7,6 +7,45 @@ import {
 import { api } from "../../convex/_generated/api";
 import { day } from "../../src/lib/operations/model";
 describe("M5 boundary, concurrency and scale regressions", () => {
+  it.each(["designer", "staging_crew"] as const)(
+    "preserves assigned Sales read scope when also assigned as %s",
+    async (role) => {
+      const f = await fixture(),
+        id = await f.agreement();
+      await f.t.run(async (ctx) => {
+        const profile = await ctx.db
+          .query("profiles")
+          .withIndex("by_user", (q) => q.eq("userId", f.who("sales").id))
+          .unique();
+        await ctx.db.patch(profile!._id, { roles: ["sales", role] });
+        await ctx.db.patch(
+          f.project,
+          role === "designer"
+            ? { designer_id: f.who("sales").id }
+            : { staging_lead_id: f.who("sales").id },
+        );
+      });
+      expect(
+        (await f.c("sales").query(api.commercial.agreement, { id })).manage,
+      ).toBe(false);
+      await expect(
+        f.c("sales").mutation(api.commercial.agreementAction, {
+          id,
+          version: 3,
+          action: "cancel",
+          reason: "Must remain read only",
+        }),
+      ).rejects.toThrow();
+      await f.t.run(async (ctx) => {
+        await ctx.db.patch(f.oid, { assigned_to: f.who("owner").id });
+        const p = await ctx.db.get(f.project);
+        await ctx.db.patch(p!.realtor_id, { assigned_to: f.who("owner").id });
+      });
+      await expect(
+        f.c("sales").query(api.commercial.agreement, { id }),
+      ).rejects.toThrow();
+    },
+  );
   it("reconciles tiny multi-tax deposits without negative subtotals", async () => {
     const f = await fixture(),
       taxes = Array.from({ length: 5 }, (_, i) => ({

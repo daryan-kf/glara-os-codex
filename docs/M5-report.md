@@ -1,8 +1,8 @@
 # M5 — Convex-native commercial operations
 
-**M5 DEVELOPMENT GATE PENDING EXTERNAL ACTION**
+**M5 DEVELOPMENT GATE PASSED**
 
-Scope: the complete replacement M5 specification, sections 1–91. M6 has not started. Local implementation and verification are recorded below. Hosted deployment and acceptance have **not** passed: automatic approval review rejected uploading M5 source because the previous explicit deployment authorization covered M4 only. Approval for M5 development deployment to Daryan's `glara-os` / `woozy-jaguar-392` has been requested and remains required.
+Scope: the complete replacement M5 specification, sections 1–91. The product owner explicitly authorized M5 development deployment and corrective acceptance work. Base implementation: `765c18a3180bff3df10587e1045c877a9c57242f`. M5 was deployed to Daryan's `glara-os` / `woozy-jaguar-392` on 2026-09-14. A corrective Convex deployment completed at 13:43:25 UTC; the corrected Next production build then passed. The source and evidence in this report are included in the final acceptance commit. M6 has not started. No production deployment, destructive reset, email configuration, real payment or real customer fixture was used.
 
 This document does not certify production readiness. Obtain the commit containing this report with `git log -1 --format=%H -- docs/M5-report.md`.
 
@@ -14,7 +14,7 @@ This document does not certify production readiness. Obtain the commit containin
 - `src/lib/commercial/model.ts`: strict server-shared input contracts, exact money calculations, tax allocation and derived invoice status.
 - `src/components/commercial`: project summary, agreements, invoice editor, payment receipts/allocation, assessments, AR, commercial settings, audit history and printable documents.
 - Protected routes: `/projects/[id]/commercial`, `/agreements/[id]`, `/invoices/[id]`, `/payments/[id]`, `/assessments/[id]`, `/payments`, `/commercial`, `/commercial/settings`.
-- `tests/convex/commercial*.test.ts`: unit and authenticated Convex transaction tests. `tests/support/m5-hosted-acceptance.ts` and `tests/e2e/commercial.spec.ts` are prepared for real hosted acceptance; they have not been executed against M5 yet.
+- `tests/convex/commercial*.test.ts`: unit and authenticated Convex transaction tests. `tests/support/m5-hosted-acceptance.ts`, `tests/support/m5-hosted-integrity.ts` and `tests/e2e/commercial.spec.ts` provide hosted and browser acceptance against real Convex authentication and fictional fixtures.
 
 ## Schema and indexes
 
@@ -98,23 +98,24 @@ Audit entries and financial records derive actor identity from the authenticated
 - Next.js production build: passed; final rerun passed before commit.
 - ESLint zero warnings: passed; final rerun recorded before commit.
 - Existing Node tests: 13 passed.
-- Convex/Vitest: 186 passed, including 53 new M5 tests and all 133 existing M1–M4 tests.
+- Convex/Vitest: 188 passed, including 55 M5 tests and all 133 existing M1–M4 tests.
 - M5 coverage includes exact penny tax splits, customer/document snapshots, role and archive denial, direct invocation attacks, independent numbering, simultaneous deposit creation/payment allocation/credits/extensions/assessment decisions, reversal, waiver, physical-state independence, recovery versus write-off, and representative 30-invoice/30-payment indexed aggregation/pagination.
 - Dependency audit, all dependencies and production-only: zero vulnerabilities.
 - Secret scan: no credential patterns or tracked environment files; final scan count recorded in the local evidence file.
 - Formatting: passed.
-- M1/M2/M3/M4 hosted regression against the M5 deployment: **NOT RUN — deployment approval pending**. Prior milestone results are not relabelled as M5 regression evidence.
-- M5 hosted acceptance: **NOT RUN — deployment approval pending**.
-- M5 desktop/mobile E2E and complete browser regression: **NOT RUN — deployment approval pending**. Prepared tests use real Convex identity and fictional records, not mocked authentication.
+- M1–M4 hosted suites were rerun against the corrected M5 development deployment; exact results are recorded below.
+- M5 hosted acceptance: **29/29 passed** (15 lifecycle/physical-boundary checks and 14 integrity/concurrency checks).
+- Production-build desktop/mobile browser regression: **47 passed / 1 connection timeout; unchanged targeted rechecks 4/4 passed**. Tests use real Convex identity and fictional records, not mocked authentication.
 
-See `docs/M5-local-checks.json` for local results and `docs/M5-hosted-api-results.json` for the explicit not-run status. No successful hosted result is claimed.
+See `docs/M5-local-checks.json`, `docs/M5-hosted-api-results.json`, `docs/M5-hosted-integrity-results.json` and the regression/browser evidence linked below.
 
-## Acceptance execution after authorization
+## Repeatable development acceptance
 
-Verify `.env.local` selects `dev:woozy-jaguar-392` before any upload. Once M5-specific approval is received, deploy with `npx convex dev --once --env-file .env.local`; this also regenerates typed bindings. Inject the existing fictional role credentials from the secret store, set `GLARA_CONVEX_ACCEPTANCE=yes`, and run:
+Verify `.env.local` selects `dev:woozy-jaguar-392` before any upload. Under the explicit M5 development authorization, deploy with `npx convex dev --once --env-file .env.local`; this also regenerates typed bindings. Inject the existing fictional role credentials from the secret store, set `GLARA_CONVEX_ACCEPTANCE=yes`, and run:
 
 ```powershell
 npx tsx tests/support/m5-hosted-acceptance.ts
+npx tsx tests/support/m5-hosted-integrity.ts
 node tests/support/convex-hosted-acceptance.mjs
 node tests/support/m2-hosted-acceptance.mjs
 npx tsx tests/support/m3-hosted-acceptance.ts
@@ -126,7 +127,42 @@ npm run test:e2e
 
 Select unused fictional historical event days where existing accepted fixtures fill operational capacity. Do not raise production-style scheduling capacity or weaken existing assertions merely to make regression fixtures fit. Historical event dates are explicit test simulations; confirmation actors/timestamps remain real server evidence.
 
-The M5 runner includes accepted agreement, deposit/balance, simultaneous payments, reversal, extension, role attacks, physical staging/destaging, damaged returns, waiver, charge payment while asset remains in repair, paid credit, missing-item recovery and completion with a commercial warning. Browser tests exercise billing identity, agreement acceptance, deposit issuance, receipt/credit, charge review/invoicing, printable state, Sales read access and Crew denial on desktop and mobile.
+The M5 runner includes accepted agreement, deposit/balance, simultaneous payments, reversal, extension, role attacks, physical staging/destaging, damaged returns, waiver, charge payment while asset remains in repair, paid credit, missing-item recovery and completion with a commercial warning. Browser tests exercise billing identity, agreement acceptance, deposit issuance, partial payment and outstanding balance, remaining allocation and unallocated cash, credit, extension acceptance, customer-filtered AR, charge review/invoicing, printable state, Sales read access and Crew denial on desktop and mobile. Mobile assertions reject horizontal overflow. Desktop receivables and mobile invoice screenshots were also inspected for readable content, touch targets and layout.
+
+## Acceptance evidence and corrections
+
+All hosted results below use `woozy-jaguar-392` in eu-west-1. This is a development environment. Raw browser screenshots and detailed runner output stay in ignored `test-results/`; committed summaries contain no credentials or customer/payment data. Fixture identifiers in `docs/M5-hosted-fixture.json` refer only to fictional acceptance records.
+
+| Suite                                       | Final result                                                                     |
+| ------------------------------------------- | -------------------------------------------------------------------------------- |
+| M1 hosted                                   | 48 passed, 0 failed                                                              |
+| M2 hosted                                   | 20 passed, 0 failed                                                              |
+| M3 hosted lifecycle + query filters         | 16 + 5 passed, 0 failed                                                          |
+| M4 hosted inventory + quantity conservation | 25 + 7 passed, 0 failed                                                          |
+| M5 hosted lifecycle + integrity             | 15 + 14 passed, 0 failed                                                         |
+| Hosted total                                | 150 passed, 0 failed                                                             |
+| Desktop / mobile production browser         | Desktop 23/24, mobile 24/24; unchanged targeted rechecks desktop 2/2, mobile 2/2 |
+
+The hosted M1–M4 results are consolidated in [M5-regression-hosted-results.json](M5-regression-hosted-results.json). M5 evidence is in [M5-hosted-api-results.json](M5-hosted-api-results.json) and [M5-hosted-integrity-results.json](M5-hosted-integrity-results.json). Browser results are recorded in [M5-browser-results.json](M5-browser-results.json).
+
+Three **P2 product defects** were discovered and fixed during acceptance:
+
+1. **Multi-role Sales read denial.** The operational role classifier returned Designer/Crew before checking Sales assignment, causing a Sales user with both roles to lose legitimate commercial read access. Commercial scope now independently checks Sales project management or Realtor/opportunity assignment after requiring the financial role. Owner/Admin writes remain required. Two new regression cases verify allowed reads, denied writes, and denial after Sales relationships are removed. The focused suite initially failed 2 of 11 tests, then passed 11 of 11. [Initial evidence](M5-multirole-initial-results.json).
+2. **Quote input reset during loading.** The new-quote form mounted before its linked opportunity query completed; its changing React key then erased entered items. It now waits for initial opportunity data and uses the stable requested ID. The existing full sales workflow retains the exact-cents assertions and now explicitly checks that the description and unit price survive before save.
+3. **Incorrect initial opportunity owner.** The salesperson selector mounted before the authenticated viewer and owner choices loaded, selecting the first available owner rather than the Sales user. The form now waits for its starting data. Browser coverage explicitly verifies the selected salesperson before saving the deal.
+
+The first full browser run was **46 passed / 2 failed / 0 skipped**: desktop exposed the quote reset; mobile exposed the opportunity initialization race. [Initial evidence](M5-browser-initial-results.json). The backend correction was redeployed to the same development target; frontend corrections were rebuilt for the final production-build run. No financial or inventory rule was loosened.
+
+Acceptance harness corrections are recorded separately from product defects:
+
+- Initial M5 hosted run: **14 passed / 1 failed**. The completion-denial assertion ran after all inventory had already reached warehouse inspection/repair, a state M4 intentionally allows at completion. The assertion now runs while an unapproved missing item remains outstanding, and the final step still verifies completion with unpaid commercial warnings after physical reconciliation. [Initial evidence](M5-hosted-initial-results.json).
+- Initial adapted M3 historical-date run: **12 passed / 4 failed**. Its staging start used the selected historical day while the end still used today's date. Both now use the same validated event day; the failures were invalid fixture intervals and downstream lifecycle checks. [Initial evidence](M5-M3-initial-results.json).
+- Convex HTTP clients queue mutations by default. M4/M5 hosted mutation calls now explicitly use `skipQueue: true`; simultaneous test calls reach the hosted backend concurrently. Final successful results therefore verify actual hosted conflicts, not merely sequential requests.
+- Historical fictional event days avoid existing test scheduling capacity. No capacity setting was relaxed. Final hosted simulations used M5 July 18, M3 July 20, M4 July 21 and quantity July 22, 2026; browser mixed-inventory simulations use July 23/24. Confirmation actors and timestamps come from the real authenticated server context. The upstream tax-default snapshot check restores the original defaults in `finally`.
+
+The corrected-source full browser run also observed one workspace-connection timeout in the desktop Marketing denial check: after the five-second assertion deadline, only the connecting screen was visible. The unchanged test then passed twice on desktop and twice on mobile (4/4), with no retry setting or authorization assertion changed. This is retained as a P2 intermittent development-latency observation, not evidence of permitted Marketing access. Initial failure and recheck outcomes are preserved in the final browser evidence.
+
+No unresolved P0/P1 issue has been identified within the tested M5 development scope. This does not replace independent review or production readiness verification.
 
 ## Limits and deferred production dependencies
 

@@ -3,8 +3,10 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 import { operationsClient, wonFixture } from "./operations-fixture";
+import { acceptanceDate } from "./acceptance-date";
 import { day } from "../../src/lib/operations/model";
 async function main() {
+  const eventDay = acceptanceDate("GLARA_M3_EVENT_DAY", day());
   const owner = await operationsClient(),
     f = await wonFixture(owner.client),
     c = owner.client,
@@ -147,8 +149,8 @@ async function main() {
           title: "Fictional " + type,
           description: "",
           location_note: "",
-          start_at: day() + "T" + hour + ":00:00Z",
-          end_at: day() + "T" + (hour + 1) + ":00:00Z",
+          start_at: eventDay + "T" + hour + ":00:00Z",
+          end_at: eventDay + "T" + (hour + 1) + ":00:00Z",
           assigned_lead_id: f.createArgs.staging_lead_id,
         });
       } catch (error) {
@@ -215,7 +217,7 @@ async function main() {
   await check(
     "sold requires explicit destaging, completion gates preserve quote terms",
     async () => {
-      await advance("sold", day());
+      await advance("sold", eventDay);
       assert.ok(
         (await get()).attention_reasons.includes(
           "Destaging needs to be scheduled",

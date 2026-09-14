@@ -1,0 +1,594 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "build": "765c18a3180bff3df10587e1045c877a9c57242f plus regenerated bindings",
+  "stats": {
+    "startTime": "2026-09-14T13:34:59.323Z",
+    "duration": 502500.636,
+    "expected": 46,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  },
+  "results": [
+    {
+      "name": "private routes never expose their content without authentication",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1555,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "login and recovery fit desktop and mobile viewports",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 667,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "Convex Auth login, navigation and logout",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 4050,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "sales are denied owner reports even through a direct URL",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3479,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "invalid credentials show a safe error and recovery does not enumerate accounts",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1149,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "private routes never expose their content without authentication",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1387,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "login and recovery fit desktop and mobile viewports",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 661,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "Convex Auth login, navigation and logout",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 4323,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "sales are denied owner reports even through a direct URL",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 2471,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "invalid credentials show a safe error and recovery does not enumerate accounts",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1287,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "billing identity, accepted agreement, deposit, payment receipt and credit",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 31943,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "damage review, approved charge invoice and restricted-role denial",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 18070,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "billing identity, accepted agreement, deposit, payment receipt and credit",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 32352,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "damage review, approved charge invoice and restricted-role denial",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 17817,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 23006,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "cancel and reschedule preserve the prospect next action and visible history",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 8925,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 21816,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "cancel and reschedule preserve the prospect next action and visible history",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 8151,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "owner workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 4089,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "sales workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 4058,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "admin workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3939,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "marketing workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3763,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "designer workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 2465,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "staging_crew workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 2460,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "unassigned workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1652,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "archived workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1704,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "owner workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3884,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "sales workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3893,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "admin workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3928,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "marketing workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3821,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "designer workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 2477,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "staging_crew workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 2448,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "unassigned workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1632,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "archived workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 1656,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 56916,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 59441,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "catalog receipt, designer reservation, crew partial picking and inspection",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 24971,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "catalog receipt, designer reservation, crew partial picking and inspection",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 25649,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 25881,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 27935,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "property to opportunity, consultation, exact quote and won deal",
+      "project": "desktop",
+      "status": "unexpected",
+      "attempts": [
+        {
+          "status": "failed",
+          "duration_ms": 13803,
+          "errors": [
+            "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /\\/quotes\\/[a-z0-9]+$/\nReceived string:  \"http://localhost:3000/quotes/new?opportunity=m178x210cvewg96nnhmc4t1sfn8ecmnt\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    14 × locator resolved to <html lang=\"en-CA\">…</html>\n       - unexpected value \"http://localhost:3000/quotes/new?opportunity=m178x210cvewg96nnhmc4t1sfn8ecmnt\"\n\n\n  122 |     });\n  123 |     await page.getByRole(\"button\", { name: \"Save quote\", exact: true }).click();\n> 124 |     await expect(page).toHaveURL(/\\/quotes\\/[a-z0-9]+$/);\n      |                        ^\n  125 |     await expect(page.getByText(\"$210.02\", { exact: true })).toBeVisible();\n  126 |     await page\n  127 |       .getByRole(\"button\", { name: \"Confirm quote status\", exact: true })\n    at D:\\Glara Home Staging 2026\\GLARA OS\\tests\\e2e\\sales.spec.ts:124:24"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marketing cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3683,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "designer cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3527,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "staging_crew cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3497,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "property to opportunity, consultation, exact quote and won deal",
+      "project": "mobile",
+      "status": "unexpected",
+      "attempts": [
+        {
+          "status": "failed",
+          "duration_ms": 10324,
+          "errors": [
+            "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /\\/opportunities\\/[a-z0-9]+$/\nReceived string:  \"http://localhost:3000/opportunities/new?property=m57ezspsy9nkd90k2nb172dav18ed9jj\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    14 × locator resolved to <html lang=\"en-CA\">…</html>\n       - unexpected value \"http://localhost:3000/opportunities/new?property=m57ezspsy9nkd90k2nb172dav18ed9jj\"\n\n\n  79 |       .getByRole(\"button\", { name: \"Save opportunity\", exact: true })\n  80 |       .click();\n> 81 |     await expect(page).toHaveURL(/\\/opportunities\\/[a-z0-9]+$/);\n     |                        ^\n  82 |     const opportunityUrl = page.url();\n  83 |     for (const stage of [\"contacted\", \"interested\", \"consultation\"]) {\n  84 |       await page\n    at D:\\Glara Home Staging 2026\\GLARA OS\\tests\\e2e\\sales.spec.ts:81:24"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marketing cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 4153,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "designer cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3559,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "staging_crew cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "duration_ms": 3530,
+          "errors": []
+        }
+      ]
+    }
+  ]
+}

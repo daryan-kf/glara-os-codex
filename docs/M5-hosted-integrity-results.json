@@ -1,0 +1,65 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T13:45:35.531Z",
+  "results": [
+    {
+      "name": "source quote from a different project opportunity is rejected",
+      "passed": true
+    },
+    {
+      "name": "simultaneous agreement creation has unique independent numbers",
+      "passed": true
+    },
+    {
+      "name": "accepted agreement edits and forged acceptance actor are rejected",
+      "passed": true
+    },
+    {
+      "name": "simultaneous invoice creation has unique numbers and exact cents",
+      "passed": true
+    },
+    {
+      "name": "Admin edits draft then issues; issued terms cannot be rewritten",
+      "passed": true
+    },
+    {
+      "name": "void retains items and original number, blocks payments on void",
+      "passed": true
+    },
+    {
+      "name": "upstream Realtor Property customer tax defaults and assignments do not change historical snapshots",
+      "passed": true
+    },
+    {
+      "name": "replacement supersedes accepted agreement while retaining its original terms",
+      "passed": true
+    },
+    {
+      "name": "payment numbering concurrency and authenticated Admin actor",
+      "passed": true
+    },
+    {
+      "name": "partial payment status and over-allocation denial preserve balance",
+      "passed": true
+    },
+    {
+      "name": "concurrent credits preserve immutable total and cannot exceed invoice amount",
+      "passed": true
+    },
+    {
+      "name": "simultaneous overlapping extension proposals accept only one original period",
+      "passed": true
+    },
+    {
+      "name": "operational projections never include commercial values or Bill-To",
+      "passed": true
+    },
+    {
+      "name": "no-charge decision preserves M4 incident and creates no invoice",
+      "passed": true
+    }
+  ],
+  "passed": 14,
+  "failed": 0,
+  "completed": true
+}
