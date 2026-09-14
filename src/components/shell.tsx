@@ -1,4 +1,5 @@
 "use client";
+import { InventorySearchResults } from "@/components/inventory/search";
 import { ProjectSearchResults } from "@/components/operations/list";
 import { SalesSearchResults } from "@/components/sales/search";
 import { reloadAfterAuth } from "@/lib/auth-navigation";
@@ -119,7 +120,8 @@ function SearchShell({ roles }: { roles: Role[] }) {
           Search workspace
         </DialogTitle>
         <DialogDescription className="mb-5 mt-2 text-sm text-muted-foreground">
-          Find a module or search your realtor relationships.
+          Find modules, relationships, properties, projects, products, and
+          assets.
         </DialogDescription>
         <label htmlFor="global-search" className="sr-only">
           Search modules and realtors
@@ -151,6 +153,16 @@ function SearchShell({ roles }: { roles: Role[] }) {
           <ProjectSearchResults
             query={query}
             enabled={open && canAccess(roles, "projects")}
+            onSelect={() => setOpen(false)}
+          />
+          <InventorySearchResults
+            query={query}
+            enabled={
+              open &&
+              roles.some((r) =>
+                ["owner", "admin", "designer", "staging_crew"].includes(r),
+              )
+            }
             onSelect={() => setOpen(false)}
           />
           <SalesSearchResults

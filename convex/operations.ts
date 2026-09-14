@@ -1,3 +1,4 @@
+import { inventoryGate, cancelInventory } from "./inventoryCore";
 import { vancouverUtc } from "../src/lib/operations/time";
 import { query, mutation, type MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
@@ -586,6 +587,13 @@ export const transition = mutation({
         "INVALID_TRANSITION",
         "Use the scheduling form to set a date and check conflicts.",
       );
+    if (
+      a.status === "staged" ||
+      a.status === "completed" ||
+      a.status === "cancelled"
+    )
+      if (a.status === "cancelled") await cancelInventory(ctx, p._id, u.userId);
+      else await inventoryGate(ctx, p._id, a.status);
     if (a.status === "ready_to_schedule")
       await core.gate(ctx, p, "pre_staging");
     if (a.status === "staging") await core.gate(ctx, p, "pre_staging");
@@ -738,6 +746,15 @@ export const saveRoom = mutation({
       !["planning", "designing", "ready_to_schedule"].includes(p.status)
     )
       deny("PLANNING_GATE", "Room scope is fixed once staging is scheduled.");
+    if (old && (a.archive || data.staging_scope === "no_staging")) {
+      const inventory = await ctx.db
+        .query("inventory_reservations")
+        .withIndex("by_room", (q) =>
+          q.eq("project_room_id", old._id).eq("active", true),
+        )
+        .first();
+      if (inventory) deny("DEPENDENCY", "Reconcile room inventory first.");
+    }
     if (a.archive && old) {
       const pending = await ctx.db
         .query("activities")
@@ -1254,6 +1271,7 @@ export const archive = mutation({
       );
     if ((await core.events(ctx, p._id)).some((e) => e.status === "scheduled"))
       deny("DEPENDENCY", "Cancel outstanding events first.");
+    if (!a.restore) await inventoryGate(ctx, p._id, "archive");
     if (a.restore) {
       const other = await ctx.db
         .query("projects")

@@ -1,4 +1,5 @@
 "use client";
+import { ProjectInventoryLink } from "@/components/inventory/project";
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery, useMutation } from "convex/react";
@@ -247,13 +248,7 @@ function OperationalDetail({ p }: { p: Project }) {
           <Notes p={p} />
         </div>
         {p.access === "manage" && <Notes p={p} audit />}
-        <Panel title="Furniture & Inventory — available in M4">
-          <p className="text-sm text-muted-foreground">
-            Inventory assignments will be available in M4. Rooms already have
-            stable records for that handoff. Photo uploads are not enabled in
-            M3.
-          </p>
-        </Panel>
+        <ProjectInventoryLink id={p.id} />
       </div>
     </>
   );

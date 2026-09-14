@@ -27,6 +27,12 @@ export {
   vancouverUtc as toUtc,
 } from "@/lib/operations/time";
 const messages: Record<string, string> = {
+  STOCK_CONFLICT:
+    "Inventory is unavailable or committed to another booking. Refresh availability and adjust the quantity or dates.",
+  INVENTORY_GATE:
+    "Reconcile inventory first: install or release planned items, receive returns, and resolve or approve exceptions.",
+  IDENTITY_MISMATCH:
+    "The asset number does not match this line. Check the label on the physical item.",
   FORBIDDEN: "Your account cannot perform this action.",
   CONFLICT: "This record changed. Reload the page before saving.",
   UNAVAILABLE: "This record is closed, archived or unavailable.",
@@ -67,11 +73,13 @@ export function Form({
   onSave,
   submit,
   version,
+  successMessage = "Saved successfully.",
 }: {
   children: React.ReactNode;
   onSave: (data: Record<string, string>, version: number) => Promise<unknown>;
   submit: string;
   version?: number;
+  successMessage?: string;
 }) {
   const [loaded, setLoaded] = useState(version ?? 0),
     [pending, setPending] = useState(false),
@@ -112,7 +120,7 @@ export function Form({
       )}
       {saved && (
         <p role="status" className="text-sm text-primary">
-          Saved successfully.
+          {successMessage}
         </p>
       )}
       <Button type="submit" disabled={pending}>

@@ -2,6 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { authTables } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { operationsTables } from "./operationsSchema";
+import { inventoryTables } from "./inventorySchema";
 const nullable = v.union(v.string(), v.null());
 const stamps = {
   created_at: v.string(),
@@ -19,6 +20,7 @@ export const roleValue = v.union(
 export default defineSchema({
   ...authTables,
   ...operationsTables,
+  ...inventoryTables,
   profiles: defineTable({
     userId: v.id("users"),
     display_name: v.string(),

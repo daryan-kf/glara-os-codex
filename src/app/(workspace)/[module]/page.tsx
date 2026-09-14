@@ -1,3 +1,4 @@
+import { InventoryAttention } from "@/components/inventory/catalog";
 import { OperationsToday } from "@/components/operations/list";
 import { SalesSummary } from "@/components/sales/opportunities";
 import Link from "next/link";
@@ -83,6 +84,10 @@ export default async function ModulePage({
         />
         <StatusBadge>Connected workspace</StatusBadge>
       </div>
+      {moduleKey === "dashboard" &&
+        user.roles.some((r) => ["owner", "admin", "designer"].includes(r)) && (
+          <InventoryAttention />
+        )}
       {moduleKey === "dashboard" && canAccess(user.roles, "projects") && (
         <OperationsToday />
       )}
