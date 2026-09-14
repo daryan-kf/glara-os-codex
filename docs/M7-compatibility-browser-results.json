@@ -1,0 +1,101 @@
+{
+  "phase": "Final M7 frontend against existing M6 backend before M7 deployment; not M7 functional acceptance",
+  "stats": {
+    "startTime": "2026-09-14T23:14:08.752Z",
+    "duration": 20449.886,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "name": "private routes never expose their content without authentication",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1628
+        }
+      ]
+    },
+    {
+      "name": "login and recovery fit desktop and mobile viewports",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 692
+        }
+      ]
+    },
+    {
+      "name": "Convex Auth login, navigation and logout",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3846
+        }
+      ]
+    },
+    {
+      "name": "sales are denied owner reports even through a direct URL",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2479
+        }
+      ]
+    },
+    {
+      "name": "private routes never expose their content without authentication",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1416
+        }
+      ]
+    },
+    {
+      "name": "login and recovery fit desktop and mobile viewports",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 704
+        }
+      ]
+    },
+    {
+      "name": "Convex Auth login, navigation and logout",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4717
+        }
+      ]
+    },
+    {
+      "name": "sales are denied owner reports even through a direct URL",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3012
+        }
+      ]
+    }
+  ]
+}

@@ -163,6 +163,7 @@ export const commercialTables = {
     request_key: v.string(),
   })
     .index("by_project", ["project_id"])
+    .index("by_customer", ["customer_id"])
     .index("by_received", ["received_date"])
     .index("by_request", ["request_key"])
     .index("by_number", ["number"]),

@@ -1,3 +1,4 @@
+import { touched as automationTouched } from "./automationCore";
 import {
   mutation as baseMutation,
   internalMutation as baseInternalMutation,
@@ -32,6 +33,7 @@ async function instrument(
   args: Record<string, unknown>,
 ) {
   const touched = new Map<string, Touch>();
+  const automationWrites = new Map<string, string>();
   const touch = async (id: string, table: SourceTable, inserted = false) => {
     if (!touched.has(id)) {
       const stored = inserted ? [] : await sourceFacts(ctx, table, id);
@@ -56,6 +58,8 @@ async function instrument(
             target,
             parameters,
           );
+          if (typeof result === "string" && typeof parameters[0] === "string")
+            automationWrites.set(result, parameters[0]);
           if (
             typeof result === "string" &&
             sourceTables.includes(parameters[0] as SourceTable)
@@ -67,6 +71,32 @@ async function instrument(
         return async (...parameters: unknown[]) => {
           const id = parameters[0];
           if (typeof id === "string") {
+            for (const name of [
+              "profiles",
+              "realtors",
+              "opportunities",
+              "quotes",
+              "projects",
+              "activities",
+              "inventory_assets",
+              "inventory_stock",
+              "inventory_reservations",
+              "inventory_damage",
+              "invoices",
+              "agreements",
+              "payments",
+              "package_extensions",
+              "damage_charge_assessments",
+              "commercial_customers",
+              "operations_events",
+              "project_checklist_items",
+              "payment_allocations",
+              "payment_reversals",
+              "credit_notes",
+              "inventory_movements",
+              "inventory_inspections",
+            ] as const)
+              if (ctx.db.normalizeId(name, id)) automationWrites.set(id, name);
             const table = sourceOf(ctx, id);
             if (table) await touch(id, table);
           }
@@ -210,6 +240,9 @@ async function instrument(
     if (state) await ctx.db.patch(state._id, value);
     else await ctx.db.insert("analytics_state", value);
   }
+  for (const [id, table] of automationWrites)
+    if (!table.startsWith("automation_") && table !== "notifications")
+      await automationTouched(ctx, table, id);
   return result;
 }
 // The builder casts preserve Convex's external validator inference across this registration wrapper.

@@ -85,6 +85,12 @@ export const modules = {
     detail:
       "Understand revenue, conversion, capacity, and the relationships driving repeat business.",
   },
+  automation: {
+    title: "Automation",
+    description: "Reliable follow-through.",
+    milestone: "M7",
+    detail: "Versioned rules, internal tasks, and accountable outcomes.",
+  },
   notifications: {
     title: "Notifications",
     description: "The right update at the right time.",
@@ -138,6 +144,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   admin: [
+    "automation",
     "inventory",
     "opportunities",
     "dashboard",

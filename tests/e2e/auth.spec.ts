@@ -15,6 +15,7 @@ const protectedRoutes = [
   "settings",
   "profile",
   "notifications",
+  "automation",
 ];
 test("private routes never expose their content without authentication", async ({
   page,

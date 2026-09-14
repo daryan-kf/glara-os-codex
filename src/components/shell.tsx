@@ -8,6 +8,8 @@ import { CrmQuickCreate } from "@/components/crm/forms";
 import { canWriteCrm } from "@/lib/crm/model";
 
 import Link from "next/link";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
@@ -57,11 +59,26 @@ const icons = {
   payments: CreditCard,
   marketing: Megaphone,
   reports: ChartNoAxesCombined,
+  automation: Layers,
   notifications: Bell,
   settings: Settings,
   profile: UserRound,
 };
-type Identity = { name: string; roles: Role[]; email: string };
+type Identity = {
+  name: string;
+  roles: Role[];
+  email: string;
+  automation_version?: number;
+};
+function NotificationBadge() {
+  const badge = useQuery(api.automation.notificationBadge, {});
+  return badge && badge.count > 0 ? (
+    <span className="rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
+      {badge.count}
+      {badge.partial ? "+" : ""}
+    </span>
+  ) : null;
+}
 function Navigation({ roles, close }: { roles: Role[]; close?: () => void }) {
   const path = usePathname();
   return (
@@ -343,6 +360,7 @@ export function Shell({
               className="flex size-11 items-center justify-center rounded-lg hover:bg-muted"
             >
               <Bell className="size-5" />
+              {user.automation_version === 1 && <NotificationBadge />}
             </Link>
             <Link
               href="/profile"

@@ -1,3 +1,4 @@
+import { automationTables } from "./automationSchema";
 import { eventContextFields, analyticsTables } from "./analyticsSchema";
 import { commercialTables } from "./commercialSchema";
 import { defineSchema, defineTable } from "convex/server";
@@ -21,6 +22,7 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  ...automationTables,
   ...analyticsTables,
   ...operationsTables,
   ...inventoryTables,
@@ -92,6 +94,10 @@ export default defineSchema({
     ...stamps,
   }).index("by_realtor", ["realtor_id"]),
   activities: defineTable({
+    automation_key: v.optional(v.string()),
+    automation_domain: v.optional(v.string()),
+    automation_rule_id: v.optional(v.id("automation_rules")),
+    actor_kind: v.optional(v.literal("system")),
     ...eventContextFields,
     project_id: v.optional(v.id("projects")),
     project_room_id: v.optional(v.id("project_rooms")),

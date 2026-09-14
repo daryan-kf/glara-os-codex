@@ -1,3 +1,4 @@
+import { canSee, actionRelevant } from "./automationSources";
 import { v } from "convex/values";
 import {
   makeFunctionReference,
@@ -101,7 +102,10 @@ export const actionCenter = query({
         .take(101);
       partial ||= due.length > 100;
       for (const task of due.slice(0, 100))
-        if (manager || task.assigned_to === user.userId)
+        if (
+          (manager || task.assigned_to === user.userId) &&
+          !task.automation_key
+        )
           actions.push({
             id: task._id,
             domain: "sales",
@@ -269,6 +273,76 @@ export const actionCenter = query({
             due: e.new_end_date,
           });
       }
+    }
+    const automated = manager
+      ? await ctx.db
+          .query("automation_actions")
+          .withIndex("by_status", (q) => q.eq("status", "active"))
+          .take(51)
+      : await ctx.db
+          .query("automation_actions")
+          .withIndex("by_assigned", (q) =>
+            q.eq("assigned_to", user.userId).eq("status", "active"),
+          )
+          .take(51);
+    partial ||= automated.length > 50;
+    for (const item of automated.slice(0, 50))
+      if (
+        (await canSee(ctx, user, item)) &&
+        (await actionRelevant(ctx, item))
+      ) {
+        for (let i = actions.length - 1; i >= 0; i--)
+          if (
+            actions[i].id === item.entity_id ||
+            actions[i].id === item.activity_id
+          )
+            actions.splice(i, 1);
+        if (item.snoozed_until <= Date.now() && !item.task_completed_at)
+          actions.push({
+            id: item._id,
+            domain: item.domain,
+            severity: item.priority === "urgent" ? "red" : "amber",
+            label: "Automated next action",
+            reason: item.reason,
+            href: "/notifications",
+            impact_cents: manager || sales ? item.impact_cents : "0",
+            due: new Date(item.created_at).toISOString(),
+          });
+      }
+    if (manager) {
+      const failed = await ctx.db
+        .query("automation_queue")
+        .withIndex("by_due", (q) => q.eq("status", "failed"))
+        .first();
+      if (failed)
+        actions.push({
+          id: failed._id,
+          domain: "management",
+          severity: "red",
+          label: "Automation needs attention",
+          reason:
+            "A rule evaluation failed. Review its safe retry in Automation Center.",
+          href: "/automation",
+          impact_cents: "0",
+          due: new Date(failed.last_attempt ?? Date.now()).toISOString(),
+        });
+      const limited = await ctx.db
+        .query("automation_limits")
+        .withIndex("by_day_paused", (q) =>
+          q.eq("day", day()).eq("paused", true),
+        )
+        .first();
+      if (limited)
+        actions.push({
+          id: limited._id,
+          domain: "management",
+          severity: "red",
+          label: "Automation volume limit reached",
+          reason: "Review the current rule backlog and action limit.",
+          href: "/automation",
+          impact_cents: "0",
+          due: day(),
+        });
     }
     actions.sort((a, b) =>
       a.severity !== b.severity

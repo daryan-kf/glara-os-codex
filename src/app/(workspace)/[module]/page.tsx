@@ -1,3 +1,7 @@
+import {
+  AutomationCenter,
+  NotificationCenter,
+} from "@/components/automation/center";
 import { AnalyticsDashboard } from "@/components/analytics/dashboard";
 import { notFound } from "next/navigation";
 import { modules, type Module } from "@/lib/permissions";
@@ -30,6 +34,18 @@ export default async function ModulePage({
   const moduleKey = key as Module,
     user = await requireModule(moduleKey),
     info = modules[moduleKey];
+  if (
+    (moduleKey === "automation" || moduleKey === "notifications") &&
+    user.automation_version !== 1
+  )
+    return (
+      <EmptyState
+        title="Automation deployment pending"
+        description="The M7 development backend has not been activated yet."
+      />
+    );
+  if (moduleKey === "automation") return <AutomationCenter />;
+  if (moduleKey === "notifications") return <NotificationCenter />;
   if (moduleKey === "dashboard" || moduleKey === "reports")
     return (
       <AnalyticsDashboard

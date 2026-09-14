@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-09-14T23:15:53.347Z",
+  "node_tests": {
+    "passed": 13,
+    "failed": 0
+  },
+  "vitest": {
+    "files": 17,
+    "passed": 270,
+    "failed": 0,
+    "m7_tests": 20,
+    "duration_seconds": 9.82
+  },
+  "typecheck": "passed",
+  "eslint": "passed; zero warnings",
+  "prettier": "passed",
+  "next_production_build": "passed",
+  "dependency_audit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "compatibility_browser": {
+    "passed": 8,
+    "failed": 0,
+    "duration_seconds": 20.4,
+    "scope": "Existing M6 backend; desktop and mobile; no email delivery exercised"
+  },
+  "hosted_m7": "not run; deployment approval pending",
+  "hosted_m1_m6_regression": "not run for M7",
+  "m7_functional_browser": "not run; deployment approval pending",
+  "production": "untouched",
+  "m8": "not started",
+  "secret_review": {
+    "checked_files": 300,
+    "credential_pattern_or_known_secret_matches": [],
+    "tracked_environment_files": [],
+    "known_fictional_passwords_checked": 8,
+    "scope": "tracked and nonignored files; known environment secrets and fictional acceptance passwords compared without disclosure"
+  }
+}
