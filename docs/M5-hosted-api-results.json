@@ -1,0 +1,7 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "status": "NOT RUN — M5 deployment approval pending",
+  "completed": false,
+  "results": [],
+  "reason": "Automatic approval review rejected M5 source upload because prior explicit deployment authorization covered M4 only. M5-specific approval has been requested."
+}

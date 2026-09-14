@@ -1,3 +1,4 @@
+import { CommercialSummary } from "@/components/commercial/receivables";
 import { InventoryAttention } from "@/components/inventory/catalog";
 import { OperationsToday } from "@/components/operations/list";
 import { SalesSummary } from "@/components/sales/opportunities";
@@ -87,6 +88,10 @@ export default async function ModulePage({
       {moduleKey === "dashboard" &&
         user.roles.some((r) => ["owner", "admin", "designer"].includes(r)) && (
           <InventoryAttention />
+        )}
+      {moduleKey === "dashboard" &&
+        user.roles.some((r) => ["owner", "admin"].includes(r)) && (
+          <CommercialSummary />
         )}
       {moduleKey === "dashboard" && canAccess(user.roles, "projects") && (
         <OperationsToday />

@@ -1,3 +1,4 @@
+import { assertEndChange } from "./commercialCore";
 import { inventoryGate, cancelInventory } from "./inventoryCore";
 import { vancouverUtc } from "../src/lib/operations/time";
 import { query, mutation, type MutationCtx } from "./_generated/server";
@@ -513,6 +514,12 @@ export const update = mutation({
     core.revision(p, a.version);
     const data = core.parse(projectInput, a.input),
       config = await core.settings(ctx);
+    await assertEndChange(
+      ctx,
+      p._id,
+      data.planned_end_date,
+      p.planned_end_date,
+    );
     if (!config.package_types.includes(data.package_type))
       deny("INVALID_INPUT", "Select a configured package.");
     const staging = (await core.events(ctx, p._id)).find(

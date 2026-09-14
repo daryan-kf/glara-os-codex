@@ -1,7 +1,7 @@
 {
   "name": "glara-os",
   "version": "0.1.0",
-  "description": "Private operating system for Glara Home Staging — M4 Inventory Management",
+  "description": "Private operating system for Glara Home Staging — M5 Commercial Operations",
   "scripts": {
     "start": "next start",
     "lint": "eslint . --max-warnings=0",

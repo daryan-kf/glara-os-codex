@@ -1,3 +1,4 @@
+import { commercialTables } from "./commercialSchema";
 import { defineSchema, defineTable } from "convex/server";
 import { authTables } from "@convex-dev/auth/server";
 import { v } from "convex/values";
@@ -21,6 +22,7 @@ export default defineSchema({
   ...authTables,
   ...operationsTables,
   ...inventoryTables,
+  ...commercialTables,
   profiles: defineTable({
     userId: v.id("users"),
     display_name: v.string(),

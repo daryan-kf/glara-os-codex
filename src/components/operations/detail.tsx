@@ -1,4 +1,5 @@
 "use client";
+import { CommercialProjectLink } from "@/components/commercial/project";
 import { ProjectInventoryLink } from "@/components/inventory/project";
 import { useState } from "react";
 import Link from "next/link";
@@ -248,6 +249,7 @@ function OperationalDetail({ p }: { p: Project }) {
           <Notes p={p} />
         </div>
         {p.access === "manage" && <Notes p={p} audit />}
+        <CommercialProjectLink id={p.id} />
         <ProjectInventoryLink id={p.id} />
       </div>
     </>

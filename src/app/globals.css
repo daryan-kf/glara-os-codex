@@ -56,3 +56,30 @@
     scroll-behavior: auto !important;
   }
 }
+
+@media print {
+  body:has(.commercial-document) * {
+    visibility: hidden;
+  }
+  body:has(.commercial-document) .commercial-document,
+  body:has(.commercial-document) .commercial-document * {
+    visibility: visible;
+  }
+  .commercial-document {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border: 0;
+    padding: 12mm;
+    color: #000;
+    background: #fff;
+  }
+  .commercial-document a {
+    color: #000;
+    text-decoration: none;
+  }
+  .commercial-document tr,
+  .commercial-document section {
+    break-inside: avoid;
+  }
+}

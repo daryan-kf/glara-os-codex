@@ -173,7 +173,8 @@ export const inventoryTables = {
   })
     .index("by_product", ["product_id"])
     .index("by_asset", ["asset_id"])
-    .index("by_project", ["project_id"]),
+    .index("by_project", ["project_id"])
+    .index("by_project_type", ["project_id", "movement_type"]),
   inventory_inspections: defineTable({
     product_id: v.id("products"),
     asset_id: asset,

@@ -1,6 +1,6 @@
 # Glara OS
 
-Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM, M3 Staging Operations and M4 Inventory Management are implemented. M4 passed its development gate; see [the M4 report](docs/M4-report.md) for the exact evidence, limits and deferred production requirements. M5 and later modules remain deferred.
+Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM, M3 Staging Operations and M4 Inventory Management are implemented. M4 passed its development gate; see [the M4 report](docs/M4-report.md) for the exact evidence, limits and deferred production requirements. M5 Commercial Operations is implemented locally and its development gate is pending explicit M5 deployment approval and hosted/browser acceptance; see [the M5 report](docs/M5-report.md). M6 has not started.
 
 ## Local setup
 
@@ -145,3 +145,9 @@ M4 uses existing Convex sessions and server-side project access. Owner/Admin man
 Run local regression with `npm run test`, `npm run typecheck`, `npm run lint`, `npm run format:check` and `npm run build`. Hosted M4 acceptance is `npx tsx tests/support/m4-hosted-acceptance.ts`; it requires the existing fictional identity opt-in and the explicitly authorized development deployment. Additional hosted quantity acceptance is `npx tsx tests/support/m4-quantity-hosted.ts`. Browser coverage is in `tests/e2e/inventory.spec.ts` and `tests/e2e/inventory-mixed.spec.ts`. Never run a production build over a running Next server: stop it first, build, then restart.
 
 Both M4 attachments (sections 1–130) are covered by the report, including explicit limits and optional features. No M5 feature is implemented. Invitation/recovery email delivery, production auth/origin verification and sender/provider configuration remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
+
+## M5 commercial operations
+
+Owner/Admin can manage billing customers and defaults under Payments → Billing customers & defaults. Open a Project → Commercial for agreements, source/manual invoices, received payments, extensions and inventory-charge assessments. Assigned Sales has read-only commercial access. Designer, Crew and Marketing are denied commercial data. All issued amounts are snapshots and balances derive from immutable payment/credit records. No email or money transfer is performed by these workflows.
+
+The M5 backend must be deployed to your authorized development environment before running the updated frontend. The existing shared deployment remains on its previously approved version until M5-specific upload approval and acceptance are completed. No additional environment secret is required for M5.
