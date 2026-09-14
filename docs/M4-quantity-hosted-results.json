@@ -1,0 +1,34 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "executedAt": "2026-09-14T07:45:48.348Z",
+  "results": [
+    {
+      "name": "30 received, A10 and B8 reserved, 12 free without physical depletion",
+      "passed": true
+    },
+    {
+      "name": "over-reservation rejected against combined project demand",
+      "passed": true
+    },
+    {
+      "name": "picking and installation preserve B's eight-unit reservation without double subtraction",
+      "passed": true
+    },
+    {
+      "name": "nine returned and one missing remain explicit; unreconciled completion denied",
+      "passed": true
+    },
+    {
+      "name": "recovery and inspections restore thirty physical units; B still protects eight",
+      "passed": true
+    },
+    {
+      "name": "cancellation releases B's reservation without changing physical stock",
+      "passed": true
+    },
+    {
+      "name": "every quantity bucket reconciles exactly to the append-only hosted ledger",
+      "passed": true
+    }
+  ]
+}

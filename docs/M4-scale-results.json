@@ -1,0 +1,45 @@
+{
+  "environment": "convex-test with default Convex transaction limits enabled; local emulator timing, not hosted latency",
+  "products": 1000,
+  "assets": 3000,
+  "locations": 5,
+  "historicalMovements": 1000,
+  "activeReservations": 50,
+  "measurements": [
+    {
+      "query": "catalog page",
+      "milliseconds": 46,
+      "bytes": 5113
+    },
+    {
+      "query": "catalog next page",
+      "milliseconds": 47,
+      "bytes": 5143
+    },
+    {
+      "query": "exact SKU search",
+      "milliseconds": 8,
+      "bytes": 164
+    },
+    {
+      "query": "product 360",
+      "milliseconds": 7,
+      "bytes": 1214
+    },
+    {
+      "query": "asset lookup",
+      "milliseconds": 9,
+      "bytes": 143
+    },
+    {
+      "query": "ledger page",
+      "milliseconds": 5,
+      "bytes": 11050
+    },
+    {
+      "query": "project inventory",
+      "milliseconds": 45,
+      "bytes": 46436
+    }
+  ]
+}

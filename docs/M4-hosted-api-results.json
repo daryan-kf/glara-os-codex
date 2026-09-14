@@ -1,0 +1,106 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "executedAt": "2026-09-14T07:52:46.450Z",
+  "results": [
+    {
+      "name": "anonymous inventory reads denied",
+      "passed": true
+    },
+    {
+      "name": "sales cannot read the inventory catalog",
+      "passed": true
+    },
+    {
+      "name": "marketing cannot read the inventory catalog",
+      "passed": true
+    },
+    {
+      "name": "staging_crew cannot read the inventory catalog",
+      "passed": true
+    },
+    {
+      "name": "unassigned cannot read the inventory catalog",
+      "passed": true
+    },
+    {
+      "name": "archived cannot read the inventory catalog",
+      "passed": true
+    },
+    {
+      "name": "assigned designer has nonfinancial inventory access and no stock write privilege",
+      "passed": true
+    },
+    {
+      "name": "assigned crew can read project pick lists without commercial fields",
+      "passed": true
+    },
+    {
+      "name": "concurrent reservations on different projects cannot exceed stock",
+      "passed": true
+    },
+    {
+      "name": "SKU normalization and uniqueness enforced server-side",
+      "passed": true
+    },
+    {
+      "name": "serialized date overlap and inclusive boundary protection",
+      "passed": true
+    },
+    {
+      "name": "nonoverlapping future asset reservation is accepted",
+      "passed": true
+    },
+    {
+      "name": "reserved asset cannot be sold",
+      "passed": true
+    },
+    {
+      "name": "hosted SKU and asset global search enforce role isolation",
+      "passed": true
+    },
+    {
+      "name": "direct inventory mutation attacks are rejected for restricted roles",
+      "passed": true
+    },
+    {
+      "name": "hosted concurrent serialized transfers preserve one location and identity",
+      "passed": true
+    },
+    {
+      "name": "incorrect asset identity is rejected before picking",
+      "passed": true
+    },
+    {
+      "name": "partial pick preserves remaining quantity and rejects stale replay",
+      "passed": true
+    },
+    {
+      "name": "explicit installation updates asset whereabouts and staging use count",
+      "passed": true
+    },
+    {
+      "name": "destaging receipts enter inspection and remain unavailable",
+      "passed": true
+    },
+    {
+      "name": "project cannot archive while care holds remain",
+      "passed": true
+    },
+    {
+      "name": "owner reconciles missing stock and repairs damaged returns before completing the project",
+      "passed": true
+    },
+    {
+      "name": "ledger is append-only, conserves quantity, and attributes authenticated actor",
+      "passed": true
+    },
+    {
+      "name": "archival preserves project inventory history",
+      "passed": true
+    },
+    {
+      "name": "cancelling an unpicked project releases its stock automatically",
+      "passed": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Glara OS
 
-Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM and M3 Staging Operations are implemented. M4 and later modules remain deferred. See [the M3 report](docs/M3-report.md) for the latest architecture, acceptance and operational limits.
+Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM, M3 Staging Operations and M4 Inventory Management are implemented. M4 passed its development gate; see [the M4 report](docs/M4-report.md) for the exact evidence, limits and deferred production requirements. M5 and later modules remain deferred.
 
 ## Local setup
 
@@ -107,7 +107,7 @@ Current CRM filtering/derived follow-up sorting performs bounded scans (explicit
 
 The old Supabase project is untouched. Historical reports describe that backend and do not certify Convex. See [Convex migration acceptance](docs/convex-migration-report.md) for current evidence. Full rollback baseline: commit `a6ee904`; use a separate checkout with its original lockfile/configuration. That historical rollback baseline predates M2; the current repository includes M2 and M3.
 
-The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 still requires explicit authorization.
+The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 was subsequently authorized. Do not begin M5.
 
 ## M2 Sales CRM development
 
@@ -128,3 +128,20 @@ Owner/Admin can create a staging project from a won opportunity, then manage roo
 Deploy additive M3 schema/functions with `npx convex dev --once --env-file .env.local` against your authorized development target. No M3 backfill or new environment variable is required. The first project safely creates the default checklist template; Owner/Admin can configure it and capacity at `/projects/settings`. Event inputs/displays use Vancouver time; timestamps are stored in UTC.
 
 With the existing fictional acceptance environment, run `npx tsx tests/support/m3-hosted-acceptance.ts` and `npm run test:e2e`. The hosted M3 runner is guarded to the named development deployment. Browser tests cancel/archive their fictional projects while preserving commercial/audit history. Stop any running Next production server before building or running the standard browser runner. Production requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
+
+## M4 Inventory development
+
+Read [the M4 report](docs/M4-report.md) before release. This milestone adds products, serialized assets, quantity stock, configurable categories and locations, date-aware room reservations, picking, installation, returns, inspection, damage/missing records, transfers, retail availability and an immutable movement ledger. No new package, secret or external integration is needed.
+
+1. Sign in as Owner/Admin. Open Inventory → Categories & locations, and configure the actual categories and source locations.
+2. Create a Product with an explicit SKU and serialized/quantity tracking. Each variation is a separate SKU. Receive physical inventory with a location, condition and reason.
+3. Open an assigned Project → Inventory. Designers or Owner/Admin choose a room, source and inclusive reservation dates; pick dates must fall within that window. Planned demand does not allocate inventory.
+4. Assigned crew use the mobile Pick list, confirm quantities or asset numbers, and explicitly record installation. Unused picked items can return directly; installed pieces require the destaging workflow.
+5. Returns enter inspection. Owner/Admin records inspection, cleaning/repair release, missing recovery or write-off. Project status never makes items available automatically.
+6. Preserve the ledger. Correct stock through traced movements, never database edits. Archive products only after their owned stock and reservations are reconciled.
+
+M4 uses existing Convex sessions and server-side project access. Owner/Admin manages stock. Designers receive the catalog and their assigned project allocations. Crew receives assigned project inventory actions. Sales and Marketing cannot invoke inventory functions. No acquisition costs or prices are stored in M4.
+
+Run local regression with `npm run test`, `npm run typecheck`, `npm run lint`, `npm run format:check` and `npm run build`. Hosted M4 acceptance is `npx tsx tests/support/m4-hosted-acceptance.ts`; it requires the existing fictional identity opt-in and the explicitly authorized development deployment. Additional hosted quantity acceptance is `npx tsx tests/support/m4-quantity-hosted.ts`. Browser coverage is in `tests/e2e/inventory.spec.ts` and `tests/e2e/inventory-mixed.spec.ts`. Never run a production build over a running Next server: stop it first, build, then restart.
+
+Both M4 attachments (sections 1–130) are covered by the report, including explicit limits and optional features. No M5 feature is implemented. Invitation/recovery email delivery, production auth/origin verification and sender/provider configuration remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.

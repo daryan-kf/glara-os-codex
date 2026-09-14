@@ -1,0 +1,36 @@
+{
+  "implementationCommit": "a6f34eff33878646f3da10d5371148a0b8490ed6",
+  "deployment": "woozy-jaguar-392",
+  "executedOn": "2026-09-14",
+  "browser": "Chrome desktop / Pixel 7 emulation",
+  "fullRun": {
+    "passed": 42,
+    "failed": 2,
+    "reason": "Both mixed inventory fixtures dated destaging before their fictional sale; backend rejected the invalid dates.",
+    "artifactDirectory": "test-results/m4-final-browser"
+  },
+  "correctedMixedRun": {
+    "passed": 2,
+    "failed": 0,
+    "artifactDirectory": "test-results/m4-mixed-final"
+  },
+  "finalRuntimeTargetedRun": {
+    "passed": 4,
+    "failed": 0,
+    "desktopPassed": 2,
+    "mobilePassed": 2,
+    "artifactDirectory": "test-results/m4-inventory-final",
+    "change": "Missing quantity whereabouts display Unconfirmed — missing; no stock mutation semantics changed."
+  },
+  "aggregateUniqueScenarios": {
+    "desktopPassed": 22,
+    "mobilePassed": 22,
+    "totalPassed": 44,
+    "remainingFailures": 0
+  },
+  "screenshotsReviewed": [
+    "mobile mixed-return.png (unconfirmed missing quantity, damaged asset held in inspection)",
+    "desktop product and asset history views"
+  ],
+  "productionReadiness": "DEFERRED — REQUIRED BEFORE PRODUCTION"
+}

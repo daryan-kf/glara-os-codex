@@ -1,0 +1,382 @@
+{
+  "M1": {
+    "timestamp": "2026-09-14T07:39:53.724Z",
+    "deployment": "woozy-jaguar-392",
+    "results": [
+      {
+        "name": "owner password authentication",
+        "passed": true
+      },
+      {
+        "name": "archived password authentication",
+        "passed": true
+      },
+      {
+        "name": "staging_crew password authentication",
+        "passed": true
+      },
+      {
+        "name": "admin password authentication",
+        "passed": true
+      },
+      {
+        "name": "designer password authentication",
+        "passed": true
+      },
+      {
+        "name": "unassigned password authentication",
+        "passed": true
+      },
+      {
+        "name": "marketing password authentication",
+        "passed": true
+      },
+      {
+        "name": "sales password authentication",
+        "passed": true
+      },
+      {
+        "name": "anonymous read denied",
+        "passed": true
+      },
+      {
+        "name": "public registration denied",
+        "passed": true
+      },
+      {
+        "name": "public internal provisioning denied",
+        "passed": true
+      },
+      {
+        "name": "designer CRM read denied",
+        "passed": true
+      },
+      {
+        "name": "designer CRM write denied",
+        "passed": true
+      },
+      {
+        "name": "staging_crew CRM read denied",
+        "passed": true
+      },
+      {
+        "name": "staging_crew CRM write denied",
+        "passed": true
+      },
+      {
+        "name": "unassigned CRM read denied",
+        "passed": true
+      },
+      {
+        "name": "unassigned CRM write denied",
+        "passed": true
+      },
+      {
+        "name": "archived CRM read denied",
+        "passed": true
+      },
+      {
+        "name": "archived CRM write denied",
+        "passed": true
+      },
+      {
+        "name": "initial next action enforced",
+        "passed": true
+      },
+      {
+        "name": "failed creation rolls back",
+        "passed": true
+      },
+      {
+        "name": "sales creates prospect atomically",
+        "passed": true
+      },
+      {
+        "name": "exact decimal retained",
+        "passed": true
+      },
+      {
+        "name": "duplicate email denied",
+        "passed": true
+      },
+      {
+        "name": "Marketing fields restricted",
+        "passed": true
+      },
+      {
+        "name": "Marketing roster restricted",
+        "passed": true
+      },
+      {
+        "name": "Marketing writes denied",
+        "passed": true
+      },
+      {
+        "name": "sales audit denied",
+        "passed": true
+      },
+      {
+        "name": "admin audit denied",
+        "passed": true
+      },
+      {
+        "name": "marketing audit denied",
+        "passed": true
+      },
+      {
+        "name": "designer audit denied",
+        "passed": true
+      },
+      {
+        "name": "staging_crew audit denied",
+        "passed": true
+      },
+      {
+        "name": "unassigned audit denied",
+        "passed": true
+      },
+      {
+        "name": "archived audit denied",
+        "passed": true
+      },
+      {
+        "name": "audit actor derived from session",
+        "passed": true
+      },
+      {
+        "name": "initial activity created",
+        "passed": true
+      },
+      {
+        "name": "last action cancellation denied",
+        "passed": true
+      },
+      {
+        "name": "failed cancellation keeps activity open",
+        "passed": true
+      },
+      {
+        "name": "reschedule retains cancelled original",
+        "passed": true
+      },
+      {
+        "name": "concurrent stale edits only commit once",
+        "passed": true
+      },
+      {
+        "name": "sales archives",
+        "passed": true
+      },
+      {
+        "name": "sales restore denied",
+        "passed": true
+      },
+      {
+        "name": "admin restore preserves next action",
+        "passed": true
+      },
+      {
+        "name": "token refresh works",
+        "passed": true
+      },
+      {
+        "name": "logout immediately revokes old JWT access",
+        "passed": true
+      },
+      {
+        "name": "logout revokes refresh token",
+        "passed": true
+      },
+      {
+        "name": "Marketing brokerage options preserve filter access without private fields",
+        "passed": true
+      },
+      {
+        "name": "multi-word search is independent of name order",
+        "passed": true
+      }
+    ]
+  },
+  "M2": {
+    "deployment": "woozy-jaguar-392",
+    "executedAt": "2026-09-14T07:40:04.997Z",
+    "results": [
+      {
+        "name": "active opportunity requires next action",
+        "passed": true
+      },
+      {
+        "name": "anonymous sales query denied",
+        "passed": true
+      },
+      {
+        "name": "marketing direct commercial read/write denied",
+        "passed": true
+      },
+      {
+        "name": "designer direct commercial read/write denied",
+        "passed": true
+      },
+      {
+        "name": "staging_crew direct commercial read/write denied",
+        "passed": true
+      },
+      {
+        "name": "unassigned direct commercial read/write denied",
+        "passed": true
+      },
+      {
+        "name": "archived direct commercial read/write denied",
+        "passed": true
+      },
+      {
+        "name": "marketing property projection excludes private fields",
+        "passed": true
+      },
+      {
+        "name": "designer property projection excludes private fields",
+        "passed": true
+      },
+      {
+        "name": "duplicate address prevented",
+        "passed": true
+      },
+      {
+        "name": "stale property edits rejected",
+        "passed": true
+      },
+      {
+        "name": "last next action cannot be closed without replacement",
+        "passed": true
+      },
+      {
+        "name": "stage concurrency has one winner",
+        "passed": true
+      },
+      {
+        "name": "lost reason mandatory",
+        "passed": true
+      },
+      {
+        "name": "exact cents and tax rounding",
+        "passed": true
+      },
+      {
+        "name": "issued quote terms immutable",
+        "passed": true
+      },
+      {
+        "name": "revision creates separately numbered draft",
+        "passed": true
+      },
+      {
+        "name": "consultation status and stale edits",
+        "passed": true
+      },
+      {
+        "name": "indexed property/Realtor filter returns linked opportunity",
+        "passed": true
+      },
+      {
+        "name": "archive preserves quote history",
+        "passed": true
+      }
+    ]
+  },
+  "M3": {
+    "deployment": "woozy-jaguar-392",
+    "executedAt": "2026-09-14T07:40:28.989Z",
+    "results": [
+      {
+        "name": "won handoff derives property and Realtor and retains accepted quote",
+        "passed": true
+      },
+      {
+        "name": "duplicate creation returns original project",
+        "passed": true
+      },
+      {
+        "name": "anonymous project read denied",
+        "passed": true
+      },
+      {
+        "name": "designer operational projection excludes commercial and private manager data",
+        "passed": true
+      },
+      {
+        "name": "staging_crew operational projection excludes commercial and private manager data",
+        "passed": true
+      },
+      {
+        "name": "sales operational projection excludes commercial and private manager data",
+        "passed": true
+      },
+      {
+        "name": "marketing cannot access planning project",
+        "passed": true
+      },
+      {
+        "name": "unassigned cannot access planning project",
+        "passed": true
+      },
+      {
+        "name": "archived cannot access planning project",
+        "passed": true
+      },
+      {
+        "name": "restricted access is absent from generic reads and audit",
+        "passed": true
+      },
+      {
+        "name": "required preparation blocks readiness",
+        "passed": true
+      },
+      {
+        "name": "stale project versions rejected",
+        "passed": true
+      },
+      {
+        "name": "schedule creates canonical staging date and detects overlap",
+        "passed": true
+      },
+      {
+        "name": "staged transition requires walkthrough and staging checklist",
+        "passed": true
+      },
+      {
+        "name": "marketing receives only content-stage safe projection",
+        "passed": true
+      },
+      {
+        "name": "sold requires explicit destaging, completion gates preserve quote terms",
+        "passed": true
+      }
+    ]
+  },
+  "M3_queries": {
+    "deployment": "woozy-jaguar-392",
+    "executedAt": "2026-09-14T07:40:32.386Z",
+    "results": [
+      {
+        "name": "archived status filter returns matching history",
+        "passed": true
+      },
+      {
+        "name": "manager designer and property filters combine",
+        "passed": true
+      },
+      {
+        "name": "mismatched combined designer excludes manager matches",
+        "passed": true
+      },
+      {
+        "name": "active list excludes archives and clamps page size",
+        "passed": true
+      },
+      {
+        "name": "marketing cannot retrieve archived operational projects",
+        "passed": true
+      }
+    ]
+  }
+}
