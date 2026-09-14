@@ -1,6 +1,6 @@
 # Glara OS
 
-Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM, M3 Staging Operations and M4 Inventory Management are implemented. M4 passed its development gate; see [the M4 report](docs/M4-report.md) for the exact evidence, limits and deferred production requirements. M5 Commercial Operations has passed its development gate on the authorized Convex environment; see [the M5 report](docs/M5-report.md) for exact results, initial failures and limitations. M6 has not started.
+Private operating system for Glara Home Staging, Metro Vancouver. The active stack is **Next.js, strict TypeScript, Tailwind/shadcn UI and Convex with Convex Auth**. M0 foundation, M1 Realtor CRM, M2 Sales CRM, M3 Staging Operations and M4 Inventory Management are implemented. M4 passed its development gate; see [the M4 report](docs/M4-report.md) for the exact evidence, limits and deferred production requirements. M5 Commercial Operations has passed its development gate on the authorized Convex environment; see [the M5 report](docs/M5-report.md) for exact results, initial failures and limitations. M6 is in progress; its [foundation checkpoint](docs/M6-report.md) awaits the truncated specification remainder. M7 has not started.
 
 ## Local setup
 
@@ -107,7 +107,7 @@ Current CRM filtering/derived follow-up sorting performs bounded scans (explicit
 
 The old Supabase project is untouched. Historical reports describe that backend and do not certify Convex. See [Convex migration acceptance](docs/convex-migration-report.md) for current evidence. Full rollback baseline: commit `a6ee904`; use a separate checkout with its original lockfile/configuration. That historical rollback baseline predates M2; the current repository includes M2 and M3.
 
-The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 and M5 were subsequently authorized. Do not begin M6.
+The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 and M5 were subsequently authorized. M6 is now authorized; do not begin M7.
 
 ## M2 Sales CRM development
 
@@ -150,4 +150,4 @@ Both M4 attachments (sections 1–130) are covered by the report, including expl
 
 Owner/Admin can manage billing customers and defaults under Payments → Billing customers & defaults. Open a Project → Commercial for agreements, source/manual invoices, received payments, extensions and inventory-charge assessments. Assigned Sales has read-only commercial access. Designer, Crew and Marketing are denied commercial data. All issued amounts are snapshots and balances derive from immutable payment/credit records. No email or money transfer is performed by these workflows.
 
-M5 is deployed to the explicitly authorized Convex development deployment `woozy-jaguar-392`. The corrected production frontend build is used for desktop/mobile acceptance. See [the M5 report](docs/M5-report.md) for results and corrections. No additional environment secret is required for M5. Production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. M6 has not started.
+M5 is deployed to the explicitly authorized Convex development deployment `woozy-jaguar-392`. The corrected production frontend build is used for desktop/mobile acceptance. See [the M5 report](docs/M5-report.md) for results and corrections. No additional environment secret is required for M5. Production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. M6 is in progress; its [foundation checkpoint](docs/M6-report.md) awaits the truncated specification remainder. M7 has not started.
