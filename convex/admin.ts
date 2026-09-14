@@ -1,4 +1,4 @@
-import { internalAction, internalMutation } from "./_generated/server";
+import { internalAction, internalMutation } from "./functions";
 import { createAccount } from "@convex-dev/auth/server";
 import { internal, api } from "./_generated/api";
 import { roleValue } from "./schema";

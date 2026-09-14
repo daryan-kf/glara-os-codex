@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation } from "./functions";
 import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";

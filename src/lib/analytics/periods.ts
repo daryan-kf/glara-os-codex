@@ -126,3 +126,45 @@ export function includesEvent(range: BusinessRange, event: EventTime) {
     return false;
   return date >= range.from && date <= range.until;
 }
+export function comparisonRange(input: PeriodInput, range: BusinessRange) {
+  const selection = periodInput.parse(input),
+    length = daysBetween(range.from, range.until);
+  if (selection.period === "this_week")
+    return { from: addDays(range.from, -7), until: addDays(range.until, -7) };
+  if (
+    selection.period === "this_month" ||
+    selection.period === "previous_month"
+  ) {
+    const last = addDays(range.from, -1),
+      from = last.slice(0, 7) + "-01";
+    return {
+      from,
+      until:
+        selection.period === "previous_month"
+          ? last
+          : addDays(from, Math.min(length, daysBetween(from, last))),
+    };
+  }
+  if (selection.period === "year") {
+    const year = Number(range.from.slice(0, 4)) - 1,
+      from = `${year}-01-01`,
+      month = range.until.slice(5, 7),
+      next = new Date(`${year}-${month}-01T12:00:00Z`);
+    next.setUTCMonth(next.getUTCMonth() + 1);
+    const last = addDays(next.toISOString().slice(0, 10), -1),
+      until = `${year}-${month}-${String(Math.min(Number(range.until.slice(8)), Number(last.slice(8)))).padStart(2, "0")}`;
+    return { from, until };
+  }
+  if (selection.period === "quarter") {
+    const end = addDays(range.from, -1),
+      start = new Date(`${range.from}T12:00:00Z`);
+    start.setUTCMonth(start.getUTCMonth() - 3);
+    const from = start.toISOString().slice(0, 10);
+    return {
+      from,
+      until: addDays(from, Math.min(length, daysBetween(from, end))),
+    };
+  }
+  const until = addDays(range.from, -1);
+  return { from: addDays(until, -length), until };
+}

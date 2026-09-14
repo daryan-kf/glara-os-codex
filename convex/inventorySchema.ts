@@ -1,3 +1,4 @@
+import { eventContextFields } from "./analyticsSchema";
 import { defineTable } from "convex/server";
 import { v } from "convex/values";
 import {
@@ -70,6 +71,7 @@ export const inventoryTables = {
       filterFields: ["deleted_at", "active", "category_id"],
     }),
   inventory_assets: defineTable({
+    ...eventContextFields,
     asset_number: v.string(),
     product_id: v.id("products"),
     location_id: location,
@@ -85,6 +87,7 @@ export const inventoryTables = {
     version: v.number(),
     ...stamps,
   })
+    .index("by_eligible", ["deleted_at", "staging_eligible"])
     .index("by_number", ["asset_number"])
     .index("by_product_location", ["product_id", "location_id", "deleted_at"])
     .index("by_product", ["product_id", "deleted_at"])
@@ -150,6 +153,7 @@ export const inventoryTables = {
     .index("by_location", ["location_id", "active"])
     .index("by_state", ["state", "active"]),
   inventory_movements: defineTable({
+    ...eventContextFields,
     product_id: v.id("products"),
     asset_id: asset,
     quantity: v.number(),
@@ -172,10 +176,12 @@ export const inventoryTables = {
     ),
   })
     .index("by_product", ["product_id"])
+    .index("by_asset_type", ["asset_id", "movement_type", "occurred_at"])
     .index("by_asset", ["asset_id"])
     .index("by_project", ["project_id"])
     .index("by_project_type", ["project_id", "movement_type"]),
   inventory_inspections: defineTable({
+    ...eventContextFields,
     product_id: v.id("products"),
     asset_id: asset,
     reservation_id: reservation,
@@ -199,6 +205,7 @@ export const inventoryTables = {
     .index("by_product", ["product_id"])
     .index("by_project", ["project_id"]),
   inventory_damage: defineTable({
+    ...eventContextFields,
     product_id: v.id("products"),
     asset_id: asset,
     reservation_id: reservation,

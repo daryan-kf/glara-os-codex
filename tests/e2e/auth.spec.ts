@@ -51,9 +51,10 @@ test("Convex Auth login, navigation and logout", async ({ page }, testInfo) => {
     .fill(credentials().password);
   await page.getByRole("button", { name: "Sign in to Glara OS" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
-  await expect(page.getByText("More connected.")).toBeVisible();
   await expect(
-    page.getByText("Quotes awaiting response", { exact: true }),
+    page.getByRole("heading", {
+      name: /Executive command center|Your workspace/,
+    }),
   ).toBeVisible();
   expect(
     await page.evaluate(() =>

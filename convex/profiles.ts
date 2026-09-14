@@ -8,6 +8,7 @@ export const viewer = query({
     if (!profile) return null;
     const user = await ctx.db.get(profile.userId);
     return {
+      analytics_version: 1,
       id: profile.userId,
       name: profile.display_name,
       email: user?.email ?? "",

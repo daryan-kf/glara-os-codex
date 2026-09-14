@@ -1,17 +1,11 @@
-import { CommercialSummary } from "@/components/commercial/receivables";
-import { InventoryAttention } from "@/components/inventory/catalog";
-import { OperationsToday } from "@/components/operations/list";
-import { SalesSummary } from "@/components/sales/opportunities";
-import Link from "next/link";
+import { AnalyticsDashboard } from "@/components/analytics/dashboard";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, ShieldCheck, Compass } from "lucide-react";
-import { modules, canAccess, type Module } from "@/lib/permissions";
+import { modules, type Module } from "@/lib/permissions";
 import { requireModule } from "@/lib/auth";
 import {
   PageTitle,
   EmptyState,
   StatusBadge,
-  SectionHeading,
   Avatar,
 } from "@/components/primitives";
 export async function generateMetadata({
@@ -33,9 +27,17 @@ export default async function ModulePage({
 }) {
   const { module: key } = await params;
   if (!Object.hasOwn(modules, key)) notFound();
-  const moduleKey = key as Module;
-  const user = await requireModule(moduleKey);
-  const info = modules[moduleKey];
+  const moduleKey = key as Module,
+    user = await requireModule(moduleKey),
+    info = modules[moduleKey];
+  if (moduleKey === "dashboard" || moduleKey === "reports")
+    return (
+      <AnalyticsDashboard
+        roles={user.roles}
+        enabled={user.analytics_version === 1}
+        report={moduleKey === "reports"}
+      />
+    );
   if (moduleKey === "profile")
     return (
       <>
@@ -74,105 +76,21 @@ export default async function ModulePage({
     );
   return (
     <>
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <PageTitle
-          title={
-            moduleKey === "dashboard"
-              ? `Welcome, ${user.name.split(" ")[0]}.`
-              : info.title
-          }
-          description={info.description}
-        />
-        <StatusBadge>Connected workspace</StatusBadge>
-      </div>
-      {moduleKey === "dashboard" &&
-        user.roles.some((r) => ["owner", "admin", "designer"].includes(r)) && (
-          <InventoryAttention />
-        )}
-      {moduleKey === "dashboard" &&
-        user.roles.some((r) => ["owner", "admin"].includes(r)) && (
-          <CommercialSummary />
-        )}
-      {moduleKey === "dashboard" && canAccess(user.roles, "projects") && (
-        <OperationsToday />
-      )}
-      {moduleKey === "dashboard" &&
-        user.roles.some((r) => ["owner", "sales", "admin"].includes(r)) && (
-          <SalesSummary />
-        )}
-      {moduleKey === "dashboard" ? (
-        <>
-          <section className="relative mb-8 overflow-hidden rounded-2xl bg-primary px-7 py-10 text-primary-foreground sm:p-10">
-            <div className="absolute -right-20 -top-36 size-96 rounded-full border border-white/15" />
-            <div className="relative max-w-xl">
-              <p className="mb-5 text-xs uppercase tracking-[.2em] text-white/65">
-                A connected team
-              </p>
-              <h2 className="font-display text-3xl leading-tight sm:text-4xl">
-                More connected.
-                <br />
-                More room to grow.
-              </h2>
-              <p className="mt-5 max-w-md text-sm leading-7 text-white/75">
-                Your workspace brings the Glara team together. Manage realtor
-                relationships, sales and daily staging operations in one place.
-              </p>
-            </div>
-          </section>
-          <div className="mb-5 flex items-center justify-between">
-            <SectionHeading>Explore your workspace</SectionHeading>
-            <span className="text-xs text-muted-foreground">
-              Your workspace modules
-            </span>
-          </div>
-          <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {(["realtors", "projects", "inventory"] as const)
-              .filter((item) => canAccess(user.roles, item))
-              .map((item) => (
-                <Link
-                  href={`/${item}`}
-                  key={item}
-                  className="group rounded-xl border bg-card p-6 transition-colors hover:border-primary/40"
-                >
-                  <div className="mb-7 flex items-center justify-between">
-                    <Compass className="size-6 text-primary" />
-                    <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">
-                    {modules[item].title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {modules[item].description}
-                  </p>
-                  <p className="mt-5 text-xs text-muted-foreground">
-                    {item === "realtors" || item === "projects"
-                      ? "Available now · " + modules[item].milestone
-                      : "Planned · " + modules[item].milestone}
-                  </p>
-                </Link>
-              ))}
-          </div>
-        </>
-      ) : (
-        <EmptyState
-          title={
-            moduleKey === "settings"
-              ? "Your workspace foundation is in place"
-              : `${info.title}, coming into focus`
-          }
-          description={info.detail}
-        >
-          <StatusBadge>
-            {moduleKey === "settings"
-              ? "Configuration managed by your administrator"
-              : `Planned for ${info.milestone}`}
-          </StatusBadge>
-        </EmptyState>
-      )}
-      <div className="mt-7 flex items-center gap-2 text-xs text-muted-foreground">
-        <ShieldCheck className="size-4" />
-        <span>Private team access · Glara Home Staging</span>
-      </div>
+      <PageTitle title={info.title} description={info.description} />
+      <EmptyState
+        title={
+          moduleKey === "settings"
+            ? "Your workspace foundation is in place"
+            : info.title + ", coming into focus"
+        }
+        description={info.detail}
+      >
+        <StatusBadge>
+          {moduleKey === "settings"
+            ? "Configuration managed by your administrator"
+            : "Planned for " + info.milestone}
+        </StatusBadge>
+      </EmptyState>
     </>
   );
 }

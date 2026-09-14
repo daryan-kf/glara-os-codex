@@ -1,5 +1,5 @@
 import { damageTransitions } from "../src/lib/inventory/model";
-import { query, mutation } from "./_generated/server";
+import { query, mutation } from "./functions";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { z } from "zod";

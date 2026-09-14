@@ -4,7 +4,7 @@ import {
   internalMutation,
   type QueryCtx,
   type MutationCtx,
-} from "./_generated/server";
+} from "./functions";
 import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";

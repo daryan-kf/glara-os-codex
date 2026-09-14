@@ -1,60 +1,132 @@
 # M6 — Analytics and executive command center
 
-**IN PROGRESS — SPECIFICATION INCOMPLETE. M6 HAS NOT PASSED ACCEPTANCE.**
+**LOCAL DEVELOPMENT GATES PASSED. HOSTED M6 ACCEPTANCE PENDING. M6 IS NOT RELEASE-ACCEPTED.**
 
-Base: accepted M5 commit `a387526d0b83b973a630538015bc8f7731e8c2ab`.
+Specification received through section 180, including both identical event-correction continuations. Accepted M5 base: `a387526d0b83b973a630538015bc8f7731e8c2ab`. M7 has not started. Production has not been changed.
 
-## Specification intake
+## Delivery and release boundary
 
-Three attachments were supplied. The first contains detailed sections 1–52 and the start of 53. The second restates 1–52 and adds the authoritative event-time requirements through section 77, stopping within its example. The third continues sections 78–136 and stops mid-sentence in section 137, **EVENT CORRECTIONS**, after “If an authoritative module”.
+This change implements the local Convex-native analytics projection engine, role-scoped dashboard and reports, reconciliation, controlled repair, and regression tests. It preserves M1–M5 as the authoritative business records. Analytics does not become a second financial ledger or an alternative inventory reservation engine.
 
-The common business requirements and the explicit timestamp rules are compatible. Event correction, remaining acceptance/release requirements and any additional sections cannot be inferred from the truncated material. The remainder has been requested. No M6 deployment or aggregate backfill has been performed. Production requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. M7 has not started.
+The running development backend still uses M5. M6 has **not** been deployed, backfilled, activated, or accepted in hosted/browser feature tests. Earlier Convex code generation uploaded source for analysis without changing the running deployment. Automatic approval review subsequently rejected further M6 source upload because explicit authorization for that milestone and destination was absent. No upload was retried after that rejection. Local generated API declarations include the new modules; official generation must be rerun after authorization.
 
-## Independent foundation implemented
+The existing frontend safely detects the backend capability through `profiles.viewer.analytics_version`. Until M6 is deployed, it renders the working M5 dashboard instead of invoking unavailable analytics functions. After deployment, reporting remains unavailable until sequential backfill and a fresh, zero-drift reconciliation permit explicit Owner activation.
 
-`src/lib/analytics/periods.ts` provides strict, reusable analytics period helpers. It reuses the existing M3 Vancouver business-day implementation rather than introducing a conflicting timezone calculation.
+## Architecture and files
 
-- Explicit `instant` versus `business_date` event precision: offset-bearing timestamps are converted to America/Vancouver; date-only source values retain their business date. A receipt recorded as September 30 must not become September 29 through UTC-midnight parsing.
-- Canonical day, month, quarter and year keys derive from the supplied authoritative source event, never generic record-update time.
-- Today, Monday-based week-to-date, month-to-date, previous complete month, quarter-to-date and year-to-date presets. Custom inclusive historical ranges are initially bounded to 366 days; further query cardinality limits will be needed independently.
-- The server must supply the evaluation instant. Period input rejects additional fields, including a client-supplied `as_of`. These pure helpers are not public backend functions and do not grant authorization.
-- Future instants are excluded even when they fall on today's business date. Date-only events retain day precision; no time of day is invented. Scheduled-work forecasts require a separate query contract.
-- Calendar-day arithmetic remains stable across daylight saving. Invalid dates, timezone-free timestamps, reversed ranges and oversized/future historical ranges are rejected.
+| Location                                | Responsibility                                                                    |
+| --------------------------------------- | --------------------------------------------------------------------------------- |
+| `src/lib/analytics/periods.ts`          | Vancouver event precision, period validation and comparison ranges                |
+| `src/lib/analytics/model.ts`            | Exact integer amounts, ratios, net bucket deltas, configurable targets            |
+| `src/lib/analytics/catalog.ts`          | Central metric labels and role allowlists                                         |
+| `convex/analyticsSchema.ts`             | Projection, settings, correction and reconciliation tables                        |
+| `convex/analyticsSources.ts`            | Recompute facts from authoritative M1–M5 records and historical evidence          |
+| `convex/analyticsLedger.ts`             | Stable fact identities, idempotence, source-version checks and delta application  |
+| `convex/functions.ts`                   | Transactional source-change tracking and public event-context redaction           |
+| `convex/analytics.ts`                   | Scoped summaries, comparisons, trends, drill-downs, cohorts, targets and backfill |
+| `convex/analyticsOperations.ts`         | Action center and capacity using existing M3/M4 queries                           |
+| `convex/analyticsHistory.ts`            | Paginated as-of AR and underused serialized inventory                             |
+| `convex/analyticsReconciliation.ts`     | Independent rebuild, drift reports, explicit repair and activation                |
+| `src/components/analytics/`             | Responsive dashboard, overview panels, Owner reports and reporting clock          |
+| `scripts/m6-backfill.mjs`               | Opt-in, exact-development-target sequential backfill runner                       |
+| `tests/convex/analytics*.test.ts`       | Domain, correction, authorization and reconciliation tests                        |
+| `tests/support/m6-hosted-acceptance.ts` | Prepared hosted role/query/reconciliation acceptance runner                       |
+| `tests/e2e/analytics.spec.ts`           | Prepared M6 desktop/mobile feature acceptance                                     |
 
-These helpers are tested but not yet wired into a dashboard or authoritative mutation. This is a foundation checkpoint, not delivery of the executive command center.
+No new package, secret, external provider, AI integration or automation engine was introduced. Existing Next.js strict TypeScript, Convex Auth, centralized role checks and protected routes remain in use. A pre-existing negative-cent formatting defect was fixed with exact integer formatting and regression coverage.
 
-## Source audit: actual M1–M5 fields
+## Data schema and indexes
 
-| Metric family                                 | Authoritative evidence available now                                                                            | Implementation implication                                                                                                                                                                          |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Opportunity creation / current closed outcome | `created_at`, current `won_at` / `lost_at`; full `STAGE_CHANGED` audit snapshots                                | Current closed outcomes can be attributed to their current valid event; transition counts must remain separate. Reopening removes current-outcome contribution, not historical transition evidence. |
-| Salesperson at Won                            | Opportunity `assigned_to` inside the immutable Won audit snapshot                                               | Use the historical responsible user, not today's assignment. Mark missing history explicitly.                                                                                                       |
-| Consultation / Quote                          | `scheduled_at`, `completed_at`; quote `created_at`, `sent_at`, `accepted_at`                                    | Distinguish scheduled, completed, created, sent and accepted metrics.                                                                                                                               |
-| Project created / completed / cancelled       | `created_at`, `completed_at`, `cancelled_at`                                                                    | Do not substitute opportunity dates or collection dates.                                                                                                                                            |
-| First Project staged                          | First `PROJECT_STATUS_CHANGED` audit with `new_value.status = staged`                                           | No dedicated first-staged field exists. Count a project once using audit event time. Scheduled staging is not delivered work.                                                                       |
-| Completed operations events                   | `EVENT_STATUS_CHANGED` audit generated atomically when the event is completed                                   | The event's `updated_at` is not the historical completion source.                                                                                                                                   |
-| Listing / pending / sold                      | Project business-date fields                                                                                    | Preserve date-only precision. Property sale is not company revenue.                                                                                                                                 |
-| Agreement sent / accepted                     | `issued_at`; `acceptance.recorded_at`                                                                           | M5 uses recorded internal acceptance evidence, not a separately captured external signing time. Label this limitation; do not invent `accepted_at`.                                                 |
-| Invoice issued / voided                       | `issued_at`, `voided_at`, immutable issued cents, `realtor_id` and identity snapshot                            | Gross issuance and later void adjustments belong to separate event periods. Drafts contribute no issuance.                                                                                          |
-| Cash received                                 | Payment `received_date` (business date), `amount_cents`, `method`                                               | M5 has no `received_at` instant. Use the authoritative receipt day and retain that precision; do not substitute `created_at`.                                                                       |
-| Cash recorded / allocated / reversed          | Respective records' `created_at`                                                                                | Reversals are negative cash flow in their own event period. Allocation changes invoice satisfaction, not company cash receipts.                                                                     |
-| Credit issued                                 | Credit note `created_at`                                                                                        | M5 creates a credit as an immediately issued immutable adjustment. This is the issuance-equivalent event; no draft credit lifecycle or separate `issued_at` exists.                                 |
-| Extension accepted                            | `approval.recorded_at`                                                                                          | This is recorded acceptance, distinct from invoicing and collection.                                                                                                                                |
-| Damage review / approval / decision           | `created_at`, `approved_at`, `decided_at`                                                                       | No-charge and waiver use decision time; physical discovery remains M4's event.                                                                                                                      |
-| Inventory physical events                     | Movement `occurred_at`, damage `discovered_at`, inspection `inspected_at`                                       | Installation, return, recovery and disposition metrics follow actual movement evidence. Retail disposition is not automatically revenue.                                                            |
-| Historical attribution gaps                   | Invoice identity contains a combined address and Realtor name; no structured city or salesperson-at-issue field | Do not parse geography heuristically or join mutable current assignments to invent history. Recover from reliable source audit evidence where possible; otherwise expose unknown attribution.       |
-| Refund settlement                             | Not captured in M5                                                                                              | `external/manual settlement not captured`; a credit is not a refund.                                                                                                                                |
+New tables: `analytics_facts`, `analytics_buckets`, `analytics_settings`, `analytics_state`, `analytics_changes`, `analytics_reconciliations`, and `analytics_expected`.
 
-## Architecture constraints for the remaining implementation
+Facts retain source table/id, stable event key, source version, active state, event precision/time, historical dimensions and exact string value. Indexes support source identity and bounded metric/day/month or salesperson/realtor/source/city/project/product drill-downs. Buckets store day, month or current values indexed by key, period, metric and dimension/member. Reconciliation expected rows are indexed by run/key and run/checked state. Source additions are optional event-context snapshots plus focused activity, invoice, asset and movement indexes; existing records remain valid.
 
-- Reuse existing `sales_metrics` and `sales_realtor_counts` where semantics match. Inspect and extend their transactional update paths rather than creating another current-pipeline source of truth.
-- Historical period facts must be source-reconcilable and preserve event-time attribution. Domain/period aggregates should be bounded and updated in the source transaction. No dashboard-wide scans.
-- Keep current AR/valid cash state separate from historical issuance, credit, void, receipt and reversal flows. Late allocations can refine invoice-category attribution using the original receipt date, without duplicating company cash.
-- Reuse M3 risk/capacity, M4 availability and M5 balance/exception rules. Do not create divergent analytics implementations of their business invariants.
-- Backend role enforcement must return explicit safe projections; never return an executive payload and hide financial fields only in the browser.
-- Source snapshots must preserve historical attribution. Missing historical evidence is not permission to manufacture dimensions or timing.
-- Reconciliation must report discrepancies without silently repairing. Repair must be explicit, authorized and audited. The truncated event-correction section may further constrain this design; aggregate schema and backfill implementation await that text.
+Source tables include CRM activities/realtors, opportunities/consultations/quotes, projects, agreements, invoices, payments/allocations/reversals/credits, extensions, assessments, products/assets/stock/reservations/movements/damage/inspections. Property and product changes also refresh affected current projections. Generic `updated_at` is used only for change/version tracking where needed, never as a historical business event.
 
-## Validation of this checkpoint
+## Event and accounting semantics
 
-Checkpoint checks: 13 Node tests and 208 Vitest tests passed, including 20 new M6 period tests; strict TypeScript and ESLint with zero warnings passed. Formatting passed; the source scan checked 255 files with zero credential-pattern matches and no tracked private environment files. The application production build was not rerun for these unwired pure helpers and documentation. Hosted M6 acceptance and browser M6 acceptance have **NOT RUN**. No executive UI, aggregate tables, reconciliation functions, targets, ranking or backfill is represented as complete.
+- Offset-bearing instants use America/Vancouver. Date-only receipt, listing and sale values preserve business-date precision. No invented midnight instant moves a business day.
+- Periods include today, week/month/quarter/year to date, previous complete month and bounded historical custom dates. Comparisons use corresponding elapsed calendar ranges, with month/leap-day clamping. The server supplies the clock; the client refreshes time-sensitive queries each minute.
+- Project output counts the first evidenced valid staged transition once per project. Scheduled capacity remains a separate forecast. Rejected staging transitions produce no completed staging fact.
+- Opportunity creation cohorts, reached-stage evidence and the current valid Won/Lost outcome are distinct. Reopening removes the closed-outcome contribution; another valid Won contributes once under its valid event.
+- Invoice issuance, credits and voids remain separate event flows. Cash follows actual receipt day; recording follows entry time. Allocation does not add company cash. Reversals and credits contribute in their own later periods without rewriting original gross flows.
+- Current AR, collectible value, unallocated cash and customer credits derive from M5 authoritative records. Historical AR reconstructs eligible invoices, credits, allocations, receipt dates, reversals and voids as of the requested day. Its paginated subtotal is explicitly not a company-wide historical total.
+- Financial arithmetic uses integer cents as strings and BigInt, with explicit half-up rounding where appropriate. No floating-point monetary sums are introduced.
+- Event identity uses source IDs and event keys, not mutable names. New event contexts freeze responsible salesperson, source and other supported dimensions. Reassignment changes future events and appropriate current pipeline state without moving previous performance.
+- Backdated new events recover ownership/geography from reliable source audit evidence as of the business day. Date-only attribution uses end-of-business-day evidence, not a fabricated precise time. Missing legacy evidence remains unknown; current ownership is not silently used to invent historical attribution.
+- Same-month and cross-month corrections net old/new bucket contributions. Relevant dimension totals, including unknown members, conserve company totals. Archiving preserves historical facts while appropriate active/current counts change.
+
+## Security and roles
+
+Authentication, archived-user denial and role checks run on the server for every public entry point. Actor identity comes from the authenticated session. Public queries strip internal event contexts from source payloads. Direct function invocation cannot override scope.
+
+| Role                    | M6 access                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Owner                   | Executive and commercial metrics, targets, all reports, reconciliation, explicit audited repairs and activation            |
+| Admin                   | Operational/commercial dashboard and authorized drill-downs; no Owner settings or repair                                   |
+| Sales                   | Own salesperson scope, pipeline, follow-ups and cohort/stage information; no company finance or other salesperson override |
+| Marketing               | Approved aggregate creation/staging/content counts and lead-source comparisons; no private CRM or financial metrics        |
+| Designer / Staging Crew | Existing assigned operations workflows, without executive/CRM analytics                                                    |
+
+The Reports navigation route retains the existing Owner-only grant. Admin analytics appears on Dashboard. Metric permissions are centralized rather than implemented solely by hiding cards. Query input is validated and bounded; safe domain errors do not disclose internal payloads.
+
+## Concurrency, reconciliation and corrections
+
+Wrapped authoritative mutations capture affected sources and refresh facts/buckets atomically in the same Convex transaction. Convex optimistic concurrency retries conflicting writes. Stored stable identities and source versions prevent duplicate application and stale overwrite. Dependent invoices/payments/projects and current property/product projections refresh with the source mutation.
+
+Reconciliation independently paginates authoritative records, recomputes expected facts and bucket totals, and compares both stored facts and buckets. It writes only report metadata/expected rows; it does not repair projections by default. A source revision watermark makes a run stale if business data changes during the run.
+
+Owner repair requires a reason and current source/reconciliation proof. Source repair accepts the source identity/version, not an arbitrary replacement financial amount. Bucket repair uses independently computed expected values and rejects stale or source-dirty proof. Repairs are audited and invalidate the previous watermark. Activation requires completed sequential backfill and a fresh complete run with zero source drift and zero bucket drift.
+
+M6 does not grant new authority to edit immutable M5 receipt dates, issued financial snapshots or historical audit records. Tests use isolated fixture-only source changes when an upstream correction API does not exist. Those tests establish projection behavior, not a new business correction feature. Valid source adjustments still go through the owning M1–M5 workflow.
+
+## Dashboard and reports
+
+The Owner dashboard includes configurable minimum/target/stretch staging targets (20/35/50 defaults), period comparisons, source drill-downs, trend tables, sales funnel/stage velocity/cohorts, commercial flows, current balances and operational inventory counts. Serialized assets and quantity stock are displayed separately. Warehouse quantity explicitly excludes reservation subtraction; it is not presented as a date-aware promise of availability.
+
+The action center reuses existing M3 attention/capacity and M4 exceptions. Commercial actions cover overdue balances, unapplied receipts, deposit needs and accepted extension/damage billing gaps. Ordering is deterministic by severity, financial impact, due date and identity. Bounded feeds disclose partial results. Forecasts show scheduled workload for 7/14/30 days rather than claiming actual completed staging.
+
+Reports expose transparent configurable Realtor segments, dimension comparisons, historical AR pages, underused inventory, targets, reconciliation and activation. Missing history, unknown dimensions, zero denominators and unavailable projections have explicit states. Accessible tables complement metrics; forms validate custom dates without destroying the page.
+
+## Local checks performed
+
+| Check                                                       | Result                                                                                          |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `npm test`                                                  | PASS: 13 Node tests + 246 Vitest tests; 16 Vitest files; 0 failures (final suite: 8.06s Vitest) |
+| TypeScript                                                  | PASS: `npm run typecheck` and final build type check                                            |
+| ESLint                                                      | PASS: final `npm run lint`                                                                      |
+| Prettier                                                    | PASS: full `npm run format:check`                                                               |
+| Next.js production build                                    | PASS: final Next.js production build                                                            |
+| Desktop/mobile auth/navigation smoke                        | PASS: 8 scenarios, 21.4s, using the existing M5 backend fallback                                |
+| Hosted M6 API/security/reconciliation                       | NOT RUN                                                                                         |
+| Hosted M6 fictional multi-period correction scenario (§179) | NOT RUN; dedicated hosted scenario still required                                               |
+| M6 feature desktop/mobile browser scenarios                 | NOT RUN; prepared 10 scenarios require deployed, initialized M6                                 |
+| M1–M5 hosted regressions against M6                         | NOT RUN                                                                                         |
+
+The 8 browser passes cover private-route redirects, responsive login/recovery layout, login/navigation/logout, HttpOnly/SameSite session cookies, absent persistent browser auth tokens and Sales denial of Owner reports. The invalid-credentials/recovery-send scenario was excluded so these checks do not imply email delivery acceptance. Evidence: ignored local `test-results/m6-local-auth-browser.json`. Screenshot artifacts were generated, but the image inspection tool failed; no manual pixel-review pass is claimed.
+
+An intermediate run with unit tests, lint and browser checks competing for resources exceeded the unchanged five-second M5 volume-test limit. Related source tracking was optimized to reuse existing stable fact identities instead of recomputing a redundant pre-change projection. The subsequent complete suite passed, including that volume test, without changing its assertions or timeout. Hosted performance remains unverified.
+
+Automated local coverage includes event precision/DST/leap periods, same-month/cross-month net corrections, later reversals/credits, received-versus-recorded dates, current and historical AR, no allocation cash duplication, reopen/re-Won, first staged once, invalid staging rejection, sold/discovery date corrections, later inventory adjustment, archive preservation, backdated ownership attribution, exact negative amounts, dimensional conservation, duplicate/stale source application, concurrent credit/reversal and repair/reversal, independent zero-drift rebuild, corruption detection, default read-only reconciliation, stale-proof repair denial, sequential backfill/activation and direct role/anonymous/archived-user denial.
+
+## Development deployment and acceptance procedure — pending authorization
+
+1. Obtain explicit M6 source-upload/deployment authorization for Daryan's development deployment `woozy-jaguar-392`, project `glara-os`. Do not target production.
+2. Verify `.env.local` targets `dev:woozy-jaguar-392` and its existing Convex URL. Regenerate official bindings, run local checks, then deploy with `npx convex dev --once --env-file .env.local` only against the authorized target.
+3. In PowerShell set `$env:GLARA_M6_BACKFILL='yes'`, then `node scripts/m6-backfill.mjs`. This script invokes already-deployed internal functions without `--push`, rejects a deploy-key override and enforces the exact development target. It leaves reporting unavailable.
+4. As Owner, open Reports, run reconciliation to completion and review drift. Investigate source drift; use explicit targeted repair only with valid proof and reason. Run a fresh reconciliation after repair. Activate only with a current zero-drift result.
+5. Run guarded hosted acceptance with the existing private fictional identity environment and `GLARA_CONVEX_ACCEPTANCE=yes`: `npx tsx tests/support/m6-hosted-acceptance.ts`. This runner alone does not establish §179 acceptance. Prepare/run the separate controlled fictional multi-period hosted correction scenario and verify zero drift.
+6. Run M1–M5 hosted regressions. Stop the local Next server before building the frontend, restart it, then run M6 desktop/mobile acceptance with `GLARA_M6_ACCEPTANCE=yes` plus the existing acceptance identity environment. Review the visual results.
+7. Record exact results, fix failures, update this report, commit and push. Stop before M7.
+
+## Known limitations and pre-production dependencies
+
+No known P0/P1 failure remains in the passing local tests; this is not a claim that hosted P0/P1 issues are absent. The unexecuted hosted correction/security/regression/browser gate blocks M6 release acceptance.
+
+Legacy audit gaps remain explicit unknown attribution. No fabricated historical utilization snapshot, external payment/refund ledger, automatic sender integration, AI score, or unsupported DSO calculation is provided. Existing lightweight M2 summaries remain for compatibility and derive from authoritative records.
+
+Bounded work includes 300 facts/source, 500 historical audit events, 200 related opportunities/property, 200 assets/product and 100 stock rows/product; unusually large relationships require a planned paginated extension. Breakdown limits are 500 members/slice and 5,000 accumulated rows; AR due keys are capped at 2,000. Underused inventory and historical AR are paginated. Queue truncation and unknown data must not be interpreted as company totals. Reconciliation/backfill can become stale under concurrent activity and must be resumed/restarted as directed, never silently accepted.
+
+No real customer data, payment-sensitive fixture data, test passwords, environment files or secrets are intended for this commit. `.env.example` remains the documented placeholder template. Test identities remain private, and generated browser/result artifacts remain ignored. Repository review checked all 275 tracked/nonignored files: no credential-pattern matches, known environment secret matches or matches to any of the eight private fictional passwords; no tracked environment files beyond `.env.example`. New fixtures use fictional example identities and amounts. Generated test results remain ignored. Pattern checks cannot prove the absence of every possible secret.
+
+Invitation/onboarding delivery where applicable, password recovery delivery/flow, reused/expired auth-link handling, production redirect/origin verification, transactional provider configuration and sender/domain verification for `Support@glarahome.com` remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. No deferred requirement is marked passed. Supabase-specific gates remain superseded by the Convex migration.

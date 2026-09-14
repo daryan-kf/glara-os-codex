@@ -107,3 +107,18 @@ describe("M6 authoritative business periods", () => {
     ).toThrow();
   });
 });
+it("aligns MTD comparisons to the preceding calendar month and clamps leap days", async () => {
+  const { comparisonRange } = await import("../../src/lib/analytics/periods");
+  expect(
+    comparisonRange(
+      { period: "this_month" },
+      resolvePeriod({ period: "this_month" }, "2026-09-14T18:00:00Z"),
+    ),
+  ).toEqual({ from: "2026-08-01", until: "2026-08-14" });
+  expect(
+    comparisonRange(
+      { period: "year" },
+      resolvePeriod({ period: "year" }, "2024-02-29T18:00:00Z"),
+    ),
+  ).toEqual({ from: "2023-01-01", until: "2023-02-28" });
+});

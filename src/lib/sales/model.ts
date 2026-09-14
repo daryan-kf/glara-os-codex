@@ -60,8 +60,9 @@ export function cents(value: string): bigint {
   return BigInt(whole) * 100n + BigInt(fraction.padEnd(2, "0"));
 }
 export function decimal(value: string | bigint): string {
-  const n = BigInt(value);
-  return `${n / 100n}.${(n % 100n).toString().padStart(2, "0")}`;
+  const raw = BigInt(value),
+    n = raw < 0n ? -raw : raw;
+  return `${raw < 0n ? "-" : ""}${n / 100n}.${(n % 100n).toString().padStart(2, "0")}`;
 }
 export function dollars(value: string): string {
   const [whole, fraction] = decimal(value).split(".");

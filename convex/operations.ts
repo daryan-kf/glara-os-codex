@@ -1,7 +1,7 @@
 import { assertEndChange } from "./commercialCore";
 import { inventoryGate, cancelInventory } from "./inventoryCore";
 import { vancouverUtc } from "../src/lib/operations/time";
-import { query, mutation, type MutationCtx } from "./_generated/server";
+import { query, mutation, type MutationCtx } from "./functions";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { z } from "zod";

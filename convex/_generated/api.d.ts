@@ -10,11 +10,19 @@
 
 import type * as access from "../access.js";
 import type * as admin from "../admin.js";
+import type * as analyticsReconciliation from "../analyticsReconciliation.js";
+import type * as analyticsHistory from "../analyticsHistory.js";
+import type * as analytics from "../analytics.js";
+import type * as analyticsLedger from "../analyticsLedger.js";
+import type * as analyticsOperations from "../analyticsOperations.js";
+import type * as analyticsSchema from "../analyticsSchema.js";
+import type * as analyticsSources from "../analyticsSources.js";
 import type * as auth from "../auth.js";
 import type * as commercial from "../commercial.js";
 import type * as commercialCore from "../commercialCore.js";
 import type * as commercialSchema from "../commercialSchema.js";
 import type * as crm from "../crm.js";
+import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as inventory from "../inventory.js";
 import type * as inventoryCore from "../inventoryCore.js";
@@ -34,11 +42,19 @@ import type {
 declare const fullApi: ApiFromModules<{
   access: typeof access;
   admin: typeof admin;
+  analytics: typeof analytics;
+  analyticsHistory: typeof analyticsHistory;
+  analyticsReconciliation: typeof analyticsReconciliation;
+  analyticsLedger: typeof analyticsLedger;
+  analyticsOperations: typeof analyticsOperations;
+  analyticsSchema: typeof analyticsSchema;
+  analyticsSources: typeof analyticsSources;
   auth: typeof auth;
   commercial: typeof commercial;
   commercialCore: typeof commercialCore;
   commercialSchema: typeof commercialSchema;
   crm: typeof crm;
+  functions: typeof functions;
   http: typeof http;
   inventory: typeof inventory;
   inventoryCore: typeof inventoryCore;

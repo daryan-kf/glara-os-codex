@@ -1,3 +1,4 @@
+import { eventContextFields, analyticsTables } from "./analyticsSchema";
 import { commercialTables } from "./commercialSchema";
 import { defineSchema, defineTable } from "convex/server";
 import { authTables } from "@convex-dev/auth/server";
@@ -20,6 +21,7 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  ...analyticsTables,
   ...operationsTables,
   ...inventoryTables,
   ...commercialTables,
@@ -46,6 +48,7 @@ export default defineSchema({
     "name",
   ]),
   realtors: defineTable({
+    ...eventContextFields,
     sales_search_text: v.optional(v.string()),
     first_name: v.string(),
     last_name: v.string(),
@@ -89,6 +92,7 @@ export default defineSchema({
     ...stamps,
   }).index("by_realtor", ["realtor_id"]),
   activities: defineTable({
+    ...eventContextFields,
     project_id: v.optional(v.id("projects")),
     project_room_id: v.optional(v.id("project_rooms")),
     version: v.optional(v.number()),
@@ -122,6 +126,7 @@ export default defineSchema({
     replaces_activity_id: v.union(v.id("activities"), v.null()),
     ...stamps,
   })
+    .index("by_realtor_completed", ["realtor_id", "completed_at"])
     .index("by_realtor", ["realtor_id"])
     .index("by_project", ["project_id", "deleted_at"])
     .index("by_project_room", ["project_room_id", "status", "deleted_at"])
@@ -168,6 +173,7 @@ export default defineSchema({
       filterFields: ["deleted_at"],
     }),
   opportunities: defineTable({
+    ...eventContextFields,
     property_id: v.id("properties"),
     realtor_id: v.id("realtors"),
     assigned_to: v.id("users"),
@@ -203,6 +209,7 @@ export default defineSchema({
     .index("by_assigned", ["assigned_to", "deleted_at"])
     .index("by_archived", ["deleted_at"]),
   consultations: defineTable({
+    ...eventContextFields,
     opportunity_id: v.id("opportunities"),
     scheduled_at: v.string(),
     completed_at: nullable,
@@ -214,6 +221,7 @@ export default defineSchema({
     ...stamps,
   }).index("by_opportunity", ["opportunity_id", "deleted_at"]),
   quotes: defineTable({
+    ...eventContextFields,
     number: v.string(),
     opportunity_id: v.id("opportunities"),
     status: v.string(),

@@ -1,9 +1,4 @@
-import {
-  query,
-  mutation,
-  type QueryCtx,
-  type MutationCtx,
-} from "./_generated/server";
+import { query, mutation, type QueryCtx, type MutationCtx } from "./functions";
 import type { Doc, Id, TableNames } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { z } from "zod";

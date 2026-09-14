@@ -1,3 +1,4 @@
+import { eventContextFields } from "./analyticsSchema";
 import { defineTable } from "convex/server";
 import { v } from "convex/values";
 const nullable = v.union(v.string(), v.null());
@@ -60,6 +61,7 @@ export const commercialTables = {
     ["deleted_at"],
   ),
   agreements: defineTable({
+    ...eventContextFields,
     number: v.string(),
     project_id: v.id("projects"),
     opportunity_id: v.id("opportunities"),
@@ -102,6 +104,7 @@ export const commercialTables = {
     .index("by_number", ["number"])
     .index("by_status", ["status"]),
   invoices: defineTable({
+    ...eventContextFields,
     number: v.string(),
     project_id: v.id("projects"),
     realtor_id: v.id("realtors"),
@@ -131,6 +134,7 @@ export const commercialTables = {
     .index("by_customer", ["customer_id", "issue_date"])
     .index("by_realtor", ["realtor_id", "issue_date"])
     .index("by_status_due", ["status", "due_date"])
+    .index("by_issued", ["issued_at"])
     .index("by_number", ["number"]),
   invoice_items: defineTable({
     invoice_id: v.id("invoices"),
@@ -143,6 +147,7 @@ export const commercialTables = {
     sort_order: v.number(),
   }).index("by_invoice", ["invoice_id"]),
   payments: defineTable({
+    ...eventContextFields,
     number: v.string(),
     project_id: v.id("projects"),
     customer_id: v.id("commercial_customers"),
@@ -187,6 +192,7 @@ export const commercialTables = {
     .index("by_invoice", ["invoice_id"])
     .index("by_number", ["number"]),
   package_extensions: defineTable({
+    ...eventContextFields,
     project_id: v.id("projects"),
     agreement_id: v.id("agreements"),
     original_end_date: v.string(),
@@ -213,6 +219,7 @@ export const commercialTables = {
     .index("by_period", ["project_id", "original_end_date"])
     .index("by_status", ["status"]),
   damage_charge_assessments: defineTable({
+    ...eventContextFields,
     project_id: v.id("projects"),
     agreement_id: v.union(v.id("agreements"), v.null()),
     damage_record_id: v.id("inventory_damage"),

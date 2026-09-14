@@ -1,3 +1,4 @@
+import { eventContextFields } from "./analyticsSchema";
 import { defineTable } from "convex/server";
 import { v } from "convex/values";
 import {
@@ -50,6 +51,7 @@ const templateFields = {
 };
 export const operationsTables = {
   projects: defineTable({
+    ...eventContextFields,
     project_number: v.string(),
     opportunity_id: v.id("opportunities"),
     property_id: v.id("properties"),
