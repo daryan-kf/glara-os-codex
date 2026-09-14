@@ -1,0 +1,687 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T21:27:18.848Z",
+  "scope": "Full M0–M6 desktop/mobile regression before final trend-chart and batched-reconciliation UI polish; final M6 rerun recorded separately",
+  "stats": {
+    "startTime": "2026-09-14T21:17:14.903Z",
+    "duration": 562686.3589999999,
+    "expected": 56,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "results": [
+    {
+      "file": "analytics.spec.ts",
+      "title": "Owner can inspect metrics, change periods, and open reporting tools",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4004
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "sales gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2579
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "marketing gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1977
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "designer gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1966
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "staging_crew gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1966
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "Owner can inspect metrics, change periods, and open reporting tools",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4999
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "sales gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2012
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "marketing gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1988
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "designer gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1960
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "staging_crew gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1973
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "private routes never expose their content without authentication",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1330
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "login and recovery fit desktop and mobile viewports",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 710
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "Convex Auth login, navigation and logout",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4004
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "sales are denied owner reports even through a direct URL",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2500
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "private routes never expose their content without authentication",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1203
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "login and recovery fit desktop and mobile viewports",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 683
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "Convex Auth login, navigation and logout",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4693
+        }
+      ]
+    },
+    {
+      "file": "auth.spec.ts",
+      "title": "sales are denied owner reports even through a direct URL",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2961
+        }
+      ]
+    },
+    {
+      "file": "commercial.spec.ts",
+      "title": "billing identity, accepted agreement, deposit, payment receipt and credit",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 34704
+        }
+      ]
+    },
+    {
+      "file": "commercial.spec.ts",
+      "title": "damage review, approved charge invoice and restricted-role denial",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 20025
+        }
+      ]
+    },
+    {
+      "file": "commercial.spec.ts",
+      "title": "billing identity, accepted agreement, deposit, payment receipt and credit",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 35168
+        }
+      ]
+    },
+    {
+      "file": "commercial.spec.ts",
+      "title": "damage review, approved charge invoice and restricted-role denial",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 20924
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 21603
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "cancel and reschedule preserve the prospect next action and visible history",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 7968
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 21934
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "cancel and reschedule preserve the prospect next action and visible history",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 8161
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "owner workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4052
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "sales workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3958
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "admin workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3959
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "marketing workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3853
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "designer workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3012
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "staging_crew workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2478
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "unassigned workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1653
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "archived workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1666
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "owner workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4012
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "sales workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3926
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "admin workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3947
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "marketing workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3860
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "designer workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2452
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "staging_crew workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2489
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "unassigned workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1676
+        }
+      ]
+    },
+    {
+      "file": "hosted.spec.ts",
+      "title": "archived workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1660
+        }
+      ]
+    },
+    {
+      "file": "inventory-mixed.spec.ts",
+      "title": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 59741
+        }
+      ]
+    },
+    {
+      "file": "inventory-mixed.spec.ts",
+      "title": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 60690
+        }
+      ]
+    },
+    {
+      "file": "inventory.spec.ts",
+      "title": "catalog receipt, designer reservation, crew partial picking and inspection",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 27859
+        }
+      ]
+    },
+    {
+      "file": "inventory.spec.ts",
+      "title": "catalog receipt, designer reservation, crew partial picking and inspection",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 29372
+        }
+      ]
+    },
+    {
+      "file": "operations.spec.ts",
+      "title": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 29399
+        }
+      ]
+    },
+    {
+      "file": "operations.spec.ts",
+      "title": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 30435
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "property to opportunity, consultation, exact quote and won deal",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 18855
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "marketing cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3562
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "designer cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3566
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "staging_crew cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3541
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "property to opportunity, consultation, exact quote and won deal",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 19331
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "marketing cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3604
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "designer cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3500
+        }
+      ]
+    },
+    {
+      "file": "sales.spec.ts",
+      "title": "staging_crew cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3485
+        }
+      ]
+    }
+  ]
+}

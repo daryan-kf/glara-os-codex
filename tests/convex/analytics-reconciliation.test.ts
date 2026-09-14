@@ -199,3 +199,73 @@ it("requires sequential complete backfill and a zero-drift proof before activati
     ).ready,
   ).toBe(true);
 }, 30000);
+it("resumes internal backfill batches at the persisted cursor without premature activation", async () => {
+  const f = await fixture(),
+    { internal } = await import("../../convex/_generated/api");
+  await f.t.mutation(internal.analytics.startBackfill, {});
+  await expect(
+    f.t.action(internal.analyticsMaintenance.backfillBatch, { pages: 101 }),
+  ).rejects.toThrow();
+  const partial = await f.t.action(
+    internal.analyticsMaintenance.backfillBatch,
+    { pages: 1 },
+  );
+  expect(partial.complete).toBe(false);
+  const saved = await f.t.query(
+    internal.analyticsMaintenance.backfillStatus,
+    {},
+  );
+  expect(saved.table).toBe(partial.table);
+  expect(saved.cursor).toBe(partial.cursor);
+  const done = await f.t.action(internal.analyticsMaintenance.backfillBatch, {
+    pages: 100,
+  });
+  expect(done.complete).toBe(true);
+  expect(
+    (
+      await f.owner.query(api.analytics.summary, {
+        period: JSON.stringify({ period: "this_month" }),
+      })
+    ).ready,
+  ).toBe(false);
+});
+it("bounds reconciliation batches and enforces live Owner authorization inside actions", async () => {
+  const f = await fixture(),
+    id = await f.owner.mutation(api.analyticsReconciliation.start, {});
+  await expect(
+    f
+      .c("sales")
+      .action(api.analyticsMaintenance.reconcileBatch, { id, pages: 1 }),
+  ).rejects.toThrow();
+  await expect(
+    f.owner.action(api.analyticsMaintenance.reconcileBatch, { id, pages: 51 }),
+  ).rejects.toThrow();
+  const page = await f.owner.action(api.analyticsMaintenance.reconcileBatch, {
+    id,
+    pages: 1,
+  });
+  expect(page.scanned).toBeGreaterThan(0);
+  expect(page.status).toBe("running");
+});
+it("compares serialized counters with installation evidence without repairing source inventory", async () => {
+  const f = await fixture(),
+    { internal } = await import("../../convex/_generated/api");
+  const asset = await f.t.run(
+    async (ctx) => (await ctx.db.query("inventory_assets").collect())[0]!,
+  );
+  expect(
+    (await f.t.action(internal.analyticsMaintenance.inventoryEvidence, {}))
+      .mismatches,
+  ).toEqual([]);
+  await f.t.run((ctx) => ctx.db.patch(asset._id, { staging_use_count: 99 }));
+  const check = await f.t.action(
+    internal.analyticsMaintenance.inventoryEvidence,
+    {},
+  );
+  expect(check.mismatches).toEqual([
+    { id: asset._id, recorded: 99, evidenced: 0 },
+  ]);
+  expect(
+    (await f.t.run((ctx) => ctx.db.get(asset._id)))?.staging_use_count,
+  ).toBe(99);
+});

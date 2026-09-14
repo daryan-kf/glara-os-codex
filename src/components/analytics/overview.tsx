@@ -64,6 +64,81 @@ export function Drill({ metric, period }: { metric: string; period: string }) {
     </div>
   );
 }
+function TrendChart({
+  rows,
+  manager,
+}: {
+  rows: { month: string; metrics: Record<string, string> }[];
+  manager: boolean;
+}) {
+  const first = rows.map((r) =>
+    BigInt(r.metrics[manager ? "invoiced_cents" : "projects_staged"] ?? "0"),
+  );
+  const second = rows.map((r) =>
+    manager
+      ? BigInt(r.metrics.cash_received_cents ?? "0") -
+        BigInt(r.metrics.cash_reversed_cents ?? "0")
+      : BigInt(r.metrics.projects_listing_live ?? "0"),
+  );
+  const values = [0n, ...first, ...second],
+    low = values.reduce((a, b) => (a < b ? a : b)),
+    high = values.reduce((a, b) => (a > b ? a : b)),
+    span = high - low || 1n;
+  // Only dimensionless, bounded pixel coordinates become Numbers; source amounts stay exact cents.
+  const y = (value: bigint) => 160 - Number(((value - low) * 140n) / span);
+  const points = (series: bigint[]) =>
+    series.map((value, i) => `${40 + i * 104},${y(value)}`).join(" ");
+  return (
+    <figure className="mb-5">
+      <svg
+        viewBox="0 0 600 190"
+        className="w-full"
+        role="img"
+        aria-label={
+          manager
+            ? "Six-month gross invoiced and net cash trend. Exact CAD amounts in the table below."
+            : "Six-month staged and listing-live activity trend. Exact counts in the table below."
+        }
+      >
+        <line
+          x1="40"
+          x2="560"
+          y1={y(0n)}
+          y2={y(0n)}
+          className="stroke-border"
+        />
+        <polyline
+          points={points(first)}
+          fill="none"
+          className="stroke-primary"
+          strokeWidth="3"
+        />
+        <polyline
+          points={points(second)}
+          fill="none"
+          className="stroke-amber-700"
+          strokeWidth="3"
+          strokeDasharray="6 4"
+        />
+        {rows.map((r, i) => (
+          <text
+            key={r.month}
+            x={40 + i * 104}
+            y="183"
+            textAnchor="middle"
+            className="fill-muted-foreground text-[12px]"
+          >
+            {r.month.slice(5)}
+          </text>
+        ))}
+      </svg>
+      <figcaption className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted-foreground">
+        <span>Solid: {manager ? "gross invoiced" : "staged"}</span>
+        <span>Dashed: {manager ? "net cash" : "listing live"}</span>
+      </figcaption>
+    </figure>
+  );
+}
 export function Trends({ manager }: { manager: boolean }) {
   const rows = useQuery(api.analytics.trends, {
     refresh_bucket: useReportingClock(),
@@ -77,6 +152,7 @@ export function Trends({ manager }: { manager: boolean }) {
         <LoadingState />
       ) : (
         <div className="overflow-x-auto">
+          <TrendChart rows={rows} manager={manager} />
           <table className="w-full text-left text-sm">
             <caption className="sr-only">Monthly event totals</caption>
             <thead>

@@ -1,0 +1,135 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T21:32:14.183Z",
+  "scope": "Final production frontend build: M6 desktop/mobile role dashboards, period/drill-down/report navigation, loaded report data and targets, responsive width and accessible trend chart",
+  "stats": {
+    "startTime": "2026-09-14T21:30:32.958Z",
+    "duration": 30266.642,
+    "expected": 10,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "results": [
+    {
+      "file": "analytics.spec.ts",
+      "title": "Owner can inspect metrics, change periods, and open reporting tools",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 5006
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "sales gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1986
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "marketing gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1972
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "designer gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1964
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "staging_crew gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1946
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "Owner can inspect metrics, change periods, and open reporting tools",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 6552
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "sales gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2520
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "marketing gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 2462
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "designer gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1942
+        }
+      ]
+    },
+    {
+      "file": "analytics.spec.ts",
+      "title": "staging_crew gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 1983
+        }
+      ]
+    }
+  ]
+}

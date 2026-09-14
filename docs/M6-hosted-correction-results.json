@@ -1,0 +1,43 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T21:05:23.241Z",
+  "results": [
+    {
+      "name": "May creation cohort is independent from June Won",
+      "passed": true
+    },
+    {
+      "name": "June contains Won, first staged, issue and actual cash receipt",
+      "passed": true
+    },
+    {
+      "name": "July records entry and allocation without company cash duplication",
+      "passed": true
+    },
+    {
+      "name": "August credit does not rewrite June cash and changes current AR",
+      "passed": true
+    },
+    {
+      "name": "Real reassignment preserves original historical Won and cash attribution",
+      "passed": true
+    },
+    {
+      "name": "Historical AR at 2026-06-30 uses historical evidence",
+      "passed": true
+    },
+    {
+      "name": "Historical AR at 2026-07-31 uses historical evidence",
+      "passed": true
+    },
+    {
+      "name": "Historical AR at 2026-08-31 uses historical evidence",
+      "passed": true
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "completed": true,
+  "fixture_method": "New fictional historical records imported through temporary internal development-only helper; no existing records redated; subsequent reassignment uses real public business mutation",
+  "reconciliation": "See final M6 hosted API independent reconciliation result"
+}

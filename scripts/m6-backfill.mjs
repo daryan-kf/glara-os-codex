@@ -36,17 +36,18 @@ function run(name, args) {
     );
   return JSON.parse(r.stdout.trim());
 }
-let next = run("analytics:startBackfill", {}),
-  count = 0;
-for (let step = 0; step < 20000 && !next.complete; step++) {
-  next = run("analytics:backfillPage", {
-    table: next.table,
-    cursor: next.cursor,
-  });
+let next =
+  process.env.GLARA_M6_BACKFILL_RESTART === "yes"
+    ? run("analytics:startBackfill", {})
+    : run("analyticsMaintenance:backfillStatus", {});
+let count = 0;
+for (let step = 0; step < 200 && !next.complete; step++) {
+  next = run("analyticsMaintenance:backfillBatch", { pages: 100 });
   count += next.processed;
-  if (step % 20 === 0) console.log("Backfill sources processed: " + count);
+  console.log("Backfill sources processed this run: " + count);
 }
-if (!next.complete) throw Error("Backfill exceeded the acceptance work limit");
+if (!next.complete)
+  throw Error("Backfill exceeded the acceptance work limit; rerun to resume");
 console.log(
   "Backfill complete. Reporting stays unavailable until an Owner runs a zero-drift reconciliation and explicitly activates it.",
 );

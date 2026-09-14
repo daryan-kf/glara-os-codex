@@ -10,11 +10,12 @@
 
 import type * as access from "../access.js";
 import type * as admin from "../admin.js";
-import type * as analyticsReconciliation from "../analyticsReconciliation.js";
-import type * as analyticsHistory from "../analyticsHistory.js";
 import type * as analytics from "../analytics.js";
+import type * as analyticsHistory from "../analyticsHistory.js";
 import type * as analyticsLedger from "../analyticsLedger.js";
+import type * as analyticsMaintenance from "../analyticsMaintenance.js";
 import type * as analyticsOperations from "../analyticsOperations.js";
+import type * as analyticsReconciliation from "../analyticsReconciliation.js";
 import type * as analyticsSchema from "../analyticsSchema.js";
 import type * as analyticsSources from "../analyticsSources.js";
 import type * as auth from "../auth.js";
@@ -44,9 +45,10 @@ declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   analytics: typeof analytics;
   analyticsHistory: typeof analyticsHistory;
-  analyticsReconciliation: typeof analyticsReconciliation;
   analyticsLedger: typeof analyticsLedger;
+  analyticsMaintenance: typeof analyticsMaintenance;
   analyticsOperations: typeof analyticsOperations;
+  analyticsReconciliation: typeof analyticsReconciliation;
   analyticsSchema: typeof analyticsSchema;
   analyticsSources: typeof analyticsSources;
   auth: typeof auth;

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { LoadingState, StatusBadge } from "@/components/primitives";
@@ -70,7 +70,7 @@ export function TargetSettings() {
 export function Reconciliation() {
   const activate = useMutation(api.analyticsReconciliation.activate),
     start = useMutation(api.analyticsReconciliation.start),
-    advance = useMutation(api.analyticsReconciliation.advance),
+    advance = useAction(api.analyticsMaintenance.reconcileBatch),
     repair = useMutation(api.analyticsReconciliation.repairBucket);
   const [id, setId] = useState<Id<"analytics_reconciliations"> | null>(null),
     [busy, setBusy] = useState(false),
@@ -90,7 +90,7 @@ export function Reconciliation() {
       setId(key);
       let status = "running";
       while (status === "running") {
-        status = (await advance({ id: key })).status;
+        status = (await advance({ id: key, pages: 50 })).status;
       }
     } catch (e) {
       setError(classifyCrmError(e).message);

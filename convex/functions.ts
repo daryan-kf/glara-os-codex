@@ -81,11 +81,47 @@ async function instrument(
   const related = async (table: SourceTable, id: string) => {
     if (id) await touch(id, table);
   };
+  const projectActivities = async (
+    id: import("./_generated/dataModel").Id<"projects">,
+  ) => {
+    const tasks = await ctx.db
+      .query("activities")
+      .withIndex("by_project", (q) =>
+        q.eq("project_id", id).eq("deleted_at", null),
+      )
+      .filter((q) => q.eq(q.field("status"), "open"))
+      .take(201);
+    if (tasks.length > 200)
+      throw Error("Project activity projection limit exceeded");
+    for (const task of tasks) await related("activities", task._id);
+  };
   for (const t of touched.values()) {
     const row = await sourceRow(ctx, t.table, t.id);
     if (!row) continue;
     if (t.table === "activities")
       await related("opportunities", str(row, "opportunity_id"));
+    if (t.table === "opportunities") {
+      const id = ctx.db.normalizeId("opportunities", t.id);
+      if (id) {
+        const tasks = await ctx.db
+          .query("activities")
+          .withIndex("by_opportunity", (q) =>
+            q
+              .eq("opportunity_id", id)
+              .eq("status", "open")
+              .eq("deleted_at", null),
+          )
+          .take(201);
+        const projects = await ctx.db
+          .query("projects")
+          .withIndex("by_opportunity", (q) => q.eq("opportunity_id", id))
+          .take(201);
+        if (tasks.length > 200 || projects.length > 200)
+          throw Error("Opportunity activity projection limit exceeded");
+        for (const task of tasks) await related("activities", task._id);
+        for (const project of projects) await projectActivities(project._id);
+      }
+    }
     if (t.table === "properties") {
       const id = ctx.db.normalizeId("properties", t.id);
       if (id) {
@@ -96,6 +132,21 @@ async function instrument(
         if (rows.length > 200)
           throw Error("Property opportunity projection limit exceeded");
         for (const r of rows) await related("opportunities", r._id);
+        const tasks = await ctx.db
+          .query("activities")
+          .withIndex("by_property", (q) =>
+            q.eq("property_id", id).eq("deleted_at", null),
+          )
+          .filter((q) => q.eq(q.field("status"), "open"))
+          .take(201);
+        const projects = await ctx.db
+          .query("projects")
+          .withIndex("by_property", (q) => q.eq("property_id", id))
+          .take(201);
+        if (tasks.length > 200 || projects.length > 200)
+          throw Error("Property activity projection limit exceeded");
+        for (const task of tasks) await related("activities", task._id);
+        for (const project of projects) await projectActivities(project._id);
       }
     }
     if (t.table === "products") {

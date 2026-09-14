@@ -469,3 +469,51 @@ it("serializes explicit projection correction against payment reversal without d
   expect(nov.flows.cash_reversed_cents).toBe("5000");
   expect(nov.current.current_valid_collected_cents ?? "0").toBe("0");
 });
+it("refreshes current follow-up geography when its property changes without rewriting historical activity", async () => {
+  const f = await operationsFixture(),
+    c = f.c("owner");
+  const before = await f.t.run(async (ctx) =>
+    (await ctx.db.query("analytics_facts").collect()).filter(
+      (r) => r.active && r.metric === "activities_created",
+    ),
+  );
+  const property = await f.t.run(
+    async (ctx) => (await ctx.db.query("properties").collect())[0]!,
+  );
+  await c.mutation(api.sales.saveProperty, {
+    id: property._id,
+    version: property.version,
+    input: JSON.stringify({
+      address_line_1: property.address_line_1,
+      city: "Burnaby",
+      province: "BC",
+      property_type: property.property_type,
+      occupancy_status: property.occupancy_status,
+      realtor_id: property.realtor_id,
+    }),
+  });
+  await f.t.run(async (ctx) => {
+    for (const activity of await ctx.db.query("activities").collect()) {
+      const p = await sourceProjection(ctx, "activities", activity._id),
+        stored = await ctx.db
+          .query("analytics_facts")
+          .withIndex("by_source", (q) =>
+            q.eq("source_table", "activities").eq("source_id", activity._id),
+          )
+          .collect();
+      const expected = p.facts.find((r) => r.metric === "followups_open");
+      if (expected) {
+        expect(expected.dimensions.city).toBe("Burnaby");
+        expect(
+          stored.find((r) => r.active && r.metric === "followups_open")
+            ?.dimensions,
+        ).toEqual(expected.dimensions);
+      }
+    }
+    expect(
+      (await ctx.db.query("analytics_facts").collect()).filter(
+        (r) => r.active && r.metric === "activities_created",
+      ),
+    ).toEqual(before);
+  });
+});

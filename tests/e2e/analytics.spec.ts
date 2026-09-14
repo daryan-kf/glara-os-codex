@@ -40,6 +40,12 @@ test.describe("M6 analytics desktop and mobile", () => {
       path: info.outputPath("m6-dashboard.png"),
       fullPage: true,
     });
+    await expect(
+      page.getByRole("img", { name: /Six-month gross invoiced/ }),
+    ).toBeVisible();
+    await page
+      .getByRole("img", { name: /Six-month gross invoiced/ })
+      .screenshot({ path: info.outputPath("m6-trend.png") });
     await page.getByRole("link", { name: "Reports & targets" }).click();
     await expect(
       page.getByRole("heading", { name: "Business targets" }),
@@ -47,6 +53,19 @@ test.describe("M6 analytics desktop and mobile", () => {
     await expect(
       page.getByRole("button", { name: "Run independent reconciliation" }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Save targets" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("This page subtotal:", { exact: false }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Review threshold:", { exact: false }),
+    ).toBeVisible();
+    await page.screenshot({
+      path: info.outputPath("m6-reports.png"),
+      fullPage: true,
+    });
   });
   for (const [role, title] of [
     ["sales", "Your sales overview"],
