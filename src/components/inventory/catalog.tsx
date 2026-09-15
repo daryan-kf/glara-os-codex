@@ -1,4 +1,6 @@
 "use client";
+import { CopilotLink } from "@/components/ai/copilot";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -542,6 +544,7 @@ export function ProductDetail({ id }: { id: string }) {
       />
       <div className="mb-5 flex flex-wrap gap-3">
         <StatusBadge>{p.track_mode}</StatusBadge>
+        <CopilotLink feature="inventory" id={id} />
         <StatusBadge>{p.active ? "Active" : "Inactive"}</StatusBadge>
         {p.deleted_at && <StatusBadge>Archived</StatusBadge>}
         <StatusBadge>

@@ -112,3 +112,15 @@ export const metricLabels: Record<string, string> = {
 };
 export const labelFor = (metric: string) =>
   metricLabels[metric] ?? metric.replaceAll("_", " ");
+/** Descriptive definitions shared by M6 reporting and M8; arithmetic remains in M6. */
+export const metricDefinitions = {
+  win_rate:
+    "Won opportunities divided by won plus lost opportunities in the selected period; undefined when there are no closed outcomes. Stored in basis points.",
+  invoiced:
+    "Gross issued invoice cents use the authoritative invoice issue date. Net invoiced subtracts credits and voids in their own event periods.",
+  collected:
+    "Gross cash received uses the authoritative payment receipt date. Net cash subtracts reversals in their own event periods; allocations do not create additional company cash.",
+  ar: "Current outstanding receivables use M5 collectible invoice balances after payments and credits. Historical AR requires the separate historical reconstruction.",
+  staged:
+    "Projects staged counts the first authoritative staging event in the selected Vancouver business period; current staged status is a separate snapshot.",
+} as const;

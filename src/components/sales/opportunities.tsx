@@ -1,4 +1,6 @@
 "use client";
+import { CopilotLink } from "@/components/ai/copilot";
+
 import { Handoff } from "@/components/operations/create";
 import Link from "next/link";
 import { useState } from "react";
@@ -548,6 +550,7 @@ export function OpportunityDetail({ id }: { id: string }) {
       />
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <StatusBadge>{label(o.stage)}</StatusBadge>
+        <CopilotLink feature="opportunity" id={id} />
         <Button variant="outline" asChild>
           <Link href={"/properties/" + o.property_id}>Property overview</Link>
         </Button>

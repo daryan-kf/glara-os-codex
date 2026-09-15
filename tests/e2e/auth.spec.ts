@@ -1,6 +1,7 @@
 import { credentials } from "../support/identities";
 import { expect, test } from "@playwright/test";
 const protectedRoutes = [
+  "copilot",
   "dashboard",
   "realtors",
   "opportunities",

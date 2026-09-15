@@ -1,4 +1,6 @@
 "use client";
+import { CopilotLink } from "@/components/ai/copilot";
+
 import { CommercialHistory } from "./history";
 import { useState } from "react";
 import Link from "next/link";
@@ -132,6 +134,7 @@ export function InvoiceDetail({ id }: { id: string }) {
     <div className="space-y-6">
       <div className="flex flex-wrap gap-3 print:hidden">
         <ProjectLink id={a.project_id} />
+        <CopilotLink feature="commercial" id={id} />
         <Print />
       </div>
       {a.manage && <CommercialHistory id={a._id} />}

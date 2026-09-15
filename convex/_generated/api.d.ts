@@ -10,6 +10,10 @@
 
 import type * as access from "../access.js";
 import type * as admin from "../admin.js";
+import type * as ai from "../ai.js";
+import type * as aiContext from "../aiContext.js";
+import type * as aiProvider from "../aiProvider.js";
+import type * as aiSchema from "../aiSchema.js";
 import type * as analytics from "../analytics.js";
 import type * as analyticsHistory from "../analyticsHistory.js";
 import type * as analyticsLedger from "../analyticsLedger.js";
@@ -48,6 +52,10 @@ import type {
 declare const fullApi: ApiFromModules<{
   access: typeof access;
   admin: typeof admin;
+  ai: typeof ai;
+  aiContext: typeof aiContext;
+  aiProvider: typeof aiProvider;
+  aiSchema: typeof aiSchema;
   analytics: typeof analytics;
   analyticsHistory: typeof analyticsHistory;
   analyticsLedger: typeof analyticsLedger;

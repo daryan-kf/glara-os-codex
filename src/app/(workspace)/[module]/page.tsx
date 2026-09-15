@@ -1,3 +1,4 @@
+import { Copilot } from "@/components/ai/copilot";
 import {
   AutomationCenter,
   NotificationCenter,
@@ -42,6 +43,15 @@ export default async function ModulePage({
       <EmptyState
         title="Automation deployment pending"
         description="The M7 development backend has not been activated yet."
+      />
+    );
+  if (moduleKey === "copilot")
+    return user.ai_version === 1 ? (
+      <Copilot roles={user.roles} />
+    ) : (
+      <EmptyState
+        title="Copilot deployment pending"
+        description="The M8 backend has not been deployed yet."
       />
     );
   if (moduleKey === "automation") return <AutomationCenter />;

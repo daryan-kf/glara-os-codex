@@ -1,3 +1,4 @@
+import { CopilotLink } from "@/components/ai/copilot";
 import { z } from "zod";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -76,6 +77,9 @@ export default async function Page({
           description={record.brokerage_name ?? "Realtor relationship profile"}
         />
         <div className="mb-6 flex flex-wrap gap-2">
+          {writable && !record.deleted_at && (
+            <CopilotLink feature="realtor" id={id} />
+          )}
           {record.deleted_at ? (
             <StatusBadge>Archived</StatusBadge>
           ) : (

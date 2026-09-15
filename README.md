@@ -6,6 +6,10 @@ Private operating system for Glara Home Staging, Metro Vancouver. The active sta
 
 M6 analytics is deployed to the explicitly authorized development deployment, backfilled and activated after a zero-drift source rebuild. Acceptance passed: 263 local tests, 150 M1–M5 hosted checks, 8 historical correction checks, 26 M6 hosted checks, 56 full browser scenarios and a final 10-scenario M6 rerun. Final reconciliation found zero drift across 2,324 source records. See [the M6 report](docs/M6-report.md) for architecture, exact gate status and initialization instructions. M6 development acceptance is complete; production email/auth requirements remain deferred. M7 automation was subsequently authorized; see the M7 section and release report for current acceptance status.
 
+## M8 copilot
+
+M8 adds a shared permission-safe copilot with evidence references, drafts and explicitly approved task proposals. AI defaults disabled; the development deployment has no provider/model/security approval configured. Hosted and live-provider acceptance are separately pending. See [the M8 report](docs/M8-report.md) for boundaries, setup, local tests and remaining gates. M9 has not started.
+
 ## Local setup
 
 Requires Node.js 22.9+, npm and access to the Daryan Convex team.

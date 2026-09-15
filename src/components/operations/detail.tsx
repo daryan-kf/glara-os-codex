@@ -1,4 +1,6 @@
 "use client";
+import { CopilotLink } from "@/components/ai/copilot";
+
 import { CommercialProjectLink } from "@/components/commercial/project";
 import { ProjectInventoryLink } from "@/components/inventory/project";
 import { useState } from "react";
@@ -49,6 +51,10 @@ export function ProjectDetail({ id }: { id: string }) {
       />
       <div className="mb-6 flex flex-wrap gap-3">
         <StatusBadge>{label(p.status)}</StatusBadge>
+        <CopilotLink
+          feature={p.access === "marketing" ? "marketing" : "project"}
+          id={id}
+        />
         <StatusBadge>{p.priority} priority</StatusBadge>
         {p.deleted_at && <StatusBadge>Archived</StatusBadge>}
       </div>
