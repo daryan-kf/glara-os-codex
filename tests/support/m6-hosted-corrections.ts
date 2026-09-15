@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import type { FunctionReturnType } from "convex/server";
 import { spawnSync } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { operationsClient, wonFixture } from "./operations-fixture";
@@ -23,83 +23,9 @@ async function main() {
     process.env.GLARA_M6_ACCEPTANCE !== "yes"
   )
     throw Error("Explicit M6 fictional acceptance opt-in required");
-  const { client: c } = await operationsClient(),
-    f = await wonFixture(c),
-    marker = "Fictional M6 historical import template";
-  const project = (
-    await c.mutation(api.operations.create, {
-      ...f.createArgs,
-      input: JSON.stringify({
-        ...JSON.parse(f.createArgs.input),
-        internal_notes: marker,
-      }),
-    })
-  ).id;
-  const customer = await c.mutation(api.commercial.saveCustomer, {
-    version: 0,
-    input: JSON.stringify({
-      type: "seller",
-      name: "Fictional M6 history",
-      contact: "Fictional",
-      email: "m6@accounts.example.test",
-      phone: "",
-      company: "",
-      address: "100 Fictional Avenue, Vancouver BC",
-    }),
-  });
-  const invoice = await c.mutation(api.commercial.saveInvoice, {
-    project_id: project,
-    customer_id: customer,
-    version: 0,
-    input: JSON.stringify({
-      issue_date: "2026-06-15",
-      due_date: "2026-06-30",
-      notes: marker,
-      items: [
-        {
-          description: "Fictional service",
-          quantity: 1,
-          unit_amount: "100",
-          discount: "0",
-          taxes: [],
-        },
-      ],
-    }),
-  });
-  await c.mutation(api.commercial.invoiceAction, {
-    id: invoice,
-    version: 1,
-    action: "issue",
-    reason: "Fictional M6 import template",
-  });
-  const payment = await c.mutation(api.commercial.recordPayment, {
-    project_id: project,
-    customer_id: customer,
-    amount: "40",
-    method: "e_transfer",
-    received_date: "2026-06-20",
-    external_reference: marker,
-    notes: "",
-    request_key: crypto.randomUUID(),
-    allocations: [{ invoice_id: invoice, amount: "40" }],
-  });
-  const imported = spawnSync(
-    process.execPath,
-    [
-      "node_modules/convex/bin/main.js",
-      "run",
-      "m6HistoricalImport:importHistory",
-      JSON.stringify({ project, invoice, payment }),
-      "--env-file",
-      ".env.local",
-    ],
-    { encoding: "utf8", env: process.env },
-  );
-  if (imported.status !== 0) {
-    writeFileSync("test-results/m6-history-import-error.log", imported.stderr);
-    throw Error("Historical fixture import failed; inspect local diagnostic");
-  }
-  const h = JSON.parse(imported.stdout.trim()) as {
+  const { client: c } = await operationsClient();
+  let project: Id<"projects"> | undefined;
+  let h: {
     project: Id<"projects">;
     opportunity: Id<"opportunities">;
     realtor: Id<"realtors">;
@@ -107,7 +33,97 @@ async function main() {
     payment: Id<"payments">;
     original_salesperson: Id<"users">;
   };
-  writeFileSync("test-results/m6-history-fixture.json", JSON.stringify(h));
+  if (process.env.GLARA_M6_HISTORY_FIXTURE) {
+    h = JSON.parse(readFileSync(process.env.GLARA_M6_HISTORY_FIXTURE, "utf8"));
+  } else {
+    const f = await wonFixture(c),
+      marker = "Fictional M6 historical import template";
+    project = (
+      await c.mutation(api.operations.create, {
+        ...f.createArgs,
+        input: JSON.stringify({
+          ...JSON.parse(f.createArgs.input),
+          internal_notes: marker,
+        }),
+      })
+    ).id;
+    const customer = await c.mutation(api.commercial.saveCustomer, {
+      version: 0,
+      input: JSON.stringify({
+        type: "seller",
+        name: "Fictional M6 history",
+        contact: "Fictional",
+        email: "m6@accounts.example.test",
+        phone: "",
+        company: "",
+        address: "100 Fictional Avenue, Vancouver BC",
+      }),
+    });
+    const invoice = await c.mutation(api.commercial.saveInvoice, {
+      project_id: project,
+      customer_id: customer,
+      version: 0,
+      input: JSON.stringify({
+        issue_date: "2026-06-15",
+        due_date: "2026-06-30",
+        notes: marker,
+        items: [
+          {
+            description: "Fictional service",
+            quantity: 1,
+            unit_amount: "100",
+            discount: "0",
+            taxes: [],
+          },
+        ],
+      }),
+    });
+    await c.mutation(api.commercial.invoiceAction, {
+      id: invoice,
+      version: 1,
+      action: "issue",
+      reason: "Fictional M6 import template",
+    });
+    const payment = await c.mutation(api.commercial.recordPayment, {
+      project_id: project,
+      customer_id: customer,
+      amount: "40",
+      method: "e_transfer",
+      received_date: "2026-06-20",
+      external_reference: marker,
+      notes: "",
+      request_key: crypto.randomUUID(),
+      allocations: [{ invoice_id: invoice, amount: "40" }],
+    });
+    const imported = spawnSync(
+      process.execPath,
+      [
+        "node_modules/convex/bin/main.js",
+        "run",
+        "m6HistoricalImport:importHistory",
+        JSON.stringify({ project, invoice, payment }),
+        "--env-file",
+        ".env.local",
+      ],
+      { encoding: "utf8", env: process.env },
+    );
+    if (imported.status !== 0) {
+      writeFileSync(
+        "test-results/m6-history-import-error.log",
+        imported.stderr,
+      );
+      throw Error("Historical fixture import failed; inspect local diagnostic");
+    }
+    h = JSON.parse(imported.stdout.trim()) as {
+      project: Id<"projects">;
+      opportunity: Id<"opportunities">;
+      realtor: Id<"realtors">;
+      invoice: Id<"invoices">;
+      payment: Id<"payments">;
+      original_salesperson: Id<"users">;
+    };
+    writeFileSync("test-results/m6-history-fixture.json", JSON.stringify(h));
+  }
   const query = (
     month: string,
     filter = JSON.stringify({ dimension: "realtor", member: h.realtor }),
@@ -171,7 +187,10 @@ async function main() {
     version: o.version,
     input: JSON.stringify({
       property_id: o.property_id,
-      assigned_to: credentials("admin").id,
+      assigned_to:
+        o.assigned_to === credentials("admin").id
+          ? h.original_salesperson
+          : credentials("admin").id,
       estimated_value: "5000",
       probability: o.probability,
       notes: "Fictional later reassignment",
@@ -228,13 +247,15 @@ async function main() {
         assert.equal(found, true);
       },
     );
-  const template = await c.query(api.operations.get, { id: project });
-  await c.mutation(api.operations.transition, {
-    id: project,
-    version: template.version,
-    status: "cancelled",
-    reason: "Fictional template cleanup after historical fixture import",
-  });
+  if (project) {
+    const template = await c.query(api.operations.get, { id: project });
+    await c.mutation(api.operations.transition, {
+      id: project,
+      version: template.version,
+      status: "cancelled",
+      reason: "Fictional template cleanup after historical fixture import",
+    });
+  }
   console.log(
     "Historical assertions complete; final global reconciliation runs after other hosted regressions finish.",
   );

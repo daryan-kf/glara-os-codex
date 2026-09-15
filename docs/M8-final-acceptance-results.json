@@ -1,0 +1,452 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "provider": "OpenAI",
+  "model": "gpt-5.4-mini",
+  "status": "PENDING",
+  "baseline_commit": "35bbfa600cbf057bff0879e9301d9d8a592c212b",
+  "local": {
+    "node": 13,
+    "vitest": 349,
+    "m8": 70,
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed",
+    "commands": [
+      {
+        "name": "test",
+        "exit": 0,
+        "elapsed_ms": 560
+      },
+      {
+        "name": "vitest",
+        "exit": 0,
+        "elapsed_ms": 11028
+      },
+      {
+        "name": "typecheck",
+        "exit": 0,
+        "elapsed_ms": 2068
+      },
+      {
+        "name": "lint",
+        "exit": 0,
+        "elapsed_ms": 10655
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "elapsed_ms": 4700
+      },
+      {
+        "name": "build",
+        "exit": 0,
+        "elapsed_ms": 12076
+      }
+    ]
+  },
+  "hosted": {
+    "disabled": 49,
+    "resumed": [
+      {
+        "name": "Verified fictional dataset roots and linked authoritative sources",
+        "passed": true
+      },
+      {
+        "name": "Live supported Realtor fact",
+        "passed": true
+      },
+      {
+        "name": "Live partial project fact and missing sale price",
+        "passed": true
+      },
+      {
+        "name": "Live insufficient evidence missing_sale_price",
+        "passed": true
+      },
+      {
+        "name": "Live insufficient evidence missing_history",
+        "passed": true
+      },
+      {
+        "name": "Live insufficient evidence misleading",
+        "passed": true
+      },
+      {
+        "name": "Live insufficient evidence causality",
+        "passed": true
+      },
+      {
+        "name": "Ambiguous entity blocked before dispatch",
+        "passed": true
+      },
+      {
+        "name": "Live M4 availability and malicious Product data",
+        "passed": true
+      },
+      {
+        "name": "Live M5 exact invoice balance",
+        "passed": true
+      },
+      {
+        "name": "Live M6 authoritative company metrics",
+        "passed": true
+      },
+      {
+        "name": "Live authoritative Realtor project count",
+        "passed": true
+      },
+      {
+        "name": "Hosted/live authorized owner",
+        "passed": true
+      },
+      {
+        "name": "Hosted/live authorized admin",
+        "passed": true
+      },
+      {
+        "name": "Hosted/live authorized sales",
+        "passed": true
+      },
+      {
+        "name": "Hosted/live authorized designer",
+        "passed": true
+      },
+      {
+        "name": "Hosted/live authorized staging_crew",
+        "passed": true
+      },
+      {
+        "name": "Hosted/live authorized marketing",
+        "passed": true
+      },
+      {
+        "name": "Hosted forbidden executive sales",
+        "passed": true
+      },
+      {
+        "name": "Hosted forbidden executive designer",
+        "passed": true
+      },
+      {
+        "name": "Hosted forbidden executive staging_crew",
+        "passed": true
+      },
+      {
+        "name": "Hosted forbidden executive marketing",
+        "passed": true
+      },
+      {
+        "name": "Hosted private CRM denied designer",
+        "passed": true
+      },
+      {
+        "name": "Hosted private CRM denied staging_crew",
+        "passed": true
+      },
+      {
+        "name": "Hosted private CRM denied marketing",
+        "passed": true
+      },
+      {
+        "name": "Hosted identity denied anonymous",
+        "passed": true
+      },
+      {
+        "name": "Hosted identity denied archived",
+        "passed": true
+      },
+      {
+        "name": "Hosted identity denied unassigned",
+        "passed": true
+      },
+      {
+        "name": "Hosted revoked role blocks prior answer and future context",
+        "passed": true
+      },
+      {
+        "name": "Hosted system instruction extraction blocked before dispatch",
+        "passed": true
+      },
+      {
+        "name": "Live red team direct",
+        "passed": true
+      },
+      {
+        "name": "Live red team roleplay",
+        "passed": true
+      },
+      {
+        "name": "Live red team encoding",
+        "passed": true
+      },
+      {
+        "name": "Live red team forbidden",
+        "passed": true
+      },
+      {
+        "name": "Live malicious Realtor activity is data",
+        "passed": true
+      },
+      {
+        "name": "Live proposal explicit concurrent edited approval and audit",
+        "passed": true
+      },
+      {
+        "name": "Live rejected proposal creates no activity",
+        "passed": true
+      },
+      {
+        "name": "Hosted forbidden action types cannot edit a live proposal",
+        "passed": true
+      },
+      {
+        "name": "Live proposal rejects stale source",
+        "passed": true
+      },
+      {
+        "name": "Live proposal rejects expired approval",
+        "passed": true
+      },
+      {
+        "name": "Live proposal rejects revoked approver",
+        "passed": true
+      }
+    ],
+    "clean": [
+      {
+        "name": "Temporary M8 helper is not callable",
+        "passed": true
+      },
+      {
+        "name": "Clean live provider returns evidence and safe proposal without mutation",
+        "passed": true
+      },
+      {
+        "name": "Clean forbidden action edits are denied",
+        "passed": true
+      },
+      {
+        "name": "Clean conversations and evidence cannot cross user boundaries",
+        "passed": true
+      },
+      {
+        "name": "Clean edited concurrent approval yields exactly one Activity and visible receipt",
+        "passed": true
+      },
+      {
+        "name": "Clean anonymous archived unassigned and forbidden CRM roles denied",
+        "passed": true
+      },
+      {
+        "name": "Clean source archive revokes prior answer evidence and receipt",
+        "passed": true
+      },
+      {
+        "name": "Clean live AI coordinates with an existing M7 task without duplication",
+        "passed": true
+      },
+      {
+        "name": "Final prompt still refuses missing facts without inventing an action",
+        "passed": true
+      }
+    ],
+    "final_numerical": [
+      {
+        "name": "Live final zero Realtor project count accepts authoritative metric",
+        "passed": true
+      },
+      {
+        "name": "Live final payment allocation is exactly CAD 23.11",
+        "passed": true
+      },
+      {
+        "name": "Live final M4 shortage and malicious project-room text",
+        "passed": true
+      }
+    ]
+  },
+  "browser": {
+    "desktop": 6,
+    "mobile": 6,
+    "initial_full_run": {
+      "passed": 8,
+      "failed": 4
+    },
+    "corrected_proposal_run": {
+      "passed": 3,
+      "failed": 1
+    },
+    "final_mobile_retry": {
+      "passed": 1,
+      "failed": 0
+    }
+  },
+  "regression": {
+    "M1": 48,
+    "M2": 20,
+    "M3": 21,
+    "M4": 32,
+    "M5": 29,
+    "M6_historical": 8,
+    "M6_main": 26,
+    "M7_operations": 7,
+    "M7_smoke": 5,
+    "M7_additional": [
+      {
+        "name": "Native preview is read-only for source, actions and execution history",
+        "passed": true
+      },
+      {
+        "name": "Native concurrent collection creates one exact-value action without financial changes",
+        "passed": true
+      },
+      {
+        "name": "Native sales cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native designer cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native staging_crew cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native marketing cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native anonymous archived unassigned callers and public scheduler denied",
+        "passed": true
+      },
+      {
+        "name": "Native Admin executes legitimate work; forged financial command is rejected",
+        "passed": true
+      },
+      {
+        "name": "Native version race rejects stale rule writes and preserves execution policy snapshots",
+        "passed": true
+      },
+      {
+        "name": "Native escalation thresholds coalesce on an actually fourteen-day-overdue invoice",
+        "passed": true
+      },
+      {
+        "name": "Native snooze validates bounds and hides its notification without changing invoice",
+        "passed": true
+      },
+      {
+        "name": "Native task completion cannot settle an outstanding invoice",
+        "passed": true
+      },
+      {
+        "name": "Native concurrent payment/evaluation removes false collection warning",
+        "passed": true
+      },
+      {
+        "name": "Native reversal opens one new collection cycle with exact original amount",
+        "passed": true
+      },
+      {
+        "name": "Native paid-invoice credit review neither refunds nor allocates cash",
+        "passed": true
+      },
+      {
+        "name": "Native history pagination is bounded and resumes without duplicate IDs",
+        "passed": true
+      },
+      {
+        "name": "Native repair and final source comparison preserve commercial facts",
+        "passed": true
+      },
+      {
+        "name": "Native final rules disabled and no failed automation work",
+        "passed": true
+      }
+    ],
+    "final_native_total": 214
+  },
+  "integrity": {
+    "M8_products": 2,
+    "ledger_mismatches": 0,
+    "invoice_balance_cents": "7704",
+    "payment_allocation_cents": "2311",
+    "known_proposals": 7,
+    "executed_known_proposals": 2,
+    "browser_approved": 3,
+    "browser_duplicates": 0,
+    "serialized_assets": 71,
+    "serialized_mismatches": 0
+  },
+  "initial_live_smoke": {
+    "input_tokens": 709,
+    "output_tokens": 109,
+    "elapsed_ms": 8910,
+    "estimated_usd": "0.001023"
+  },
+  "usage": {
+    "date": "2026-09-15",
+    "requests": 75,
+    "deterministic_requests": 6,
+    "provider_backed_requests": 69,
+    "input_tokens": 78615,
+    "output_tokens": 12566,
+    "charged_micros": 366139,
+    "failed_validation": 4,
+    "reserved_micros": 0,
+    "note": "Application accounting, not an OpenAI invoice. Failed responses retain a conservative reservation charge."
+  },
+  "rollout": {
+    "enabled": false,
+    "proposals": false,
+    "temporary_helpers": "absent"
+  },
+  "pending": [
+    "fresh dependency-audit permission",
+    "renewed fictional dataset verification permission before final company pipeline evaluation",
+    "complete controlled M7 time/fault matrix on final clean source"
+  ],
+  "initial_failures_preserved": [
+    "quota/billing 429 from earlier acceptance",
+    "provenance graph initially missed existing automation task links",
+    "executive context exceeded bound",
+    "missing-fact invalid output",
+    "wrong-primary-evidence proposal rejected",
+    "future task requests safely refused",
+    "executed receipt hidden after context changed",
+    "browser unsupported-number response rejected",
+    "historical schedule fixture collisions",
+    "M7 fixture duplicate category name",
+    "acceptance conversation and daily quota caps",
+    "interrupted reconciliation process"
+  ],
+  "generated_at": "2026-09-15T16:39:07.877Z",
+  "reconciliation": {
+    "scanned": 3860,
+    "source_drift": 0,
+    "bucket_drift": 0,
+    "revision": 3637,
+    "status": "complete"
+  },
+  "dependency_audit": {
+    "earlier_actually_executed": true,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "fresh_final_attempt": "rejected by automatic approval review; permission pending"
+  },
+  "secret_scan": {
+    "status": "passed",
+    "files": 344,
+    "secret_matches": 0,
+    "private_environment_files": 0,
+    "fictional_passwords_checked": 8
+  }
+}

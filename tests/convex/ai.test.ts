@@ -434,7 +434,7 @@ describe("M8 human control", () => {
     expect(row?.payload).not.toContain("Fictional M8 follow-up");
   });
   it("creates no activity before approval and executes edited payload exactly once", async () => {
-    const { f, id, p } = await proposed();
+    const { f, id, r, p } = await proposed();
     expect(
       await f.t.run((ctx) =>
         ctx.db
@@ -468,6 +468,17 @@ describe("M8 human control", () => {
     );
     expect(rows).toHaveLength(1);
     expect(rows[0].title).toBe("Human edited follow-up");
+    const receipt = await f.c("sales").query(api.ai.result, { id: r });
+    expect(receipt.stale).toBe(true);
+    expect(receipt.output).toBeNull();
+    expect(receipt.proposal?.status).toBe("executed");
+    expect(receipt.proposal?.result_id).toBe(rows[0]._id);
+    await f.t.run((ctx) =>
+      ctx.db.patch(id as Id<"realtors">, { assigned_to: f.who("owner").id }),
+    );
+    await expect(
+      f.c("sales").query(api.ai.result, { id: r }),
+    ).rejects.toThrow();
   });
   it("rejects without a business mutation", async () => {
     const { f, id, p } = await proposed();
@@ -1505,4 +1516,95 @@ it("records only allowlisted provider diagnostics, without response secrets", as
   expect((await f.c("owner").query(api.ai.result, { id: r })).error).toBe(
     "AI_UNAVAILABLE",
   );
+});
+it("withholds insufficient-evidence drafts and accepts only a compliant retry", async () => {
+  const f = await fixture(),
+    id = await fresh(f);
+  const response = (output: Insight) =>
+    new Response(
+      JSON.stringify({
+        status: "completed",
+        output: [
+          {
+            type: "message",
+            content: [{ type: "output_text", text: JSON.stringify(output) }],
+          },
+        ],
+        usage: { input_tokens: 100, output_tokens: 50 },
+      }),
+    );
+  const refusal = insight({
+    answer: "The authorized record does not contain a sale price.",
+    why: "Sale price is absent.",
+    evidence_state: "insufficient",
+    draft: "",
+    recommendations: [],
+    proposal: null,
+  });
+  const fetch = vi
+    .fn()
+    .mockResolvedValueOnce(
+      response({
+        ...refusal,
+        draft: "A sale-price draft must not be accepted.",
+      }),
+    )
+    .mockResolvedValueOnce(response(refusal));
+  vi.stubGlobal("fetch", fetch);
+  const r = await request(f, "realtor", id);
+  await f.c("owner").action(api.aiProvider.generate, { id: r });
+  const view = await f.c("owner").query(api.ai.result, { id: r });
+  expect(fetch).toHaveBeenCalledTimes(2);
+  expect(view.status).toBe("completed");
+  expect(view.output?.draft).toBe("");
+  expect(view.output?.evidence_state).toBe("insufficient");
+  expect(view.proposal).toBeNull();
+});
+it("keeps executive context usable with a broad movement-comparison catalog", async () => {
+  const f = await commercialFixture();
+  await enable(f);
+  const invoice = await f.manual("100.15");
+  await f.issue(invoice);
+  await f.t.run(async (ctx) => {
+    const state = await ctx.db
+      .query("analytics_state")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .unique();
+    await ctx.db.patch(state!._id, { ready: true });
+    for (let i = 0; i < 85; i++)
+      await ctx.db.insert("analytics_buckets", {
+        key: "fictional-volume-" + i,
+        grain: "day",
+        period: day(),
+        metric: "inventory_acceptance_event_" + i,
+        dimension: "company",
+        member: "all",
+        value: "1",
+        version: 1,
+        processed_at: new Date().toISOString(),
+      });
+  });
+  const source = await f.owner.query(api.analytics.summary, {
+    period: JSON.stringify({ period: "this_month" }),
+  });
+  expect(JSON.stringify(source.comparisons).length).toBeGreaterThan(6000);
+  const r = await request(
+    f,
+    "executive",
+    "",
+    "owner",
+    "Explain executive performance",
+  );
+  const run = await f.owner.mutation(internal.ai.begin, { id: r });
+  expect(run).not.toBeNull();
+  expect(JSON.parse(run!.context.evidence[0].data).flows).toEqual(source.flows);
+  const current = JSON.parse(run!.context.evidence[1].data);
+  expect(current.current).toEqual(source.current);
+  expect(current.comparisons.invoiced_cents).toEqual(
+    source.comparisons.invoiced_cents,
+  );
+  expect(run!.context.evidence.every((e) => e.data.length <= 6000)).toBe(true);
+  expect(
+    new TextEncoder().encode(JSON.stringify(run!.context)).length,
+  ).toBeLessThan(24000);
 });

@@ -606,7 +606,7 @@ export const result = query({
       scope: r.scope,
       completed_at: r.completed_at,
       proposal:
-        proposal && fresh
+        proposal && (fresh || proposal.status === "executed")
           ? {
               ...proposal,
               payload: proposalPayload.parse(JSON.parse(proposal.payload)),

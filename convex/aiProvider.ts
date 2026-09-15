@@ -80,6 +80,7 @@ export class OpenAIProvider implements IntelligenceProvider {
           })),
           limitations: input.context.limitations,
           can_propose: input.context.can_propose && input.config.proposals,
+          primary_evidence_key: input.context.evidence[0]?.key ?? null,
           existing_task_count: input.context.existing_task_ids.length,
         };
         const body = JSON.stringify({
@@ -102,7 +103,19 @@ export class OpenAIProvider implements IntelligenceProvider {
               type: "json_schema",
               name: "glara_insight",
               strict: true,
-              schema: z.toJSONSchema(insightSchema),
+              schema: z.toJSONSchema(
+                insightSchema.extend({
+                  proposal:
+                    data.can_propose && data.primary_evidence_key
+                      ? insightSchema.shape.proposal
+                          .unwrap()
+                          .extend({
+                            evidence_id: z.literal(data.primary_evidence_key),
+                          })
+                          .nullable()
+                      : z.null(),
+                }),
+              ),
             },
           },
         });
@@ -172,8 +185,11 @@ export class OpenAIProvider implements IntelligenceProvider {
             output_tokens: outputTokens,
             usage_known: usageKnown,
           };
-        } catch {
-          if (attempt === 1) throw Error("INVALID_AI_OUTPUT");
+        } catch (error) {
+          if (attempt === 1)
+            throw Error("INVALID_AI_OUTPUT", {
+              cause: error instanceof Error ? error.cause : undefined,
+            });
         }
       }
       throw Error("INVALID_AI_OUTPUT");
@@ -242,6 +258,25 @@ export const generate = action({
       else result = await new OpenAIProvider().generateStructuredInsight(run);
     } catch (e) {
       error = safeError(e);
+      if (e instanceof Error && e.message === "INVALID_AI_OUTPUT") {
+        const reasons = [
+          "unknown_evidence",
+          "missing_evidence",
+          "proposal_not_allowed",
+          "insufficient_with_action",
+          "unsafe_prose",
+          "unsupported_number",
+        ];
+        const reason =
+          typeof e.cause === "string" && reasons.includes(e.cause)
+            ? e.cause
+            : "invalid_structure";
+        await ctx.runMutation(internal.ai.providerFailure, {
+          id: a.id,
+          status: 200,
+          code: reason,
+        });
+      }
       if (e instanceof ProviderHttpFailure)
         await ctx.runMutation(internal.ai.providerFailure, {
           id: a.id,

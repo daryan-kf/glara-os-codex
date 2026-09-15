@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { ConvexError } from "convex/values";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
+import type { Id } from "../../convex/_generated/dataModel";
 import { operationsClient } from "./operations-fixture";
 import { day } from "../../src/lib/operations/model";
 let inventory_evidence: { checked: number; mismatches: unknown[] } | null =
@@ -166,13 +167,29 @@ async function main() {
   await check(
     "Independent source rebuild equals incremental projections",
     async () => {
-      const id = await owner.mutation(api.analyticsReconciliation.start, {});
+      mkdirSync(".acceptance/m8/resume", { recursive: true });
+      const id =
+        (process.env.GLARA_M6_RECONCILIATION_ID as
+          Id<"analytics_reconciliations"> | undefined) ??
+        (await owner.mutation(api.analyticsReconciliation.start, {}));
+      writeFileSync(
+        ".acceptance/m8/resume/reconciliation-progress.json",
+        JSON.stringify({ id, status: "started" }),
+      );
       let completed = false;
       for (let step = 0; step < 20000; step++) {
         const r = await owner.action(api.analyticsMaintenance.reconcileBatch, {
-          pages: 50,
+          pages: 25,
           id,
         });
+        writeFileSync(
+          ".acceptance/m8/resume/reconciliation-progress.json",
+          JSON.stringify({ id, ...r }),
+        );
+        if (step % 5 === 0)
+          console.log(
+            `RECONCILE ${r.phase} ${r.scanned} sources; drift ${r.source_drift}/${r.bucket_drift}`,
+          );
         if (r.status !== "running") {
           assert.equal(r.status, "complete");
           assert.equal(r.source_drift, 0);

@@ -113,7 +113,7 @@ async function main() {
     }
     const category = await c.mutation(api.inventory.saveCategory, {
       version: 0,
-      name: f.marker,
+      name: f.marker + " quantity " + Date.now(),
       active: true,
     });
     const product = await c.mutation(api.inventory.saveProduct, {

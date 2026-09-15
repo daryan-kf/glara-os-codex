@@ -617,7 +617,18 @@ export async function buildContext(ctx: Ctx, raw: Scope): Promise<Context> {
       "/dashboard",
       {
         current: d.current,
-        comparisons: d.comparisons,
+        comparisons: select(d.comparisons, [
+          "cash_received_cents",
+          "invoiced_cents",
+          "opportunities_won",
+          "opportunities_lost",
+          "projects_staged",
+          "projects_created",
+          "realtors_created",
+          "quotes_sent",
+          "quotes_accepted",
+          "activities_completed",
+        ]),
         historical_ar: d.historical_ar,
         refunds: d.refunds,
       },
@@ -683,7 +694,7 @@ export async function buildContext(ctx: Ctx, raw: Scope): Promise<Context> {
       );
     }
     limitations.push(
-      "Period figures follow M6 definitions. Associations do not establish causality. All money is exact CAD cents; basis-point ratios require division by 100 for display as a percentage.",
+      "Period figures follow M6 definitions. Comparisons cover the main cash, invoicing, opportunity, project, Realtor, quote and completed-activity metrics; use Reports for detailed movement comparisons. Associations do not establish causality. All money is exact CAD cents; basis-point ratios require division by 100 for display as a percentage.",
     );
   } else if (scope.feature === "general") {
     if (u.roles.every((x) => x === "marketing")) {
