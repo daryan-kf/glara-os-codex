@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { notify } from "../../convex/automationCore";
 import { operationsFixture } from "../support/operations-unit-fixture";
 import { api, internal } from "../../convex/_generated/api";
 import {
@@ -627,5 +628,288 @@ describe("M7 release hardening", () => {
     await f.t.action(internal.automation.tick, {});
     expect(await f.t.query(internal.automation.pending, {})).toHaveLength(0);
     expect((await f.act()).page).toHaveLength(0);
+  });
+});
+
+describe("M7 hosted hardening regressions", () => {
+  it("committed suppression closes existing work even when evaluation races", async () => {
+    const f = await fixture();
+    await f.enable("new_contact");
+    const args = { table: "opportunities" as const, entity_id: f.oid };
+    await Promise.all([
+      f.c("owner").mutation(api.automation.execute, args),
+      f.c("owner").mutation(api.automation.suppress, {
+        ...args,
+        family: "contact",
+        days: 1,
+        reason: "Fictional suppression race",
+      }),
+    ]);
+    expect((await f.act()).page).toHaveLength(0);
+    await f.c("owner").mutation(api.automation.execute, args);
+    expect((await f.act()).page).toHaveLength(0);
+    const n = await f
+      .c("sales")
+      .query(api.automation.notifications, { resolved: false, paginationOpts });
+    expect(n.page).toHaveLength(0);
+  });
+  it("snoozed notifications and bell remain quiet until expiry", async () => {
+    const f = await fixture();
+    await f.enable("new_contact");
+    await f.c("owner").mutation(api.automation.execute, {
+      table: "opportunities",
+      entity_id: f.oid,
+    });
+    const a = (await f.act()).page[0];
+    await f.c("sales").mutation(api.automation.changeAction, {
+      id: a._id,
+      updated_at: a.updated_at,
+      op: "snooze",
+      days: 1,
+      reason: "Fictional quiet period",
+    });
+    expect(
+      (
+        await f.c("sales").query(api.automation.notifications, {
+          resolved: false,
+          paginationOpts,
+        })
+      ).page,
+    ).toHaveLength(0);
+    await f.t.run((ctx) =>
+      ctx.db.patch(a._id, { snoozed_until: Date.now() - 1 }),
+    );
+    expect(
+      (
+        await f.c("sales").query(api.automation.notifications, {
+          resolved: false,
+          paginationOpts,
+        })
+      ).page,
+    ).toHaveLength(1);
+  });
+});
+
+it("reassignment back to a recipient reopens one notification instead of losing it", async () => {
+  const f = await fixture();
+  await f.enable("new_contact");
+  await f.c("owner").mutation(api.automation.execute, {
+    table: "opportunities",
+    entity_id: f.oid,
+  });
+  const a = (await f.act()).page[0];
+  await f.t.run(async (ctx) => {
+    await notify(ctx, { ...a, assigned_to: f.who("owner").id });
+    await notify(ctx, a);
+    await notify(ctx, a);
+    const rows = await ctx.db
+      .query("notifications")
+      .withIndex("by_action", (q) => q.eq("action_id", a._id))
+      .collect();
+    expect(rows.filter((n) => !n.resolved_at)).toHaveLength(1);
+    expect(rows.find((n) => !n.resolved_at)?.recipient_id).toBe(
+      f.who("sales").id,
+    );
+  });
+});
+it("customer credit ages from receipt even when enrollment happens today", async () => {
+  const f = await commercialFixture();
+  await f.owner.mutation(api.automation.initialize, {});
+  const payment = await f.payment("100");
+  await f.t.run((ctx) =>
+    ctx.db.patch(payment, {
+      received_date: new Date(Date.now() - 31 * 86400000)
+        .toISOString()
+        .slice(0, 10),
+    }),
+  );
+  const r = (await f.owner.query(api.automation.rules, {})).find(
+    (r) => r.key === "customer_credit",
+  )!.record!;
+  await f.owner.mutation(api.automation.saveRule, {
+    id: r._id,
+    version: r.version,
+    config: {
+      ...r.config,
+      enabled: true,
+      delay_days: 30,
+      entity_ids: [f.customer],
+    },
+  });
+  await f.owner.mutation(api.automation.execute, {
+    table: "commercial_customers",
+    entity_id: f.customer,
+  });
+  const a = await f.owner.query(api.automation.actions, {
+    status: "active",
+    paginationOpts,
+  });
+  expect(a.page).toHaveLength(1);
+  expect(a.page[0].impact_cents).toBe("10000");
+});
+
+it("resolved notification history cannot hide an active first page", async () => {
+  const f = await fixture();
+  await f.enable("new_contact");
+  await f.c("owner").mutation(api.automation.execute, {
+    table: "opportunities",
+    entity_id: f.oid,
+  });
+  const a = (await f.act()).page[0];
+  await f.t.run(async (ctx) => {
+    for (let i = 0; i < 35; i++) {
+      const { _id, _creationTime, task, ...copy } = a;
+      void _id;
+      void _creationTime;
+      void task;
+      const closedId = await ctx.db.insert("automation_actions", {
+        ...copy,
+        key: a.key + ":history:" + i,
+        status: "resolved",
+        resolved_at: Date.now(),
+      });
+      await ctx.db.insert("notifications", {
+        action_id: closedId,
+        recipient_id: f.who("sales").id,
+        created_at: Date.now(),
+        read_at: null,
+        resolved_at: Date.now(),
+      });
+    }
+  });
+  const page = await f
+    .c("sales")
+    .query(api.automation.notifications, { resolved: false, paginationOpts });
+  expect(page.page).toHaveLength(1);
+  expect(page.page[0].action_id).toBe(a._id);
+});
+
+it("lost nurture distinguishes a listed property from an authoritative recorded sale", async () => {
+  const f = await fixture(),
+    p = await f.create();
+  await f.enable("lost_reactivation");
+  await f.t.run(async (ctx) => {
+    await ctx.db.patch(f.pid, { listing_date: "2026-01-01" });
+    await ctx.db.patch(f.oid, {
+      stage: "lost",
+      lost_reason: "timing",
+      lost_at: "2026-01-01T00:00:00Z",
+    });
+  });
+  await f.c("owner").mutation(api.automation.execute, {
+    table: "opportunities",
+    entity_id: f.oid,
+  });
+  expect((await f.act()).page).toHaveLength(1);
+  await f.t.run((ctx) => ctx.db.patch(p, { sold_date: "2026-02-01" }));
+  await f.c("owner").mutation(api.automation.execute, {
+    table: "opportunities",
+    entity_id: f.oid,
+  });
+  expect((await f.act()).page).toHaveLength(0);
+});
+it("three-day preparation sees required staging checks after M3 planning has passed", async () => {
+  const f = await fixture(),
+    p = await f.create();
+  await f.ready(p);
+  await f.schedule(p);
+  await f.enable("prep_day3", { delay_days: 3 });
+  await f
+    .c("owner")
+    .mutation(api.automation.execute, { table: "projects", entity_id: p });
+  expect((await f.act()).page).toHaveLength(1);
+  await f.complete(p, "staging");
+  await f
+    .c("owner")
+    .mutation(api.automation.execute, { table: "projects", entity_id: p });
+  expect((await f.act()).page).toHaveLength(0);
+});
+
+it("paid invoice credits enqueue customer review without refund or double counting", async () => {
+  const f = await commercialFixture();
+  await f.owner.mutation(api.automation.initialize, {});
+  const invoice = await f.manual("100");
+  await f.issue(invoice);
+  await f.payment("100", [{ invoice_id: invoice, amount: "100" }]);
+  const r = (await f.owner.query(api.automation.rules, {})).find(
+    (r) => r.key === "customer_credit",
+  )!.record!;
+  await f.owner.mutation(api.automation.saveRule, {
+    id: r._id,
+    version: r.version,
+    config: {
+      ...r.config,
+      enabled: true,
+      delay_days: 0,
+      entity_ids: [f.customer],
+    },
+  });
+  await f.owner.mutation(api.commercial.creditInvoice, {
+    invoice_id: invoice,
+    amount: "10",
+    reason: "Fictional review correction",
+  });
+  const before = await f.owner.query(api.commercial.invoice, { id: invoice });
+  await f.owner.mutation(api.automation.execute, {
+    table: "commercial_customers",
+    entity_id: f.customer,
+  });
+  const a = await f.owner.query(api.automation.actions, {
+    status: "active",
+    paginationOpts,
+  });
+  expect(a.page).toHaveLength(1);
+  expect(a.page[0].impact_cents).toBe("1000");
+  expect(await f.owner.query(api.commercial.invoice, { id: invoice })).toEqual(
+    before,
+  );
+});
+
+describe("M7 activity analytics compatibility", () => {
+  it("keeps legacy CRM activity projections current when automation adds a version", async () => {
+    const f = await fixture();
+    const created = await f.c("sales").mutation(api.crm.write, {
+      input: JSON.stringify({
+        op: "activity_create",
+        data: {
+          realtor_id: f.r.id,
+          type: "follow_up",
+          title: "Fictional M7 legacy follow-up",
+          description: "Fictional M7 regression",
+          status: "open",
+          completed_at: "",
+          due_at: "2020-01-01T18:00:00Z",
+          priority: "normal",
+          assigned_to: f.who("sales").id,
+        },
+      }),
+    });
+    const task = (created as { id: string }).id;
+    expect(
+      (
+        await f
+          .c("owner")
+          .query(api.analytics.compareSource, { table: "activities", id: task })
+      ).drift,
+    ).toHaveLength(0);
+    await f.enable("next_action", { entity_ids: [task] });
+    await f.c("owner").mutation(api.automation.execute, {
+      table: "activities",
+      entity_id: task,
+    });
+    const a = (await f.act()).page.find((x) => x.entity_id === task)!;
+    await f.c("sales").mutation(api.automation.changeAction, {
+      id: a._id,
+      updated_at: a.updated_at,
+      op: "complete",
+      reason: "Fictional M7 legacy task completed",
+    });
+    expect(
+      (
+        await f
+          .c("owner")
+          .query(api.analytics.compareSource, { table: "activities", id: task })
+      ).drift,
+    ).toHaveLength(0);
   });
 });

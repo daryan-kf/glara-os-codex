@@ -1,0 +1,377 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T23:45:16.029Z",
+  "runs": {
+    "test-results/m4-quantity-hosted.json": {
+      "deployment": "woozy-jaguar-392",
+      "executedAt": "2026-09-14T23:28:24.600Z",
+      "results": [
+        {
+          "name": "30 received, A10 and B8 reserved, 12 free without physical depletion",
+          "passed": true
+        },
+        {
+          "name": "over-reservation rejected against combined project demand",
+          "passed": true
+        },
+        {
+          "name": "picking and installation preserve B's eight-unit reservation without double subtraction",
+          "passed": true
+        },
+        {
+          "name": "nine returned and one missing remain explicit; unreconciled completion denied",
+          "passed": true
+        },
+        {
+          "name": "recovery and inspections restore thirty physical units; B still protects eight",
+          "passed": true
+        },
+        {
+          "name": "cancellation releases B's reservation without changing physical stock",
+          "passed": true
+        },
+        {
+          "name": "every quantity bucket reconciles exactly to the append-only hosted ledger",
+          "passed": true
+        }
+      ]
+    },
+    "docs/M5-hosted-api-results.json": {
+      "deployment": "woozy-jaguar-392",
+      "timestamp": "2026-09-14T23:29:25.270Z",
+      "results": [
+        {
+          "name": "hosted concurrent deposit requests produce one document",
+          "passed": true
+        },
+        {
+          "name": "hosted multi-invoice allocations and visible unallocated excess",
+          "passed": true
+        },
+        {
+          "name": "hosted concurrent allocation cannot overpay an invoice",
+          "passed": true
+        },
+        {
+          "name": "hosted reversal retains evidence and restores balance",
+          "passed": true
+        },
+        {
+          "name": "hosted accepted agreement blocks a direct M3 package-date overwrite",
+          "passed": true
+        },
+        {
+          "name": "hosted extension is explicit, preserves original agreement and invoices once",
+          "passed": true
+        },
+        {
+          "name": "hosted unauthenticated and restricted roles cannot read commercial data",
+          "passed": true
+        },
+        {
+          "name": "hosted returned damage and missing inventory do not automatically create charges",
+          "passed": true
+        },
+        {
+          "name": "hosted waiver creates no invoice and preserves the damage incident",
+          "passed": true
+        },
+        {
+          "name": "hosted approved damage is billed once under concurrent requests",
+          "passed": true
+        },
+        {
+          "name": "hosted damage payment leaves asset in repair",
+          "passed": true
+        },
+        {
+          "name": "hosted partial credit retains paid invoice and surfaces refund review",
+          "passed": true
+        },
+        {
+          "name": "hosted missing recovery requires inspection and financial correction",
+          "passed": true
+        },
+        {
+          "name": "hosted financial actions retain authenticated audit identity",
+          "passed": true
+        },
+        {
+          "name": "hosted M4 reconciliation still controls completion with unpaid commercial warning",
+          "passed": true
+        }
+      ],
+      "passed": 15,
+      "failed": 0,
+      "completed": true
+    },
+    "docs/M5-hosted-integrity-results.json": {
+      "deployment": "woozy-jaguar-392",
+      "timestamp": "2026-09-14T23:29:59.965Z",
+      "results": [
+        {
+          "name": "source quote from a different project opportunity is rejected",
+          "passed": true
+        },
+        {
+          "name": "simultaneous agreement creation has unique independent numbers",
+          "passed": true
+        },
+        {
+          "name": "accepted agreement edits and forged acceptance actor are rejected",
+          "passed": true
+        },
+        {
+          "name": "simultaneous invoice creation has unique numbers and exact cents",
+          "passed": true
+        },
+        {
+          "name": "Admin edits draft then issues; issued terms cannot be rewritten",
+          "passed": true
+        },
+        {
+          "name": "void retains items and original number, blocks payments on void",
+          "passed": true
+        },
+        {
+          "name": "upstream Realtor Property customer tax defaults and assignments do not change historical snapshots",
+          "passed": true
+        },
+        {
+          "name": "replacement supersedes accepted agreement while retaining its original terms",
+          "passed": true
+        },
+        {
+          "name": "payment numbering concurrency and authenticated Admin actor",
+          "passed": true
+        },
+        {
+          "name": "partial payment status and over-allocation denial preserve balance",
+          "passed": true
+        },
+        {
+          "name": "concurrent credits preserve immutable total and cannot exceed invoice amount",
+          "passed": true
+        },
+        {
+          "name": "simultaneous overlapping extension proposals accept only one original period",
+          "passed": true
+        },
+        {
+          "name": "operational projections never include commercial values or Bill-To",
+          "passed": true
+        },
+        {
+          "name": "no-charge decision preserves M4 incident and creates no invoice",
+          "passed": true
+        }
+      ],
+      "passed": 14,
+      "failed": 0,
+      "completed": true
+    },
+    "M6_corrections": {
+      "deployment": "woozy-jaguar-392",
+      "timestamp": "2026-09-14T23:54:38.236Z",
+      "results": [
+        {
+          "name": "May creation cohort is independent from June Won",
+          "passed": true
+        },
+        {
+          "name": "June contains Won, first staged, issue and actual cash receipt",
+          "passed": true
+        },
+        {
+          "name": "July records entry and allocation without company cash duplication",
+          "passed": true
+        },
+        {
+          "name": "August credit does not rewrite June cash and changes current AR",
+          "passed": true
+        },
+        {
+          "name": "Real reassignment preserves original historical Won and cash attribution",
+          "passed": true
+        },
+        {
+          "name": "Historical AR at 2026-06-30 uses historical evidence",
+          "passed": true
+        },
+        {
+          "name": "Historical AR at 2026-07-31 uses historical evidence",
+          "passed": true
+        },
+        {
+          "name": "Historical AR at 2026-08-31 uses historical evidence",
+          "passed": true
+        }
+      ],
+      "passed": 8,
+      "failed": 0,
+      "completed": true,
+      "fixture_method": "New fictional historical records imported through temporary internal development-only helper; no existing records redated; subsequent reassignment uses real public business mutation",
+      "reconciliation": "See final M6 hosted API independent reconciliation result"
+    },
+    "M3_query": {
+      "deployment": "woozy-jaguar-392",
+      "executedAt": "2026-09-14T23:54:41.727Z",
+      "results": [
+        {
+          "name": "archived status filter returns matching history",
+          "passed": true
+        },
+        {
+          "name": "manager designer and property filters combine",
+          "passed": true
+        },
+        {
+          "name": "mismatched combined designer excludes manager matches",
+          "passed": true
+        },
+        {
+          "name": "active list excludes archives and clamps page size",
+          "passed": true
+        },
+        {
+          "name": "marketing cannot retrieve archived operational projects",
+          "passed": true
+        }
+      ]
+    },
+    "M6_final": {
+      "deployment": "woozy-jaguar-392",
+      "timestamp": "2026-09-15T00:19:12.335Z",
+      "results": [
+        {
+          "name": "Anonymous direct analytics access denied",
+          "passed": true
+        },
+        {
+          "name": "M6 functions available with ready reporting",
+          "passed": true
+        },
+        {
+          "name": "Owner accesses time-correct commercial and inventory reporting",
+          "passed": true
+        },
+        {
+          "name": "admin analytics role boundary",
+          "passed": true
+        },
+        {
+          "name": "admin Owner configuration and maintenance denial",
+          "passed": true
+        },
+        {
+          "name": "Sales cannot override own scope or invoke financial drills",
+          "passed": true
+        },
+        {
+          "name": "sales analytics role boundary",
+          "passed": true
+        },
+        {
+          "name": "sales Owner configuration and maintenance denial",
+          "passed": true
+        },
+        {
+          "name": "sales financial history and capacity denial",
+          "passed": true
+        },
+        {
+          "name": "designer analytics role boundary",
+          "passed": true
+        },
+        {
+          "name": "designer Owner configuration and maintenance denial",
+          "passed": true
+        },
+        {
+          "name": "designer financial history and capacity denial",
+          "passed": true
+        },
+        {
+          "name": "staging_crew analytics role boundary",
+          "passed": true
+        },
+        {
+          "name": "staging_crew Owner configuration and maintenance denial",
+          "passed": true
+        },
+        {
+          "name": "staging_crew financial history and capacity denial",
+          "passed": true
+        },
+        {
+          "name": "marketing analytics role boundary",
+          "passed": true
+        },
+        {
+          "name": "marketing Owner configuration and maintenance denial",
+          "passed": true
+        },
+        {
+          "name": "marketing financial history and capacity denial",
+          "passed": true
+        },
+        {
+          "name": "unassigned analytics role boundary",
+          "passed": true
+        },
+        {
+          "name": "unassigned Owner configuration and maintenance denial",
+          "passed": true
+        },
+        {
+          "name": "unassigned financial history and capacity denial",
+          "passed": true
+        },
+        {
+          "name": "archived analytics role boundary",
+          "passed": true
+        },
+        {
+          "name": "archived Owner configuration and maintenance denial",
+          "passed": true
+        },
+        {
+          "name": "archived financial history and capacity denial",
+          "passed": true
+        },
+        {
+          "name": "Serialized use counters reconcile to actual installation evidence",
+          "passed": true
+        },
+        {
+          "name": "Independent source rebuild equals incremental projections",
+          "passed": true
+        }
+      ],
+      "passed": 26,
+      "failed": 0,
+      "completed": true,
+      "reconciliation": {
+        "scanned": 3045,
+        "source_drift": 0,
+        "bucket_drift": 0,
+        "revision": 2363,
+        "status": "complete"
+      },
+      "inventory_evidence": {
+        "checked": 59,
+        "mismatches": []
+      },
+      "multi_period_fixture": "See docs/M6-hosted-correction-results.json for the separate multi-period assertions; this run independently reconciles all source data afterwards."
+    }
+  },
+  "terminal_verified": {
+    "M1": 48,
+    "M2": 20,
+    "M3": 16,
+    "M4": 25,
+    "M4_quantity": 7,
+    "M5": 15,
+    "M5_integrity": 14
+  }
+}

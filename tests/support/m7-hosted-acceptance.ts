@@ -19,9 +19,9 @@ async function check(name: string, run: () => Promise<unknown>) {
     await run();
     results.push({ name, passed: true });
     console.log("PASS " + name);
-  } catch {
+  } catch (error) {
     results.push({ name, passed: false });
-    throw Error(name);
+    throw new Error(name, { cause: error });
   }
 }
 function internalRun(name: string, args: object, expectFailure = false) {
@@ -41,8 +41,9 @@ function internalRun(name: string, args: object, expectFailure = false) {
     assert.notEqual(r.status, 0);
     return null;
   }
-  if (r.status !== 0) throw Error("Internal acceptance operation failed");
-  return JSON.parse(r.stdout) as unknown;
+  if (r.status !== 0)
+    throw Error("Internal acceptance operation failed: " + r.stderr);
+  return r.stdout.trim() ? (JSON.parse(r.stdout) as unknown) : null;
 }
 async function main() {
   if (
@@ -56,6 +57,16 @@ async function main() {
   const suffix = randomUUID().slice(0, 8),
     marker = `Fictional M7 ${suffix}`;
   await c.mutation(api.automation.initialize, {});
+  await check(
+    "All 28 defaults remain disabled and initialization is idempotent",
+    async () => {
+      const before = await c.query(api.automation.rules, {});
+      assert.equal(before.length, 28);
+      assert.ok(before.every((r) => !r.record?.config.enabled));
+      await c.mutation(api.automation.initialize, {});
+      assert.deepEqual(await c.query(api.automation.rules, {}), before);
+    },
+  );
   async function enable(
     key: string,
     id: string,
@@ -116,7 +127,7 @@ async function main() {
       input: JSON.stringify({
         op: "realtor_create",
         data: {
-          first_name: "FictionalM7",
+          first_name: "Fictional M7",
           last_name: suffix,
           assigned_to: user("sales"),
           relationship_status: "active_partner",
@@ -163,8 +174,48 @@ async function main() {
       version: 1,
       status: "sent",
     });
-    await enable("quote_day2", quote);
-    await enable("quote_day5", quote);
+    await enable("quote_day2", quote, { delay_days: 2 });
+    await enable("quote_day5", quote, { delay_days: 5 });
+    await check(
+      "Actual day-2 and day-5 thresholds use one logical quote action",
+      async () => {
+        await run("quotes", quote);
+        assert.equal((await active("quotes", quote)).length, 0);
+        internalRun("m7AcceptanceControl:control", {
+          table: "quotes",
+          entity_id: quote,
+          op: "clock",
+          days: 3,
+        });
+        await run("quotes", quote);
+        const first = (await active("quotes", quote))[0];
+        assert.ok(first);
+        internalRun("m7AcceptanceControl:control", {
+          table: "quotes",
+          entity_id: quote,
+          op: "clock",
+          days: 6,
+        });
+        await run("quotes", quote);
+        const second = (await active("quotes", quote))[0];
+        assert.equal(second.activity_id, first.activity_id);
+        assert.match(second.reason, /5\+ days/);
+        internalRun("m7AcceptanceControl:control", {
+          table: "quotes",
+          entity_id: quote,
+          op: "clock",
+          days: -1,
+        });
+        await run("quotes", quote);
+        assert.equal((await active("quotes", quote)).length, 0);
+        internalRun("m7AcceptanceControl:control", {
+          table: "quotes",
+          entity_id: quote,
+          op: "clock",
+          days: 3,
+        });
+      },
+    );
     await check(
       "Quote preview is read-only and current source needs one follow-up",
       async () => {
@@ -187,6 +238,19 @@ async function main() {
       },
     );
     await check(
+      "Preview has no task, notification or execution side effects",
+      async () => {
+        const args = { table: "quotes", entity_id: quote, op: "snapshot" };
+        const before = internalRun("m7AcceptanceControl:control", args);
+        await preview("quotes", quote);
+        await preview("quotes", quote);
+        assert.deepEqual(
+          internalRun("m7AcceptanceControl:control", args),
+          before,
+        );
+      },
+    );
+    await check(
       "Sales receives the linked task and other roles receive no private reminder",
       async () => {
         const a = (await active("quotes", quote))[0];
@@ -204,6 +268,34 @@ async function main() {
           });
           assert.ok(!JSON.stringify(n).includes(quote));
         }
+      },
+    );
+    await check(
+      "Snooze hides notifications and returns after fixture expiry",
+      async () => {
+        const a = (await active("quotes", quote))[0];
+        await sales.mutation(api.automation.changeAction, {
+          id: a._id,
+          updated_at: a.updated_at,
+          op: "snooze",
+          days: 1,
+          reason: marker,
+        });
+        const n = await sales.query(api.automation.notifications, {
+          resolved: false,
+          paginationOpts: { cursor: null, numItems: 30 },
+        });
+        assert.ok(!n.page.some((n) => n.action_id === a._id));
+        internalRun("m7AcceptanceControl:control", {
+          table: "quotes",
+          entity_id: quote,
+          op: "expire_snooze",
+        });
+        const after = await sales.query(api.automation.notifications, {
+          resolved: false,
+          paginationOpts: { cursor: null, numItems: 30 },
+        });
+        assert.ok(after.page.some((n) => n.action_id === a._id));
       },
     );
     await check(
@@ -437,7 +529,7 @@ async function main() {
       asset_id: asset,
       quantity: 1,
       needed_from: eventDay,
-      needed_until: eventDay,
+      needed_until: day(),
       notes: marker,
       planned: false,
     });
@@ -691,6 +783,23 @@ async function main() {
         );
       },
     );
+    writeFileSync(
+      "test-results/m7-lifecycle-fixture.json",
+      JSON.stringify({
+        project,
+        quote,
+        opportunity,
+        realtor: realtor.id,
+        property,
+        invoice,
+        customer,
+        asset,
+        product,
+        line,
+        location,
+        marker,
+      }),
+    );
     await check("Bounded bootstrap resumes across source tables", async () => {
       for (let n = 0; n < 10; n++) {
         const r = await c.mutation(api.automation.scanBatch, {});
@@ -716,8 +825,8 @@ async function main() {
   }
 }
 main()
-  .catch(() => {
-    console.error("M7 hosted acceptance stopped; see named result.");
+  .catch((error: unknown) => {
+    console.error("M7 hosted acceptance stopped:", error);
     process.exitCode = 1;
   })
   .finally(() =>
@@ -733,7 +842,7 @@ main()
           completed: process.exitCode !== 1,
           backlog: { batches, enrolled },
           fixture_controls:
-            "Only temporary internal M7 scheduling metadata and transaction rollback; no existing M1–M6 event dates rewritten.",
+            "Guarded fictional source timestamp corrections, M7 scheduling metadata and isolated transaction rollback; no real business event dates changed.",
         },
         null,
         2,

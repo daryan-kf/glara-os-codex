@@ -222,6 +222,16 @@ export const suppress = mutation({
       actor_id: u.userId,
       created_at: Date.now(),
     });
+    for (const active of await ctx.db
+      .query("automation_actions")
+      .withIndex("by_key", (q) => q.eq("key", key).eq("status", "active"))
+      .take(10)) {
+      await closeAction(
+        ctx,
+        active,
+        "Condition suppressed: " + a.reason.trim(),
+      );
+    }
     await audit(ctx, "SUPPRESSED", key, u.userId, {
       days: a.days,
       reason: a.reason,
@@ -324,7 +334,11 @@ export const notifications = query({
     const u = await requireRoles(ctx, roles);
     const rows = await ctx.db
       .query("notifications")
-      .withIndex("by_recipient", (q) => q.eq("recipient_id", u.userId))
+      .withIndex("by_recipient", (q) =>
+        a.resolved
+          ? q.eq("recipient_id", u.userId).gt("resolved_at", null)
+          : q.eq("recipient_id", u.userId).eq("resolved_at", null),
+      )
       .order("desc")
       .paginate({
         ...a.paginationOpts,
@@ -335,6 +349,7 @@ export const notifications = query({
       const item = await ctx.db.get(n.action_id);
       if (
         !!n.resolved_at === a.resolved &&
+        (a.resolved || !item || item.snoozed_until <= Date.now()) &&
         item &&
         (await canSee(ctx, u, item)) &&
         (await actionRelevant(ctx, item))

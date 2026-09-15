@@ -1,0 +1,44 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T23:53:06.109Z",
+  "results": [
+    {
+      "name": "Hosted controlled failure rolls back every task, notification and execution write",
+      "passed": true
+    },
+    {
+      "name": "Failure policy records exact 5/10/15-minute offsets and retains terminal failure",
+      "passed": true
+    },
+    {
+      "name": "Every M7 administration endpoint rejects Sales/Designer/Crew/Marketing direct calls",
+      "passed": true
+    },
+    {
+      "name": "Anonymous, archived and unassigned callers cannot read personal automation surfaces",
+      "passed": true
+    },
+    {
+      "name": "Admin evaluates valid work while forged extra financial commands are rejected",
+      "passed": true
+    },
+    {
+      "name": "Paid-invoice credit balance creates a customer review without refund or allocation",
+      "passed": true
+    },
+    {
+      "name": "History pagination is bounded, resumable and has no repeated execution IDs",
+      "passed": true
+    },
+    {
+      "name": "Actual internal dispatcher remains bounded to 100 queued source evaluations",
+      "passed": true
+    }
+  ],
+  "dispatch": {
+    "evaluated": 28
+  },
+  "passed": 8,
+  "failed": 0,
+  "completed": true
+}

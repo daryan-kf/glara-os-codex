@@ -1,0 +1,89 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T23:35:20.418Z",
+  "results": [
+    {
+      "name": "Nurture uses historical inactivity and current communication resolves it",
+      "passed": true
+    },
+    {
+      "name": "Overdue manual next action is adopted rather than duplicated",
+      "passed": true
+    },
+    {
+      "name": "Lost reactivation eligibility: timing",
+      "passed": true
+    },
+    {
+      "name": "Lost reactivation eligibility: no_response",
+      "passed": true
+    },
+    {
+      "name": "Lost reactivation eligibility: price",
+      "passed": true
+    },
+    {
+      "name": "Lost reactivation eligibility: seller_declined",
+      "passed": true
+    },
+    {
+      "name": "Circuit limit bounds actions and keeps a visible management warning",
+      "passed": true
+    },
+    {
+      "name": "Suppression/evaluation race leaves no active contact or unresolved notification",
+      "passed": true
+    },
+    {
+      "name": "Version race rejects stale updates and execution snapshots stay consistent",
+      "passed": true
+    },
+    {
+      "name": "Preview detects duplicate linkage; explicit repair changes no source facts",
+      "passed": true
+    },
+    {
+      "name": "Disabled policy retains history and future-only activation skips existing backlog",
+      "passed": true
+    },
+    {
+      "name": "Won handoff produces work without creating a project",
+      "passed": true
+    },
+    {
+      "name": "Authorized project creation resolves won handoff",
+      "passed": true
+    },
+    {
+      "name": "Package 30/14/7-day and expired thresholds coalesce into one action",
+      "passed": true
+    },
+    {
+      "name": "Unpaid deposit creates only a reminder; agreement/project stay unchanged",
+      "passed": true
+    },
+    {
+      "name": "Accepted extension is reminded once and explicit draft invoice resolves it",
+      "passed": true
+    },
+    {
+      "name": "Invoice due/7/14-day progression keeps one task and exact balance",
+      "passed": true
+    },
+    {
+      "name": "Aged unallocated cash and customer credit use original receipt date; no auto-allocation/refund",
+      "passed": true
+    },
+    {
+      "name": "Concurrent payment/evaluation leaves no false overdue warning",
+      "passed": true
+    },
+    {
+      "name": "Private commercial automation payloads stay out of restricted roles",
+      "passed": true
+    }
+  ],
+  "passed": 20,
+  "failed": 0,
+  "completed": true
+}

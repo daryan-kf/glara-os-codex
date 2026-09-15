@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useQuery, useMutation, usePaginatedQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -309,14 +309,19 @@ function ActionCard({
   action: a,
   manager,
 }: {
-  action: Doc<"automation_actions">;
+  action: Doc<"automation_actions"> & { task?: Doc<"activities"> | null };
   manager: boolean;
 }) {
   const change = useMutation(api.automation.changeAction),
     suppress = useMutation(api.automation.suppress),
     [op, setOp] = useState<"complete" | "snooze" | "resolve">("complete");
+  const [clock, setClock] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => setClock(Date.now()), 30000);
+    return () => clearInterval(timer);
+  }, []);
   return (
-    <article className="rounded-xl border p-4">
+    <article data-action-id={a._id} className="rounded-xl border p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Link
           href={a.href}
@@ -325,13 +330,17 @@ function ActionCard({
           {a.reason}
         </Link>
         <StatusBadge>
-          {a.priority} {a.level ? `· escalation ${a.level}` : ""}
+          {a.snoozed_until > clock
+            ? `Snoozed until ${new Date(a.snoozed_until).toLocaleDateString("en-CA")}`
+            : `${a.priority}${a.level ? ` · escalation ${a.level}` : ""}`}
         </StatusBadge>
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
         Cycle {a.cycle} · rule v{a.rule_version} ·{" "}
         {new Date(a.created_at).toLocaleDateString("en-CA")}
-        {a.task_completed_at ? " · task complete, source still open" : ""}
+        {a.task_completed_at || a.task?.status === "completed"
+          ? " · task complete, source still open"
+          : ""}
       </p>
       <details className="mt-4">
         <summary className="min-h-11 cursor-pointer text-sm font-medium">

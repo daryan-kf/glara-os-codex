@@ -1,0 +1,322 @@
+{
+  "timestamp": "2026-09-15T00:04:51.994Z",
+  "stats": {
+    "startTime": "2026-09-15T00:01:16.482Z",
+    "duration": 163883.51,
+    "expected": 28,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "scenarios": [
+    {
+      "title": "owner can inspect rules, history, health and bounded reconciliation",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4310
+        }
+      ]
+    },
+    {
+      "title": "admin can inspect rules, history, health and bounded reconciliation",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3985
+        }
+      ]
+    },
+    {
+      "title": "sales sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3653
+        }
+      ]
+    },
+    {
+      "title": "designer sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3686
+        }
+      ]
+    },
+    {
+      "title": "staging_crew sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3594
+        }
+      ]
+    },
+    {
+      "title": "marketing sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3615
+        }
+      ]
+    },
+    {
+      "title": "owner can inspect rules, history, health and bounded reconciliation",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4311
+        }
+      ]
+    },
+    {
+      "title": "admin can inspect rules, history, health and bounded reconciliation",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4191
+        }
+      ]
+    },
+    {
+      "title": "sales sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 5635
+        }
+      ]
+    },
+    {
+      "title": "designer sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3878
+        }
+      ]
+    },
+    {
+      "title": "staging_crew sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3655
+        }
+      ]
+    },
+    {
+      "title": "marketing sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 4566
+        }
+      ]
+    },
+    {
+      "title": "sales can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 6231
+        }
+      ]
+    },
+    {
+      "title": "designer can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 6126
+        }
+      ]
+    },
+    {
+      "title": "staging_crew can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 6176
+        }
+      ]
+    },
+    {
+      "title": "admin can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 7255
+        }
+      ]
+    },
+    {
+      "title": "sales can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 6333
+        }
+      ]
+    },
+    {
+      "title": "designer can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 6208
+        }
+      ]
+    },
+    {
+      "title": "staging_crew can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 6868
+        }
+      ]
+    },
+    {
+      "title": "admin can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 7350
+        }
+      ]
+    },
+    {
+      "title": "property to opportunity, consultation, exact quote and won deal",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 18920
+        }
+      ]
+    },
+    {
+      "title": "marketing cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3608
+        }
+      ]
+    },
+    {
+      "title": "designer cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3519
+        }
+      ]
+    },
+    {
+      "title": "staging_crew cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3534
+        }
+      ]
+    },
+    {
+      "title": "property to opportunity, consultation, exact quote and won deal",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 19364
+        }
+      ]
+    },
+    {
+      "title": "marketing cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3595
+        }
+      ]
+    },
+    {
+      "title": "designer cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3547
+        }
+      ]
+    },
+    {
+      "title": "staging_crew cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 3526
+        }
+      ]
+    }
+  ],
+  "coverage_note": "Initial full run 71/76; final M7 and M2 rerun 28/28. Together all 76 distinct scenarios passed. Initial failures retained separately; no claim of a single clean 76-test run."
+}

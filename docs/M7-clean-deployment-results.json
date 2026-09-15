@@ -1,0 +1,19 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-15T00:14:01.469Z",
+  "adapters": [
+    {
+      "function": "m7AcceptanceControl:control",
+      "unavailable": true
+    },
+    {
+      "function": "m7AcceptanceControl:cleanup",
+      "unavailable": true
+    },
+    {
+      "function": "m6HistoricalImport:importHistory",
+      "unavailable": true
+    }
+  ],
+  "official_bindings_clean": true
+}

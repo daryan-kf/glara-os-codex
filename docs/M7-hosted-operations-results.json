@@ -1,0 +1,37 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T23:39:36.566Z",
+  "results": [
+    {
+      "name": "designer receives authorized operational task and completes it without financial data",
+      "passed": true
+    },
+    {
+      "name": "staging_crew receives authorized operational task and completes it without financial data",
+      "passed": true
+    },
+    {
+      "name": "M4 shortage creates one preparation task without allocating stock",
+      "passed": true
+    },
+    {
+      "name": "Damage reminder neither determines liability nor creates an assessment",
+      "passed": true
+    },
+    {
+      "name": "Approved assessment reminder preserves amount and waits for explicit M5 invoice",
+      "passed": true
+    },
+    {
+      "name": "Repair reminder does not repair inventory and resolves after M4 inspection",
+      "passed": true
+    },
+    {
+      "name": "Real upcoming staging progresses from 3-day to tomorrow urgency without weakening M3",
+      "passed": true
+    }
+  ],
+  "passed": 7,
+  "failed": 0,
+  "completed": true
+}

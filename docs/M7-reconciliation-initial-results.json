@@ -1,0 +1,132 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-15T00:09:08.354Z",
+  "results": [
+    {
+      "name": "Anonymous direct analytics access denied",
+      "passed": true
+    },
+    {
+      "name": "M6 functions available with ready reporting",
+      "passed": true
+    },
+    {
+      "name": "Owner accesses time-correct commercial and inventory reporting",
+      "passed": true
+    },
+    {
+      "name": "admin analytics role boundary",
+      "passed": true
+    },
+    {
+      "name": "admin Owner configuration and maintenance denial",
+      "passed": true
+    },
+    {
+      "name": "Sales cannot override own scope or invoke financial drills",
+      "passed": true
+    },
+    {
+      "name": "sales analytics role boundary",
+      "passed": true
+    },
+    {
+      "name": "sales Owner configuration and maintenance denial",
+      "passed": true
+    },
+    {
+      "name": "sales financial history and capacity denial",
+      "passed": true
+    },
+    {
+      "name": "designer analytics role boundary",
+      "passed": true
+    },
+    {
+      "name": "designer Owner configuration and maintenance denial",
+      "passed": true
+    },
+    {
+      "name": "designer financial history and capacity denial",
+      "passed": true
+    },
+    {
+      "name": "staging_crew analytics role boundary",
+      "passed": true
+    },
+    {
+      "name": "staging_crew Owner configuration and maintenance denial",
+      "passed": true
+    },
+    {
+      "name": "staging_crew financial history and capacity denial",
+      "passed": true
+    },
+    {
+      "name": "marketing analytics role boundary",
+      "passed": true
+    },
+    {
+      "name": "marketing Owner configuration and maintenance denial",
+      "passed": true
+    },
+    {
+      "name": "marketing financial history and capacity denial",
+      "passed": true
+    },
+    {
+      "name": "unassigned analytics role boundary",
+      "passed": true
+    },
+    {
+      "name": "unassigned Owner configuration and maintenance denial",
+      "passed": true
+    },
+    {
+      "name": "unassigned financial history and capacity denial",
+      "passed": true
+    },
+    {
+      "name": "archived analytics role boundary",
+      "passed": true
+    },
+    {
+      "name": "archived Owner configuration and maintenance denial",
+      "passed": true
+    },
+    {
+      "name": "archived financial history and capacity denial",
+      "passed": true
+    },
+    {
+      "name": "Serialized use counters reconcile to actual installation evidence",
+      "passed": true
+    },
+    {
+      "name": "Independent source rebuild equals incremental projections",
+      "passed": false
+    }
+  ],
+  "passed": 25,
+  "failed": 1,
+  "completed": false,
+  "reconciliation": {
+    "status": "complete",
+    "scanned": 3034,
+    "source_drift": 10,
+    "bucket_drift": 23,
+    "revision": 2329
+  },
+  "inventory_evidence": {
+    "checked": 59,
+    "mismatches": []
+  },
+  "multi_period_fixture": "See docs/M6-hosted-correction-results.json for the separate multi-period assertions; this run independently reconciles all source data afterwards.",
+  "diagnosis": {
+    "source_drift": 10,
+    "bucket_drift": 23,
+    "affected_activities": 5,
+    "cause": "Legacy CRM timestamp version replaced by automation numeric version; stale projection guard skipped new activity facts",
+    "correction": "Activity projection watermark includes updated timestamp and counter; authenticated explicit projection repair; business sources unchanged"
+  }
+}

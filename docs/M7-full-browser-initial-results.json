@@ -1,0 +1,470 @@
+{
+  "timestamp": "2026-09-14T23:45:16.644Z",
+  "stats": {
+    "startTime": "2026-09-14T23:45:16.644Z",
+    "duration": 682427.1410000001,
+    "expected": 71,
+    "skipped": 0,
+    "unexpected": 5,
+    "flaky": 0
+  },
+  "checks": [
+    {
+      "name": "Owner can inspect metrics, change periods, and open reporting tools",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 5058
+    },
+    {
+      "name": "sales gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 2472
+    },
+    {
+      "name": "marketing gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 1958
+    },
+    {
+      "name": "designer gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 1996
+    },
+    {
+      "name": "staging_crew gets its own dashboard without executive financial panels",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 1989
+    },
+    {
+      "name": "Owner can inspect metrics, change periods, and open reporting tools",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6077
+    },
+    {
+      "name": "sales gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 1967
+    },
+    {
+      "name": "marketing gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 1966
+    },
+    {
+      "name": "designer gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 2477
+    },
+    {
+      "name": "staging_crew gets its own dashboard without executive financial panels",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 1970
+    },
+    {
+      "name": "private routes never expose their content without authentication",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 1300
+    },
+    {
+      "name": "login and recovery fit desktop and mobile viewports",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 681
+    },
+    {
+      "name": "Convex Auth login, navigation and logout",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 4012
+    },
+    {
+      "name": "sales are denied owner reports even through a direct URL",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 2490
+    },
+    {
+      "name": "private routes never expose their content without authentication",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 1267
+    },
+    {
+      "name": "login and recovery fit desktop and mobile viewports",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 683
+    },
+    {
+      "name": "Convex Auth login, navigation and logout",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 4693
+    },
+    {
+      "name": "sales are denied owner reports even through a direct URL",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 2553
+    },
+    {
+      "name": "owner can inspect rules, history, health and bounded reconciliation",
+      "project": "desktop",
+      "status": "unexpected",
+      "duration_ms": 7779
+    },
+    {
+      "name": "admin can inspect rules, history, health and bounded reconciliation",
+      "project": "desktop",
+      "status": "unexpected",
+      "duration_ms": 7868
+    },
+    {
+      "name": "sales sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3759
+    },
+    {
+      "name": "designer sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3592
+    },
+    {
+      "name": "staging_crew sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3581
+    },
+    {
+      "name": "marketing sees only personal notifications and cannot open Automation Center",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3609
+    },
+    {
+      "name": "owner can inspect rules, history, health and bounded reconciliation",
+      "project": "mobile",
+      "status": "unexpected",
+      "duration_ms": 7786
+    },
+    {
+      "name": "admin can inspect rules, history, health and bounded reconciliation",
+      "project": "mobile",
+      "status": "unexpected",
+      "duration_ms": 7853
+    },
+    {
+      "name": "sales sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3772
+    },
+    {
+      "name": "designer sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3632
+    },
+    {
+      "name": "staging_crew sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3620
+    },
+    {
+      "name": "marketing sees only personal notifications and cannot open Automation Center",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3632
+    },
+    {
+      "name": "sales can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 6401
+    },
+    {
+      "name": "designer can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 6233
+    },
+    {
+      "name": "staging_crew can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 5965
+    },
+    {
+      "name": "admin can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 7795
+    },
+    {
+      "name": "sales can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6830
+    },
+    {
+      "name": "designer can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6309
+    },
+    {
+      "name": "staging_crew can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6129
+    },
+    {
+      "name": "admin can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 8047
+    },
+    {
+      "name": "billing identity, accepted agreement, deposit, payment receipt and credit",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 34775
+    },
+    {
+      "name": "damage review, approved charge invoice and restricted-role denial",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 19844
+    },
+    {
+      "name": "billing identity, accepted agreement, deposit, payment receipt and credit",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 35271
+    },
+    {
+      "name": "damage review, approved charge invoice and restricted-role denial",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 19570
+    },
+    {
+      "name": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 21766
+    },
+    {
+      "name": "cancel and reschedule preserve the prospect next action and visible history",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 8058
+    },
+    {
+      "name": "owner creates a brokerage and realtor, logs a note, follows up, searches and archives",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 21961
+    },
+    {
+      "name": "cancel and reschedule preserve the prospect next action and visible history",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 8211
+    },
+    {
+      "name": "owner workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3965
+    },
+    {
+      "name": "sales workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3948
+    },
+    {
+      "name": "admin workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 4056
+    },
+    {
+      "name": "marketing workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3997
+    },
+    {
+      "name": "designer workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 2469
+    },
+    {
+      "name": "staging_crew workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 2478
+    },
+    {
+      "name": "unassigned workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 1695
+    },
+    {
+      "name": "archived workspace and CRM boundaries",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 1655
+    },
+    {
+      "name": "owner workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3988
+    },
+    {
+      "name": "sales workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3998
+    },
+    {
+      "name": "admin workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3954
+    },
+    {
+      "name": "marketing workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3832
+    },
+    {
+      "name": "designer workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 2965
+    },
+    {
+      "name": "staging_crew workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 2478
+    },
+    {
+      "name": "unassigned workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 1647
+    },
+    {
+      "name": "archived workspace and CRM boundaries",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 1645
+    },
+    {
+      "name": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 60958
+    },
+    {
+      "name": "serialized identity, installation, damaged return, missing quantity, repair, search and transfer",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 63464
+    },
+    {
+      "name": "catalog receipt, designer reservation, crew partial picking and inspection",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 28156
+    },
+    {
+      "name": "catalog receipt, designer reservation, crew partial picking and inspection",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 28827
+    },
+    {
+      "name": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 31063
+    },
+    {
+      "name": "won handoff, room plan, checklist, scheduling, crew and mobile privacy",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 30673
+    },
+    {
+      "name": "property to opportunity, consultation, exact quote and won deal",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 20698
+    },
+    {
+      "name": "marketing cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3637
+    },
+    {
+      "name": "designer cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3505
+    },
+    {
+      "name": "staging_crew cannot open commercial routes",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 3512
+    },
+    {
+      "name": "property to opportunity, consultation, exact quote and won deal",
+      "project": "mobile",
+      "status": "unexpected",
+      "duration_ms": 6516
+    },
+    {
+      "name": "marketing cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6142
+    },
+    {
+      "name": "designer cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 3574
+    },
+    {
+      "name": "staging_crew cannot open commercial routes",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 5364
+    }
+  ],
+  "excluded": "Two invalid-credentials/recovery-send cases remain deferred; no external email sent."
+}

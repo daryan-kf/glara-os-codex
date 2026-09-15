@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-09-15T00:14:23.926Z",
+  "stats": {
+    "startTime": "2026-09-15T00:12:53.718Z",
+    "duration": 54636.193,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "checks": [
+    {
+      "name": "sales can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 6878
+    },
+    {
+      "name": "designer can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 6036
+    },
+    {
+      "name": "staging_crew can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 6124
+    },
+    {
+      "name": "admin can snooze, complete and navigate linked automated work",
+      "project": "desktop",
+      "status": "expected",
+      "duration_ms": 7140
+    },
+    {
+      "name": "sales can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6525
+    },
+    {
+      "name": "designer can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6249
+    },
+    {
+      "name": "staging_crew can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 6132
+    },
+    {
+      "name": "admin can snooze, complete and navigate linked automated work",
+      "project": "mobile",
+      "status": "expected",
+      "duration_ms": 7202
+    }
+  ],
+  "scope": "After final snooze clock and legacy activity analytics correction; desktop/mobile actionable workflows"
+}

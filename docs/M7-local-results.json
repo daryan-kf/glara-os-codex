@@ -1,20 +1,20 @@
 {
-  "timestamp": "2026-09-14T23:15:53.347Z",
+  "timestamp": "2026-09-15T00:20:21.581Z",
   "node_tests": {
     "passed": 13,
     "failed": 0
   },
   "vitest": {
     "files": 17,
-    "passed": 270,
+    "passed": 279,
     "failed": 0,
-    "m7_tests": 20,
-    "duration_seconds": 9.82
+    "m7_tests": 29,
+    "duration_seconds": 10.41
   },
   "typecheck": "passed",
   "eslint": "passed; zero warnings",
   "prettier": "passed",
-  "next_production_build": "passed",
+  "next_production_build": "passed after final corrective changes; compile 1.345 seconds, TypeScript 8.7 seconds",
   "dependency_audit": {
     "info": 0,
     "low": 0,
@@ -23,22 +23,61 @@
     "critical": 0,
     "total": 0
   },
-  "compatibility_browser": {
-    "passed": 8,
+  "hosted_m7": {
+    "passed": 64,
     "failed": 0,
-    "duration_seconds": 20.4,
-    "scope": "Existing M6 backend; desktop and mobile; no email delivery exercised"
+    "clean_smoke_passed": 5
   },
-  "hosted_m7": "not run; deployment approval pending",
-  "hosted_m1_m6_regression": "not run for M7",
-  "m7_functional_browser": "not run; deployment approval pending",
+  "hosted_m1_m5": {
+    "passed": 150,
+    "failed": 0
+  },
+  "hosted_m6_corrections": {
+    "passed": 8,
+    "failed": 0
+  },
   "production": "untouched",
+  "production_email_auth": "DEFERRED — REQUIRED BEFORE PRODUCTION",
   "m8": "not started",
+  "browser": {
+    "distinct_scenarios_verified": 76,
+    "initial": {
+      "passed": 71,
+      "failed": 5
+    },
+    "m7_m2_rerun": {
+      "passed": 28,
+      "failed": 0
+    },
+    "final_corrective_rerun": {
+      "passed": 8,
+      "failed": 0
+    }
+  },
   "secret_review": {
-    "checked_files": 300,
+    "checked_files": 320,
     "credential_pattern_or_known_secret_matches": [],
     "tracked_environment_files": [],
     "known_fictional_passwords_checked": 8,
     "scope": "tracked and nonignored files; known environment secrets and fictional acceptance passwords compared without disclosure"
-  }
+  },
+  "diff_check": "passed",
+  "development_gate": "PASS",
+  "hosted_acceptance": "PASS",
+  "hosted_m6": {
+    "passed": 26,
+    "failed": 0,
+    "reconciliation": {
+      "scanned": 3045,
+      "source_drift": 0,
+      "bucket_drift": 0,
+      "revision": 2363,
+      "status": "complete"
+    },
+    "inventory_evidence": {
+      "checked": 59,
+      "mismatches": []
+    }
+  },
+  "unresolved_p0_p1": "None identified within tested development scope"
 }

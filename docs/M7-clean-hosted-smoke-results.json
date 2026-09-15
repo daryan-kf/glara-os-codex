@@ -1,0 +1,29 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-15T00:14:19.551Z",
+  "results": [
+    {
+      "name": "Clean deployment has 28 disabled rules with idempotent initialization",
+      "passed": true
+    },
+    {
+      "name": "Clean hosted concurrent evaluations preserve one adopted task",
+      "passed": true
+    },
+    {
+      "name": "Clean role denial and assigned Sales completion remain enforced",
+      "passed": true
+    },
+    {
+      "name": "Legacy CRM task completion preserves zero analytics source drift",
+      "passed": true
+    },
+    {
+      "name": "Final development health has no failed work and no enabled company-wide rules",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "failed": 0,
+  "completed": true
+}

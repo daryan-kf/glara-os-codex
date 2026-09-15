@@ -101,12 +101,19 @@ export async function evaluate(
           ) &&
         stamp(o.stage_changed_at);
     }
-    if (rule.key === "lost_reactivation")
+    if (rule.key === "lost_reactivation") {
+      const propertyProjects = cap(
+        await ctx.db
+          .query("projects")
+          .withIndex("by_property", (q) => q.eq("property_id", o.property_id))
+          .take(101),
+      );
       s.eligible =
         o.stage === "lost" &&
         ["timing", "no_response"].includes(o.lost_reason) &&
-        !property.listing_date &&
+        !propertyProjects.some((p) => !!p.sold_date) &&
         stamp(o.lost_at);
+    }
     if (rule.key === "won_handoff")
       s.eligible =
         o.stage === "won" &&
@@ -191,8 +198,7 @@ export async function evaluate(
       (x) =>
         x.required &&
         x.status !== "completed" &&
-        (x.category === "pre_staging" ||
-          (rule.key === "prep_tomorrow" && x.category === "staging")),
+        (x.category === "pre_staging" || x.category === "staging"),
     );
     if (t.family === "preparation") {
       s.trigger = staging?.start_at ?? "";
@@ -409,7 +415,7 @@ export async function evaluate(
       businessDays(p.received_date, now) >= c.delay_days;
   }
   if (t.table === "commercial_customers") {
-    s.trigger = new Date(observed).toISOString();
+    s.trigger = "";
     s.href = "/payments";
     const ps = cap(
       await ctx.db
@@ -420,10 +426,38 @@ export async function evaluate(
         .take(101),
     );
     let amount = 0n;
-    for (const p of ps)
-      amount += BigInt((await paymentState(ctx, p)).unallocated_cents);
+    for (const p of ps) {
+      const remaining = BigInt((await paymentState(ctx, p)).unallocated_cents);
+      amount += remaining;
+      if (remaining > 0n && (!s.trigger || p.received_date < s.trigger))
+        s.trigger = p.received_date;
+    }
+    const invoices = cap(
+      await ctx.db
+        .query("invoices")
+        .withIndex("by_customer", (q) =>
+          q.eq("customer_id", r._id as Id<"commercial_customers">),
+        )
+        .take(101),
+    );
+    for (const invoice of invoices) {
+      const balance = await invoiceState(ctx, invoice);
+      const credit = BigInt(balance.credit_balance_cents);
+      amount += credit;
+      if (credit > 0n) {
+        const adjusted =
+          balance.credits
+            .map((c) => c.created_at)
+            .sort()
+            .at(-1) ?? invoice.updated_at;
+        if (!s.trigger || adjusted < s.trigger) s.trigger = adjusted;
+      }
+    }
     s.impact_cents = String(amount);
-    s.eligible = amount > 0n && businessDays(s.trigger, now) >= c.delay_days;
+    s.eligible =
+      amount > 0n &&
+      businessDays(s.trigger.includes("T") ? day(s.trigger) : s.trigger, now) >=
+        c.delay_days;
   }
   if (s.project) {
     const p = await ctx.db.get(s.project);

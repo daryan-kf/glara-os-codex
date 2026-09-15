@@ -377,9 +377,9 @@ export const templates = [
     "commercial",
     "commercial_customers",
     "credit",
-    "first current-condition observation",
+    "unallocated receipt or latest outstanding credit adjustment",
     1,
-    "Customer has unallocated payments to review; no automatic refund.",
+    "Customer has unallocated cash or an invoice credit balance to review; no automatic refund.",
   ),
   rule(
     "red_project",

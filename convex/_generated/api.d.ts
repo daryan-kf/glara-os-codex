@@ -8,7 +8,6 @@
  * @module
  */
 
-import type * as automation from "../automation.js";
 import type * as access from "../access.js";
 import type * as admin from "../admin.js";
 import type * as analytics from "../analytics.js";
@@ -20,10 +19,15 @@ import type * as analyticsReconciliation from "../analyticsReconciliation.js";
 import type * as analyticsSchema from "../analyticsSchema.js";
 import type * as analyticsSources from "../analyticsSources.js";
 import type * as auth from "../auth.js";
+import type * as automation from "../automation.js";
+import type * as automationCore from "../automationCore.js";
+import type * as automationSchema from "../automationSchema.js";
+import type * as automationSources from "../automationSources.js";
 import type * as commercial from "../commercial.js";
 import type * as commercialCore from "../commercialCore.js";
 import type * as commercialSchema from "../commercialSchema.js";
 import type * as crm from "../crm.js";
+import type * as crons from "../crons.js";
 import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as inventory from "../inventory.js";
@@ -42,7 +46,6 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  automation: typeof automation;
   access: typeof access;
   admin: typeof admin;
   analytics: typeof analytics;
@@ -54,10 +57,15 @@ declare const fullApi: ApiFromModules<{
   analyticsSchema: typeof analyticsSchema;
   analyticsSources: typeof analyticsSources;
   auth: typeof auth;
+  automation: typeof automation;
+  automationCore: typeof automationCore;
+  automationSchema: typeof automationSchema;
+  automationSources: typeof automationSources;
   commercial: typeof commercial;
   commercialCore: typeof commercialCore;
   commercialSchema: typeof commercialSchema;
   crm: typeof crm;
+  crons: typeof crons;
   functions: typeof functions;
   http: typeof http;
   inventory: typeof inventory;

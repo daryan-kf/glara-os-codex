@@ -2,9 +2,11 @@
 
 ## Release status
 
-**M7 DEVELOPMENT GATE PENDING EXTERNAL ACTION**
+**M7 DEVELOPMENT GATE — PASS**
 
-The local implementation is complete and local checks pass. M7 was not deployed: automatic approval review rejected the upload because the previous specific deployment authorization covered M6 only. An explicit request for M7 development deployment and acceptance is pending. Hosted M7 acceptance and full hosted M1–M6 regression remain unverified for this release. Production was not modified and M8 was not started.
+**M7 HOSTED ACCEPTANCE — PASS** on the authorized development deployment. No unresolved P0/P1 issue was identified within the tested development scope.
+
+The product owner explicitly authorized M7 development deployment and corrective acceptance. Commit `ba509338b4404e4d6196e4821767ccc39a3bae29` was first deployed to the verified `daryan-kamalifar:glara-os` development deployment `woozy-jaguar-392`. Corrective changes were subsequently deployed there. Production was not modified and M8 was not started.
 
 Production invitation/recovery email delivery, expired/reused authentication links, production redirect/origin verification, transactional provider setup, and `Support@glarahome.com` sender/domain verification remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. No Supabase acceptance work is reinstated.
 
@@ -14,7 +16,7 @@ Production invitation/recovery email delivery, expired/reused authentication lin
 - `convex/automationCore.ts`: condition-family deduplication, immutable evidence, assignment, suppression, cooldown, escalation, task lifecycle, and source queue enrollment.
 - `convex/automationSources.ts`: controlled source adapters using M1–M5 records, M3 risk/checklist semantics, M4 availability, and M5 exact balance functions. No user-provided expressions or executable code.
 - `src/lib/automation/model.ts`: 28 visible disabled templates, bounded configuration validation, Vancouver date/instant semantics, stable keys, and escalation policy.
-- `convex/crons.ts`: Convex internal due-queue dispatch every five minutes. A dispatch processes at most four batches of 25 sources. Failed transactions retry at 5/10/15-minute offsets, then remain in a failed queue for explicit Owner/Admin retry.
+- `convex/crons.ts`: Convex internal due-queue dispatch every five minutes. A dispatch processes at most four batches of 25 sources. Failure attempts record 5/10/15-minute next-due offsets. Attempts one and two retry automatically; the third failure enters the terminal failed queue for explicit Owner/Admin retry. The recorded third offset does not schedule another automatic attempt.
 - `src/components/automation/center.tsx`: Rules, Active Actions, Escalations, Failures, History and Settings; responsive personal notifications; existing tasks remain the work records.
 
 M1–M5 mutation registration records lightweight queue metadata after authorized source changes. Business source authorization remains authoritative. Notification/task evaluation runs in a separate transaction: a reminder failure cannot roll back the earlier payment or other business transaction. Task creation and notification linkage share a transaction, so a failed reminder is retried without partial duplicate work.
@@ -36,13 +38,13 @@ New tables:
 
 Existing activities receive optional protected automation metadata. Commercial reminders deliberately have no CRM or project activity relationship that would expose them through operational project views. Operations reminders retain their project task link; Sales reminders use the existing opportunity or Realtor activity relationship. The existing audit log stores system actors as `null` with `AUTOMATION_*` action names; execution rows explicitly distinguish system and user actors. Activity `created_by` references the rule author while `actor_kind: system` identifies execution authority.
 
-A `payments.by_customer` index supports customer credit review. No new file store, external integration, valuation, payment state, liability, or inventory movement is introduced.
+A `payments.by_customer` index and the existing `invoices.by_customer` index support customer credit review. Outstanding invoice credit balances are included alongside unallocated cash without double counting. Receipt dates and the latest adjustment of each outstanding invoice credit provide the aging clocks. No new file store, external integration, valuation, payment state, liability, or inventory movement is introduced.
 
 ## Rule coverage and clocks
 
 Sales: new contact, day-2/day-5 quote follow-up, overdue manual next action, high-value stalled opportunity, Realtor nurture, timing/no-response reactivation. Won/no-project handoff is an operations reminder.
 
-Operations: preparation window, tomorrow's required staging checklist, sold/no-destaging, package expiry, overdue project work and management review of red project risk. M3 requires preparation to be completed before scheduling; tomorrow's reminder also evaluates required staging checklist work instead of weakening that gate.
+Operations: preparation window, tomorrow's required staging checklist, sold/no-destaging, package expiry, overdue project work and management review of red project risk. M3 requires preparation to be completed before scheduling. Both advance reminders also evaluate required staging checklist work, preserving the M3 readiness gate.
 
 Inventory: required reservation readiness/shortage using M4 availability, missing serialized assets, long repairs, late return and missing quantity stock. No asset cost or replacement value is invented.
 
@@ -79,26 +81,42 @@ M6's Action Center coalesces source risk and its active automation task. Persona
 
 ## Verification
 
-Final local regression: **13/13 Node tests and 270/270 Vitest tests passed** (17 Vitest files, 9.82 seconds for Vitest). This includes **20/20 M7 tests**. These cover configuration, Vancouver dates, deduplication/races, immutable versions, suppression/expiry, cooldown, escalation, revoked roles, archived assignee fallback, invoice payment/reversal, checklist resolution, physical recovery, manual-task adoption, explicit repair, circuit limits, source correction and a resumable 120-record load.
+- Final local suite: **13/13 Node tests; 279/279 Vitest tests**, 17 files, including **29 M7 tests**, 10.41 seconds for Vitest. The final production build passed after removal of temporary functions.
+- M7 hosted suites: **64/64** checks across lifecycle (27), growth/commercial/races (20), operations (7), revoked/archived roles (2), and final security/retry/credit/dispatcher checks (8).
+- Clean deployment smoke: **5/5**, including current role denial, concurrent execution, completion with zero activity projection drift, all 28 rules disabled, and no failed queue work.
+- M1–M5 hosted regression: **150/150**, including M3 query regression. M6 historical correction regression: **8/8**. Final M6 hosted regression passed **26/26**, including independent reconciliation of **3,045 source records**, **zero source drift**, **zero bucket drift**, revision **2363**. Serialized inventory evidence checked **59 assets** with zero mismatches. Total M1–M6 hosted regression is **184/184**.
+- Browser: the initial full run passed **71/76** in 11.4 minutes. Four manager checks incorrectly expected a transient success message after a versioned form remounted; the tests now check the persisted version shown in the UI. One mobile M2 login timed out without a reported authentication error. The stable-deployment rerun passed **28/28** (all M7 and M2 scenarios), followed by **8/8** actionable desktop/mobile workflows after the final snooze-clock and activity projection corrections. Across these runs, all 76 distinct scenarios passed; this is not a claim of a single clean 76-test run.
+- Strict TypeScript, ESLint with zero warnings, Prettier, the final production build, and `git diff --check` passed. Dependency audit found zero vulnerabilities across 601 dependencies. The final secret review checked 320 tracked/nonignored files, including comparison against eight private fictional passwords, and found no known secrets or tracked private environment files.
+- Desktop and mobile M7 task screenshots were visually inspected. Touch controls, snooze state, completion state, and responsive layouts were exercised through the browser.
 
-TypeScript, ESLint with zero warnings, Prettier and the final Next.js production build passed. Dependency audit reported zero vulnerabilities. The repository secret scan found no known credential or private-key matches and no tracked environment files other than the permitted example.
+Evidence files: `M7-hosted-results.json`, `M7-hosted-matrix-results.json`, `M7-hosted-operations-results.json`, `M7-hosted-role-results.json`, `M7-hosted-final-results.json`, `M7-clean-hosted-smoke-results.json`, `M7-prior-module-hosted-results.json`, and browser/local result files in this directory. Earlier M5/M6 reports remain historical baseline evidence; fresh regression results are copied into the M7 report set.
 
-Eight desktop/mobile compatibility scenarios passed against the existing M6 backend: protected routes (including `/automation`), responsive login/recovery pages, actual login/navigation/logout, and Sales denial from Owner Reports. Recovery delivery was not exercised. See `M7-compatibility-browser-results.json`. This verifies backward compatibility while M7 deployment is pending; it is **not M7 functional browser acceptance**. Hosted M7 and full hosted M1–M6 regression are **NOT RUN FOR M7**. Earlier M6 reports remain baseline evidence only.
+The tested scale includes 200 sources enrolled in ten resumable 20-record batches, 30 active actions during archived-user reassignment across the 25-record batch boundary, paginated execution history, scoped circuit limits, and an actual private dispatcher invocation processing 28 due sources within its 100-source ceiling. The local load regression independently exercises 120 sources. These are development acceptance measurements, not a production load certification.
 
-Prepared acceptance harnesses:
+## Reproducing acceptance
 
-- `tests/support/m7-hosted-acceptance.ts`: scoped fictional lifecycle, native mutations, transactional replay, privacy, collection/reversal and bounded enrollment.
-- `tests/support/m7-acceptance-control.ts`: temporary private development-only fixture adapter for M7 scheduling metadata and rollback injection. It must be removed from the deployed backend after testing. It never redates existing M1–M6 business events.
-- `tests/e2e/automation.spec.ts`: desktop/mobile Owner/Admin rule/health/history access plus restricted-role notifications and route denial.
+Local gates: `npm test`, `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build`, and `npm audit --json`. Stop the Next server before a production build.
+
+Hosted runners under `tests/support/` require the existing fictional identity environment, `GLARA_CONVEX_ACCEPTANCE=yes` and the corresponding `GLARA_M7_ACCEPTANCE=yes` or `GLARA_M6_ACCEPTANCE=yes` opt-in. They verify the authorized development URL. Keep credentials outside source control. The initial suites are `m7-hosted-acceptance.ts`, `m7-hosted-matrix.ts`, `m7-hosted-operations.ts`, `m7-hosted-roles.ts`, and `m7-hosted-final.ts`; they depend on explicitly scoped fictional fixtures and the guarded temporary adapter. Review their fixture dependencies before rerunning. They are not production commands.
+
+After adapter removal, `npx tsx tests/support/m7-clean-smoke.ts` exercises public functions with `GLARA_M7_BROWSER_FIXTURE` pointing to the private fictional fixture JSON. Browser coverage lives in `tests/e2e/automation.spec.ts`; the normal repository runner is `npm run test:e2e -- tests/e2e/automation.spec.ts`. The acceptance run used the installed Chrome channel and an existing production server. Finally run `npx tsx tests/support/m6-hosted-acceptance.ts` after all business fixture writes have stopped; revision changes correctly invalidate an in-progress reconciliation.
+
+## Temporary fixtures and clean deployment
+
+The guarded internal M7 adapter was used only on marked fictional sources and fictional non-manager identities in the authorized deployment. It corrected fictional quote, invoice, opportunity, Realtor and package timestamps to exercise real elapsed-date thresholds; no real business record was redated. It also supplied isolated rollback failures, duplicate linkage, snooze/suppression expiry, and reversible role/archive tests. Original role and rule settings were restored.
+
+Twelve remaining marked fictional automation actions were closed in a bounded cleanup; business records, payments, physical inventory history and audit history were retained. No records were destructively reset. Subsequent browser/smoke fixtures close their own actions and restore disabled policy in `finally` blocks.
+
+Both temporary source files were removed from `convex/` and a clean backend was redeployed. CLI invocation confirmed that `m7AcceptanceControl:control`, `m7AcceptanceControl:cleanup` and `m6HistoricalImport:importHistory` are unavailable. Officially regenerated bindings contain none of these modules. Reproducible guarded adapter sources remain under `tests/support/`; they are not deployed.
 
 ## Limits and production prerequisites
 
 - External email/SMS/WhatsApp, payments, liability decisions, inventory movement, date changes, project creation and M8 AI remain outside automation authority.
 - Source enrollment is explicit, paginated and resumable. Production activation needs a reviewed backlog scope and operating thresholds; rules ship disabled.
-- Current source relationship limits are enforced; oversized sources require explicit operator review. Rule statistics clearly report bounded sample sizes.
+- Current source relationship limits are enforced, including 100 linked sources, 100 payments and 100 invoices per customer, and existing project/team caps. Oversized sources require explicit operator review. Rule statistics clearly report bounded sample sizes.
 - No invented high-value asset prioritization: M4 has no authoritative financial valuation field.
 - Production workload/cost monitoring, historical evidence retention, backup/recovery rehearsal, security review, and all deferred email/auth requirements remain required before production.
-- Hosted M7 and full M1–M6 regressions, M7 browser acceptance and independent review remain outstanding. No P0/P1 defect was identified by local checks, but a zero-defect hosted acceptance result is not claimed.
+- Independent review remains required before M8. Development acceptance does not certify production readiness. No unresolved P0/P1 issue was identified in the tested development scope. The initial mobile login timeout did not recur in the unchanged M2 rerun; its root cause was not established.
 
 ## Defects addressed during local hardening
 
@@ -109,6 +127,23 @@ Prepared acceptance harnesses:
 - Corrected project task membership during escalation and queued assignment review after profile changes.
 - Added explicit duplicate/linkage repair and bounded circuit/failed-work visibility in the existing Action Center.
 
-## Resume acceptance
+## Hosted hardening corrections
 
-After specific M7 upload consent: verify the exact development URL, run `npx convex dev --once --env-file .env.local`, initialize disabled defaults, and deploy the guarded temporary `m7AcceptanceControl` adapter only for fictional acceptance. Run the prepared M7 harness and all M1–M6 hosted suites, then all desktop/mobile suites with the two deferred recovery-send scenarios excluded. Remove the temporary adapter and redeploy, rerun final local gates, update this report with exact results, and commit/push the final evidence. Do not begin M8.
+- Suppression now closes existing active work atomically, including evaluation races, while preserving the prospect/opportunity next-action invariant.
+- Unresolved notifications use the matching index range, so resolved history cannot hide current work on the first page.
+- Returning an action to a previous assignee reopens the existing notification instead of silently losing it.
+- Snoozed notifications remain quiet; action cards display the snooze date and actual task completion immediately. The expiry display uses an effect-managed clock refreshed every 30 seconds, keeping React rendering pure.
+- Customer credit review includes both unallocated receipts and outstanding paid-invoice credits. Credit/allocation writes enqueue the customer for re-evaluation; Vancouver dates are used consistently.
+- Lost reactivation distinguishes listing from sale and excludes properties with an authoritative recorded project sale.
+- Three-day preparation now evaluates outstanding required staging checks after M3 planning has passed.
+- The temporary adapter uses static imports supported by Convex. Harness corrections handle void CLI results, valid reserved dates, isolated calendar slots, and existing M2 duplicate-opportunity protection.
+
+### Activity analytics release blocker resolved
+
+Global reconciliation initially detected ten source-fact differences on five completed fictional CRM activities, with twenty-three affected aggregate comparisons. A legacy M1 activity has no numeric version, so analytics originally used its updated timestamp. M7 completion added a small numeric version, which the analytics stale-version guard rejected. A new regression reproduced this exact failure before correction.
+
+Activity projection watermarks now retain the maximum of the updated timestamp and optional counter. The stale-version guard and server authorization remain intact. The existing authenticated Owner compare/repair APIs repaired ten derived facts on the five explicitly identified fictional activities, with audit reasons. Before/after source snapshots matched exactly. No business facts, dates, payment records or audit history were changed by this repair. The new hosted clean smoke verifies zero drift after completing a newly created legacy CRM follow-up. See `M7-analytics-repair-results.json` and the retained initial failure evidence.
+
+The final independent reconciliation passed with zero drift after the repair, final browser workflows, and clean hosted smoke.
+
+No M1–M6 business capability was intentionally removed. No external communications, automatic commercial decisions, production deployment, or M8 work were performed.

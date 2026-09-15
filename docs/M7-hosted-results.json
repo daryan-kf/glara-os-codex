@@ -1,0 +1,122 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T23:31:01.721Z",
+  "results": [
+    {
+      "name": "All 28 defaults remain disabled and initialization is idempotent",
+      "passed": true
+    },
+    {
+      "name": "Anonymous and non-manager direct rule execution is denied",
+      "passed": true
+    },
+    {
+      "name": "Actual day-2 and day-5 thresholds use one logical quote action",
+      "passed": true
+    },
+    {
+      "name": "Quote preview is read-only and current source needs one follow-up",
+      "passed": true
+    },
+    {
+      "name": "Concurrent manual, scheduler and replay evaluations create one quote task",
+      "passed": true
+    },
+    {
+      "name": "Preview has no task, notification or execution side effects",
+      "passed": true
+    },
+    {
+      "name": "Sales receives the linked task and other roles receive no private reminder",
+      "passed": true
+    },
+    {
+      "name": "Snooze hides notifications and returns after fixture expiry",
+      "passed": true
+    },
+    {
+      "name": "Completing a task preserves the unresolved quote condition",
+      "passed": true
+    },
+    {
+      "name": "Suppression blocks creation until explicit fixture expiry",
+      "passed": true
+    },
+    {
+      "name": "Escalation reassigns the same task to Owner without duplication",
+      "passed": true
+    },
+    {
+      "name": "Version snapshots preserve old policy after a configuration change",
+      "passed": true
+    },
+    {
+      "name": "Completed contact reminder reopens only after a new cooldown cycle",
+      "passed": true
+    },
+    {
+      "name": "Won opportunity resolves sales reminders from authoritative state",
+      "passed": true
+    },
+    {
+      "name": "Upcoming staging with incomplete required checklist creates one action",
+      "passed": true
+    },
+    {
+      "name": "Missing asset generates one reminder without liability or valuation",
+      "passed": true
+    },
+    {
+      "name": "Physical recovery resolves the asset reminder independently of commercial review",
+      "passed": true
+    },
+    {
+      "name": "Completing checklist resolves the preparation action",
+      "passed": true
+    },
+    {
+      "name": "Sold project produces a destaging reminder without creating an event",
+      "passed": true
+    },
+    {
+      "name": "Destaging and project completion resolve operations automation",
+      "passed": true
+    },
+    {
+      "name": "Controlled isolated transaction failure rolls back task creation",
+      "passed": true
+    },
+    {
+      "name": "Failed work records three bounded attempts, is visible to Owner, and retries safely",
+      "passed": true
+    },
+    {
+      "name": "Hosted concurrent collection evaluation creates exactly one active action",
+      "passed": true
+    },
+    {
+      "name": "Payment resolves collection and dashboard coalesces the signal",
+      "passed": true
+    },
+    {
+      "name": "Payment reversal requalifies the balance with a new action cycle",
+      "passed": true
+    },
+    {
+      "name": "Public invocation of internal scheduler is rejected",
+      "passed": true
+    },
+    {
+      "name": "Bounded bootstrap resumes across source tables",
+      "passed": true
+    }
+  ],
+  "passed": 27,
+  "failed": 0,
+  "completed": true,
+  "backlog": {
+    "batches": 10,
+    "enrolled": 200
+  },
+  "fixture_controls": "Guarded fictional source timestamp corrections, M7 scheduling metadata and isolated transaction rollback; no real business event dates changed."
+}

@@ -63,7 +63,12 @@ export async function touched(ctx: MutationCtx, table: string, id: string) {
     await enqueue(ctx, "opportunities", row.opportunity_id);
   if ("realtor_id" in row && row.realtor_id)
     await enqueue(ctx, "realtors", row.realtor_id);
-  if ("invoice_id" in row) await enqueue(ctx, "invoices", row.invoice_id);
+  if ("invoice_id" in row) {
+    await enqueue(ctx, "invoices", row.invoice_id);
+    const invoice = await ctx.db.get(row.invoice_id);
+    if (invoice)
+      await enqueue(ctx, "commercial_customers", invoice.customer_id);
+  }
   if ("payment_id" in row) {
     await enqueue(ctx, "payments", row.payment_id);
     const links = await ctx.db
@@ -249,6 +254,8 @@ export async function notify(ctx: MutationCtx, a: Doc<"automation_actions">) {
     if (n.recipient_id !== a.assigned_to && !n.resolved_at)
       await ctx.db.patch(n._id, { resolved_at: Date.now() });
   const n = all.find((n) => n.recipient_id === a.assigned_to);
+  if (n?.resolved_at)
+    await ctx.db.patch(n._id, { resolved_at: null, read_at: null });
   if (!n)
     await ctx.db.insert("notifications", {
       action_id: a._id,

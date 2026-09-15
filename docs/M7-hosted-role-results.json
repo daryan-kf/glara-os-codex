@@ -1,0 +1,18 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "timestamp": "2026-09-14T23:44:27.805Z",
+  "results": [
+    {
+      "name": "Role revocation immediately hides existing notification and direct CRM access",
+      "passed": true
+    },
+    {
+      "name": "Archived assignee loses access and bounded reassignment resumes beyond 25 actions",
+      "passed": true
+    }
+  ],
+  "assigned_actions_tested": 30,
+  "passed": 2,
+  "failed": 0,
+  "completed": true
+}

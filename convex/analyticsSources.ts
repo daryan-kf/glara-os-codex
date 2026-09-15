@@ -70,7 +70,17 @@ export async function sourceProjection(
     str(row, "created_at") ||
     str(row, "occurred_at") ||
     str(row, "inspected_at");
+  // M1 activities use timestamps; operations/automation may later add a counter.
+  // Keep their projection watermark monotonic across that representation change.
+  const activityVersion =
+    table === "activities"
+      ? Math.max(
+          num(row, "version"),
+          Date.parse(str(row, "updated_at") || created) || 0,
+        )
+      : 0;
   const version =
+    activityVersion ||
     num(row, "version") ||
     Date.parse(str(row, "updated_at") || created) ||
     num(row, "_creationTime");
