@@ -352,5 +352,149 @@
     "Rerun final hosted regressions/reconciliation after successful live approval actions.",
     "Approve and run npm dependency audit.",
     "All documented production auth/email/privacy/security/go-live prerequisites remain deferred."
-  ]
+  ],
+  "tested_implementation_commit": "c358fa7a79feb834c39fe236ffe2da0d1aec504f",
+  "complete_criteria_sections": "64-68",
+  "criteria": [
+    {
+      "id": "A",
+      "name": "Live provider",
+      "status": "PENDING EXTERNAL ACTION",
+      "evidence": "Model/configuration verified. Three real adapter attempts, zero successful answers; HTTP 429 quota_or_billing. Successful structured output and actual token usage are unverified."
+    },
+    {
+      "id": "B",
+      "name": "Fictional-data isolation",
+      "status": "VERIFIED FOR ATTEMPTED SCOPE",
+      "evidence": "Three new fictional Realtors only, with selected-record zero-history metrics; no company aggregate or mixed dataset sent. Full live matrix must repeat context inspection."
+    },
+    {
+      "id": "C",
+      "name": "Authorization",
+      "status": "PARTIAL",
+      "evidence": "Ten local authorization cases passed. Hosted disabled-provider checks cover six roles and conversation isolation, but are not the full hosted context/anonymous/archived/revoked/unassigned matrix. Full criterion remains open."
+    },
+    {
+      "id": "D",
+      "name": "Numerical grounding",
+      "status": "PARTIAL",
+      "evidence": "Thirteen exact local source/context comparisons are documented below. No accepted real-model numerical answer was evaluated."
+    },
+    {
+      "id": "E",
+      "name": "Evidence grounding",
+      "status": "PARTIAL",
+      "evidence": "Local validation rejects unknown citations and unsupported numerical output; disabled navigation evidence was exercised. Live semantic support of claims remains unverified."
+    },
+    {
+      "id": "F",
+      "name": "Hallucination / insufficient evidence",
+      "status": "PENDING EXTERNAL ACTION",
+      "evidence": "Six local controlled-response evaluation contracts passed; zero completed live factuality evaluations. Missing historical fact and every required live case still need explicit evidence."
+    },
+    {
+      "id": "G",
+      "name": "Prompt injection / red team",
+      "status": "PARTIAL",
+      "evidence": "Local direct/indirect injection and permission checks passed within the 68 M8 tests. The complete named hosted/live red-team matrix has not passed."
+    },
+    {
+      "id": "H",
+      "name": "Human approval",
+      "status": "PARTIAL",
+      "evidence": "Local stale/expired/edited/rejected/concurrent approval and audit tests passed. Live proposal generation and visible desktop/mobile approval remain unexecuted."
+    },
+    {
+      "id": "I",
+      "name": "Action allowlist",
+      "status": "PARTIAL",
+      "evidence": "Executable action is create_activity through existing CRM/sales/project mutations; drafts do not write. Local rejection checks passed. Explicit hosted denial evidence for every listed forbidden operation remains required."
+    },
+    {
+      "id": "J",
+      "name": "M3–M7 consistency",
+      "status": "PARTIAL",
+      "evidence": "Local adapters use authoritative source calculations and suppress existing follow-ups; prior-module hosted regressions passed. Live answers and live approved-task coordination are unverified."
+    },
+    {
+      "id": "K",
+      "name": "Provider failure safety",
+      "status": "PARTIAL",
+      "evidence": "Three actual quota failures returned safe errors with no AI-created business mutation. Local timeout/malformed/evidence/action failures passed. Complete controlled hosted failure matrix remains open."
+    },
+    {
+      "id": "L",
+      "name": "Cost / rate safety",
+      "status": "PARTIAL",
+      "evidence": "Local concurrent budget/rate/output controls passed. Failed hosted requests recorded latency and conservative reservation charges; actual provider usage, billing and successful live accounting remain unverified."
+    },
+    {
+      "id": "M",
+      "name": "Conversation security",
+      "status": "PARTIAL",
+      "evidence": "Local revocation/retention/delete/audit tests and hosted six-role ownership checks passed. Full hosted current-context/revocation/evidence matrix remains open."
+    },
+    {
+      "id": "N",
+      "name": "Desktop acceptance",
+      "status": "PARTIAL",
+      "evidence": "Six disabled-AI M8 plus five authentication scenarios passed. Full enabled Analyst/record/draft/proposal/settings/error workflows remain open."
+    },
+    {
+      "id": "O",
+      "name": "Mobile acceptance",
+      "status": "PARTIAL",
+      "evidence": "Six disabled-AI M8 plus five authentication scenarios passed; tested overflow checks passed. Enabled drafts, briefs and approval remain open."
+    },
+    {
+      "id": "P",
+      "name": "Fresh M1–M7 hosted regression",
+      "status": "PASSED FOR RECORDED ITERATION; FINAL SEQUENCE OPEN",
+      "evidence": "253 distinct checks passed during M8 acceptance. Only final M6, M7 clean smoke and M8 disabled checks were repeated after helper removal; repeat all required suites on the final clean source after remaining live acceptance."
+    },
+    {
+      "id": "Q",
+      "name": "Final M6 reconciliation",
+      "status": "PASSED FOR RECORDED ITERATION",
+      "evidence": "After fixture writes stopped: 3,480 sources, zero source drift, zero bucket drift, revision 3066. Repeat after any future live approval/fixture mutation."
+    },
+    {
+      "id": "R",
+      "name": "M4/M5 integrity",
+      "status": "VERIFIED FOR ATTEMPTED SCOPE",
+      "evidence": "No accepted AI proposal/action occurred; financial/inventory fixtures were ordinary authorized non-AI setup. M4/M5 regression passed; 65 serialized assets had zero mismatches. Repeat after live action acceptance."
+    },
+    {
+      "id": "S",
+      "name": "Clean deployment",
+      "status": "PARTIAL",
+      "evidence": "All three temporary modules removed and absence verified; clean M8 49-check suite and M7 smoke passed. Successful clean live/approval smoke is still pending."
+    },
+    {
+      "id": "T",
+      "name": "Local quality gates",
+      "status": "PARTIAL",
+      "evidence": "13 Node + 347 Vitest pass; TypeScript/lint/format/build/secret/whitespace checks passed. Dependency audit remains blocked and is not passed."
+    },
+    {
+      "id": "U",
+      "name": "No unresolved P0/P1",
+      "status": "NO KNOWN OPEN DEFECT; NOT FULL CLEARANCE",
+      "evidence": "Previously discovered rollout and validation gaps were corrected with coverage. No unresolved P0/P1 observed in completed checks; unexecuted gates cannot establish absence of defects."
+    },
+    {
+      "id": "V",
+      "name": "Safe final development state",
+      "status": "VERIFIED",
+      "evidence": "Provider configured on development only; AI and proposals disabled, no company-wide enablement, no external communications, production untouched, M9 not started."
+    }
+  ],
+  "continuation": {
+    "scope": "documentation only",
+    "additional_provider_calls": 0,
+    "additional_deployments": 0,
+    "additional_business_mutations": 0,
+    "prior_test_results_reused": true,
+    "full_post_clean_regression": "required after remaining live acceptance"
+  }
 }
