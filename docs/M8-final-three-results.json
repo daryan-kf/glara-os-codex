@@ -1,0 +1,390 @@
+{
+  "status": "PASSED",
+  "baseline_commit": "3c51719f0b6fa3834e5e9d24201174d4ca159b93",
+  "generated_at": "2026-09-15T17:22:02.142Z",
+  "deployment": "woozy-jaguar-392",
+  "backend_source_changed": false,
+  "dependency_audit": {
+    "command": "npm audit --json --registry=https://registry.npmjs.org",
+    "executed": true,
+    "result": "DEPENDENCY AUDIT PASSED — ZERO VULNERABILITIES",
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "remediation_required": false
+  },
+  "pipeline": {
+    "scope": "Two newly created fictional opportunities under one new Realtor; company-wide data was not exported or sent.",
+    "provenance": "Native creation responses, exact-ID readback, initially empty Realtor-filtered M6 scope, two open opportunities and zero source drift.",
+    "fixture_values": [
+      {
+        "cents": "1234567",
+        "probability": 37
+      },
+      {
+        "cents": "890123",
+        "probability": 63
+      }
+    ],
+    "definition": "Sum active non-archived opportunity cents; sum per-opportunity ((cents * probability + 50) / 100) using integer division.",
+    "authoritative": {
+      "pipeline_cents": "2124690",
+      "weighted_pipeline_cents": "1017567"
+    },
+    "analytics_revision": 3640,
+    "provider": "OpenAI",
+    "model": "gpt-5.4-mini",
+    "execution": "Existing final OpenAIProvider adapter run locally against hosted M6 scoped metrics; isolated evidence only, no new backend endpoint.",
+    "answer": "Pipeline: CAD 21246.90\nWeighted Pipeline: CAD 10175.67",
+    "evidence_ids": ["e1"],
+    "result": "EXACT MATCH",
+    "input_tokens": 858,
+    "output_tokens": 96,
+    "latency_ms": 1310
+  },
+  "local": {
+    "node": 13,
+    "vitest": 349,
+    "m8": 70,
+    "commands": [
+      {
+        "name": "test",
+        "exit": 0,
+        "elapsed_ms": 569
+      },
+      {
+        "name": "vitest",
+        "exit": 0,
+        "elapsed_ms": 11264
+      },
+      {
+        "name": "typecheck",
+        "exit": 0,
+        "elapsed_ms": 2178
+      },
+      {
+        "name": "lint",
+        "exit": 0,
+        "elapsed_ms": 9703
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "elapsed_ms": 4410
+      },
+      {
+        "name": "build",
+        "exit": 0,
+        "elapsed_ms": 11196
+      }
+    ]
+  },
+  "hosted": {
+    "m1": 48,
+    "m2": 20,
+    "m3": 21,
+    "m4": 32,
+    "m5": 29,
+    "m6": 34,
+    "m7": 32,
+    "m1_m7_total": 216,
+    "m8_disabled": 49,
+    "m8_clean": 9,
+    "m8_clean_results": [
+      {
+        "name": "Temporary M8 helper is not callable",
+        "passed": true
+      },
+      {
+        "name": "Clean live provider returns evidence and safe proposal without mutation",
+        "passed": true
+      },
+      {
+        "name": "Clean forbidden action edits are denied",
+        "passed": true
+      },
+      {
+        "name": "Clean conversations and evidence cannot cross user boundaries",
+        "passed": true
+      },
+      {
+        "name": "Clean edited concurrent approval yields exactly one Activity and visible receipt",
+        "passed": true
+      },
+      {
+        "name": "Clean anonymous archived unassigned and forbidden CRM roles denied",
+        "passed": true
+      },
+      {
+        "name": "Clean source archive revokes prior answer evidence and receipt",
+        "passed": true
+      },
+      {
+        "name": "Clean live AI coordinates with an existing M7 task without duplication",
+        "passed": true
+      },
+      {
+        "name": "Final prompt still refuses missing facts without inventing an action",
+        "passed": true
+      }
+    ],
+    "m7_native": [
+      {
+        "name": "Native preview is read-only for source, actions and execution history",
+        "passed": true
+      },
+      {
+        "name": "Native concurrent collection creates one exact-value action without financial changes",
+        "passed": true
+      },
+      {
+        "name": "Native sales cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native designer cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native staging_crew cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native marketing cannot administer automation or operate private collection",
+        "passed": true
+      },
+      {
+        "name": "Native anonymous archived unassigned callers and public scheduler denied",
+        "passed": true
+      },
+      {
+        "name": "Native Admin executes legitimate work; forged financial command is rejected",
+        "passed": true
+      },
+      {
+        "name": "Native version race rejects stale rule writes and preserves execution policy snapshots",
+        "passed": true
+      },
+      {
+        "name": "Native escalation thresholds coalesce on an actually fourteen-day-overdue invoice",
+        "passed": true
+      },
+      {
+        "name": "Native snooze validates bounds and hides its notification without changing invoice",
+        "passed": true
+      },
+      {
+        "name": "Native task completion cannot settle an outstanding invoice",
+        "passed": true
+      },
+      {
+        "name": "Native concurrent payment/evaluation removes false collection warning",
+        "passed": true
+      },
+      {
+        "name": "Native reversal opens one new collection cycle with exact original amount",
+        "passed": true
+      },
+      {
+        "name": "Native paid-invoice credit review neither refunds nor allocates cash",
+        "passed": true
+      },
+      {
+        "name": "Native history pagination is bounded and resumes without duplicate IDs",
+        "passed": true
+      },
+      {
+        "name": "Native suppression closes work and survives concurrent evaluation and repair",
+        "passed": true
+      },
+      {
+        "name": "Authenticated callers cannot invoke internal scheduler or removed helpers",
+        "passed": true
+      },
+      {
+        "name": "Native repair and final source comparison preserve commercial facts",
+        "passed": true
+      },
+      {
+        "name": "Native final rules disabled and no failed automation work",
+        "passed": true
+      }
+    ],
+    "regression_attempts": [
+      {
+        "script": "convex-hosted-acceptance.mjs",
+        "exit": 0,
+        "elapsed_ms": 17974,
+        "pass_lines": 48,
+        "fail_lines": 0
+      },
+      {
+        "script": "m2-hosted-acceptance.mjs",
+        "exit": 0,
+        "elapsed_ms": 12990,
+        "pass_lines": 20,
+        "fail_lines": 0
+      },
+      {
+        "script": "m3-hosted-acceptance.ts",
+        "exit": 0,
+        "elapsed_ms": 29301,
+        "pass_lines": 16,
+        "fail_lines": 0
+      },
+      {
+        "script": "m3-query-acceptance.ts",
+        "exit": 0,
+        "elapsed_ms": 2817,
+        "pass_lines": 5,
+        "fail_lines": 0
+      },
+      {
+        "script": "m4-hosted-acceptance.ts",
+        "exit": 0,
+        "elapsed_ms": 60221,
+        "pass_lines": 25,
+        "fail_lines": 0
+      },
+      {
+        "script": "m4-quantity-hosted.ts",
+        "exit": 0,
+        "elapsed_ms": 36304,
+        "pass_lines": 7,
+        "fail_lines": 0
+      },
+      {
+        "script": "m5-hosted-acceptance.ts",
+        "exit": 0,
+        "elapsed_ms": 56986,
+        "pass_lines": 15,
+        "fail_lines": 0
+      },
+      {
+        "script": "m5-hosted-integrity.ts",
+        "exit": 0,
+        "elapsed_ms": 33421,
+        "pass_lines": 14,
+        "fail_lines": 0
+      },
+      {
+        "script": "m6-hosted-corrections.ts",
+        "exit": 0,
+        "elapsed_ms": 3814,
+        "pass_lines": 8,
+        "fail_lines": 0
+      },
+      {
+        "script": "m7-native-fixture.ts",
+        "exit": 0,
+        "elapsed_ms": 9545,
+        "pass_lines": 0,
+        "fail_lines": 0
+      },
+      {
+        "script": "m7-hosted-operations.ts",
+        "exit": 0,
+        "elapsed_ms": 37570,
+        "pass_lines": 7,
+        "fail_lines": 0
+      },
+      {
+        "script": "m7-clean-smoke.ts",
+        "exit": 0,
+        "elapsed_ms": 5787,
+        "pass_lines": 5,
+        "fail_lines": 0
+      },
+      {
+        "script": "m7-native-regression.ts",
+        "exit": 0,
+        "elapsed_ms": 46665,
+        "pass_lines": 20,
+        "fail_lines": 0
+      },
+      {
+        "script": "m8-hosted-acceptance.ts",
+        "exit": 0,
+        "elapsed_ms": 20213,
+        "pass_lines": 0,
+        "fail_lines": 0
+      },
+      {
+        "script": "m8-clean-acceptance.ts",
+        "exit": 1,
+        "elapsed_ms": 26929,
+        "pass_lines": 7,
+        "fail_lines": 0
+      }
+    ]
+  },
+  "m7_substitution": {
+    "controlled_time": "Fresh local suppression/cooldown/snooze expiry, archived-assignee fallback, retry bounds, 120-record scheduler load and duplicate-linkage repair tests replace artificial hosted clock/corruption helpers.",
+    "native": "Fresh real fourteen-day-overdue invoices, 7/14/30-day threshold policies, concurrency, version races, financial resolution/reversal/credit, suppression plus repair, role matrix, internal scheduler denial, adopted tasks, stock/history/asset equality, and source resolution.",
+    "temporary_helper_added": false
+  },
+  "reconciliation": {
+    "scanned": 4129,
+    "source_drift": 0,
+    "bucket_drift": 0,
+    "revision": 4058,
+    "status": "complete"
+  },
+  "inventory": {
+    "serialized_assets": 77,
+    "mismatches": 0,
+    "scoped_products": 2,
+    "ledger_mismatches": 0,
+    "invoice_balance_cents": "7704",
+    "payment_allocation_cents": "2311",
+    "executed_api_proposals": 3,
+    "browser_approved": 3,
+    "browser_duplicates": 0
+  },
+  "rollout": {
+    "timestamp": "2026-09-15T17:15:42.929Z",
+    "ai_enabled": false,
+    "proposals": false,
+    "enabled_rules": 0,
+    "failed_automation": 0,
+    "production_modified": false,
+    "m9_started": false
+  },
+  "temporary_helpers": "Absent in actual deployed function metadata; authenticated public invocation rejected.",
+  "remaining_development_gates": [],
+  "unresolved_p0_p1": [],
+  "initial_failures_preserved": [
+    {
+      "result": "INVALID_AI_OUTPUT",
+      "diagnostic": "Initial adapter rejection; raw output not retained for this first run."
+    },
+    {
+      "result": "INVALID_AI_OUTPUT",
+      "category": "unknown_evidence",
+      "raw_responses_retained": 2,
+      "numerical_values_correct": true
+    },
+    {
+      "result": "AI_RATE_LIMITED",
+      "cause": "Fictional Owner reached 60 active conversations; two clean-smoke attempts stopped safely. Only the new exact evidenced test conversation was archived; remaining check continued an existing thread.",
+      "limits_changed": false
+    },
+    {
+      "result": "AI_UNAVAILABLE",
+      "cause": "Narrow missing-fact resume initially omitted Realtor feature enablement; denied before provider dispatch, corrected in acceptance configuration only."
+    }
+  ],
+  "production_requirements": "DEFERRED — REQUIRED BEFORE PRODUCTION: email onboarding/recovery/link lifecycle where applicable, redirects/origins, transactional provider and Support@glarahome.com sender/domain verification; provider privacy, operational monitoring/backup/load and independent security review.",
+  "secret_scan": {
+    "status": "passed",
+    "files": 346,
+    "secret_matches": 0,
+    "private_environment_files": 0,
+    "fictional_passwords_checked": 8
+  }
+}

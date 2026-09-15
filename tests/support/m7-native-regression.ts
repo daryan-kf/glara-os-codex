@@ -403,7 +403,7 @@ async function main() {
         assert.equal((await active()).length, 1);
       },
     );
-    await pay();
+    const finalPayment = await pay();
     await run();
     await check(
       "Native paid-invoice credit review neither refunds nor allocates cash",
@@ -453,6 +453,80 @@ async function main() {
         assert.ok(
           next.page.every((x) => !first.page.some((y) => x._id === y._id)),
         );
+      },
+    );
+    await check(
+      "Native suppression closes work and survives concurrent evaluation and repair",
+      async () => {
+        await c.mutation(api.commercial.reversePayment, {
+          id: finalPayment,
+          reason: marker,
+        });
+        await run();
+        assert.equal((await active()).length, 1);
+        const before = await c.query(api.commercial.invoice, { id: invoice });
+        for (const days of [0, 91])
+          await assert.rejects(
+            c.mutation(api.automation.suppress, {
+              table: "invoices",
+              entity_id: invoice,
+              family: "collection",
+              days,
+              reason: marker,
+            }),
+          );
+        await c.mutation(api.automation.suppress, {
+          table: "invoices",
+          entity_id: invoice,
+          family: "collection",
+          days: 1,
+          reason: marker,
+        });
+        await Promise.all([
+          run(),
+          run(),
+          c.mutation(api.automation.repair, {
+            table: "invoices",
+            entity_id: invoice,
+          }),
+        ]);
+        assert.equal((await active()).length, 0);
+        assert.ok((await preview()).some((x) => x.suppressed));
+        assert.deepEqual(
+          await c.query(api.commercial.invoice, { id: invoice }),
+          before,
+        );
+      },
+    );
+    await check(
+      "Authenticated callers cannot invoke internal scheduler or removed helpers",
+      async () => {
+        for (const role of [
+          "owner",
+          "admin",
+          "sales",
+          "designer",
+          "staging_crew",
+          "marketing",
+        ]) {
+          const client = (await operationsClient(role)).client;
+          await assert.rejects(
+            client.action(
+              makeFunctionReference<"action">("automation:tick"),
+              {},
+            ),
+            /internal|public function|Could not find/i,
+          );
+        }
+        for (const helper of [
+          "m7AcceptanceControl:snapshot",
+          "m8AcceptanceControl:dataset",
+        ]) {
+          await assert.rejects(
+            c.query(makeFunctionReference<"query">(helper), {}),
+            /Could not find public function/,
+          );
+        }
       },
     );
     await check(

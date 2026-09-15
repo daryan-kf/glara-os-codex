@@ -163,12 +163,27 @@ async function main() {
     await check(
       "M4 shortage creates one preparation task without allocating stock",
       async () => {
+        const stockBefore = await c.query(api.inventory.product, {
+          id: product,
+        });
+        const history = () =>
+          c.query(api.inventory.history, {
+            product_id: product,
+            paginationOpts: { cursor: null, numItems: 100 },
+          });
+        const historyBefore = await history();
+        assert.equal(historyBefore.isDone, true);
         await Promise.all([
           run("inventory_reservations", line),
           run("inventory_reservations", line),
         ]);
         assert.equal((await active("inventory_reservations", line)).length, 1);
         assert.equal((await row(line)).state, "planned");
+        assert.deepEqual(
+          await c.query(api.inventory.product, { id: product }),
+          stockBefore,
+        );
+        assert.deepEqual(await history(), historyBefore);
         await c.mutation(api.inventory.receive, {
           product_id: product,
           location_id: stock.location,
@@ -296,7 +311,14 @@ async function main() {
     await check(
       "Repair reminder does not repair inventory and resolves after M4 inspection",
       async () => {
+        const assetBefore = await c.query(api.inventory.asset, {
+          id: stock.asset,
+        });
         await run("inventory_assets", stock.asset);
+        assert.deepEqual(
+          await c.query(api.inventory.asset, { id: stock.asset }),
+          assetBefore,
+        );
         assert.equal((await active("inventory_assets", stock.asset)).length, 1);
         assert.equal(
           (await c.query(api.inventory.asset, { id: stock.asset })).status,
