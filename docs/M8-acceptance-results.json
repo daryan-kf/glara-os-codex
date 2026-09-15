@@ -1,0 +1,356 @@
+{
+  "deployment": "woozy-jaguar-392",
+  "deployment_type": "dev",
+  "project": "glara-os",
+  "baseline_commit": "0e4b889c8fbd058f2e18aa8c48363e89fe427e1b",
+  "gate": "M8 DEVELOPMENT GATE PENDING EXTERNAL ACTION",
+  "provider": {
+    "name": "openai",
+    "model": "gpt-5.4-mini",
+    "key_presence_verified": true,
+    "security_approved": true,
+    "successful_live_answers": 0,
+    "attempts": [
+      {
+        "status": "failed",
+        "error": "AI_UNAVAILABLE",
+        "provider": "openai",
+        "model": "gpt-5.4-mini",
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "provider_ms": 1418,
+        "retrieval_ms": 95,
+        "charged_micros": 62652,
+        "created_at": 1789451927482,
+        "completed_at": 1789451929277
+      },
+      {
+        "status": "failed",
+        "error": "AI_UNAVAILABLE",
+        "provider": "openai",
+        "model": "gpt-5.4-mini",
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "provider_ms": 630,
+        "retrieval_ms": 92,
+        "charged_micros": 62652,
+        "created_at": 1789451818772,
+        "completed_at": 1789451819762
+      },
+      {
+        "status": "failed",
+        "error": "AI_UNAVAILABLE",
+        "provider": "openai",
+        "model": "gpt-5.4-mini",
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "provider_ms": 2202,
+        "retrieval_ms": 92,
+        "charged_micros": 62652,
+        "created_at": 1789451740409,
+        "completed_at": 1789451742981
+      }
+    ],
+    "diagnosis": {
+      "http_status": 429,
+      "category": "quota_or_billing"
+    },
+    "cost_is_conservative_estimate_not_billing": true
+  },
+  "hosted_m8_disabled": [
+    {
+      "name": "AI remains disabled",
+      "passed": true
+    },
+    {
+      "name": "Server deployment reports M8",
+      "passed": true
+    },
+    {
+      "name": "owner request deduplicates",
+      "passed": true
+    },
+    {
+      "name": "owner deterministic navigation",
+      "passed": true
+    },
+    {
+      "name": "owner no proposal",
+      "passed": true
+    },
+    {
+      "name": "owner conversation accessible",
+      "passed": true
+    },
+    {
+      "name": "owner provider feature disabled",
+      "passed": true
+    },
+    {
+      "name": "owner archived conversation unavailable",
+      "passed": true
+    },
+    {
+      "name": "admin request deduplicates",
+      "passed": true
+    },
+    {
+      "name": "admin deterministic navigation",
+      "passed": true
+    },
+    {
+      "name": "admin no proposal",
+      "passed": true
+    },
+    {
+      "name": "admin conversation accessible",
+      "passed": true
+    },
+    {
+      "name": "admin cannot read another user's result",
+      "passed": true
+    },
+    {
+      "name": "admin provider feature disabled",
+      "passed": true
+    },
+    {
+      "name": "Admin costs hidden",
+      "passed": true
+    },
+    {
+      "name": "admin archived conversation unavailable",
+      "passed": true
+    },
+    {
+      "name": "sales request deduplicates",
+      "passed": true
+    },
+    {
+      "name": "sales deterministic navigation",
+      "passed": true
+    },
+    {
+      "name": "sales no proposal",
+      "passed": true
+    },
+    {
+      "name": "sales conversation accessible",
+      "passed": true
+    },
+    {
+      "name": "sales cannot read another user's result",
+      "passed": true
+    },
+    {
+      "name": "sales provider feature disabled",
+      "passed": true
+    },
+    {
+      "name": "sales AI health denied",
+      "passed": true
+    },
+    {
+      "name": "sales archived conversation unavailable",
+      "passed": true
+    },
+    {
+      "name": "designer request deduplicates",
+      "passed": true
+    },
+    {
+      "name": "designer deterministic navigation",
+      "passed": true
+    },
+    {
+      "name": "designer no proposal",
+      "passed": true
+    },
+    {
+      "name": "designer conversation accessible",
+      "passed": true
+    },
+    {
+      "name": "designer cannot read another user's result",
+      "passed": true
+    },
+    {
+      "name": "designer provider feature disabled",
+      "passed": true
+    },
+    {
+      "name": "designer AI health denied",
+      "passed": true
+    },
+    {
+      "name": "designer archived conversation unavailable",
+      "passed": true
+    },
+    {
+      "name": "staging_crew request deduplicates",
+      "passed": true
+    },
+    {
+      "name": "staging_crew deterministic navigation",
+      "passed": true
+    },
+    {
+      "name": "staging_crew no proposal",
+      "passed": true
+    },
+    {
+      "name": "staging_crew conversation accessible",
+      "passed": true
+    },
+    {
+      "name": "staging_crew cannot read another user's result",
+      "passed": true
+    },
+    {
+      "name": "staging_crew provider feature disabled",
+      "passed": true
+    },
+    {
+      "name": "staging_crew AI health denied",
+      "passed": true
+    },
+    {
+      "name": "staging_crew archived conversation unavailable",
+      "passed": true
+    },
+    {
+      "name": "marketing request deduplicates",
+      "passed": true
+    },
+    {
+      "name": "marketing deterministic navigation",
+      "passed": true
+    },
+    {
+      "name": "marketing no proposal",
+      "passed": true
+    },
+    {
+      "name": "marketing conversation accessible",
+      "passed": true
+    },
+    {
+      "name": "marketing cannot read another user's result",
+      "passed": true
+    },
+    {
+      "name": "marketing provider feature disabled",
+      "passed": true
+    },
+    {
+      "name": "marketing AI health denied",
+      "passed": true
+    },
+    {
+      "name": "marketing archived conversation unavailable",
+      "passed": true
+    },
+    {
+      "name": "Deterministic navigation has no provider charge",
+      "passed": true
+    }
+  ],
+  "hosted_regression": {
+    "m1": 48,
+    "m2": 20,
+    "m3": 16,
+    "m3_queries": 5,
+    "m4": 25,
+    "m4_quantity": 7,
+    "m5": 15,
+    "m5_integrity": 14,
+    "m6_corrections": 8,
+    "m6_final": 26,
+    "m7_main": 27,
+    "m7_matrix": 20,
+    "m7_operations": 7,
+    "m7_roles": 2,
+    "m7_final": 8,
+    "m7_clean_smoke": 5,
+    "final_failures": 0
+  },
+  "reconciliation": {
+    "scanned": 3480,
+    "source_drift": 0,
+    "bucket_drift": 0,
+    "revision": 3066,
+    "status": "complete"
+  },
+  "inventory_evidence": {
+    "checked": 65,
+    "mismatches": []
+  },
+  "cleanup": {
+    "closed": 9,
+    "skipped": 0,
+    "pages": 1,
+    "history_preserved": true
+  },
+  "clean_backend": {
+    "deployment": "woozy-jaguar-392",
+    "temporary_modules_present": [],
+    "ai_functions_present": true
+  },
+  "local": {
+    "node": 13,
+    "vitest": 347,
+    "m8": 68,
+    "vitest_seconds": 11.16,
+    "earlier_volume_timeout": true,
+    "focused_retry_passed": 11,
+    "build": "passed",
+    "typecheck": "passed",
+    "formatting": "passed",
+    "lint": "passed, zero warnings",
+    "secret_scan": {
+      "files": 334,
+      "secret_matches": [],
+      "private_environment_files": [],
+      "known_fictional_passwords_checked": 8
+    },
+    "git_diff_check": "passed"
+  },
+  "browser": {
+    "m8_disabled_desktop": 6,
+    "m8_disabled_mobile": 6,
+    "m8_seconds_approx": 72,
+    "auth_desktop": 5,
+    "auth_mobile": 5,
+    "auth_seconds": 26.1,
+    "enabled_live_flows": "not run"
+  },
+  "dependency_audit": "blocked by automatic approval review; explicit npm registry metadata transfer approval pending",
+  "final_state": {
+    "ai_enabled": false,
+    "proposals_enabled": false,
+    "provider_configured": true,
+    "production_unchanged": true,
+    "external_communications": false
+  },
+  "initial_regression_failures": [
+    {
+      "suite": "m7_matrix",
+      "passed": 1,
+      "failed": 1,
+      "reason": "Preserved daily circuit counter reached configured limit; isolated fixture limit configured and restored, counter retained."
+    },
+    {
+      "suite": "m7_operations",
+      "passed": 6,
+      "failed": 1,
+      "reason": "Existing fictional schedule collision; bounded free-slot selection and fixture-event cancellation added."
+    }
+  ],
+  "remaining": [
+    "Resolve OpenAI quota/billing and pass first live smoke before expanding roles.",
+    "Complete full live provider, factuality, evidence, numerical, injection, proposal and enabled browser acceptance.",
+    "Rerun final hosted regressions/reconciliation after successful live approval actions.",
+    "Approve and run npm dependency audit.",
+    "All documented production auth/email/privacy/security/go-live prerequisites remain deferred."
+  ]
+}

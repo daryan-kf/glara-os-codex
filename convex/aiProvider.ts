@@ -45,6 +45,14 @@ const responseSchema = z.object({
     })
     .optional(),
 });
+class ProviderHttpFailure extends Error {
+  constructor(
+    readonly status: number,
+    readonly code: string,
+  ) {
+    super("AI_UNAVAILABLE");
+  }
+}
 export class OpenAIProvider implements IntelligenceProvider {
   async generateStructuredInsight(
     input: ProviderInput,
@@ -109,7 +117,39 @@ export class OpenAIProvider implements IntelligenceProvider {
           body,
           signal: controller.signal,
         });
-        if (!response.ok) throw Error("AI_UNAVAILABLE");
+        if (!response.ok) {
+          const body: unknown = await response.json().catch(() => null);
+          const parsed = z
+            .object({
+              error: z.object({
+                code: z.string().nullable().optional(),
+                message: z.string().optional(),
+              }),
+            })
+            .safeParse(body);
+          const code = parsed.success ? parsed.data.error.code : null;
+          const allowed = [
+            "insufficient_quota",
+            "invalid_api_key",
+            "model_not_found",
+            "rate_limit_exceeded",
+            "invalid_json_schema",
+            "unsupported_parameter",
+            "invalid_value",
+          ];
+          const message = parsed.success
+            ? (parsed.data.error.message ?? "")
+            : "";
+          const category = /quota|billing|credit|balance|fund/i.test(message)
+            ? "quota_or_billing"
+            : /rate.limit|too many|per minute/i.test(message)
+              ? "rate_limit"
+              : "provider_rejected";
+          throw new ProviderHttpFailure(
+            response.status,
+            code && allowed.includes(code) ? code : category,
+          );
+        }
         const raw = await response.text();
         if (raw.length > 100000) throw Error("INVALID_AI_OUTPUT");
         const parsed = responseSchema.safeParse(JSON.parse(raw));
@@ -202,6 +242,12 @@ export const generate = action({
       else result = await new OpenAIProvider().generateStructuredInsight(run);
     } catch (e) {
       error = safeError(e);
+      if (e instanceof ProviderHttpFailure)
+        await ctx.runMutation(internal.ai.providerFailure, {
+          id: a.id,
+          status: e.status,
+          code: e.code,
+        });
     }
     await ctx.runMutation(internal.ai.finish, {
       id: a.id,

@@ -10,3 +10,4 @@ test-results/
 *.log
 supabase/.temp/
 .vercel/
+.acceptance/

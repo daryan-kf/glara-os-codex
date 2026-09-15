@@ -1454,3 +1454,55 @@ describe("M8 fictional evaluation contracts (mock provider; live quality pending
     expect(JSON.stringify(evidence)).not.toContain("sale_price");
   });
 });
+
+it("restricts an enabled role to explicitly selected rollout identities", async () => {
+  const f = await fixture(),
+    id = await fresh(f);
+  await configure(f, { allowed_user_ids: [f.who("owner").id] });
+  expect((await f.c("sales").query(api.ai.settings, {})).enabled).toBe(false);
+  await expect(request(f, "realtor", id, "sales")).rejects.toThrow();
+  const r = await request(f, "realtor", id);
+  provider();
+  await configure(f, { allowed_user_ids: [] });
+  await expect(
+    f.c("owner").action(api.aiProvider.generate, { id: r }),
+  ).rejects.toThrow();
+});
+
+it("records only allowlisted provider diagnostics, without response secrets", async () => {
+  const f = await fixture(),
+    id = await fresh(f);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            error: {
+              message:
+                "Insufficient billing credits; private diagnostic MUST_NOT_PERSIST",
+              code: "unrecognized_vendor_code",
+            },
+          }),
+          { status: 429 },
+        ),
+    ),
+  );
+  const r = await request(f, "realtor", id);
+  await f.c("owner").action(api.aiProvider.generate, { id: r });
+  const audits = await f.t.run((ctx) =>
+    ctx.db
+      .query("audit_logs")
+      .withIndex("by_entity", (q) => q.eq("entity_id", r))
+      .collect(),
+  );
+  const failure = audits.find((x) => x.action === "AI_PROVIDER_REJECTED");
+  expect(failure?.new_value).toEqual({
+    http_status: 429,
+    provider_code: "quota_or_billing",
+  });
+  expect(JSON.stringify(audits)).not.toContain("MUST_NOT_PERSIST");
+  expect((await f.c("owner").query(api.ai.result, { id: r })).error).toBe(
+    "AI_UNAVAILABLE",
+  );
+});

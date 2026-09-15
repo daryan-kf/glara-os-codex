@@ -146,7 +146,8 @@ async function main() {
         },
       })
     ).id as Id<"activities">;
-    await enable("next_action", [task]);
+    // Repeated acceptance shares the audited daily counter; scope this test to its own task.
+    await enable("next_action", [task], { daily_limit: 100 });
     await check(
       "Overdue manual next action is adopted rather than duplicated",
       async () => {

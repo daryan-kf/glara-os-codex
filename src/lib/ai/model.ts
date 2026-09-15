@@ -48,6 +48,11 @@ export const configSchema = z
     enabled: z.boolean(),
     features: z.array(z.enum(features)).max(11),
     enabled_roles: z.array(z.enum(roles)).min(1).max(6).default(["owner"]),
+    allowed_user_ids: z
+      .array(z.string().min(1).max(100))
+      .max(100)
+      .nullable()
+      .default(null),
     retention_days: z.number().int().min(7).max(365).default(30),
     proposals: z.boolean(),
     max_output_tokens: z.number().int().min(256).max(4000),
@@ -64,6 +69,7 @@ export const configSchema = z
 export const defaults: z.infer<typeof configSchema> = {
   enabled: false,
   enabled_roles: ["owner"],
+  allowed_user_ids: null,
   retention_days: 30,
   features: [],
   proposals: false,

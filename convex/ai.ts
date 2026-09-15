@@ -80,7 +80,10 @@ async function audit(
   });
 }
 function rollout(c: Config, u: Doc<"profiles">) {
-  return u.roles.some((r) => c.enabled_roles.includes(r));
+  return (
+    (c.allowed_user_ids === null || c.allowed_user_ids.includes(u.userId)) &&
+    u.roles.some((r) => c.enabled_roles.includes(r))
+  );
 }
 function retained(t: Doc<"ai_conversations">, c: Config) {
   return !t.purged && t.updated_at > Date.now() - c.retention_days * 86400000;
@@ -1130,5 +1133,17 @@ export const quality = query({
       failures: count((r) => r.status === "failed"),
       invalid_outputs: count((r) => r.error === "INVALID_AI_OUTPUT"),
     };
+  },
+});
+
+export const providerFailure = internalMutation({
+  args: { id: v.id("ai_requests"), status: v.number(), code: v.string() },
+  handler: async (ctx, a) => {
+    const r = await ctx.db.get(a.id);
+    if (!r || r.completed_at) return;
+    await audit(ctx, r.user_id, r._id, "PROVIDER_REJECTED", {
+      http_status: a.status,
+      provider_code: a.code,
+    });
   },
 });

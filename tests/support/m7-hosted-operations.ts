@@ -1,3 +1,4 @@
+import type { FunctionReturnType } from "convex/server";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import { api } from "../../convex/_generated/api";
@@ -328,6 +329,35 @@ async function main() {
       const old = id
         ? (await get()).events.find((x) => x._id === id)
         : undefined;
+      const busy: { id: string; start_at: string; end_at: string }[] = [];
+      let cursor: string | null = null;
+      for (let page = 0; page < 20; page++) {
+        const result: FunctionReturnType<typeof api.operations.agenda> =
+          await c.query(api.operations.agenda, {
+            start_day: date(offset),
+            end_day: date(offset),
+            paginationOpts: { numItems: 50, cursor },
+          });
+        busy.push(...result.page);
+        if (result.isDone) break;
+        cursor = result.continueCursor;
+        if (page === 19) throw Error("Fixture calendar exceeds bounded scan");
+      }
+      const slot = Array.from({ length: 13 }, (_, i) => i + 10)
+        .map((hour) => ({
+          start:
+            date(offset) + "T" + String(hour).padStart(2, "0") + ":13:00.000Z",
+          end:
+            date(offset) + "T" + String(hour).padStart(2, "0") + ":43:00.000Z",
+        }))
+        .find(
+          (slot) =>
+            !busy.some(
+              (e) =>
+                e.id !== id && e.start_at < slot.end && e.end_at > slot.start,
+            ),
+        );
+      if (!slot) throw Error("No free fictional acceptance time slot");
       return c.mutation(api.operations.schedule, {
         project_id: f.project,
         project_version: (await get()).version,
@@ -337,8 +367,8 @@ async function main() {
         title: f.marker,
         description: f.marker,
         location_note: "Fictional acceptance only",
-        start_at: `${date(offset)}T11:13:00Z`,
-        end_at: `${date(offset)}T11:43:00Z`,
+        start_at: slot.start,
+        end_at: slot.end,
         assigned_lead_id: who("admin"),
       });
     };
@@ -391,6 +421,16 @@ async function main() {
       },
     );
   } finally {
+    const project = await c.query(api.operations.get, { id: f.project });
+    for (const event of project.events.filter(
+      (e) => e.status === "scheduled" && e.description === f.marker,
+    ))
+      await c.mutation(api.operations.eventState, {
+        id: event._id,
+        version: event.version,
+        status: "cancelled",
+        reason: "Fictional M7 acceptance cleanup; history retained",
+      });
     for (const [key, saved] of originals) {
       const r = (await c.query(api.automation.rules, {})).find(
         (x) => x.key === key,

@@ -10,6 +10,7 @@ export default defineConfig([
     ".npm-cache/**",
     "convex/_generated/**",
     "test-results/**",
+    ".acceptance/**",
     "legacy/**",
   ]),
 ]);
