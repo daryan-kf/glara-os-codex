@@ -9,6 +9,7 @@ export const scopeValue = v.object({
       "opportunity",
       "project",
       "inventory",
+      "asset",
       "commercial",
       "automation",
       "marketing",
@@ -33,11 +34,16 @@ export const aiTables = {
     user_id: v.id("users"),
     scope: scopeValue,
     title: v.string(),
+    role_stamp: v.optional(v.string()),
     created_at: v.number(),
     updated_at: v.number(),
     archived: v.boolean(),
     turns: v.number(),
-  }).index("by_user", ["user_id", "archived", "updated_at"]),
+    purged: v.optional(v.boolean()),
+    purged_at: v.optional(v.number()),
+  })
+    .index("by_user", ["user_id", "archived", "updated_at"])
+    .index("by_retention", ["purged", "updated_at"]),
   ai_requests: defineTable({
     user_id: v.id("users"),
     conversation_id: v.id("ai_conversations"),
@@ -74,6 +80,7 @@ export const aiTables = {
     feedback_reason: v.union(v.string(), v.null()),
   })
     .index("by_key", ["user_id", "request_key"])
+    .index("by_created", ["created_at"])
     .index("by_conversation", ["conversation_id", "created_at"])
     .index("by_user_day", ["user_id", "day"])
     .index("by_status", ["status", "created_at"]),

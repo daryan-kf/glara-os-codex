@@ -64,7 +64,7 @@ function providerReady() {
 }
 async function audit(
   ctx: MutationCtx,
-  user: Id<"users">,
+  user: Id<"users"> | null,
   id: string,
   action: string,
   data: Record<string, unknown> = {},
@@ -79,10 +79,18 @@ async function audit(
     created_at: new Date().toISOString(),
   });
 }
+function rollout(c: Config, u: Doc<"profiles">) {
+  return u.roles.some((r) => c.enabled_roles.includes(r));
+}
+function retained(t: Doc<"ai_conversations">, c: Config) {
+  return !t.purged && t.updated_at > Date.now() - c.retention_days * 86400000;
+}
 async function owns(ctx: Ctx, id: Id<"ai_requests">) {
   const u = await requireRoles(ctx, roles),
     r = await ctx.db.get(id);
   if (!r || r.user_id !== u.userId) deny();
+  const thread = await ctx.db.get(r.conversation_id);
+  if (!thread || !retained(thread, (await config(ctx)).value)) deny();
   await authorize(ctx, scopeSchema.parse(r.scope));
   if (profileStamp(u) !== r.role_stamp) deny();
   return { u, r };
@@ -149,7 +157,10 @@ export const settings = query({
       owner = u.roles.includes("owner");
     return {
       enabled:
-        c.value.enabled && providerReady() && c.value.retention_acknowledged,
+        c.value.enabled &&
+        providerReady() &&
+        c.value.retention_acknowledged &&
+        rollout(c.value, u),
       features: c.value.features,
       proposals: c.value.proposals,
       owner,
@@ -205,6 +216,14 @@ export const request = mutation({
       )
     )
       deny("FORBIDDEN");
+    if (
+      !u.roles.some((r) => r === "owner" || r === "admin") &&
+      !["commercial", "navigation"].includes(scope.feature) &&
+      /(?:all|company|owner|highest).{0,60}(?:invoice|receivable|payment|balance)|(?:invoice|receivable|payment|balance).{0,60}(?:all|company|owner)/i.test(
+        data.question,
+      )
+    )
+      deny("FORBIDDEN");
     const prior = await ctx.db
       .query("ai_requests")
       .withIndex("by_key", (q) =>
@@ -212,6 +231,7 @@ export const request = mutation({
       )
       .unique();
     if (prior) {
+      await owns(ctx, prior._id);
       if (
         prior.question !== sanitizeText(data.question, 2000) ||
         JSON.stringify(scopeSchema.parse(prior.scope)) !== JSON.stringify(scope)
@@ -224,6 +244,7 @@ export const request = mutation({
       scope.feature !== "navigation" &&
       (!cfg.enabled ||
         !cfg.features.includes(scope.feature) ||
+        !rollout(cfg, u) ||
         !providerReady() ||
         !cfg.retention_acknowledged)
     )
@@ -245,11 +266,19 @@ export const request = mutation({
         !t ||
         t.user_id !== u.userId ||
         t.archived ||
+        !retained(t, cfg) ||
         JSON.stringify(scopeSchema.parse(t.scope)) !== JSON.stringify(scope)
       )
         deny();
       if (t.turns >= 30) deny("AI_RATE_LIMITED");
-      await ctx.db.patch(t._id, { turns: t.turns + 1, updated_at: now });
+      await ctx.db.patch(t._id, {
+        turns: t.turns + 1,
+        updated_at: now,
+        role_stamp: profileStamp(u),
+        ...(t.role_stamp && t.role_stamp !== profileStamp(u)
+          ? { title: scope.feature + " conversation" }
+          : {}),
+      });
     } else {
       const list = await ctx.db
         .query("ai_conversations")
@@ -262,10 +291,12 @@ export const request = mutation({
         user_id: u.userId,
         scope,
         title: `${scope.feature} conversation`,
+        role_stamp: profileStamp(u),
         turns: 1,
         created_at: now,
         updated_at: now,
         archived: false,
+        purged: false,
       });
     }
     const id = await ctx.db.insert("ai_requests", {
@@ -325,7 +356,7 @@ export const begin = internalMutation({
     model: string;
     history: { question: string; answer: string }[];
   } | null> => {
-    const { r } = await owns(ctx, a.id);
+    const { r, u } = await owns(ctx, a.id);
     if (r.status !== "queued") return null;
     if (Date.now() >= r.created_at + 120000) deny("AI_TIMEOUT");
     const c = (await config(ctx)).value;
@@ -333,6 +364,7 @@ export const begin = internalMutation({
       r.provider !== "deterministic" &&
       (!c.enabled ||
         !c.features.includes(r.scope.feature as Scope["feature"]) ||
+        !rollout(c, u) ||
         !providerReady())
     )
       deny("AI_UNAVAILABLE");
@@ -420,12 +452,13 @@ export const finish = internalMutation({
     let error = a.error ? safeError(Error(a.error)) : null,
       result: Insight | null = null;
     try {
-      await owns(ctx, a.id);
+      const { u } = await owns(ctx, a.id);
       const liveConfig = (await config(ctx)).value;
       if (
         r.provider !== "deterministic" &&
         (!liveConfig.enabled ||
           !liveConfig.features.includes(r.scope.feature as Scope["feature"]) ||
+          !rollout(liveConfig, u) ||
           !providerReady())
       )
         throw Error("AI_UNAVAILABLE");
@@ -566,6 +599,8 @@ export const result = query({
         r.output && fresh ? insightSchema.parse(JSON.parse(r.output)) : null,
       evidence: fresh ? evidence : [],
       created_at: r.created_at,
+      captured_at: r.started_at ?? r.created_at,
+      scope: r.scope,
       completed_at: r.completed_at,
       proposal:
         proposal && fresh
@@ -588,8 +623,14 @@ export const history = query({
       )
       .order("desc")
       .take(30);
+    const cfg = (await config(ctx)).value;
     const safe = [];
     for (const r of rows) {
+      if (
+        !retained(r, cfg) ||
+        (r.role_stamp && r.role_stamp !== profileStamp(u))
+      )
+        continue;
       try {
         await authorize(ctx, scopeSchema.parse(r.scope));
         safe.push({
@@ -608,7 +649,13 @@ export const conversation = query({
   handler: async (ctx, a) => {
     const u = await requireRoles(ctx, roles),
       t = await ctx.db.get(a.id);
-    if (!t || t.user_id !== u.userId || t.archived) deny();
+    if (
+      !t ||
+      t.user_id !== u.userId ||
+      t.archived ||
+      !retained(t, (await config(ctx)).value)
+    )
+      deny();
     await authorize(ctx, scopeSchema.parse(t.scope));
     const rows = await ctx.db
       .query("ai_requests")
@@ -625,8 +672,8 @@ export const archive = mutation({
   handler: async (ctx, a) => {
     const u = await requireRoles(ctx, roles),
       t = await ctx.db.get(a.id);
-    if (!t || t.user_id !== u.userId) deny();
-    await ctx.db.patch(t._id, { archived: true, updated_at: Date.now() });
+    if (!t || t.user_id !== u.userId || t.purged) deny();
+    await ctx.db.patch(t._id, { archived: true });
     await audit(ctx, u.userId, t._id, "CONVERSATION_ARCHIVED");
   },
 });
@@ -677,6 +724,13 @@ export const decide = mutation({
       p = await ctx.db.get(a.id);
     if (!p || p.user_id !== u.userId || p.role_stamp !== profileStamp(u))
       deny();
+    const parent = await ctx.db.get(p.request_id);
+    const thread = parent ? await ctx.db.get(parent.conversation_id) : null;
+    if (
+      p.status !== "executed" &&
+      (!thread || !retained(thread, (await config(ctx)).value))
+    )
+      deny();
     const scope = scopeSchema.parse(p.scope);
     await authorize(ctx, scope);
     if (p.status === "executed")
@@ -693,6 +747,7 @@ export const decide = mutation({
       !cfg.enabled ||
       !cfg.proposals ||
       !cfg.features.includes(scope.feature) ||
+      !rollout(cfg, u) ||
       !providerReady()
     )
       deny();
@@ -865,9 +920,10 @@ export const search = query({
         } catch {}
       }
     }
-    if (feature === "inventory") {
+    if (feature === "inventory" || feature === "asset") {
       for (const r of await ctx.runQuery(api.inventory.search, { q: term }))
-        if (r.kind === "Product") rows.push({ id: r.id, label: r.name });
+        if (r.kind === (feature === "asset" ? "Asset" : "Product"))
+          rows.push({ id: r.id, label: r.name });
     }
     if (feature === "commercial") {
       const i = await ctx.db
@@ -880,5 +936,199 @@ export const search = query({
       }
     }
     return rows.slice(0, 12);
+  },
+});
+
+export const renameThread = mutation({
+  args: { id: v.id("ai_conversations"), title: v.string() },
+  handler: async (ctx, a) => {
+    const u = await requireRoles(ctx, roles),
+      t = await ctx.db.get(a.id);
+    if (!t || t.user_id !== u.userId || !retained(t, (await config(ctx)).value))
+      deny();
+    await authorize(ctx, scopeSchema.parse(t.scope));
+    const title = sanitizeText(a.title.trim(), 80);
+    if (!title || a.title.length > 80) deny("INVALID_INPUT");
+    await ctx.db.patch(t._id, { title, role_stamp: profileStamp(u) });
+    await audit(ctx, u.userId, t._id, "THREAD_RENAMED");
+  },
+});
+async function purgeThread(
+  ctx: MutationCtx,
+  t: Doc<"ai_conversations">,
+  actor: Id<"users"> | null,
+) {
+  if (t.purged) return;
+  const requests = await ctx.db
+    .query("ai_requests")
+    .withIndex("by_conversation", (q) => q.eq("conversation_id", t._id))
+    .take(31);
+  if (requests.length > 30) deny("CONFLICT");
+  for (const r of requests) {
+    await ctx.db.patch(r._id, {
+      question: "",
+      output: null,
+      evidence: "[]",
+      feedback_reason: null,
+      ...(["running", "queued"].includes(r.status)
+        ? { status: "cancelled" as const }
+        : {}),
+    });
+    const proposal = await ctx.db
+      .query("ai_action_proposals")
+      .withIndex("by_request", (q) => q.eq("request_id", r._id))
+      .unique();
+    if (proposal && proposal.status !== "executed") {
+      const erased = JSON.stringify({
+        title: "Deleted proposal",
+        description: "",
+        due_at: "1970-01-01T00:00:00.000Z",
+        priority: "normal",
+        assigned_to: proposal.user_id,
+      });
+      await ctx.db.patch(proposal._id, {
+        status: "expired",
+        payload: erased,
+        original_payload: erased,
+        rationale: "Conversation deleted",
+        evidence_keys: [],
+      });
+    }
+  }
+  await ctx.db.patch(t._id, {
+    title: "Deleted conversation",
+    archived: true,
+    purged: true,
+    purged_at: Date.now(),
+  });
+  await audit(
+    ctx,
+    actor,
+    t._id,
+    actor ? "THREAD_DELETED" : "THREAD_RETENTION_PURGED",
+    { requests: requests.length },
+  );
+}
+export const deleteThread = mutation({
+  args: { id: v.id("ai_conversations") },
+  handler: async (ctx, a) => {
+    const u = await requireRoles(ctx, roles),
+      t = await ctx.db.get(a.id);
+    if (!t || t.user_id !== u.userId) deny();
+    await purgeThread(ctx, t, u.userId);
+  },
+});
+export const retentionSweep = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const cutoff =
+      Date.now() - (await config(ctx)).value.retention_days * 86400000;
+    const batches = await Promise.all(
+      [false, undefined].map((purged) =>
+        ctx.db
+          .query("ai_conversations")
+          .withIndex("by_retention", (q) =>
+            q.eq("purged", purged).lte("updated_at", cutoff),
+          )
+          .take(5),
+      ),
+    );
+    for (const t of batches.flat()) await purgeThread(ctx, t, null);
+    return { purged: batches.flat().length };
+  },
+});
+export const inspectScope = query({
+  args: { scope: v.string(), refresh: v.optional(v.number()) },
+  handler: async (ctx, a) => {
+    const scope = parse(scopeSchema, a.scope);
+    await authorize(ctx, scope);
+    try {
+      const context = await buildContext(ctx, scope);
+      return {
+        label: context.evidence[0]?.label ?? scope.feature,
+        sources: context.evidence.map(({ data, ...ref }) => {
+          void data;
+          return ref;
+        }),
+        captured_at: Date.now(),
+        error: null,
+      };
+    } catch (e) {
+      return {
+        label: scope.feature,
+        sources: [],
+        captured_at: Date.now(),
+        error: safeError(e),
+      };
+    }
+  },
+});
+export const resolveReference = query({
+  args: { id: v.id("ai_requests"), ordinal: v.number() },
+  handler: async (ctx, a) => {
+    const { r } = await owns(ctx, a.id);
+    if (
+      !Number.isInteger(a.ordinal) ||
+      a.ordinal < 1 ||
+      a.ordinal > 20 ||
+      !r.output
+    )
+      deny("INVALID_INPUT");
+    const context = await buildContext(ctx, scopeSchema.parse(r.scope));
+    if (context.revision !== r.context_digest) deny("STALE_PROPOSAL");
+    const out = insightSchema.parse(JSON.parse(r.output)),
+      refs = JSON.parse(r.evidence) as Evidence[];
+    const e = refs.find((x) => x.key === out.evidence_ids[a.ordinal - 1]);
+    if (!e) deny("AMBIGUOUS_ENTITY");
+    const map: Record<string, Scope["feature"]> = {
+      realtors: "realtor",
+      opportunities: "opportunity",
+      projects: r.scope.feature === "marketing" ? "marketing" : "project",
+      products: "inventory",
+      inventory_assets: "asset",
+      invoices: "commercial",
+      automation_actions: "automation",
+    };
+    const feature = map[e.entity_type];
+    if (!feature) deny("AMBIGUOUS_ENTITY");
+    const scope = scopeSchema.parse({ feature, entity_id: e.entity_id });
+    await authorize(ctx, scope);
+    return { scope, label: e.label };
+  },
+});
+export const quality = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    const rows = await ctx.db
+        .query("ai_requests")
+        .withIndex("by_created", (q) =>
+          q.gte("created_at", Date.now() - 30 * 86400000),
+        )
+        .order("desc")
+        .take(201),
+      sample = rows.slice(0, 200);
+    const count = (check: (r: Doc<"ai_requests">) => boolean) =>
+      sample.filter(check).length;
+    const rated = count((r) => r.feedback !== null),
+      helpful = count((r) => r.feedback === "helpful");
+    return {
+      sample: sample.length,
+      partial: rows.length > 200,
+      rated,
+      helpful,
+      helpful_rate: rated ? Math.round((helpful * 10000) / rated) : null,
+      incorrect_data: count((r) => r.feedback === "incorrect_data"),
+      unsafe: count((r) => r.feedback === "unsafe_suggestion"),
+      insufficient: count(
+        (r) =>
+          r.error === "INSUFFICIENT_EVIDENCE" ||
+          (!!r.output &&
+            insightSchema.parse(JSON.parse(r.output)).evidence_state ===
+              "insufficient"),
+      ),
+      failures: count((r) => r.status === "failed"),
+      invalid_outputs: count((r) => r.error === "INVALID_AI_OUTPUT"),
+    };
   },
 });

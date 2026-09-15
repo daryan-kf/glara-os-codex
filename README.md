@@ -8,7 +8,7 @@ M6 analytics is deployed to the explicitly authorized development deployment, ba
 
 ## M8 copilot
 
-M8 adds a shared permission-safe copilot with evidence references, drafts and explicitly approved task proposals. AI defaults disabled; the development deployment has no provider/model/security approval configured. Hosted and live-provider acceptance are separately pending. See [the M8 report](docs/M8-report.md) for boundaries, setup, local tests and remaining gates. M9 has not started.
+M8 adds a shared permission-safe copilot with evidence references, drafts and explicitly approved task proposals. AI defaults disabled; the development deployment has no provider/model/security approval configured. The continuation through section 216 adds private thread rename/delete, bounded retention, role rollout and asset context. **M8 DEVELOPMENT GATE PENDING EXTERNAL ACTION**: hosted/live-provider acceptance is not passed. See [the M8 report](docs/M8-report.md) for boundaries, setup, local tests and remaining gates. M9 has not started.
 
 ## Local setup
 

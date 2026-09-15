@@ -1,3 +1,4 @@
+import { day } from "../src/lib/operations/model";
 import { action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v, ConvexError } from "convex/values";
@@ -60,6 +61,8 @@ export class OpenAIProvider implements IntelligenceProvider {
       for (let attempt = 0; attempt < 2; attempt++) {
         const data = {
           retrieved_at: input.context.retrieved_at,
+          business_date: day(input.context.retrieved_at),
+          timezone: "America/Vancouver",
           scope: input.context.scope.feature,
           evidence: input.context.evidence.map((e) => ({
             key: e.key,

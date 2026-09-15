@@ -1137,6 +1137,7 @@ export function AssetDetail({ id }: { id: string }) {
         ← {a.product_name}
       </Link>
       <PageTitle title={a.asset_number} description={a.product_name} />
+      <CopilotLink feature="asset" id={id} />
       <div className="mb-6 flex flex-wrap gap-3">
         <StatusBadge>{label(a.status)}</StatusBadge>
         <StatusBadge>{a.condition}</StatusBadge>

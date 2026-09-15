@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useQuery, useMutation, useAction } from "convex/react";
+import { useQuery, useMutation, useAction, useConvex } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import {
@@ -51,6 +51,7 @@ const names: Record<Feature, string> = {
   opportunity: "Sales Copilot",
   project: "Project Brief",
   inventory: "Inventory Intelligence",
+  asset: "Physical Asset Brief",
   commercial: "Commercial Copilot",
   automation: "Automation Explanation",
   marketing: "Marketing Draft",
@@ -72,9 +73,15 @@ export function Copilot({ roles }: { roles: Role[] }) {
     [requestId, setRequestId] = useState<Id<"ai_requests"> | null>(null),
     [thread, setThread] = useState<Id<"ai_conversations"> | null>(null),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [refresh, setRefresh] = useState(0);
+  const client = useConvex();
   const settings = useQuery(api.ai.settings, {}),
     history = useQuery(api.ai.history, {}),
+    activeContext = useQuery(api.ai.inspectScope, {
+      scope: JSON.stringify(scope),
+      refresh,
+    }),
     candidates = useQuery(
       api.ai.search,
       searchTerm ? { feature: scope.feature, term: searchTerm } : "skip",
@@ -82,8 +89,7 @@ export function Copilot({ roles }: { roles: Role[] }) {
     turns = useQuery(api.ai.conversation, thread ? { id: thread } : "skip");
   const create = useMutation(api.ai.request),
     generate = useAction(api.aiProvider.generate),
-    cancel = useMutation(api.ai.cancel),
-    archive = useMutation(api.ai.archive);
+    cancel = useMutation(api.ai.cancel);
   const manager = roles.some((x) => x === "owner" || x === "admin");
   const allowed = features.filter(
     (f) =>
@@ -91,7 +97,8 @@ export function Copilot({ roles }: { roles: Role[] }) {
       manager ||
       (roles.includes("sales") &&
         ["realtor", "opportunity", "project"].includes(f)) ||
-      (roles.includes("designer") && ["project", "inventory"].includes(f)) ||
+      (roles.includes("designer") &&
+        ["project", "inventory", "asset"].includes(f)) ||
       (roles.includes("staging_crew") && f === "project") ||
       (roles.includes("marketing") && f === "marketing"),
   );
@@ -106,6 +113,27 @@ export function Copilot({ roles }: { roles: Role[] }) {
     setError("");
     setBusy(true);
     try {
+      const reference = question.match(
+        /(?:the\s+)?(first|second|third|fourth|fifth)\s+(?:one|record|result|source)/i,
+      );
+      if (reference && requestId) {
+        const ordinal =
+          ["first", "second", "third", "fourth", "fifth"].indexOf(
+            reference[1].toLowerCase(),
+          ) + 1;
+        const resolved = await client.query(api.ai.resolveReference, {
+          id: requestId,
+          ordinal,
+        });
+        change(resolved.scope);
+        setQuestion(question.replace(reference[0], "this record"));
+        setError(
+          "Selected " +
+            resolved.label +
+            ". Review the scope, then choose Ask Glara to continue.",
+        );
+        return;
+      }
       const id = await create({
         input: JSON.stringify({
           request_key: crypto.randomUUID(),
@@ -129,8 +157,8 @@ export function Copilot({ roles }: { roles: Role[] }) {
         title="Ask Glara OS"
         description="Clear answers, grounded in your work."
       />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px]">
-        <section className="min-w-0 space-y-5">
+      <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+        <section className="min-w-0 space-y-5 lg:col-start-2 lg:row-start-1">
           <div className="rounded-2xl border bg-card p-5 sm:p-7">
             {!settings.enabled && (
               <div
@@ -141,6 +169,35 @@ export function Copilot({ roles }: { roles: Role[] }) {
                 required. Navigation Help remains available.
               </div>
             )}
+            <div className="mb-5 flex flex-wrap items-start justify-between gap-3 rounded-xl bg-muted p-4">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide">
+                  Active context
+                </p>
+                <p className="mt-1 font-semibold">
+                  {activeContext?.label ?? names[scope.feature]}
+                </p>
+                <p className="mt-1 text-xs">
+                  {names[scope.feature]}
+                  {scope.period &&
+                  ["executive", "commercial"].includes(scope.feature)
+                    ? " · " + scope.period.replaceAll("_", " ")
+                    : ""}
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setRefresh((n) => n + 1)}
+              >
+                Refresh Context
+              </Button>
+              {activeContext?.error && (
+                <p className="w-full text-sm">
+                  {errorMessage(activeContext.error)}
+                </p>
+              )}
+            </div>
             <form
               className="space-y-4"
               onSubmit={(e) => {
@@ -171,7 +228,7 @@ export function Copilot({ roles }: { roles: Role[] }) {
                 <div className="space-y-3 rounded-xl border p-4">
                   <p className="text-sm">
                     {scope.entity_id
-                      ? "A record is selected. Its sources will appear with the answer."
+                      ? (activeContext?.label ?? "Loading selected record…")
                       : "Choose a record to keep your question in context."}
                   </p>
                   <div className="flex gap-2">
@@ -271,6 +328,27 @@ export function Copilot({ roles }: { roles: Role[] }) {
               {scope.feature === "inventory" && scope.entity_id && (
                 <LocationPicker scope={scope} change={change} />
               )}
+              <div
+                className="flex flex-wrap gap-2"
+                aria-label="Suggested questions"
+              >
+                {(
+                  suggestions[scope.feature] ?? [
+                    "Summarize the recorded facts",
+                    "What needs my attention?",
+                  ]
+                ).map((q) => (
+                  <Button
+                    key={q}
+                    type="button"
+                    variant="outline"
+                    className="h-auto min-h-11 whitespace-normal text-left"
+                    onClick={() => setQuestion(q)}
+                  >
+                    {q}
+                  </Button>
+                ))}
+              </div>
               <label className="grid gap-2 text-sm font-medium">
                 Your question
                 <textarea
@@ -286,7 +364,9 @@ export function Copilot({ roles }: { roles: Role[] }) {
                 <Button
                   disabled={
                     busy ||
-                    (!settings.enabled && scope.feature !== "navigation")
+                    (scope.feature !== "navigation" &&
+                      (!settings.enabled ||
+                        !settings.features.includes(scope.feature)))
                   }
                 >
                   {busy ? "Preparing your answer…" : "Ask Glara"}
@@ -335,40 +415,35 @@ export function Copilot({ roles }: { roles: Role[] }) {
             />
           )}
         </section>
-        <aside className="space-y-5">
+        <aside className="space-y-5 lg:col-start-1 lg:row-start-1">
           <section className="rounded-2xl border bg-card p-5">
             <h2 className="mb-4 font-semibold">Conversations</h2>
             <div className="space-y-2">
+              <Button
+                className="mb-3 w-full"
+                variant="outline"
+                onClick={() => {
+                  setThread(null);
+                  setRequestId(null);
+                  setQuestion("");
+                }}
+              >
+                New Conversation
+              </Button>
               {history?.map((h) => (
-                <div key={h.id} className="flex items-start gap-1">
-                  <Button
-                    variant="ghost"
-                    className="min-h-11 flex-1 justify-start whitespace-normal text-left text-sm"
-                    onClick={() => {
-                      setScope(scopeSchema.parse(h.scope));
-                      setThread(h.id);
-                      setRequestId(null);
-                    }}
-                  >
-                    {h.title}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    aria-label={`Archive ${h.title}`}
-                    onClick={() =>
-                      void archive({ id: h.id })
-                        .then(() => {
-                          if (thread === h.id) {
-                            setThread(null);
-                            setRequestId(null);
-                          }
-                        })
-                        .catch((e) => setError(errorMessage(safeError(e))))
-                    }
-                  >
-                    ×
-                  </Button>
-                </div>
+                <Thread
+                  key={h.id}
+                  value={h}
+                  onSelect={() => {
+                    setScope(scopeSchema.parse(h.scope));
+                    setThread(h.id);
+                    setRequestId(null);
+                  }}
+                  onRemove={() => {
+                    setThread(null);
+                    setRequestId(null);
+                  }}
+                />
               ))}
             </div>
             {turns && (
@@ -451,8 +526,11 @@ function Response({
         </Button>
       </div>
       <p className="text-xs text-muted-foreground">
-        Requested {new Date(r.created_at).toLocaleString()} · Recommendation
-        based on recorded Glara OS data.
+        Based on Glara OS data as of{" "}
+        {new Date(r.captured_at).toLocaleString("en-CA", {
+          timeZone: "America/Vancouver",
+        })}{" "}
+        Vancouver time · Recommendation based on recorded Glara OS data.
       </p>
       {feedbackError && <p role="alert">{feedbackError}</p>}
       {r.stale && (
@@ -478,19 +556,7 @@ function Response({
             </p>
           </div>
           <StatusBadge>{out.evidence_state} evidence</StatusBadge>
-          {out.draft && (
-            <div className="space-y-2 rounded-xl bg-muted p-4">
-              <h3 className="font-semibold">Draft · review before use</h3>
-              <textarea
-                aria-label="Editable AI draft"
-                className={inputClass + " min-h-40"}
-                defaultValue={out.draft}
-              />
-              <p className="text-xs text-muted-foreground">
-                Edit or copy this draft. Nothing is sent.
-              </p>
-            </div>
-          )}
+          {out.draft && <Draft value={out.draft} />}
           {out.recommendations.length > 0 && (
             <div>
               <h3 className="font-semibold">AI Recommendations</h3>
@@ -571,6 +637,11 @@ function Proposal({
     <section className="rounded-xl border-2 p-4">
       <h3 className="font-semibold">Proposed follow-up · {p.status}</h3>
       <p className="my-2 text-sm">{p.rationale}</p>
+      <p className="mb-3 text-sm">
+        Approval creates one open follow-up task on this record using the title,
+        description, due time and assignee below. It does not send a message or
+        change the record’s status.
+      </p>
       <p className="mb-3 text-xs text-muted-foreground">
         No task is created until you approve. Expires{" "}
         {new Date(p.expires_at).toLocaleString()}.
@@ -684,6 +755,7 @@ function Settings({
   const save = useMutation(api.ai.saveSettings),
     [error, setError] = useState("");
   const labels: Partial<Record<keyof Config, string>> = {
+    retention_days: "Conversation retention (days, 7–365)",
     max_output_tokens: "Maximum response tokens",
     timeout_ms: "Timeout (milliseconds)",
     daily_requests: "Requests per person / day",
@@ -722,6 +794,7 @@ function Settings({
               proposals: d.has("proposals"),
               retention_acknowledged: d.has("retention_acknowledged"),
               features: d.getAll("features"),
+              enabled_roles: d.getAll("enabled_roles"),
             };
           for (const key of Object.keys(labels))
             Object.assign(next, { [key]: Number(d.get(key)) });
@@ -742,6 +815,32 @@ function Settings({
             {k.replaceAll("_", " ")}
           </label>
         ))}
+        <fieldset>
+          <legend className="text-sm font-medium">
+            Provider rollout by role
+          </legend>
+          {[
+            "owner",
+            "admin",
+            "sales",
+            "designer",
+            "staging_crew",
+            "marketing",
+          ].map((role) => (
+            <label
+              key={role}
+              className="flex min-h-11 items-center gap-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                name="enabled_roles"
+                value={role}
+                defaultChecked={config.enabled_roles.includes(role as Role)}
+              />
+              {role.replaceAll("_", " ")}
+            </label>
+          ))}
+        </fieldset>
         <fieldset>
           <legend className="text-sm font-medium">Enabled experiences</legend>
           {features
@@ -782,7 +881,8 @@ function Settings({
   );
 }
 function Health() {
-  const h = useQuery(api.ai.health, {});
+  const h = useQuery(api.ai.health, {}),
+    quality = useQuery(api.ai.quality, {});
   return (
     <details className="rounded-2xl border bg-card p-5">
       <summary className="min-h-11 cursor-pointer font-semibold">
@@ -813,11 +913,195 @@ function Health() {
             ms average provider time
           </p>
         ))}
+      {quality && (
+        <section className="mt-4 border-t pt-4 text-sm">
+          <h3 className="font-medium">Response quality</h3>
+          <p>
+            Latest {quality.sample} requests within 30 days
+            {quality.partial ? " · bounded sample" : ""}.
+          </p>
+          <p>
+            Helpful:{" "}
+            {quality.helpful_rate === null
+              ? "Not rated"
+              : (quality.helpful_rate / 100).toFixed(1) + "%"}{" "}
+            ({quality.rated} rated)
+          </p>
+          <p>
+            Incorrect data: {quality.incorrect_data} · Unsafe flags:{" "}
+            {quality.unsafe}
+          </p>
+          <p>
+            Insufficient evidence: {quality.insufficient} · Failures:{" "}
+            {quality.failures} · Invalid outputs: {quality.invalid_outputs}
+          </p>
+        </section>
+      )}
       {h?.recent_failures.map((x) => (
         <p className="mt-3 text-xs" key={x.id}>
           {x.feature}: {errorMessage(x.error ?? "AI_UNAVAILABLE")}
         </p>
       ))}
     </details>
+  );
+}
+
+const suggestions: Partial<Record<Feature, string[]>> = {
+  realtor: [
+    "Summarize this relationship",
+    "What should I do next?",
+    "What Opportunities are open?",
+  ],
+  opportunity: [
+    "Summarize this opportunity",
+    "What should I do next?",
+    "Draft a follow-up",
+  ],
+  project: [
+    "Are we ready for staging?",
+    "What is blocking this Project?",
+    "Summarize today's work.",
+  ],
+  inventory: [
+    "What is available for this window?",
+    "Suggest suitable alternatives",
+  ],
+  asset: [
+    "Summarize this asset's condition",
+    "What reservations are recorded?",
+  ],
+  commercial: [
+    "What is outstanding?",
+    "Why is this overdue?",
+    "Draft a payment reminder.",
+  ],
+  executive: ["What is collected this month?", "Explain the period comparison"],
+  marketing: ["Draft a factual project caption"],
+  navigation: ["Where can I find my modules?", "What does win rate mean?"],
+};
+function Draft({ value }: { value: string }) {
+  const [text, setText] = useState(value),
+    [status, setStatus] = useState("");
+  return (
+    <div className="space-y-3 rounded-xl bg-muted p-4">
+      <h3 className="font-semibold">DRAFT — NOT SENT</h3>
+      <textarea
+        aria-label="Editable AI draft"
+        className={inputClass + " min-h-40"}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <Button
+        variant="outline"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(text);
+            setStatus("Draft copied.");
+          } catch {
+            setStatus(
+              "Copy unavailable. Select the draft text to copy it manually.",
+            );
+          }
+        }}
+      >
+        Copy draft
+      </Button>
+      <p role="status" className="text-xs">
+        {status || "Edit or copy this draft. Nothing is sent."}
+      </p>
+    </div>
+  );
+}
+function Thread({
+  value: h,
+  onSelect,
+  onRemove,
+}: {
+  value: NonNullable<
+    ReturnType<typeof useQuery<typeof api.ai.history>>
+  >[number];
+  onSelect: () => void;
+  onRemove: () => void;
+}) {
+  const rename = useMutation(api.ai.renameThread),
+    archive = useMutation(api.ai.archive),
+    remove = useMutation(api.ai.deleteThread),
+    [error, setError] = useState(""),
+    [confirm, setConfirm] = useState(false);
+  async function run(work: () => Promise<unknown>, closed = false) {
+    try {
+      if (closed) onRemove();
+      await work();
+    } catch (e) {
+      setError(errorMessage(safeError(e)));
+    }
+  }
+  return (
+    <div className="rounded-lg border p-2">
+      <Button
+        variant="ghost"
+        className="h-auto min-h-11 w-full justify-start whitespace-normal text-left"
+        onClick={onSelect}
+      >
+        {h.title}
+      </Button>
+      <details>
+        <summary className="cursor-pointer px-3 py-2 text-xs">
+          Manage conversation
+        </summary>
+        <form
+          className="space-y-2 p-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const title = String(new FormData(e.currentTarget).get("title"));
+            void run(() => rename({ id: h.id, title }));
+          }}
+        >
+          <input
+            className={inputClass}
+            aria-label="Conversation title"
+            name="title"
+            maxLength={80}
+            defaultValue={h.title}
+          />
+          <Button variant="outline" type="submit">
+            Rename
+          </Button>
+        </form>
+        <div className="flex flex-wrap gap-2 p-2">
+          <Button
+            variant="ghost"
+            onClick={() => void run(() => archive({ id: h.id }), true)}
+          >
+            Archive
+          </Button>
+          <Button variant="ghost" onClick={() => setConfirm(true)}>
+            Delete
+          </Button>
+        </div>
+        {confirm && (
+          <div className="space-y-3 p-2 text-sm">
+            <p>
+              Delete conversation text? Executed tasks, proposal execution
+              evidence and business audit remain.
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => void run(() => remove({ id: h.id }), true)}
+            >
+              Delete conversation text
+            </Button>
+            <Button variant="ghost" onClick={() => setConfirm(false)}>
+              Keep conversation
+            </Button>
+          </div>
+        )}
+      </details>
+      {error && (
+        <p role="alert" className="p-2 text-sm">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }

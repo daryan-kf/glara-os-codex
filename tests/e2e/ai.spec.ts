@@ -44,6 +44,21 @@ test.describe("M8 disabled-provider acceptance", () => {
             await experience.locator("option").allTextContents(),
           ).not.toContain("Realtor Brief");
         await experience.selectOption("navigation");
+        await expect(
+          page.getByText("Active context", { exact: true }),
+        ).toBeVisible();
+        await page
+          .getByRole("button", { name: "Refresh Context", exact: true })
+          .click();
+        await page
+          .getByRole("button", {
+            name: "Where can I find my modules?",
+            exact: true,
+          })
+          .click();
+        await expect(page.getByLabel("Your question")).toHaveValue(
+          "Where can I find my modules?",
+        );
         await page
           .getByLabel("Your question")
           .fill("Where can I find my modules?");
@@ -72,7 +87,36 @@ test.describe("M8 disabled-provider acceptance", () => {
           .getByRole("combobox", { name: "Was this useful?" })
           .selectOption("helpful");
         await expect(
-          page.getByRole("button", { name: "Approve and create task" }),
+          page.getByRole("button", { name: "Approve task", exact: true }),
+        ).toHaveCount(0);
+        const manage = page
+          .locator("details")
+          .filter({
+            has: page
+              .locator("summary")
+              .filter({ hasText: "Manage conversation" }),
+          })
+          .first();
+        await manage.locator("summary").click();
+        const title = "Fictional M8 " + role + " " + info.project.name;
+        await manage.getByLabel("Conversation title").fill(title);
+        await manage
+          .getByRole("button", { name: "Rename", exact: true })
+          .click();
+        await expect(
+          page.getByRole("button", { name: title, exact: true }),
+        ).toBeVisible();
+        await manage
+          .getByRole("button", { name: "Delete", exact: true })
+          .click();
+        await manage
+          .getByRole("button", {
+            name: "Delete conversation text",
+            exact: true,
+          })
+          .click();
+        await expect(
+          page.getByRole("button", { name: title, exact: true }),
         ).toHaveCount(0);
       },
     );

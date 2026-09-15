@@ -1,3 +1,5 @@
+import { daysBetween } from "../src/lib/analytics/periods";
+import { day } from "../src/lib/operations/model";
 import { metricDefinitions } from "../src/lib/analytics/catalog";
 import { api } from "./_generated/api";
 import type { QueryCtx, MutationCtx } from "./_generated/server";
@@ -12,6 +14,7 @@ import {
   scopeSchema,
   sanitizeText,
   fingerprint,
+  displayValues,
   type Scope,
   type Context,
   type Evidence,
@@ -30,6 +33,7 @@ export function normalize<
     | "opportunities"
     | "projects"
     | "products"
+    | "inventory_assets"
     | "invoices"
     | "automation_actions"
     | "inventory_locations",
@@ -56,7 +60,7 @@ export async function authorize(ctx: Ctx, raw: Scope) {
     !u.roles.includes("sales")
   )
     deny();
-  if (f === "inventory") await catalogUser(ctx);
+  if (f === "inventory" || f === "asset") await catalogUser(ctx);
   if (f === "marketing" && !manager && !u.roles.includes("marketing")) deny();
   if (scope.entity_id) {
     if (f === "realtor") {
@@ -77,6 +81,13 @@ export async function authorize(ctx: Ctx, raw: Scope) {
       if (f === "project" && a === "marketing") deny();
     } else if (f === "inventory") {
       const p = await ctx.db.get(normalize(ctx, "products", scope.entity_id));
+      if (!p || p.deleted_at) deny();
+    } else if (f === "asset") {
+      const a = await ctx.db.get(
+        normalize(ctx, "inventory_assets", scope.entity_id),
+      );
+      if (!a || a.deleted_at) deny();
+      const p = await ctx.db.get(a.product_id);
       if (!p || p.deleted_at) deny();
     } else if (f === "commercial") {
       const i = await ctx.db.get(normalize(ctx, "invoices", scope.entity_id));
@@ -137,7 +148,12 @@ export async function buildContext(ctx: Ctx, raw: Scope): Promise<Context> {
       );
       return;
     }
-    const encoded = JSON.stringify(data);
+    const display = displayValues(data);
+    const encoded = JSON.stringify(
+      Object.keys(display).length
+        ? { ...record(data), display_values: display }
+        : data,
+    );
     if (encoded.length > 6000)
       deny("INSUFFICIENT_EVIDENCE", "Narrow the selected scope.");
     evidence.push({
@@ -256,7 +272,7 @@ export async function buildContext(ctx: Ctx, raw: Scope): Promise<Context> {
     add(
       "opportunities",
       id,
-      "Opportunity",
+      `Opportunity · ${d.opportunity.address}`,
       `/opportunities/${id}`,
       select(d.opportunity, [
         "stage",
@@ -487,26 +503,57 @@ export async function buildContext(ctx: Ctx, raw: Scope): Promise<Context> {
     limitations.push(
       "Acquisition cost and attributed rental profit are not recorded; profitability cannot be determined.",
     );
+  } else if (scope.feature === "asset" && scope.entity_id) {
+    const id = normalize(ctx, "inventory_assets", scope.entity_id),
+      a = await ctx.runQuery(api.inventory.asset, { id });
+    add(
+      "inventory_assets",
+      id,
+      a.asset_number,
+      "/inventory/assets/" + id,
+      {
+        ...select(a, [
+          "asset_number",
+          "product_name",
+          "status",
+          "condition",
+          "location_name",
+        ]),
+        reservations: a.reservations
+          .slice(0, 8)
+          .map((x) => select(x, ["needed_from", "needed_until", "state"])),
+      },
+      a.version,
+    );
+    limitations.push(
+      "This is one physical asset, not product-wide stock. Reservation windows do not guarantee suitability or authorize a movement.",
+    );
   } else if (scope.feature === "commercial" && scope.entity_id) {
     const id = normalize(ctx, "invoices", scope.entity_id),
       i = await ctx.runQuery(api.commercial.invoice, { id });
     add(
       "invoices",
       id,
-      "Invoice",
+      i.number,
       `/invoices/${id}`,
-      select(i, [
-        "number",
-        "status",
-        "effective_status",
-        "due_date",
-        "issued_at",
-        "total_cents",
-        "paid_cents",
-        "balance_cents",
-        "outstanding_cents",
-        "credit_balance_cents",
-      ]),
+      {
+        ...select(i, [
+          "number",
+          "status",
+          "effective_status",
+          "due_date",
+          "issued_at",
+          "total_cents",
+          "paid_cents",
+          "balance_cents",
+          "outstanding_cents",
+          "credit_balance_cents",
+        ]),
+        overdue_days:
+          i.effective_status === "overdue"
+            ? Math.max(0, daysBetween(i.due_date, day()))
+            : 0,
+      },
       i.version,
     );
   } else if (scope.feature === "automation" && scope.entity_id) {
@@ -730,6 +777,7 @@ export async function evidenceAllowed(
     opportunities: "opportunity",
     projects: "project",
     products: "inventory",
+    inventory_assets: "asset",
     invoices: "commercial",
     automation_actions: "automation",
   };
