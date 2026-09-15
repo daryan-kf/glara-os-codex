@@ -271,6 +271,7 @@ export function validateInsight(raw: unknown, context: Context): Insight {
     value.answer,
     value.why,
     value.draft,
+    ...value.limitations,
     ...value.recommendations.map((x) => x.text),
   ].join(" ");
   if (
@@ -301,9 +302,19 @@ export function validateInsight(raw: unknown, context: Context): Insight {
     else if (x && typeof x === "object")
       Object.entries(x).forEach(([k, v]) => walk(v, k));
   };
-  for (const e of context.evidence) walk(JSON.parse(e.data));
-  for (const n of numbers([value.answer, value.why, value.draft].join(" ")))
-    if (!numeric.has(normal(n))) throw Error("INVALID_AI_OUTPUT");
+  const verifyNumbers = (text: string, cited: string[]) => {
+    numeric.clear();
+    for (const e of context.evidence)
+      if (cited.includes(e.key)) walk(JSON.parse(e.data));
+    for (const n of numbers(text))
+      if (!numeric.has(normal(n))) throw Error("INVALID_AI_OUTPUT");
+  };
+  verifyNumbers(
+    [value.answer, value.why, value.draft, ...value.limitations].join(" "),
+    value.evidence_ids,
+  );
+  for (const recommendation of value.recommendations)
+    verifyNumbers(recommendation.text, recommendation.evidence_ids);
   return value;
 }
 export async function fingerprint(value: unknown): Promise<string> {

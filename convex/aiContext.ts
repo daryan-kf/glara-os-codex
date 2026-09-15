@@ -8,7 +8,7 @@ import { requireRoles, deny } from "./access";
 import { roles, modules, canAccess, type Module } from "../src/lib/permissions";
 import * as ops from "./operationsCore";
 import { catalogUser } from "./inventoryCore";
-import { scope as commercialScope } from "./commercialCore";
+import { scope as commercialScope, reversal } from "./commercialCore";
 import { canSee, actionRelevant } from "./automationSources";
 import {
   scopeSchema,
@@ -549,6 +549,14 @@ export async function buildContext(ctx: Ctx, raw: Scope): Promise<Context> {
           "outstanding_cents",
           "credit_balance_cents",
         ]),
+        payment_allocations: await Promise.all(
+          i.allocations.slice(0, 12).map(async (allocation) => ({
+            amount_cents: allocation.amount_cents,
+            reversed: !!(await reversal(ctx, allocation.payment_id)),
+          })),
+        ),
+        allocation_count: i.allocations.length,
+        allocations_partial: i.allocations.length > 12,
         overdue_days:
           i.effective_status === "overdue"
             ? Math.max(0, daysBetween(i.due_date, day()))

@@ -8,7 +8,7 @@ M6 analytics is deployed to the explicitly authorized development deployment, ba
 
 ## M8 copilot
 
-M8 adds a shared permission-safe copilot with evidence references, drafts and explicitly approved task proposals. AI defaults disabled; the development deployment has no provider/model/security approval configured. The continuation through section 216 adds private thread rename/delete, bounded retention, role rollout and asset context. **M8 DEVELOPMENT GATE PENDING EXTERNAL ACTION**: hosted/live-provider acceptance is not passed. See [the M8 report](docs/M8-report.md) for boundaries, setup, local tests and remaining gates. M9 has not started.
+M8 adds a shared permission-safe copilot with evidence references, drafts and explicitly approved task proposals. AI defaults disabled; the development deployment has no provider/model/security approval configured. The implementation through section 230 includes private thread lifecycle, bounded retention, role rollout, asset context and explicit numerical/security evaluation gates. **M8 DEVELOPMENT GATE PENDING EXTERNAL ACTION**: hosted/live-provider acceptance is not passed. See [the M8 report](docs/M8-report.md) for boundaries, setup, local tests and remaining gates. M9 has not started.
 
 ## Local setup
 
@@ -115,7 +115,7 @@ Current CRM filtering/derived follow-up sorting performs bounded scans (explicit
 
 The old Supabase project is untouched. Historical reports describe that backend and do not certify Convex. See [Convex migration acceptance](docs/convex-migration-report.md) for current evidence. Full rollback baseline: commit `a6ee904`; use a separate checkout with its original lockfile/configuration. That historical rollback baseline predates M2; the current repository includes M2 and M3.
 
-The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 and M5 were subsequently authorized. M7 development implementation and hosted acceptance were subsequently authorized. Do not begin M8.
+The product owner has superseded all Supabase-specific acceptance gates. Invitation/recovery delivery, expired/reused code handling, production origin/redirect verification, provider configuration and Support@glarahome.com sender/domain verification are **DEFERRED — REQUIRED BEFORE PRODUCTION**. Later authorized milestones supersede the historical migration stop condition; M4 and M5 were subsequently authorized. M7 development implementation and hosted acceptance were subsequently authorized. M8 was subsequently authorized; do not begin M9.
 
 ## M2 Sales CRM development
 
@@ -162,7 +162,7 @@ M5 is deployed to the explicitly authorized Convex development deployment `woozy
 
 ## M7 automation
 
-M7 passed development hosted acceptance on `woozy-jaguar-392`: 64 main hosted checks, 5 clean smoke checks, 184 M1–M6 hosted regressions, 13 Node tests, 279 Vitest tests, and 76 browser scenarios verified across the documented runs. Final analytics reconciliation found zero drift across 3,045 source records. Rules remain disabled, temporary adapters are removed, and independent review is required before M8.
+M7 passed development hosted acceptance on `woozy-jaguar-392`: 64 main hosted checks, 5 clean smoke checks, 184 M1–M6 hosted regressions, 13 Node tests, 279 Vitest tests, and 76 browser scenarios verified across the documented runs. Final analytics reconciliation found zero drift across 3,045 source records. Rules remain disabled, temporary adapters are removed, and those results predate the subsequently authorized M8 implementation.
 
 Owner/Admin can open `/automation` to initialize the disabled rule library, preview a source, configure a versioned rule, and explicitly enroll existing records in 20-record batches. The internal due queue runs every five minutes with bounded work and safe retries. `/notifications` contains role-safe personal updates and automated tasks. Completion, source resolution, suppression and escalation are separate audited events.
 
