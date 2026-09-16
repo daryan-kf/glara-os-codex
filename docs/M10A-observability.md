@@ -1,4 +1,4 @@
-# Operational observability — M10A
+# Operational observability â€” M10A
 
 `operationalHealth.health` is an authenticated Owner/Admin query, never a public diagnostic endpoint. It distinguishes backend reachability and current operator authorization from service health. Bounded queue/AI samples disclose truncation; counters are not lifetime totals. It reports queue lag, unknown deliveries, repeated provider failures, paused email, failed automation, recent AI failures and analytics drift. Financial and Inventory integrity are explicitly NOT CHECKED by this query. Backup freshness remains UNKNOWN until an independent monitor is configured. No global green indicator is inferred.
 
@@ -7,3 +7,7 @@
 Stable alert keys allow an eventual monitor to aggregate repeated failures and emit a single recovery notification. High: unknown send, circuit pause, reconciliation drift, automation failure, failed/stale backup. Medium: queue lag over 15 minutes or repeated AI failures. Thresholds are initial engineering defaults, not business SLAs. Unknown verification is surfaced separately. The sink does not send alerts; no recursion through the failing email provider is introduced.
 
 Before production, the Security/Technical Lead must name a human monitor owner and independent alert destination, choose a restricted retention-approved vendor or platform sink, configure authentication-abuse and exception monitoring, financial/Inventory reconciliation results, backup heartbeat and external uptime checks, then run failure/recovery/deduplication and redaction drills. Real destination/staffing, latency, escalation and delivery evidence are pending. Existing local tests prove filtering, signal decisions and backend role denial only. Full monitoring acceptance remains open.
+
+## M10A final continuation
+
+Owner/Admin can use `/security` for protected health and durable alert state. Refresh observes actual health dimensions, deduplicates stable keys, reopens changed conditions with a new version, and resolves only when the condition clears. Acknowledgement records authenticated actor/time without clearing an active condition; stale versions reject. Owner alone can freeze/release capabilities through an accessible reason/incident confirmation. Hosted tests cover authorization, deduplication and acknowledgement. Health deliberately reports unproven backup/integrity dimensions as unknown/not checked. This is not independent monitoring during a Convex outage and is not a production backup monitor. Named monitoring ownership, external alert delivery and actual backup freshness checks remain open.

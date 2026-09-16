@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-09-16T20:52:34.104Z",
-  "evaluated_source_commit": "2f5a554545ca4bf701c9d11e8b00f17b65c8ecd8",
+  "generated_at": "2026-09-16T23:05:31.355Z",
+  "evaluated_source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
   "valid": true,
   "errors": [],
   "m10a_pass": false,
   "m10b_entry": false,
   "summary": {
-    "total_controls": 40,
-    "passed": 8,
-    "open": 32,
-    "failed": 0,
+    "total_controls": 43,
+    "passed": 9,
+    "open": 34,
+    "failed": 27,
     "pending_external": 6,
     "deferred": 1,
-    "m10a_blockers": 25,
-    "m10b_blockers": 31,
-    "without_assigned_owner": 40,
-    "without_sufficient_evidence": 32,
-    "stale_evidence": 0
+    "m10a_blockers": 27,
+    "m10b_blockers": 33,
+    "without_assigned_owner": 43,
+    "without_sufficient_evidence": 34,
+    "stale_evidence": 13
   }
 }

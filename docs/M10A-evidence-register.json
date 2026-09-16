@@ -591,6 +591,670 @@
         ],
         "invalidated_at": null
       }
+    },
+    {
+      "evidence_id": "EV-FINAL-BOUNDARY-CODE-REVIEW",
+      "control_id": "BOUNDARY",
+      "evidence_type": "code_review",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        ".github/workflows/quality.yml",
+        "src/lib/security/preflight.ts"
+      ],
+      "executed_at": "2026-09-16T23:00:58.592818+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843405+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-RESTORE-LOCAL-RESTORE-DRILL",
+      "control_id": "RESTORE-LOCAL",
+      "evidence_type": "restore_drill",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "isolated_restore",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "convex",
+        "scripts/isolated-recovery-drill.mjs",
+        "scripts/prepare-recovery-drill.py",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T22:43:39.174098+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843443+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-OBSERVABILITY-LOCAL-AUTOMATED-TEST",
+      "control_id": "OBSERVABILITY-LOCAL",
+      "evidence_type": "automated_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "convex/operationalHealth.ts",
+        "convex/schema.ts",
+        "tests/convex/observability.test.ts",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T22:42:07.361520+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843455+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-OBSERVABILITY-LOCAL-SECURITY-TEST",
+      "control_id": "OBSERVABILITY-LOCAL",
+      "evidence_type": "security_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "convex/operationalHealth.ts",
+        "convex/schema.ts",
+        "tests/convex/observability.test.ts",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T22:42:07.361520+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843462+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-SUPPLY-LOCAL-DEPENDENCY-AUDIT",
+      "control_id": "SUPPLY-LOCAL",
+      "evidence_type": "dependency_audit",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "package.json",
+        "package-lock.json",
+        "scripts/patch-convex-auth.mjs",
+        "src",
+        "convex"
+      ],
+      "executed_at": "2026-09-16T22:44:41.501642+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843469+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-SUPPLY-LOCAL-AUTOMATED-TEST",
+      "control_id": "SUPPLY-LOCAL",
+      "evidence_type": "automated_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "package.json",
+        "package-lock.json",
+        "scripts/patch-convex-auth.mjs",
+        "src",
+        "convex"
+      ],
+      "executed_at": "2026-09-16T22:52:58.292970+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843475+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-PERFORMANCE-LOCAL-LOAD-TEST",
+      "control_id": "PERFORMANCE-LOCAL",
+      "evidence_type": "load_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "convex",
+        "tests/convex/performance.test.ts",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T22:42:07.361520+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843487+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-SAFE-MODE-LOCAL-SECURITY-TEST",
+      "control_id": "SAFE-MODE-LOCAL",
+      "evidence_type": "security_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "convex",
+        "tests/convex/emergency.test.ts",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T22:42:07.361520+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843495+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-REVOCATION-LOCAL-SECURITY-TEST",
+      "control_id": "REVOCATION-LOCAL",
+      "evidence_type": "security_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "convex/admin.ts",
+        "convex/securityAdmin.ts",
+        "convex/access.ts",
+        "convex/auth.ts",
+        "tests/convex/emergency.test.ts",
+        "tests/convex/recovery-flow.test.ts",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T22:42:07.361520+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843503+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-READINESS-MODEL-AUTOMATED-TEST",
+      "control_id": "READINESS-MODEL",
+      "evidence_type": "automated_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "src/lib/readiness/model.ts",
+        "tests/convex/readiness.test.ts",
+        "scripts/check-readiness.ts",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T23:00:58.592818+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843517+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-READINESS-MODEL-CODE-REVIEW",
+      "control_id": "READINESS-MODEL",
+      "evidence_type": "code_review",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": [
+        "src/lib/readiness/model.ts",
+        "tests/convex/readiness.test.ts",
+        "scripts/check-readiness.ts",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-16T23:00:58.592818+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843522+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-M9-EMAIL-HISTORY-CONFIGURATION-CHECK",
+      "control_id": "M9-EMAIL-HISTORY",
+      "evidence_type": "configuration_check",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "development",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["docs/M9-email-acceptance.json", "docs/M9-report.md"],
+      "executed_at": "2026-09-16T22:53:54.688291+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843530+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-M9-EMAIL-HISTORY-CODE-REVIEW",
+      "control_id": "M9-EMAIL-HISTORY",
+      "evidence_type": "code_review",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "development",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["docs/M9-email-acceptance.json", "docs/M9-report.md"],
+      "executed_at": "2026-09-16T22:53:54.688291+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Only this scoped control passes; broader M10A gate remains failed",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843535+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-PARTIAL-AUTHORIZATION-HOSTED-TEST",
+      "control_id": "AUTHORIZATION",
+      "evidence_type": "hosted_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "development",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["convex", "src", "tests", "package-lock.json"],
+      "executed_at": "2026-09-16T22:49:59.341827+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "incomplete",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "M1/M2 assignment isolation corrected and 95 hosted endpoint scenarios passed; full nested-ID and stale-assignment matrix not complete.",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843549+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-PARTIAL-AUTH-RECOVERY-SECURITY-TEST",
+      "control_id": "AUTH-RECOVERY",
+      "evidence_type": "security_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["convex", "src", "tests", "package-lock.json"],
+      "executed_at": "2026-09-16T22:42:07.361520+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "incomplete",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Supported revocation and five recovery tests passed; direct-backend issuance privacy/throttling, full browser recovery and independent Owner recovery remain incomplete.",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843557+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-PARTIAL-BROWSER-ACCEPTANCE-BROWSER-TEST",
+      "control_id": "BROWSER-ACCEPTANCE",
+      "evidence_type": "browser_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "development",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["convex", "src", "tests", "package-lock.json"],
+      "executed_at": "2026-09-16T22:54:22.210756+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "incomplete",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "40 selected tests pass; complete Sections 306-380 stale tab/assignment, recovery, private file, double-submit and network-loss matrix remains.",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843566+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-PARTIAL-FULL-REGRESSION-AUTOMATED-TEST",
+      "control_id": "FULL-REGRESSION",
+      "evidence_type": "automated_test",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["convex", "src", "tests", "package-lock.json"],
+      "executed_at": "2026-09-16T22:42:07.361520+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "incomplete",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "531 local tests and selected hosted suites pass; complete fresh hosted M1-M9 business workflow matrix unexecuted.",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843574+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-PARTIAL-FINAL-RECONCILIATION-RECONCILIATION",
+      "control_id": "FINAL-RECONCILIATION",
+      "evidence_type": "reconciliation",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "development",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["convex", "src", "tests", "package-lock.json"],
+      "executed_at": "2026-09-16T22:58:46.548056+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "incomplete",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Scoped M4/M5 and Communication/serialized-asset checks pass; independent full M7 and database-wide M5 reconciliation remain unproven. M6 result is reported separately.",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843582+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-FINAL-PARTIAL-SECRETS-SECRET-SCAN",
+      "control_id": "SECRETS",
+      "evidence_type": "secret_scan",
+      "source": "Executed scoped checks; result limitations are explicit",
+      "environment": "local",
+      "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+      "source_paths": ["convex", "src", "tests", "package-lock.json"],
+      "executed_at": "2026-09-16T22:42:27.606719+00:00",
+      "executed_by": "Codex operating local/authorized development tools",
+      "verified_at": "2026-09-16T23:00:58.592818+00:00",
+      "verified_by": "Codex reviewed outputs; not independent human sign-off",
+      "result": "incomplete",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Source/history/bundle scans passed; secret rotation and recovery custody drill remains incomplete.",
+        "No production or unexecuted acceptance implied"
+      ],
+      "expires_at": "2026-09-23T22:58:19.843588+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
     }
   ]
 }

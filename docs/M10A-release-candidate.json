@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "candidate_source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+  "report_commit_resolution": "The final pushed documentation/evidence commit is returned in the task response; it contains this manifest. A commit cannot embed its own SHA.",
+  "repository": "daryan-kf/glara-os-codex",
+  "branch": "main",
+  "decision": "M10A PRODUCTION READINESS GATE FAILED",
+  "promotable": false,
+  "lockfile_sha256": "8e2feb532a86939ce246fd26522111b5335f6f78d87c1a430b97a3e0a4ee01cb",
+  "tested_development_deployment": "woozy-jaguar-392",
+  "build": "clean npm ci --offline and optimized Next.js build passed with no environment files",
+  "evidence": "docs/M10A-final-results.json",
+  "schema_changes": [
+    "Add operational_alerts and by_key index",
+    "Add optional profiles.pending_change_token for fail-closed platform role updates"
+  ],
+  "compatibility": "Additive data model. Do not downgrade away session, assignment or capability guards. Interrupted profile changes require containment-aware forward fix; old schema cannot assume pending_change_token absent.",
+  "rollback": "Keep providers disabled/freeze affected capability, retain audit/history, select reviewed forward fix; code rollback is not data rollback. No production rollback executed.",
+  "production_mutations": 0,
+  "flags": {
+    "M9_EMAIL_ENABLED": false,
+    "M9_CALENDAR_ENABLED": false
+  },
+  "unresolved_gate": "27 internal P1 readiness controls; full migration and acceptance remain incomplete",
+  "m10b_authorized": false
+}

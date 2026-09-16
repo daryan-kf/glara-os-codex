@@ -1,0 +1,937 @@
+{
+  "schema_version": 1,
+  "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+  "recorded_at": "2026-09-16T23:00:58.592818+00:00",
+  "local": {
+    "node_passed": 19,
+    "convex_passed": 512,
+    "total_passed": 531,
+    "failed": 0,
+    "vitest_files": 29,
+    "typecheck": "passed",
+    "lint": "passed",
+    "formatting": "passed"
+  },
+  "browser": {
+    "engine": "Microsoft Edge / Chromium",
+    "frontend": "optimized Next.js at localhost:3001",
+    "backend": "woozy-jaguar-392",
+    "desktop": {
+      "passed": 20,
+      "failed": 0
+    },
+    "mobile": {
+      "passed": 20,
+      "failed": 0
+    },
+    "stats": {
+      "startTime": "2026-09-16T22:52:24.369Z",
+      "duration": 117833.687,
+      "expected": 40,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "specs": ["auth.spec.ts", "communications.spec.ts", "security.spec.ts"],
+    "limitations": [
+      "Selected subset of Sections 306-380, not complete acceptance",
+      "Mobile emulation, not physical device",
+      "Server logged aborted navigation streams and framework error diagnostics; no injected scripts executed in the tested cases"
+    ]
+  },
+  "clean_install_build": {
+    "lockfile_sha256": "8e2feb532a86939ce246fd26522111b5335f6f78d87c1a430b97a3e0a4ee01cb",
+    "copied_files": 440,
+    "environment_files_copied": 0,
+    "install": {
+      "exit_code": 0,
+      "error": null
+    },
+    "build": {
+      "exit_code": 0,
+      "error": null
+    },
+    "public_bundle": {
+      "files": 47,
+      "source_maps": 0,
+      "credential_pattern_files": 0
+    }
+  },
+  "dependency_audit": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 79,
+      "dev": 464,
+      "optional": 166,
+      "peer": 33,
+      "peerOptional": 0,
+      "total": 605
+    }
+  },
+  "production_mutations": 0,
+  "external_sends": 0,
+  "hosted_security": {
+    "executed_at": "2026-09-16T22:49:59.340Z",
+    "environment": "development",
+    "deployment": "woozy-jaguar-392",
+    "results": [
+      {
+        "scenario": "owner crm:read allowed",
+        "passed": true,
+        "elapsed_ms": 324
+      },
+      {
+        "scenario": "owner sales:listOpportunities allowed",
+        "passed": true,
+        "elapsed_ms": 240
+      },
+      {
+        "scenario": "owner operations:list allowed",
+        "passed": true,
+        "elapsed_ms": 233
+      },
+      {
+        "scenario": "owner inventory:settings allowed",
+        "passed": true,
+        "elapsed_ms": 230
+      },
+      {
+        "scenario": "owner commercial:dashboard allowed",
+        "passed": true,
+        "elapsed_ms": 392
+      },
+      {
+        "scenario": "owner analytics:settings allowed",
+        "passed": true,
+        "elapsed_ms": 191
+      },
+      {
+        "scenario": "owner automation:rules allowed",
+        "passed": true,
+        "elapsed_ms": 211
+      },
+      {
+        "scenario": "owner ai:settings allowed",
+        "passed": true,
+        "elapsed_ms": 444
+      },
+      {
+        "scenario": "owner communications:configuration allowed",
+        "passed": true,
+        "elapsed_ms": 202
+      },
+      {
+        "scenario": "owner emergency:state allowed",
+        "passed": true,
+        "elapsed_ms": 188
+      },
+      {
+        "scenario": "owner operationalHealth:health allowed",
+        "passed": true,
+        "elapsed_ms": 231
+      },
+      {
+        "scenario": "admin crm:read allowed",
+        "passed": true,
+        "elapsed_ms": 233
+      },
+      {
+        "scenario": "admin sales:listOpportunities allowed",
+        "passed": true,
+        "elapsed_ms": 233
+      },
+      {
+        "scenario": "admin operations:list allowed",
+        "passed": true,
+        "elapsed_ms": 238
+      },
+      {
+        "scenario": "admin inventory:settings allowed",
+        "passed": true,
+        "elapsed_ms": 217
+      },
+      {
+        "scenario": "admin commercial:dashboard allowed",
+        "passed": true,
+        "elapsed_ms": 370
+      },
+      {
+        "scenario": "admin analytics:settings denied",
+        "passed": true,
+        "elapsed_ms": 202
+      },
+      {
+        "scenario": "admin automation:rules allowed",
+        "passed": true,
+        "elapsed_ms": 209
+      },
+      {
+        "scenario": "admin ai:settings allowed",
+        "passed": true,
+        "elapsed_ms": 197
+      },
+      {
+        "scenario": "admin communications:configuration allowed",
+        "passed": true,
+        "elapsed_ms": 192
+      },
+      {
+        "scenario": "admin emergency:state allowed",
+        "passed": true,
+        "elapsed_ms": 194
+      },
+      {
+        "scenario": "admin operationalHealth:health allowed",
+        "passed": true,
+        "elapsed_ms": 199
+      },
+      {
+        "scenario": "admin cannot change emergency controls",
+        "passed": true,
+        "elapsed_ms": 181
+      },
+      {
+        "scenario": "sales crm:read allowed",
+        "passed": true,
+        "elapsed_ms": 342
+      },
+      {
+        "scenario": "sales sales:listOpportunities allowed",
+        "passed": true,
+        "elapsed_ms": 232
+      },
+      {
+        "scenario": "sales operations:list allowed",
+        "passed": true,
+        "elapsed_ms": 251
+      },
+      {
+        "scenario": "sales inventory:settings denied",
+        "passed": true,
+        "elapsed_ms": 193
+      },
+      {
+        "scenario": "sales commercial:dashboard denied",
+        "passed": true,
+        "elapsed_ms": 193
+      },
+      {
+        "scenario": "sales analytics:settings denied",
+        "passed": true,
+        "elapsed_ms": 202
+      },
+      {
+        "scenario": "sales automation:rules denied",
+        "passed": true,
+        "elapsed_ms": 206
+      },
+      {
+        "scenario": "sales ai:settings allowed",
+        "passed": true,
+        "elapsed_ms": 192
+      },
+      {
+        "scenario": "sales communications:configuration allowed",
+        "passed": true,
+        "elapsed_ms": 199
+      },
+      {
+        "scenario": "sales emergency:state denied",
+        "passed": true,
+        "elapsed_ms": 188
+      },
+      {
+        "scenario": "sales operationalHealth:health denied",
+        "passed": true,
+        "elapsed_ms": 188
+      },
+      {
+        "scenario": "sales cannot change emergency controls",
+        "passed": true,
+        "elapsed_ms": 181
+      },
+      {
+        "scenario": "designer crm:read denied",
+        "passed": true,
+        "elapsed_ms": 193
+      },
+      {
+        "scenario": "designer sales:listOpportunities denied",
+        "passed": true,
+        "elapsed_ms": 208
+      },
+      {
+        "scenario": "designer operations:list allowed",
+        "passed": true,
+        "elapsed_ms": 245
+      },
+      {
+        "scenario": "designer inventory:settings denied",
+        "passed": true,
+        "elapsed_ms": 194
+      },
+      {
+        "scenario": "designer commercial:dashboard denied",
+        "passed": true,
+        "elapsed_ms": 197
+      },
+      {
+        "scenario": "designer analytics:settings denied",
+        "passed": true,
+        "elapsed_ms": 199
+      },
+      {
+        "scenario": "designer automation:rules denied",
+        "passed": true,
+        "elapsed_ms": 206
+      },
+      {
+        "scenario": "designer ai:settings allowed",
+        "passed": true,
+        "elapsed_ms": 195
+      },
+      {
+        "scenario": "designer communications:configuration denied",
+        "passed": true,
+        "elapsed_ms": 196
+      },
+      {
+        "scenario": "designer emergency:state denied",
+        "passed": true,
+        "elapsed_ms": 187
+      },
+      {
+        "scenario": "designer operationalHealth:health denied",
+        "passed": true,
+        "elapsed_ms": 188
+      },
+      {
+        "scenario": "designer cannot change emergency controls",
+        "passed": true,
+        "elapsed_ms": 187
+      },
+      {
+        "scenario": "staging_crew crm:read denied",
+        "passed": true,
+        "elapsed_ms": 199
+      },
+      {
+        "scenario": "staging_crew sales:listOpportunities denied",
+        "passed": true,
+        "elapsed_ms": 204
+      },
+      {
+        "scenario": "staging_crew operations:list allowed",
+        "passed": true,
+        "elapsed_ms": 248
+      },
+      {
+        "scenario": "staging_crew inventory:settings denied",
+        "passed": true,
+        "elapsed_ms": 199
+      },
+      {
+        "scenario": "staging_crew commercial:dashboard denied",
+        "passed": true,
+        "elapsed_ms": 253
+      },
+      {
+        "scenario": "staging_crew analytics:settings denied",
+        "passed": true,
+        "elapsed_ms": 202
+      },
+      {
+        "scenario": "staging_crew automation:rules denied",
+        "passed": true,
+        "elapsed_ms": 209
+      },
+      {
+        "scenario": "staging_crew ai:settings allowed",
+        "passed": true,
+        "elapsed_ms": 195
+      },
+      {
+        "scenario": "staging_crew communications:configuration denied",
+        "passed": true,
+        "elapsed_ms": 434
+      },
+      {
+        "scenario": "staging_crew emergency:state denied",
+        "passed": true,
+        "elapsed_ms": 197
+      },
+      {
+        "scenario": "staging_crew operationalHealth:health denied",
+        "passed": true,
+        "elapsed_ms": 189
+      },
+      {
+        "scenario": "staging_crew cannot change emergency controls",
+        "passed": true,
+        "elapsed_ms": 179
+      },
+      {
+        "scenario": "marketing crm:read allowed",
+        "passed": true,
+        "elapsed_ms": 305
+      },
+      {
+        "scenario": "marketing sales:listOpportunities denied",
+        "passed": true,
+        "elapsed_ms": 206
+      },
+      {
+        "scenario": "marketing operations:list allowed",
+        "passed": true,
+        "elapsed_ms": 198
+      },
+      {
+        "scenario": "marketing inventory:settings denied",
+        "passed": true,
+        "elapsed_ms": 203
+      },
+      {
+        "scenario": "marketing commercial:dashboard denied",
+        "passed": true,
+        "elapsed_ms": 201
+      },
+      {
+        "scenario": "marketing analytics:settings denied",
+        "passed": true,
+        "elapsed_ms": 202
+      },
+      {
+        "scenario": "marketing automation:rules denied",
+        "passed": true,
+        "elapsed_ms": 195
+      },
+      {
+        "scenario": "marketing ai:settings allowed",
+        "passed": true,
+        "elapsed_ms": 208
+      },
+      {
+        "scenario": "marketing communications:configuration allowed",
+        "passed": true,
+        "elapsed_ms": 210
+      },
+      {
+        "scenario": "marketing emergency:state denied",
+        "passed": true,
+        "elapsed_ms": 178
+      },
+      {
+        "scenario": "marketing operationalHealth:health denied",
+        "passed": true,
+        "elapsed_ms": 178
+      },
+      {
+        "scenario": "marketing cannot change emergency controls",
+        "passed": true,
+        "elapsed_ms": 197
+      },
+      {
+        "scenario": "anonymous crm:read denied",
+        "passed": true,
+        "elapsed_ms": 195
+      },
+      {
+        "scenario": "anonymous sales:listOpportunities denied",
+        "passed": true,
+        "elapsed_ms": 191
+      },
+      {
+        "scenario": "anonymous operations:list denied",
+        "passed": true,
+        "elapsed_ms": 190
+      },
+      {
+        "scenario": "anonymous inventory:settings denied",
+        "passed": true,
+        "elapsed_ms": 216
+      },
+      {
+        "scenario": "anonymous commercial:dashboard denied",
+        "passed": true,
+        "elapsed_ms": 188
+      },
+      {
+        "scenario": "anonymous analytics:settings denied",
+        "passed": true,
+        "elapsed_ms": 191
+      },
+      {
+        "scenario": "anonymous automation:rules denied",
+        "passed": true,
+        "elapsed_ms": 190
+      },
+      {
+        "scenario": "anonymous ai:settings denied",
+        "passed": true,
+        "elapsed_ms": 198
+      },
+      {
+        "scenario": "anonymous communications:configuration denied",
+        "passed": true,
+        "elapsed_ms": 198
+      },
+      {
+        "scenario": "anonymous emergency:state denied",
+        "passed": true,
+        "elapsed_ms": 169
+      },
+      {
+        "scenario": "anonymous operationalHealth:health denied",
+        "passed": true,
+        "elapsed_ms": 168
+      },
+      {
+        "scenario": "anonymous cannot change emergency controls",
+        "passed": true,
+        "elapsed_ms": 169
+      },
+      {
+        "scenario": "Email and Calendar remain disabled",
+        "passed": true,
+        "elapsed_ms": 203
+      },
+      {
+        "scenario": "Health refresh dedupe and acknowledgement retain current conditions",
+        "passed": true,
+        "elapsed_ms": 863
+      },
+      {
+        "scenario": "All emergency capabilities frozen with authorized reads",
+        "passed": true,
+        "elapsed_ms": 589
+      },
+      {
+        "scenario": "Financial create denied by frozen boundary",
+        "passed": true,
+        "elapsed_ms": 204
+      },
+      {
+        "scenario": "Inventory create denied by frozen boundary",
+        "passed": true,
+        "elapsed_ms": 215
+      },
+      {
+        "scenario": "AI request denied before provider execution",
+        "passed": true,
+        "elapsed_ms": 201
+      },
+      {
+        "scenario": "Real supported session revocation denies existing token across M1-M9",
+        "passed": true,
+        "elapsed_ms": 2669
+      },
+      {
+        "scenario": "Archived fictional user cannot freshly sign in",
+        "passed": true,
+        "elapsed_ms": 352
+      },
+      {
+        "scenario": "Restoring profile cannot revive destroyed session",
+        "passed": true,
+        "elapsed_ms": 369
+      },
+      {
+        "scenario": "Restored fictional identity can establish a new session",
+        "passed": true,
+        "elapsed_ms": 383
+      },
+      {
+        "scenario": "Platform role change revokes pre-change session immediately",
+        "passed": true,
+        "elapsed_ms": 2099
+      },
+      {
+        "scenario": "Final emergency controls normal and providers disabled",
+        "passed": true,
+        "elapsed_ms": 384
+      }
+    ],
+    "production_mutations": 0,
+    "external_sends": 0
+  },
+  "hosted_commercial": {
+    "deployment": "woozy-jaguar-392",
+    "timestamp": "2026-09-16T22:38:54.147Z",
+    "results": [
+      {
+        "name": "source quote from a different project opportunity is rejected",
+        "passed": true
+      },
+      {
+        "name": "simultaneous agreement creation has unique independent numbers",
+        "passed": true
+      },
+      {
+        "name": "accepted agreement edits and forged acceptance actor are rejected",
+        "passed": true
+      },
+      {
+        "name": "simultaneous invoice creation has unique numbers and exact cents",
+        "passed": true
+      },
+      {
+        "name": "Admin edits draft then issues; issued terms cannot be rewritten",
+        "passed": true
+      },
+      {
+        "name": "void retains items and original number, blocks payments on void",
+        "passed": true
+      },
+      {
+        "name": "upstream Realtor Property customer tax defaults and assignments do not change historical snapshots",
+        "passed": true
+      },
+      {
+        "name": "replacement supersedes accepted agreement while retaining its original terms",
+        "passed": true
+      },
+      {
+        "name": "payment numbering concurrency and authenticated Admin actor",
+        "passed": true
+      },
+      {
+        "name": "partial payment status and over-allocation denial preserve balance",
+        "passed": true
+      },
+      {
+        "name": "concurrent credits preserve immutable total and cannot exceed invoice amount",
+        "passed": true
+      },
+      {
+        "name": "simultaneous overlapping extension proposals accept only one original period",
+        "passed": true
+      },
+      {
+        "name": "operational projections never include commercial values or Bill-To",
+        "passed": true
+      },
+      {
+        "name": "no-charge decision preserves M4 incident and creates no invoice",
+        "passed": true
+      }
+    ],
+    "passed": 14,
+    "failed": 0,
+    "completed": true
+  },
+  "restore": {
+    "mode": "isolated_restore",
+    "production_modified": false,
+    "shared_development_modified": false,
+    "provider_calls": 0,
+    "source_rows": 557,
+    "source_tables": 100,
+    "fixture": {
+      "users": 6,
+      "realtors": 1,
+      "properties": 1,
+      "projects": 1,
+      "serialized_assets": 1,
+      "reservations": 1,
+      "agreements": 1,
+      "invoices": 1,
+      "payments": 1,
+      "storage_files": 1
+    },
+    "backup_bytes": 83785,
+    "backup_sha256": "21a1df03127e63928c7a890b3d4f7852fb2eb9247b6573236c5768c89b23e408",
+    "restore_elapsed_ms": 13881,
+    "exact_table_comparison": "passed",
+    "storage_integrity": "passed",
+    "financial_and_inventory_projections": "passed",
+    "role_denial": "passed",
+    "recovery_mode": "all capabilities frozen",
+    "nonempty_import": "rejected",
+    "status": "PASSED_WITH_SCOPE_LIMITATIONS",
+    "limitations": [
+      "Small fictional dataset on isolated local Convex backend; not hosted backup service acceptance",
+      "No production backup schedule, encryption/store ACL, retention approval or achieved RPO/RTO proven",
+      "No provider state or secrets restored; cron schedule empty only in isolated source copy",
+      "Data equality includes IDs, relationships, versions, audit, analytic facts and indexed projections; original commercial fixtures bypass opportunity won prerequisite only for setup",
+      "Administrator test identity used; no live browser/login acceptance"
+    ]
+  },
+  "performance": {
+    "environment": "local",
+    "dataset": {
+      "realtors": 501,
+      "projects": 1,
+      "serialized_assets": 1,
+      "invoices": 1
+    },
+    "concurrency": 1,
+    "measured": {
+      "dashboard": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 1.4,
+        "p95_ms": 1.66,
+        "max_ms": 1.66
+      },
+      "realtor_search": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 15.12,
+        "p95_ms": 17.08,
+        "max_ms": 17.08
+      },
+      "project_load": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 3.44,
+        "p95_ms": 4.83,
+        "max_ms": 4.83
+      },
+      "inventory_availability": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.79,
+        "p95_ms": 1.09,
+        "max_ms": 1.09
+      },
+      "invoice_ar": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.95,
+        "p95_ms": 1.91,
+        "max_ms": 1.91
+      },
+      "analytics": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 10.15,
+        "p95_ms": 12.35,
+        "max_ms": 12.35
+      },
+      "automation_queue": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.62,
+        "p95_ms": 0.74,
+        "max_ms": 0.74
+      },
+      "communication_history": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.63,
+        "p95_ms": 0.73,
+        "max_ms": 0.73
+      },
+      "ai_settings_setup": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.32,
+        "p95_ms": 0.35,
+        "max_ms": 0.35
+      }
+    },
+    "limitations": [
+      "Convex-test in-process; not hosted, browser, mobile or provider latency",
+      "Only Realtor list has scale data; other modules smoke baseline",
+      "AI settings read is not full provider request setup",
+      "No production SLA asserted"
+    ]
+  },
+  "source_scan": {
+    "scanned_files": 440,
+    "private_environment_files": [],
+    "credential_pattern_files": [],
+    "scope": "All tracked/non-ignored release candidates including docs, fixtures and generated published evidence; no matched values logged"
+  },
+  "history_scan": {
+    "scope": "All reachable local Git refs; unreachable objects and remote refs not fetched are excluded",
+    "objects": 1332,
+    "blobs": 793,
+    "credential_pattern_blobs": 0,
+    "known_credential_blobs": 0,
+    "private_path_objects": 0,
+    "matched_values_logged": false
+  },
+  "bundle_and_flags": {
+    "executed_at": "2026-09-16T22:53:51.822Z",
+    "flags": {
+      "M9_EMAIL_ENABLED": "false",
+      "M9_CALENDAR_ENABLED": "false"
+    },
+    "builds": [
+      {
+        "type": "workspace",
+        "files": 47,
+        "source_maps": 0,
+        "private_value_matches": 0
+      },
+      {
+        "type": "clean",
+        "files": 47,
+        "source_maps": 0,
+        "private_value_matches": 0
+      }
+    ],
+    "secret_values_logged": false
+  },
+  "fixture_cleanup": {
+    "examined": 2,
+    "projects_cancelled_archived": 2,
+    "provider_calls": 0,
+    "production_mutations": 0
+  },
+  "reconciliation": {
+    "executed_at": "2026-09-16T22:52:13.972Z",
+    "deployment": "woozy-jaguar-392",
+    "production_mutations": 0,
+    "provider_calls": 0,
+    "reconcilePage": {
+      "checked": 6,
+      "complete": true,
+      "issues": {}
+    },
+    "outboxReconcilePage": {
+      "checked": 5,
+      "complete": true,
+      "issues": {}
+    },
+    "eventReconcilePage": {
+      "checked": 9,
+      "complete": true,
+      "issues": {}
+    },
+    "providerReconcilePage": {
+      "checked": 4,
+      "complete": true,
+      "issues": {}
+    },
+    "serialized_inventory": {
+      "checked": 77,
+      "mismatches": 0
+    },
+    "analytics": {
+      "status": "complete",
+      "scanned": 4221,
+      "source_drift": 0,
+      "bucket_drift": 0,
+      "revision": 4215
+    },
+    "completed": true
+  },
+  "hosted_inventory_quantity": {
+    "deployment": "woozy-jaguar-392",
+    "executedAt": "2026-09-16T22:48:00.386522+00:00",
+    "results": [
+      {
+        "name": "30 received, A10 and B8 reserved, 12 free without physical depletion",
+        "passed": true
+      },
+      {
+        "name": "over-reservation rejected against combined project demand",
+        "passed": true
+      },
+      {
+        "name": "picking and installation preserve B's eight-unit reservation without double subtraction",
+        "passed": true
+      },
+      {
+        "name": "nine returned and one missing remain explicit; unreconciled completion denied",
+        "passed": true
+      },
+      {
+        "name": "recovery and inspections restore thirty physical units; B still protects eight",
+        "passed": true
+      },
+      {
+        "name": "cancellation releases B's reservation without changing physical stock",
+        "passed": true
+      },
+      {
+        "name": "every quantity bucket reconciles exactly to the append-only hosted ledger",
+        "passed": true
+      }
+    ],
+    "evidence_source": "Completed execution log; test-results JSON was removed by the later Playwright run"
+  },
+  "past_attempts": [
+    {
+      "area": "browser setup",
+      "result": "Bundled Chromium absent; installed Edge used"
+    },
+    {
+      "area": "initial browser",
+      "passed": 28,
+      "failed": 12,
+      "resolution": "Explicit Purpose labels, correct emergency arguments, parser-based CSP injection test"
+    },
+    {
+      "area": "proxy compatibility",
+      "result": "Aborted SDK text/plain rejection run; supported transport restored"
+    },
+    {
+      "area": "logout rerun",
+      "passed": 38,
+      "failed": 2,
+      "resolution": "SDK omits sign-out args; normalize supported sign-out only"
+    },
+    {
+      "area": "clean build",
+      "result": "Missing pagination in negative test caught by TypeScript; fixed and clean build repeated"
+    },
+    {
+      "area": "inventory quantity",
+      "result": "Initial scheduling conflict after two checks; rerun on distinct historical date passed seven; two interrupted projects cancelled/archived"
+    }
+  ],
+  "limitations": [
+    "Migration importer, dry-run/rehearsal/idempotency not implemented; restore is not migration",
+    "Full hosted scale/concurrency, nested IDOR and browser matrix incomplete",
+    "Independent full M7 and whole-database M5 reconciliation not complete",
+    "No production configuration, customer data, staff UAT or human policy approval"
+  ],
+  "readiness_validation": {
+    "generated_at": "2026-09-16T23:05:31.355Z",
+    "evaluated_source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+    "valid": true,
+    "errors": [],
+    "m10a_pass": false,
+    "m10b_entry": false,
+    "summary": {
+      "total_controls": 43,
+      "passed": 9,
+      "open": 34,
+      "failed": 27,
+      "pending_external": 6,
+      "deferred": 1,
+      "m10a_blockers": 27,
+      "m10b_blockers": 33,
+      "without_assigned_owner": 43,
+      "without_sufficient_evidence": 34,
+      "stale_evidence": 13
+    }
+  },
+  "final_source_and_known_value_scan": {
+    "scanned_files": 444,
+    "secret_pattern_files": [],
+    "private_value_matches": [],
+    "private_env_files": [],
+    "scope": "tracked/non-ignored source; API patterns and locally available private credential values; no values logged"
+  },
+  "final_history_scan": {
+    "scope": "All reachable local Git refs; unreachable objects and remote refs not fetched are excluded",
+    "objects": 1385,
+    "blobs": 827,
+    "credential_pattern_blobs": 0,
+    "known_credential_blobs": 0,
+    "private_path_objects": 0,
+    "matched_values_logged": false
+  },
+  "readiness_gate_exit_code": 1
+}

@@ -1,6 +1,6 @@
 # M10A future environments and secret ownership
 
-Preparation only. No production deployment, database, identity, DNS or provider resource is created by this specification. Actual production hostnames/deployment IDs are **UNASSIGNED — require separate M10B authorization**. Do not fill these from a browser Host header or copy the development environment.
+Preparation only. No production deployment, database, identity, DNS or provider resource is created by this specification. Actual production hostnames/deployment IDs are **UNASSIGNED â€” require separate M10B authorization**. Do not fill these from a browser Host header or copy the development environment.
 
 ## Environment contract
 
@@ -52,7 +52,7 @@ All application/provider secrets require distinct development and future-product
 
 Public frontend configuration is limited to the intended Convex public URL/site URL. `NEXT_PUBLIC_*` must never contain any item carrying authentication authority. Other server configuration includes SITE_URL, model and approval flags, sender/reply-to, test allowlist and exact HTTP origins; these are not interchangeable with secrets and may still contain private account metadata.
 
-## Rotation runbook — preparation, not an executed drill
+## Rotation runbook â€” preparation, not an executed drill
 
 Before rotation: confirm exact environment, owner, provider, maintenance risk and rollback path. Freeze relevant dispatch first; preserve audit evidence; never dump values into commands/logs/chat. Install replacements through the server secret store, then validate using a fictional development account/recipient in a separately authorized window. Record IDs/timestamps/status only.
 
@@ -64,3 +64,5 @@ Before rotation: confirm exact environment, owner, provider, maintenance risk an
 - **Google (deferred):** keep Calendar disabled, rotate/revoke through the authorized owner/provider flow only when reactivation is scheduled. Obtain fresh consent securely; verify dedicated destination and original Calendar Gate before enablement.
 
 Emergency compromise overrides availability: disable relevant capability, revoke exposed material, invalidate sessions/tokens as warranted, assess affected access and preserve evidence. Backup secret stores separately under restricted access; application data snapshots do not replace secret recovery procedures.
+
+The final continuation adds an offline [configuration contract and preflight](M10A-configuration-contract.md), separate production approval fences and production rejection of acceptance credentials. These do not claim actual production setup or close the remaining hosted isolation matrix.
