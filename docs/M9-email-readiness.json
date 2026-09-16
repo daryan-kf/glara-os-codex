@@ -1,0 +1,279 @@
+{
+  "milestone": "M9",
+  "gate": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
+  "base_and_deployed_source_commit": "8d03f3e9abde1a79692e31650dfb795e8f10954d",
+  "recorded_at": "2026-09-16T05:09:04.001Z",
+  "deployment": "woozy-jaguar-392",
+  "configuration": {
+    "M9_RESEND_KEY": "missing",
+    "M9_RESEND_WEBHOOK_SECRET": "missing",
+    "M9_UNSUBSCRIBE_SECRET": "configured",
+    "M9_EMAIL_FROM": "configured",
+    "M9_EMAIL_REPLY_TO": "configured",
+    "M9_EMAIL_TEST_ALLOWLIST": "configured",
+    "M9_PUBLIC_HTTP_ORIGIN": "configured",
+    "M9_EMAIL_ENABLED": "configured",
+    "M9_EMAIL_VERIFIED": "configured"
+  },
+  "development_deployment": {
+    "deployment": "woozy-jaguar-392",
+    "at": "2026-09-16T05:02:06.969Z",
+    "source_commit": "8d03f3e9abde1a79692e31650dfb795e8f10954d",
+    "status": "passed",
+    "scope": "Development endpoint preparation; email disabled; no Calendar configuration"
+  },
+  "provider_account_authorization": "awaiting_account_authorization",
+  "domain_verification": "PENDING - actual Resend account status unavailable",
+  "spf": "Existing Hostinger SPF present; actual Resend return-path records unavailable",
+  "dkim": "PENDING - exact provider selector/public key unavailable",
+  "dmarc": "Existing p=none record preserved; live message alignment not tested",
+  "public_dns": {
+    "glarahome.com TXT": [["v=spf1 include:_spf.mail.hostinger.com ~all"]],
+    "glarahome.com MX": [
+      {
+        "exchange": "mx2.hostinger.com",
+        "priority": 10,
+        "type": "MX"
+      },
+      {
+        "exchange": "mx1.hostinger.com",
+        "priority": 5,
+        "type": "MX"
+      }
+    ],
+    "_dmarc.glarahome.com TXT": [["v=DMARC1; p=none"]],
+    "glarahome.com NS": ["solar.dns-parking.com", "lunar.dns-parking.com"]
+  },
+  "dns_changes": 0,
+  "sender": "Configured as requested; Resend permission NOT VERIFIED",
+  "webhook": {
+    "endpoint": "https://woozy-jaguar-392.eu-west-1.convex.site/m9/webhook",
+    "provider_subscription": "PENDING - account authorization required",
+    "events": [
+      "email.sent",
+      "email.delivered",
+      "email.bounced",
+      "email.complained",
+      "email.delivery_delayed",
+      "email.failed"
+    ],
+    "authentic_signature": "NOT RUN",
+    "modified_body_and_expired_signature": "LOCAL CONTRACT PASS ONLY",
+    "replay": "LOCAL CONTRACT PASS ONLY"
+  },
+  "unsubscribe": {
+    "endpoint": "https://woozy-jaguar-392.eu-west-1.convex.site/m9/unsubscribe",
+    "secret": "configured",
+    "generation": "384 bits from node:crypto randomBytes; sent directly via Convex CLI stdin; never persisted locally",
+    "public_confirmation": "passed",
+    "real_token_preference_update": "NOT RUN - live send pending"
+  },
+  "test_recipient": {
+    "status": "configured",
+    "count": 1,
+    "provenance": "Explicit owner designation in this task; address intentionally omitted from public repository"
+  },
+  "email_enabled": false,
+  "email_verified": false,
+  "live_send": "NOT RUN",
+  "inbox_receipt": "NOT RUN",
+  "delivery_event": "NOT RUN",
+  "live_idempotency": "NOT RUN - local contract coverage passed",
+  "live_unsubscribe": "NOT RUN - local contract coverage passed",
+  "bounce_complaint": "NOT RUN LIVE - local authenticated contract coverage passed",
+  "tests": {
+    "local_m9": {
+      "passed": 100,
+      "failed": 0,
+      "command": "node node_modules/vitest/vitest.mjs run tests/convex/communications.test.ts"
+    },
+    "backend_typecheck": "passed during Convex development deployment",
+    "public_http": {
+      "deployment": "woozy-jaguar-392",
+      "at": "2026-09-16T05:04:50.404Z",
+      "checks": [
+        {
+          "name": "unsubscribe_confirmation",
+          "status": 200,
+          "expected": 200,
+          "result": "passed",
+          "no_store": true,
+          "no_referrer": true,
+          "confirmation": true
+        },
+        {
+          "name": "missing_webhook_signature",
+          "status": 400,
+          "expected": 400,
+          "result": "passed"
+        },
+        {
+          "name": "invalid_webhook_signature",
+          "status": 400,
+          "expected": 400,
+          "result": "passed"
+        },
+        {
+          "name": "invalid_unsubscribe_token",
+          "status": 200,
+          "expected": 200,
+          "result": "passed"
+        }
+      ],
+      "scope": "Public development endpoint negative/smoke checks only; no authentic provider events or sends",
+      "authentic_provider_acceptance": "not_run"
+    },
+    "hosted_roles": {
+      "scope": "Hosted read-only communications configuration role guard; not complete M9 mutation/security acceptance",
+      "at": "2026-09-16T05:07:54.395Z",
+      "checks": [
+        {
+          "role": "owner",
+          "expected": "allow",
+          "actual": "allow",
+          "result": "passed"
+        },
+        {
+          "role": "admin",
+          "expected": "allow",
+          "actual": "allow",
+          "result": "passed"
+        },
+        {
+          "role": "sales",
+          "expected": "allow",
+          "actual": "allow",
+          "result": "passed"
+        },
+        {
+          "role": "marketing",
+          "expected": "allow",
+          "actual": "allow",
+          "result": "passed"
+        },
+        {
+          "role": "designer",
+          "expected": "deny",
+          "actual": "deny",
+          "result": "passed"
+        },
+        {
+          "role": "staging_crew",
+          "expected": "deny",
+          "actual": "deny",
+          "result": "passed"
+        },
+        {
+          "role": "unassigned",
+          "expected": "deny",
+          "actual": "deny",
+          "result": "passed"
+        },
+        {
+          "role": "archived",
+          "expected": "deny",
+          "actual": "deny",
+          "result": "passed"
+        },
+        {
+          "role": "anonymous",
+          "expected": "deny",
+          "actual": "deny",
+          "result": "passed"
+        }
+      ],
+      "passed": 9,
+      "failed": 0
+    },
+    "browser": {
+      "scope": "M9 email setup route/render guards only; no sends",
+      "passed": 13,
+      "failed": 0,
+      "results": [
+        {
+          "role": "owner",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "admin",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "sales",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "marketing",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "designer",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "staging_crew",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "owner",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "admin",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "sales",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "marketing",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "designer",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "staging_crew",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "anonymous",
+          "viewport": "desktop",
+          "status": "passed"
+        }
+      ]
+    },
+    "scope": "Focused setup checks only; not full hosted M9 security/mutation acceptance or M1-M8 regression"
+  },
+  "origin_correction": "Initial non-regional URL returned 404; corrected using CLI-confirmed eu-west-1 deployment and reran all four endpoint checks successfully",
+  "remaining_external_action": "Approve Glara OS M9 Development Setup in the official Resend consent page for the team owning glarahome.com. Then retrieve real provider DNS requirements and complete domain/webhook/live acceptance.",
+  "overall_m9": "PENDING - email, Calendar and final hosted acceptance",
+  "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
+  "production": "UNTOUCHED",
+  "calendar_configuration": "NOT STARTED",
+  "m10": "NOT STARTED",
+  "secrets_exposed": false,
+  "emails_sent": 0,
+  "secret_scan": {
+    "scanned_files": 371,
+    "secret_pattern_files": [],
+    "private_value_matches": [],
+    "private_env_files": [],
+    "scope": "tracked/non-ignored source; API patterns and locally available private credential values; no values logged",
+    "development_secret_value_matches": 0
+  }
+}

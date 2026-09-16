@@ -4,6 +4,8 @@
 
 **M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION**.
 
+Latest email setup evidence: [M9-email-readiness.json](M9-email-readiness.json). The email-only development setup described at the end of this report supersedes earlier deployment/configuration stop snapshots. Earlier test counts retain their original scope.
+
 The complete specification through section 345 has now been received. This revision adds the local hardening required by sections 165–345. The local implementation is ready for the authorized hosted acceptance stage; live-provider, full M9 browser, fresh hosted regression and numerical reconciliation gates remain unexecuted. Their results are not inferred from local tests. M10 has not started.
 
 Base: accepted M8 commit `bf785213e246be266aed367737742d5d6438f835`. Changes target `daryan-kf/glara-os-codex`.
@@ -162,3 +164,61 @@ As requested, external work stopped at this dependency boundary. There was no M9
 Section-by-section status for every requirement from 322 through 345, the safe preflight evidence and uncollected final counts are recorded in `docs/M9-release-gates.json`. Uncollected counts are **null, not zero**. The final pushed SHA is the Git commit containing this report and is returned separately in the completion response. Local quality results are in `docs/M9-local-results.json`.
 
 The next external stage requires private provider configuration and verification, explicit M9 development deployment/live-acceptance authorization, and the designated inbox/calendar. After that, fresh hosted M9 and M1–M8 suites, desktop/mobile workflows, provider acceptance, cleanup, M6 reconciliation and M4/M5 integrity checks must run against the final clean development backend. No historical or mock result satisfies those gates.
+
+## M9 Resend development setup and email readiness
+
+Continued from `8d03f3e9abde1a79692e31650dfb795e8f10954d` under the owner's explicit email setup authorization. The existing source was deployed to **development `woozy-jaguar-392`**, project `glara-os`, with backend TypeScript checking enabled. No business implementation was rebuilt. Google Calendar configuration and M10 were not started; production was untouched.
+
+**M9 EMAIL GATE PENDING EXTERNAL ACTION**. This is preparation plus focused safety verification, not live delivery acceptance.
+
+| Development variable       | Presence   |
+| -------------------------- | ---------- |
+| `M9_RESEND_KEY`            | missing    |
+| `M9_RESEND_WEBHOOK_SECRET` | missing    |
+| `M9_UNSUBSCRIBE_SECRET`    | configured |
+| `M9_EMAIL_FROM`            | configured |
+| `M9_EMAIL_REPLY_TO`        | configured |
+| `M9_EMAIL_TEST_ALLOWLIST`  | configured |
+| `M9_PUBLIC_HTTP_ORIGIN`    | configured |
+| `M9_EMAIL_ENABLED`         | configured |
+| `M9_EMAIL_VERIFIED`        | configured |
+
+Sending and sender-verification guards are both **disabled**. The designated recipient allowlist contains exactly one inbox explicitly selected by the owner in this task. The address is intentionally omitted from the public repository. The intended sender and Reply-To are `Support@glarahome.com`; permission to send from this domain has **not** been verified with Resend.
+
+The private unsubscribe secret was generated with 48 cryptographically random bytes and passed directly to the development environment using CLI stdin. Its value was never displayed, persisted locally, or committed. Existing secrets were not rotated.
+
+The CLI confirmed the deployment's regional hostname. An initial non-regional origin returned 404 and was corrected before any send. The working endpoints are:
+
+- `https://woozy-jaguar-392.eu-west-1.convex.site/m9/webhook`
+- `https://woozy-jaguar-392.eu-west-1.convex.site/m9/unsubscribe`
+
+### Existing public DNS — observed, not changed
+
+| Type | Host                   | Observed value/target                         | Priority | Purpose                    |
+| ---- | ---------------------- | --------------------------------------------- | -------- | -------------------------- |
+| TXT  | `glarahome.com`        | `v=spf1 include:_spf.mail.hostinger.com ~all` | —        | Existing Hostinger SPF     |
+| MX   | `glarahome.com`        | `mx1.hostinger.com`                           | 5        | Existing inbound mail      |
+| MX   | `glarahome.com`        | `mx2.hostinger.com`                           | 10       | Existing inbound mail      |
+| TXT  | `_dmarc.glarahome.com` | `v=DMARC1; p=none`                            | —        | Existing monitoring policy |
+
+No DNS record was changed or duplicated. Nameservers resolve to `solar.dns-parking.com` and `lunar.dns-parking.com`. Actual Resend SPF/return-path and DKIM requirements must come from the authorized provider account; no account-specific records or selectors were invented. Existing DMARC policy was preserved. Production policy and alignment require later review; published DNS alone is not proof of verified sender status. See [Resend domain verification](https://resend.com/docs/dashboard/domains/introduction) and [DMARC guidance](https://resend.com/docs/dashboard/domains/dmarc).
+
+### Provider access and webhook preparation
+
+No usable development Resend key or alternative Resend credential was found. The available browser-control runtime failed during initialization, and no Resend account connector was available. After the owner requested that Codex create the key, a temporary local [official Resend OAuth/PKCE authorization flow](https://resend.com/docs/guides/building-a-resend-oauth-client) was prepared. It binds only to loopback, validates state, keeps tokens in memory, and can create the development key directly in Convex after the account owner approves the correct team. No credentials need to be pasted into chat. The temporary listener expires after ten minutes; it can be restarted if necessary. The one-off helper is not part of the deployed application.
+
+**Next external action:** approve **Glara OS M9 Development Setup** on Resend's official consent screen for the team owning `glarahome.com`. Authorization has not yet completed. This replaces the earlier request to manually copy a key; account ownership approval cannot be completed on the owner's behalf.
+
+The endpoint is deployed, but a real Resend webhook subscription and signing secret remain pending. Intended supported subscriptions are `email.sent`, `email.delivered`, `email.bounced`, `email.complained`, `email.delivery_delayed`, and `email.failed`. Only the actual provider-issued signing secret may be configured. Reference: [Resend webhook events](https://resend.com/docs/webhooks/event-types).
+
+### Verification performed in this setup task
+
+- **100 M9 local tests passed, 0 failed.** Existing contracts cover exact allowlist rejection, approval/dispatch authorization, payload integrity, idempotency, authentic mocked signatures, modified/expired signatures, replay, unsubscribe, bounce/complaint suppression, bounded retries and circuit behavior. Mocked provider evidence is not live evidence.
+- **4 hosted HTTP checks passed:** unsubscribe confirmation GET 200 with no-store/no-referrer, unsigned webhook POST 400, invalid-signature POST 400, invalid-token unsubscribe POST 200 with generic response. Because the real signing secret is missing, these rejection checks do not establish authentic provider acceptance.
+- **9 hosted read-only role checks passed:** Owner/Admin/Sales/Marketing allowed; Designer/Staging Crew/unassigned/archived/anonymous denied. Email remained disabled. This is not the full mutation/security matrix.
+- **13 desktop/mobile route/render checks passed:** six roles across two viewports plus anonymous redirect; no horizontal overflow. These replace only the earlier compatibility smoke scope, not full M9 workflow acceptance.
+- Backend TypeScript passed during deployment. No application source changed in this setup task; prior full-suite/build/lint results remain historical and are not represented as rerun.
+
+Live send, inbox receipt, authentic delivery event, live idempotency, real-token unsubscribe and live bounce/complaint acceptance are **NOT RUN**. No email was sent. Provider/DNS verification remains pending. The real key must not be deliberately invalidated for failure tests, and bounce/complaint acceptance must use only official provider mechanisms with appropriate recipient authorization.
+
+Final environment state: development email **disabled**, verified guard **disabled**. Overall M9 remains pending email, Calendar and final hosted acceptance. All inherited production email/auth dependencies remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. The commit containing this report is returned separately after push.

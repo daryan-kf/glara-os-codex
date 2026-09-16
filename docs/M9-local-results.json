@@ -199,5 +199,9 @@
     "provider_calls": 0,
     "external_writes": 0
   },
-  "release_gate_record": "docs/M9-release-gates.json"
+  "release_gate_record": "docs/M9-release-gates.json",
+  "email_setup_followup": {
+    "record": "docs/M9-email-readiness.json",
+    "note": "Later email-only development setup supersedes previous deployment/configuration snapshots; original tests retain their original scope. Overall M9 remains pending."
+  }
 }
