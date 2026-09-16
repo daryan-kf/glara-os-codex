@@ -1875,3 +1875,43 @@ it("final reconciliation detects a status that understates verified delivery", a
   });
   expect(report.page[0].issues).toContain("delivery_status_mismatch");
 });
+
+describe("M9 deferred Calendar fails closed", () => {
+  it.each(["false", undefined])(
+    "flag %s prevents OAuth and Calendar provider calls even with an enabled connection",
+    async (flag) => {
+      vi.stubEnv("M9_GOOGLE_CALENDAR_ID", "fictional-calendar@example.test");
+      vi.stubEnv("M9_CALENDAR_ENABLED", flag);
+      vi.stubEnv("M9_GOOGLE_CLIENT_ID", undefined);
+      vi.stubEnv("M9_GOOGLE_CLIENT_SECRET", undefined);
+      vi.stubEnv("M9_GOOGLE_REFRESH_TOKEN", undefined);
+      const request = vi.fn(() => {
+        throw new Error("Provider must not be contacted");
+      });
+      vi.stubGlobal("fetch", request);
+      const f = await operationsFixture(),
+        project = await f.create();
+      await f.ready(project);
+      await f.schedule(project);
+      const event = await f.t.run((ctx) =>
+        ctx.db
+          .query("operations_events")
+          .withIndex("by_project", (q) => q.eq("project_id", project))
+          .first(),
+      );
+      await f
+        .c("owner")
+        .mutation(api.calendarSync.configure, { enabled: true, version: 0 });
+      await expect(
+        f.c("owner").action(api.calendarProvider.sync, {
+          source: { type: "operations_event", id: event!._id },
+        }),
+      ).rejects.toThrow("disabled");
+      expect(request).not.toHaveBeenCalled();
+      expect(await f.t.run((ctx) => ctx.db.get(event!._id))).toEqual(event);
+      expect(
+        (await f.c("owner").query(api.calendarSync.list, {})).projections,
+      ).toHaveLength(0);
+    },
+  );
+});

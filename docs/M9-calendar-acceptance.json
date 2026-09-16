@@ -4,7 +4,7 @@
   "continued_from": "6abca72d56bc3c88e5bb750d5250e5de5cdd7a06",
   "recorded_at": "2026-09-16T17:46:44.067378+00:00",
   "deployment": "woozy-jaguar-392",
-  "decision": "M9 CALENDAR GATE PENDING EXTERNAL ACTION",
+  "decision": "M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT",
   "email_gate": "M9 EMAIL GATE PASSED",
   "configuration": {
     "M9_GOOGLE_CALENDAR_ID": "MISSING",
@@ -393,11 +393,11 @@
     }
   },
   "tooling_blocker": "Both browser and native computer-control runtimes fail initialization: failed to write kernel assets: The system cannot find the path specified. (os error 3). No Google account connector or gcloud CLI available.",
-  "remaining_external_action": "Create the dedicated development Google Cloud OAuth web client (Calendar API enabled, app-created Calendar scope, exact loopback redirect) and store client ID/secret directly in Convex development. Restore computer control for Codex to perform setup, or owner follows docs/M9-calendar-setup.md. Then launch the prepared consent helper and have the owner approve Google consent. No codes/tokens/secrets in chat.",
+  "remaining_external_action": "Deferred until Calendar activation is scheduled; all original OAuth/dedicated Calendar/live acceptance prerequisites remain required before enablement.",
   "production": "UNTOUCHED",
   "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
   "final_overall_m9_acceptance": "NOT STARTED",
-  "m10": "NOT STARTED",
+  "m10": "M10A hardening authorized for a subsequent task; no implementation started. M10B not authorized.",
   "secret_scan": {
     "patterns_and_local_values": {
       "scanned_files": 378,
@@ -413,5 +413,14 @@
       "google_tokens_or_codes_generated": false,
       "secret_values_logged": false
     }
+  },
+  "prior_decision": "M9 CALENDAR GATE PENDING EXTERNAL ACTION",
+  "owner_deferral": {
+    "recorded_at": "2026-09-16T18:33:48.520567+00:00",
+    "reason": "Intentional product sequencing; OAuth/account setup deferred by product owner",
+    "non_blocking_for_m10a_while_disabled": true,
+    "production_enablement_requires_original_calendar_gate": true,
+    "core_check": "docs/M9-deferral-core-check.json",
+    "register": "docs/deferred-integrations.json"
   }
 }

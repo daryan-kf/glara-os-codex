@@ -1,0 +1,52 @@
+{
+  "updated_at": "2026-09-16T18:33:48.520567+00:00",
+  "review_gate": "M10B Go-Live review must inspect this register; M10A does not waive integration gates",
+  "integrations": [
+    {
+      "id": "m9-google-calendar",
+      "integration": "Google Calendar",
+      "milestone": "M9",
+      "status": "M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT",
+      "implementation": "complete",
+      "implementation_note": "Existing implementation retained; complete implementation does not imply live provider validation",
+      "live_acceptance": "incomplete",
+      "reason": "OAuth/account setup deferred by product owner",
+      "production_enabled": false,
+      "production_state_evidence": "Required rollout state; production was not accessed or modified",
+      "development_enabled": false,
+      "production_blocker": "Only if Calendar is intended to be enabled",
+      "non_blocking_for": "M10A PRODUCTION HARDENING while Calendar remains disabled",
+      "required_completion_procedure": "Complete the original M9 Calendar Gate before any enablement/rollout; development may be temporarily enabled only during its authorized controlled acceptance window",
+      "procedure_documents": [
+        "docs/M9-calendar-setup.md",
+        "docs/M9-calendar-acceptance.json",
+        "docs/M9-report.md"
+      ],
+      "requirements": [
+        "dedicated non-primary app-created Calendar",
+        "Google Cloud Calendar API and narrow OAuth scope",
+        "secure client ID/client secret/refresh token/Calendar ID",
+        "owner OAuth consent",
+        "live create with safe content and zero attendees",
+        "live update and cancellation",
+        "repeated/concurrent idempotency and revision races",
+        "external edit conflict and Keep Glara resolution",
+        "external delete detection and repair",
+        "Vancouver spring/fall DST",
+        "Consultation projection semantics",
+        "authorization and external ID tampering",
+        "Glara source-of-truth preservation",
+        "timeout/unknown and OAuth failure safety",
+        "complete reconciliation with zero unexplained mismatches",
+        "cleanup preserving internal evidence",
+        "restore disabled state",
+        "no unresolved Calendar P0/P1"
+      ],
+      "m10b_review": {
+        "mandatory": true,
+        "if_disabled": "Verify false/absent enable flag, no provider calls and visibly retained deferral",
+        "if_enablement_requested": "Block enablement until original live Calendar Gate passes and separate production authorization exists"
+      }
+    }
+  ]
+}

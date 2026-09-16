@@ -1,5 +1,7 @@
 # M9 Google Calendar development setup
 
+**M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT**. The owner intentionally deferred activation. This retained procedure is for a later authorized Calendar activation task; do not execute setup or enablement as part of M10A by default. Calendar is **NON-BLOCKING FOR M10A PRODUCTION HARDENING** while disabled. See [deferred-integrations.json](deferred-integrations.json) for mandatory M10B review.
+
 This is a setup-only flow for **woozy-jaguar-392**, project **glara-os**. It does not enable sync or replace the existing Calendar adapter. Email gate remains passed; overall M9 remains pending.
 
 ## Current external prerequisite

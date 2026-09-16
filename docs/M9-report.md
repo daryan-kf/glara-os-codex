@@ -4,7 +4,7 @@
 
 **M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION**.
 
-Latest Calendar setup: [M9-calendar-acceptance.json](M9-calendar-acceptance.json). **M9 CALENDAR GATE PENDING EXTERNAL ACTION** — Google Cloud client, owner consent and dedicated calendar are not configured. Prepared setup flow: [M9-calendar-setup.md](M9-calendar-setup.md).
+Current Calendar decision: **M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT**. This intentional owner deferral is **NON-BLOCKING FOR M10A PRODUCTION HARDENING** while Calendar remains disabled; it is not a Calendar PASS or overall M9 PASS. See [deferred-integrations.json](deferred-integrations.json) and [production-readiness.md](production-readiness.md). Existing setup and acceptance evidence remain available.
 
 Latest live email acceptance: [M9-email-acceptance.json](M9-email-acceptance.json). **M9 EMAIL GATE PASSED**. DNS/provider verification, live sends, authentic webhooks, unsubscribe, bounce/complaint and reconciliation passed; receipt is now **OWNER CONFIRMED INBOX RECEIPT**. Overall M9 remains pending Calendar and final acceptance.
 
@@ -334,3 +334,15 @@ Overall M9 and final overall acceptance remain pending. M10 was not started. Inh
 Calendar setup publication scan covered **378 tracked/non-ignored files**, with zero secret-pattern matches, private credential matches or private environment files. Exact-value comparison against the four configured Resend/OpenAI secrets found zero matches; no Google token or authorization code was generated. The Node regression run passed **19/19**, including the six new setup contracts.
 
 The full local Convex regression suite subsequently passed **449/449 tests in 19 files**. Combined with 19 Node tests, **468 local tests passed**, including the 100 existing M9 contracts and six setup contracts. These totals do not replace live Google or final overall hosted M9 acceptance.
+
+## Owner-directed Calendar deferral and M10A sequencing
+
+Continued from `fd226206d90d193d1601b26a70eb3842997dc4a8`. The product owner intentionally deferred Google Calendar OAuth/account setup. **M9 EMAIL GATE PASSED** is preserved. **M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT** supersedes the earlier waiting-for-setup decision; historical evidence is retained, not rewritten as PASS.
+
+Calendar implementation is complete and retained: provider abstraction, Google adapter, projections, conflict detection, reconciliation, authorization, tests and setup procedure. Live acceptance remains incomplete, all four Google settings remain missing, and no dedicated Calendar exists. Fresh development inspection confirmed `M9_CALENDAR_ENABLED=false` and `M9_EMAIL_ENABLED=false`. Missing/unset flags fail closed through the existing strict `=== "true"` requirement before any provider call. Two new local regressions prove that false/unset flags with an otherwise enabled connection and missing OAuth credentials cause **zero OAuth/Calendar fetch calls**, no projection and no source mutation. The default policy applies to development and future production; no production configuration was accessed or changed.
+
+The focused M9 core check passed **102/102 local tests**. Fresh hosted stored-evidence reconciliation checked 6 Communications, 5 outbox jobs, 9 events, 4 provider mappings and 0 Calendar projections with **zero findings**. Queue health had zero retry waits, zero problem jobs and zero consecutive failures. Existing defect records show the reproduced reconciliation P1 was fixed. No known unresolved P0/P1 was identified in the currently available M9 scope; this bounded assessment is not final overall M9 or production acceptance. Evidence: [M9-deferral-core-check.json](M9-deferral-core-check.json). Historical live Email acceptance and 30 hosted read-only Calendar authorization checks remain valid within their documented scope; no repeat external send or live Calendar request was performed.
+
+Calendar is **NON-BLOCKING FOR M10A PRODUCTION HARDENING** while disabled. M10A preparation/hardening is authorized for a subsequent task, but **M10A implementation was not started in this task**. Production deployment, customer traffic, real-data migration, external customer communication, production Email/Calendar enablement and M10B Go-Live remain unauthorized.
+
+The [deferred integration register](deferred-integrations.json) is mandatory input to M10B. Calendar becomes a production blocker if activation is requested: the original dedicated-calendar/OAuth/live create/update/cancel/idempotency/conflict/delete/DST/authorization/reconciliation/cleanup gate must first pass. M10A cannot silently waive it. Production remains untouched; inherited production email/auth obligations remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.

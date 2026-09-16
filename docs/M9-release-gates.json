@@ -211,5 +211,13 @@
     "record": "docs/M9-calendar-acceptance.json",
     "decision": "M9 CALENDAR GATE PENDING EXTERNAL ACTION",
     "note": "100 existing M9 contracts, 6 setup security contracts, 30 hosted read-only authorization checks passed. Live Calendar acceptance awaits Google client/consent. Overall M9 remains pending."
+  },
+  "calendar_deferral": {
+    "decision": "M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT",
+    "non_blocking_for_m10a_while_disabled": true,
+    "core_check": "docs/M9-deferral-core-check.json",
+    "register": "docs/deferred-integrations.json",
+    "m10a_implementation_started": false,
+    "overall_m9_pass_claimed": false
   }
 }
