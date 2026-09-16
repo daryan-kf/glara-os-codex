@@ -375,6 +375,16 @@ export const reconcilePage = query({
     const rows = [];
     for (const row of page.page) {
       const issues: string[] = [];
+      if (row.source_key !== `${row.source.type}:${row.source.id}`)
+        issues.push("source_key_mismatch");
+      const connection = await ctx.db.get(row.connection_id);
+      if (!connection) issues.push("connection_unavailable");
+      else if (connection.calendar_id === "primary")
+        issues.push("unsafe_calendar_destination");
+      if (["synced", "cancelled"].includes(row.status) && !row.external_id)
+        issues.push("external_identity_missing");
+      if (row.status === "syncing" && (row.lease_until ?? 0) < Date.now())
+        issues.push("expired_sync_requires_reconciliation");
       const same = await ctx.db
         .query("calendar_projections")
         .withIndex("by_source", (q) =>
@@ -395,9 +405,10 @@ export const reconcilePage = query({
         issues.push("provider_review_required");
       if (row.observed?.has_attendees) issues.push("unexpected_attendees");
       try {
+        const current = await snapshot(ctx, row.source);
         if (
-          row.status === "synced" &&
-          !sameSnapshot(await snapshot(ctx, row.source), row.snapshot)
+          ["synced", "cancelled"].includes(row.status) &&
+          !sameSnapshot(current, row.snapshot)
         )
           issues.push("stale_projection");
       } catch {

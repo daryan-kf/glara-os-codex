@@ -1604,3 +1604,274 @@ it("provider failure is not hidden by an earlier or replayed acceptance event", 
   expect(deliveryState("failed", "delivered")).toBe("delivered");
   expect(deliveryState("delivered", "failed")).toBe("delivered");
 });
+
+describe("M9 final reconciliation gates 330 and 331", () => {
+  const page = { numItems: 25, cursor: null };
+  it("allows a reviewed approval awaiting the human Send action", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    const report = await f
+      .c("owner")
+      .query(api.communications.reconcilePage, { paginationOpts: page });
+    expect(report.page.find((r) => r.id === id)?.issues).toEqual([]);
+  });
+  it("reports active optional communication against unsubscribe without changing records", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    await f.queue(id);
+    await f.t.run((ctx) =>
+      ctx.db.insert("communication_preferences", {
+        recipient_key: `realtor:${f.source.id}`,
+        channel: "email",
+        scope: "all_optional",
+        status: "unsubscribed",
+        reason: "Fictional unsubscribe",
+        created_at: Date.now(),
+        updated_at: Date.now(),
+        version: 1,
+      }),
+    );
+    const before = await f.t.run((ctx) => ctx.db.get(id));
+    const report = await f
+      .c("owner")
+      .query(api.communications.reconcilePage, { paginationOpts: page });
+    expect(report.page.find((r) => r.id === id)?.issues).toContain(
+      "active_optional_unsubscribed",
+    );
+    expect(await f.t.run((ctx) => ctx.db.get(id))).toEqual(before);
+  });
+  it("reports corrupted source/recipient keys and missing approval evidence", async () => {
+    const f = await fixture();
+    const id = await f.create();
+    await f.t.run((ctx) =>
+      ctx.db.patch(id, {
+        source_key: "realtor:wrong",
+        recipient_key: "realtor:wrong",
+        status: "approved",
+      }),
+    );
+    const report = await f
+      .c("owner")
+      .query(api.communications.reconcilePage, { paginationOpts: page });
+    expect(report.page[0].issues).toEqual(
+      expect.arrayContaining([
+        "source_key_mismatch",
+        "recipient_key_mismatch",
+        "approval_snapshot_missing",
+        "approval_evidence_missing",
+      ]),
+    );
+  });
+  it("reports duplicate provider mappings instead of throwing, including orphan provenance", async () => {
+    const f = await fixture();
+    const id = await f.create();
+    await f.t.run(async (ctx) => {
+      const row = await ctx.db.get(id);
+      for (let i = 0; i < 2; i++)
+        await ctx.db.insert("communication_provider_messages", {
+          communication_id: id,
+          provider: "resend",
+          provider_id: "fictional-duplicate",
+          send_key: row!.send_key,
+          created_at: Date.now(),
+        });
+      await ctx.db.insert("communication_delivery_events", {
+        communication_id: id,
+        provider_id: "fictional-duplicate",
+        event_id: "fictional-reconciliation-event",
+        kind: "delivered",
+        occurred_at: Date.now(),
+        created_at: Date.now(),
+      });
+      await ctx.db.delete(id);
+    });
+    const report = await f
+      .c("owner")
+      .query(api.communications.providerReconcilePage, {
+        paginationOpts: page,
+      });
+    expect(report.page).toHaveLength(2);
+    for (const r of report.page)
+      expect(r.issues).toEqual(
+        expect.arrayContaining([
+          "orphan_provider_mapping",
+          "duplicate_provider_mapping",
+        ]),
+      );
+    expect(
+      (
+        await f.c("owner").query(api.communications.eventReconcilePage, {
+          paginationOpts: page,
+        })
+      ).page[0].mismatch,
+    ).toBe(true);
+  });
+  it("reports orphan jobs, duplicate keys and expired claims", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    const job = await f.queue(id);
+    await f.t.run(async (ctx) => {
+      const row = await ctx.db.get(job);
+      await ctx.db.insert("communication_outbox", {
+        communication_id: id,
+        send_key: row!.send_key,
+        status: "claimed",
+        attempts: 0,
+        next_attempt_at: 0,
+        lease_until: 0,
+        created_at: 0,
+        updated_at: 0,
+        version: 1,
+      });
+      await ctx.db.delete(id);
+    });
+    const report = await f
+      .c("owner")
+      .query(api.communications.outboxReconcilePage, { paginationOpts: page });
+    expect(
+      report.page.every(
+        (r) => r.orphan && r.issues.includes("duplicate_send_key"),
+      ),
+    ).toBe(true);
+    expect(
+      report.page.some((r) =>
+        r.issues.includes("expired_lease_requires_recovery"),
+      ),
+    ).toBe(true);
+  });
+  it("does not accept a ready retry after an uncertain send as clean", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    const job = await f.queue(id);
+    await f.claim(job);
+    await f.t.mutation(internal.communicationDelivery.outcome, {
+      id: job,
+      result: "unknown",
+      code: "transport_uncertain",
+    });
+    await f.t.run(async (ctx) => {
+      await ctx.db.patch(job, { status: "ready" });
+      await ctx.db.patch(id, { status: "queued" });
+    });
+    const report = await f
+      .c("owner")
+      .query(api.communications.reconcilePage, { paginationOpts: page });
+    expect(report.page[0].issues).toContain("unsafe_retry_state");
+  });
+  it("requires a completed dispatched job before accepting mapped provider provenance", async () => {
+    const f = await fixture();
+    const id = await f.create();
+    await f.t.run(async (ctx) => {
+      const row = await ctx.db.get(id);
+      await ctx.db.insert("communication_provider_messages", {
+        communication_id: id,
+        provider: "resend",
+        provider_id: "fictional-unproven",
+        send_key: row!.send_key,
+        created_at: Date.now(),
+      });
+    });
+    const report = await f
+      .c("owner")
+      .query(api.communications.reconcilePage, { paginationOpts: page });
+    expect(report.page[0].issues).toContain(
+      "provider_dispatch_provenance_missing",
+    );
+  });
+  it.each(["sales", "marketing", "designer", "staging_crew"] as const)(
+    "denies %s access to the provider reconciliation scan",
+    async (role) => {
+      const f = await fixture();
+      await expect(
+        f.c(role).query(api.communications.providerReconcilePage, {
+          paginationOpts: page,
+        }),
+      ).rejects.toThrow();
+    },
+  );
+  it("denies anonymous provider reconciliation and oversized pages", async () => {
+    const f = await fixture();
+    await expect(
+      f.t.query(api.communications.providerReconcilePage, {
+        paginationOpts: page,
+      }),
+    ).rejects.toThrow();
+    await expect(
+      f.c("owner").query(api.communications.providerReconcilePage, {
+        paginationOpts: { numItems: 26, cursor: null },
+      }),
+    ).rejects.toThrow();
+  });
+  it("reports calendar source and connection mismatches without modifying M3", async () => {
+    vi.stubEnv("M9_GOOGLE_CALENDAR_ID", "fictional-calendar@example.test");
+    vi.stubEnv("M9_CALENDAR_ENABLED", "true");
+    const f = await operationsFixture(),
+      project = await f.create();
+    await f.ready(project);
+    await f.schedule(project);
+    const event = await f.t.run((ctx) =>
+      ctx.db
+        .query("operations_events")
+        .withIndex("by_project", (q) => q.eq("project_id", project))
+        .first(),
+    );
+    await f
+      .c("owner")
+      .mutation(api.calendarSync.configure, { enabled: true, version: 0 });
+    const projection = await f.c("owner").mutation(api.calendarSync.prepare, {
+      source: { type: "operations_event", id: event!._id },
+    });
+    await f.t.run(async (ctx) => {
+      const row = await ctx.db.get(projection.id);
+      await ctx.db.delete(row!.connection_id);
+      await ctx.db.patch(projection.id, {
+        source_key: "operations_event:wrong",
+        lease_until: 0,
+      });
+    });
+    const report = await f
+      .c("owner")
+      .query(api.calendarSync.reconcilePage, { paginationOpts: page });
+    expect(report.page[0].issues).toEqual(
+      expect.arrayContaining([
+        "source_key_mismatch",
+        "connection_unavailable",
+        "expired_sync_requires_reconciliation",
+      ]),
+    );
+    expect(await f.t.run((ctx) => ctx.db.get(event!._id))).toEqual(event);
+  });
+});
+it("final reconciliation detects a status that understates verified delivery", async () => {
+  const f = await fixture();
+  await f.consent();
+  const id = await f.create();
+  await f.approve(id);
+  const job = await f.queue(id);
+  await f.claim(job);
+  await f.t.mutation(internal.communicationDelivery.outcome, {
+    id: job,
+    result: "accepted",
+    provider_id: "fictional-verified-delivery",
+    code: "accepted",
+  });
+  await f.t.mutation(internal.communicationDelivery.delivery, {
+    provider_id: "fictional-verified-delivery",
+    event_id: "fictional-delivery-reconciliation",
+    kind: "delivered",
+    occurred_at: Date.now(),
+  });
+  await f.t.run((ctx) => ctx.db.patch(id, { status: "sent" }));
+  const report = await f.c("owner").query(api.communications.reconcilePage, {
+    paginationOpts: { numItems: 25, cursor: null },
+  });
+  expect(report.page[0].issues).toContain("delivery_status_mismatch");
+});

@@ -1,0 +1,201 @@
+{
+  "milestone": "M9",
+  "scope": "Continuation of existing implementation, Sections 322-345",
+  "base_commit": "6a85b35b7be92bfc1305d748d9bf809c52f9a97c",
+  "recorded_at": "2026-09-16T02:14:43.336166+00:00",
+  "decision": "M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION",
+  "sections": [
+    {
+      "section": 322,
+      "status": "local_security_verified_hosted_pending",
+      "evidence": "Existing P0 guards preserved; no external delivery or calendar write performed."
+    },
+    {
+      "section": 323,
+      "status": "local_defects_fixed_hosted_pending",
+      "evidence": "Final reconciliation now detects unsubscribe, provenance, mapping, status and calendar-reference defects."
+    },
+    {
+      "section": 324,
+      "status": "documented",
+      "evidence": "Bounded M9 limitations retained; no expansion into M10."
+    },
+    {
+      "section": 325,
+      "status": "blocked_external_configuration",
+      "evidence": "Email credential, signing/unsubscribe secrets, allowlist and public origin absent; sender/DNS/inbox acceptance unavailable."
+    },
+    {
+      "section": 326,
+      "status": "blocked_external_configuration",
+      "evidence": "Google OAuth and dedicated development calendar configuration absent."
+    },
+    {
+      "section": 327,
+      "status": "pending_hosted_acceptance",
+      "evidence": "Fresh hosted role matrix not run; local authorization tests pass."
+    },
+    {
+      "section": 328,
+      "status": "local_verified_live_pending",
+      "evidence": "M7/M8 remain work/draft producers; M9 retains human review/send and dispatch checks."
+    },
+    {
+      "section": 329,
+      "status": "local_verified_hosted_pending",
+      "evidence": "Only M9 reconciliation reads and UI changed; accepted M0-M8 business architecture preserved."
+    },
+    {
+      "section": 330,
+      "status": "implemented_locally_final_hosted_counts_pending",
+      "evidence": "Paginated communication, outbox, provider mapping and event checks; no final hosted zero-drift claim."
+    },
+    {
+      "section": 331,
+      "status": "implemented_locally_final_provider_counts_pending",
+      "evidence": "Calendar source/connection/identity/lease/conflict checks; live provider comparison remains required."
+    },
+    {
+      "section": 332,
+      "status": "pending_hosted_acceptance",
+      "evidence": "Final independent M6 source count, revision and source/bucket drift not collected."
+    },
+    {
+      "section": 333,
+      "status": "pending_hosted_acceptance",
+      "evidence": "Local M4/M5 regressions pass; final hosted unauthorized-mutation counts not collected."
+    },
+    {
+      "section": 334,
+      "status": "pending_hosted_acceptance",
+      "evidence": "Fresh M1-M8 hosted regressions require the final authorized M9 deployment."
+    },
+    {
+      "section": 335,
+      "status": "pending_hosted_acceptance",
+      "evidence": "No M9 deployment or hosted acceptance executed in this continuation."
+    },
+    {
+      "section": 336,
+      "status": "pending_m9_browser_acceptance",
+      "evidence": "Prior 13 compatibility checks are not full M9 desktop/mobile acceptance."
+    },
+    {
+      "section": 337,
+      "status": "passed_locally",
+      "evidence": "13 Node + 449 Vitest/Convex = 462 passed, including 100 M9; strict types, lint, formatting, production build, both audits, secret scan and diff checks passed."
+    },
+    {
+      "section": 338,
+      "status": "external_work_stopped",
+      "evidence": "Read-only development preflight confirms external enable flags unset; no temporary hosted helpers, provider writes or production changes made."
+    },
+    {
+      "section": 339,
+      "status": "documented",
+      "evidence": "Updated M9 report, local results and this section-by-section gate record."
+    },
+    {
+      "section": 340,
+      "status": "deferred_required_before_production",
+      "evidence": "All production prerequisites retained; M10 not started."
+    },
+    {
+      "section": 341,
+      "status": "corrective_loop_applied_locally",
+      "evidence": "Preserved failing status-reconciliation regression, fixed root cause, reran complete local tests; external reruns pending configuration."
+    },
+    {
+      "section": 342,
+      "status": "pending_external_action",
+      "evidence": "Missing real provider dependencies are confirmed by a read-only development preflight."
+    },
+    {
+      "section": 343,
+      "status": "no_known_unresolved_local_p0_p1",
+      "evidence": "No current reproduced local P0/P1; pending hosted/live evidence is not passed."
+    },
+    {
+      "section": 344,
+      "status": "pass_not_permitted",
+      "evidence": "Live email, live calendar, hosted, browser and final reconciliation requirements are not satisfied."
+    },
+    {
+      "section": 345,
+      "status": "reported",
+      "evidence": "The 28-item results are in M9-report.md; pushed commit SHA is returned after GitHub verification."
+    }
+  ],
+  "external_preflight": {
+    "deployment": "woozy-jaguar-392",
+    "checked_at": "2026-09-16T02:09:59.812Z",
+    "access": "read_only",
+    "required_configuration": [
+      {
+        "name": "M9_RESEND_KEY",
+        "present": false
+      },
+      {
+        "name": "M9_RESEND_WEBHOOK_SECRET",
+        "present": false
+      },
+      {
+        "name": "M9_UNSUBSCRIBE_SECRET",
+        "present": false
+      },
+      {
+        "name": "M9_EMAIL_TEST_ALLOWLIST",
+        "present": false
+      },
+      {
+        "name": "M9_PUBLIC_HTTP_ORIGIN",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_CALENDAR_ID",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_CLIENT_ID",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_CLIENT_SECRET",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_REFRESH_TOKEN",
+        "present": false
+      }
+    ],
+    "flags": {
+      "M9_EMAIL_ENABLED": "unset (disabled by default)",
+      "M9_EMAIL_VERIFIED": "unset (disabled by default)",
+      "M9_CALENDAR_ENABLED": "unset (disabled by default)"
+    },
+    "provider_values_exposed": false,
+    "provider_calls": 0,
+    "external_writes": 0
+  },
+  "initial_failure": {
+    "classification": "P1 reconciliation detection gap",
+    "test": "final reconciliation detects a status that understates verified delivery",
+    "observed": "Reconciliation returned [] for a fictional Sent record with verified Delivered evidence.",
+    "expected": "delivery_status_mismatch",
+    "fixed": true,
+    "external_incident": false
+  },
+  "final_counts": {
+    "hosted_m9": null,
+    "fresh_hosted_m1_m8": null,
+    "m6_source_count": null,
+    "m6_analytics_revision": null,
+    "m6_source_drift": null,
+    "m6_bucket_drift": null,
+    "communication_mismatches": null,
+    "calendar_mismatches": null,
+    "unauthorized_inventory_mutations": null,
+    "unauthorized_financial_mutations": null
+  },
+  "null_counts_mean": "Not collected; never equivalent to zero."
+}

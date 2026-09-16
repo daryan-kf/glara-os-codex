@@ -1,8 +1,8 @@
 {
   "milestone": "M9",
   "specification": "Sections 1-345 including entity addendum 164A-164AJ",
-  "base_commit": "29eb70183d45d66e1ef8d23ded19ec9edb0be544",
-  "recorded_at": "2026-09-16T01:36:35.316941+00:00",
+  "base_commit": "6a85b35b7be92bfc1305d748d9bf809c52f9a97c",
+  "recorded_at": "2026-09-16T02:14:43.336166+00:00",
   "decision": "M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION",
   "local": {
     "node_tests": {
@@ -10,15 +10,15 @@
       "failed": 0
     },
     "convex_tests": {
-      "passed": 435,
+      "passed": 449,
       "failed": 0,
       "files": 19
     },
     "m9_tests": {
-      "passed": 86,
+      "passed": 100,
       "failed": 0
     },
-    "total_passed": 448,
+    "total_passed": 462,
     "typescript": "passed",
     "lint": "passed",
     "format": "passed",
@@ -38,7 +38,7 @@
   "browser_compatibility": {
     "passed": 13,
     "failed": 0,
-    "scope": "M8 backend compatibility and route guards only",
+    "scope": "Previous commit compatibility against M8 backend only; not rerun or promoted to current M9 workflow acceptance",
     "results": [
       {
         "role": "owner",
@@ -109,7 +109,7 @@
   },
   "hosted_m9": {
     "executed": 0,
-    "status": "NOT RUN - M9 development deployment approval pending"
+    "status": "NOT RUN - stopped at confirmed missing real provider configuration; M9 deployment also not authorized"
   },
   "browser_m9": "NOT RUN - full M9 workflows require deployment",
   "fresh_hosted_m1_m8": "NOT RUN after this M9 revision",
@@ -122,7 +122,7 @@
   "production": "UNTOUCHED - NOT AUTHORIZED",
   "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
   "secret_scan": {
-    "scanned_files": 369,
+    "scanned_files": 370,
     "secret_pattern_files": [],
     "private_value_matches": [],
     "private_env_files": [],
@@ -147,5 +147,57 @@
       "status": 307,
       "redirect": "/login"
     }
-  ]
+  ],
+  "external_preflight": {
+    "deployment": "woozy-jaguar-392",
+    "checked_at": "2026-09-16T02:09:59.812Z",
+    "access": "read_only",
+    "required_configuration": [
+      {
+        "name": "M9_RESEND_KEY",
+        "present": false
+      },
+      {
+        "name": "M9_RESEND_WEBHOOK_SECRET",
+        "present": false
+      },
+      {
+        "name": "M9_UNSUBSCRIBE_SECRET",
+        "present": false
+      },
+      {
+        "name": "M9_EMAIL_TEST_ALLOWLIST",
+        "present": false
+      },
+      {
+        "name": "M9_PUBLIC_HTTP_ORIGIN",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_CALENDAR_ID",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_CLIENT_ID",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_CLIENT_SECRET",
+        "present": false
+      },
+      {
+        "name": "M9_GOOGLE_REFRESH_TOKEN",
+        "present": false
+      }
+    ],
+    "flags": {
+      "M9_EMAIL_ENABLED": "unset (disabled by default)",
+      "M9_EMAIL_VERIFIED": "unset (disabled by default)",
+      "M9_CALENDAR_ENABLED": "unset (disabled by default)"
+    },
+    "provider_values_exposed": false,
+    "provider_calls": 0,
+    "external_writes": 0
+  },
+  "release_gate_record": "docs/M9-release-gates.json"
 }

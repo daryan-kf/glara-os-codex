@@ -18,6 +18,9 @@ export function ReconciliationReview() {
         communication_findings: 0,
         outbox: 0,
         orphan_jobs: 0,
+        outbox_findings: 0,
+        provider_mappings: 0,
+        provider_mapping_findings: 0,
         events: 0,
         event_mismatches: 0,
         projections: 0,
@@ -45,6 +48,23 @@ export function ReconciliationReview() {
         });
         counts.outbox += page.page.length;
         counts.orphan_jobs += page.page.filter((r) => r.orphan).length;
+        counts.outbox_findings += page.page.reduce(
+          (n, r) => n + r.issues.length,
+          0,
+        );
+        cursor = page.isDone ? null : page.continueCursor;
+      } while (cursor);
+      do {
+        const page: FunctionReturnType<
+          typeof api.communications.providerReconcilePage
+        > = await client.query(api.communications.providerReconcilePage, {
+          paginationOpts: { numItems: 25, cursor },
+        });
+        counts.provider_mappings += page.page.length;
+        counts.provider_mapping_findings += page.page.reduce(
+          (n, r) => n + r.issues.length,
+          0,
+        );
         cursor = page.isDone ? null : page.continueCursor;
       } while (cursor);
       do {

@@ -14,6 +14,7 @@ import {
 } from "./communicationSchema";
 import {
   bases,
+  covers,
   content,
   editable,
   normalizeEmail,
@@ -1237,6 +1238,39 @@ export const reconcilePage = query({
     const findings: { id: Id<"communications">; issues: string[] }[] = [];
     for (const row of page.page) {
       const issues: string[] = [];
+      if (row.source_key !== core.key(row.source))
+        issues.push("source_key_mismatch");
+      if (row.recipient_key !== core.key(row.recipient))
+        issues.push("recipient_key_mismatch");
+      if (["approved", "queued"].includes(row.status)) {
+        if (!row.snapshot || !row.approved_by)
+          issues.push("approval_snapshot_missing");
+        const decision = row.decision_id && (await ctx.db.get(row.decision_id));
+        if (
+          !decision ||
+          !decision.allowed ||
+          decision.phase !== "approval" ||
+          decision.communication_id !== row._id
+        )
+          issues.push("approval_evidence_missing");
+        if (row.category !== "transactional") {
+          const preferences = await ctx.db
+            .query("communication_preferences")
+            .withIndex("by_recipient", (q) =>
+              q.eq("recipient_key", core.key(row.recipient)),
+            )
+            .take(21);
+          if (preferences.length > 20)
+            issues.push("preference_history_requires_review");
+          if (
+            preferences.some(
+              (p) =>
+                p.status === "unsubscribed" && covers(p.scope, row.category),
+            )
+          )
+            issues.push("active_optional_unsubscribed");
+        }
+      }
       const jobs = await ctx.db
         .query("communication_outbox")
         .withIndex("by_communication", (q) => q.eq("communication_id", row._id))
@@ -1262,21 +1296,58 @@ export const reconcilePage = query({
         issues.push("missing_provider_evidence");
       if (row.status === "delivery_unknown")
         issues.push("unknown_requires_investigation");
-      if (job?.status === "ready" && row.status !== "queued")
+      if (
+        job?.status === "ready" &&
+        (row.status !== "queued" ||
+          job.attempts >= 3 ||
+          (job.attempts > 0 &&
+            job.last_code !== "rate_limited" &&
+            !(
+              job.last_code === "unused_claim_recovered" &&
+              !job.dispatch_started_at
+            )))
+      )
         issues.push("unsafe_retry_state");
+      if (
+        row.status === "queued" &&
+        job &&
+        !["ready", "claimed"].includes(job.status)
+      )
+        issues.push("queue_job_state_mismatch");
+      if (
+        mapping &&
+        (!job ||
+          job.status !== "complete" ||
+          !job.dispatch_started_at ||
+          !row.snapshot)
+      )
+        issues.push("provider_dispatch_provenance_missing");
       if (mapping) {
         const events = await Promise.all(
-          (["delivered", "hard_bounce", "complaint"] as const).map((kind) =>
-            ctx.db
-              .query("communication_delivery_events")
-              .withIndex("by_provider_kind", (q) =>
-                q.eq("provider_id", mapping.provider_id).eq("kind", kind),
-              )
-              .first(),
+          (["delivered", "hard_bounce", "complaint", "failed"] as const).map(
+            (kind) =>
+              ctx.db
+                .query("communication_delivery_events")
+                .withIndex("by_provider_kind", (q) =>
+                  q.eq("provider_id", mapping.provider_id).eq("kind", kind),
+                )
+                .first(),
           ),
         );
         if (row.status === "delivered" && !events[0])
           issues.push("delivered_without_event");
+        if (events[0] && !["delivered", "bounced"].includes(row.status))
+          issues.push("delivery_status_mismatch");
+        if (
+          events[3] &&
+          !events[0] &&
+          !events[1] &&
+          !events[2] &&
+          row.status !== "failed"
+        )
+          issues.push("failure_status_mismatch");
+        if (!["sent", "delivered", "bounced", "failed"].includes(row.status))
+          issues.push("provider_status_mismatch");
         if ((events[1] || events[2]) && row.status !== "bounced")
           issues.push("bounce_status_mismatch");
         if ((events[1] || events[2]) && row.snapshot) {
@@ -1326,10 +1397,23 @@ export const outboxReconcilePage = query({
     return {
       ...page,
       page: await Promise.all(
-        page.page.map(async (j) => ({
-          id: j._id,
-          orphan: !(await ctx.db.get(j.communication_id)),
-        })),
+        page.page.map(async (j) => {
+          const row = await ctx.db.get(j.communication_id);
+          const sameKey = await ctx.db
+            .query("communication_outbox")
+            .withIndex("by_send_key", (q) => q.eq("send_key", j.send_key))
+            .take(2);
+          const issues: string[] = [];
+          if (!row) issues.push("orphan_job");
+          if (sameKey.length > 1) issues.push("duplicate_send_key");
+          if (row && row.send_key !== j.send_key)
+            issues.push("communication_key_mismatch");
+          if (j.status === "unknown")
+            issues.push("unknown_requires_investigation");
+          if (j.status === "claimed" && (j.lease_until ?? 0) < Date.now())
+            issues.push("expired_lease_requires_recovery");
+          return { id: j._id, orphan: !row, issues };
+        }),
       ),
     };
   },
@@ -1345,17 +1429,57 @@ export const eventReconcilePage = query({
       .paginate(a.paginationOpts);
     const rows = [];
     for (const event of page.page) {
-      const mapping = await ctx.db
+      const mappings = await ctx.db
         .query("communication_provider_messages")
         .withIndex("by_provider", (q) =>
           q.eq("provider", "resend").eq("provider_id", event.provider_id),
         )
-        .unique();
+        .take(2);
       rows.push({
         id: event._id,
         mismatch:
-          !mapping || mapping.communication_id !== event.communication_id,
+          mappings.length !== 1 ||
+          mappings[0].communication_id !== event.communication_id ||
+          !(await ctx.db.get(mappings[0].communication_id)),
       });
+    }
+    return { ...page, page: rows };
+  },
+});
+
+export const providerReconcilePage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    if (a.paginationOpts.numItems < 1 || a.paginationOpts.numItems > 25)
+      deny("INVALID_INPUT");
+    const page = await ctx.db
+      .query("communication_provider_messages")
+      .paginate(a.paginationOpts);
+    const rows = [];
+    for (const mapping of page.page) {
+      const issues: string[] = [];
+      const row = await ctx.db.get(mapping.communication_id);
+      const sameProvider = await ctx.db
+        .query("communication_provider_messages")
+        .withIndex("by_provider", (q) =>
+          q
+            .eq("provider", mapping.provider)
+            .eq("provider_id", mapping.provider_id),
+        )
+        .take(2);
+      const sameCommunication = await ctx.db
+        .query("communication_provider_messages")
+        .withIndex("by_communication", (q) =>
+          q.eq("communication_id", mapping.communication_id),
+        )
+        .take(2);
+      if (!row) issues.push("orphan_provider_mapping");
+      if (row && row.send_key !== mapping.send_key)
+        issues.push("provider_key_mismatch");
+      if (sameProvider.length > 1 || sameCommunication.length > 1)
+        issues.push("duplicate_provider_mapping");
+      rows.push({ id: mapping._id, issues });
     }
     return { ...page, page: rows };
   },
