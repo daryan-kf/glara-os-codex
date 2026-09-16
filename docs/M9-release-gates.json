@@ -204,7 +204,7 @@
   },
   "email_acceptance_followup": {
     "record": "docs/M9-email-acceptance.json",
-    "decision": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
-    "note": "Actual email acceptance now run; only inbox receipt confirmation remains for this email gate. Overall M9 remains pending Calendar and final hosted acceptance."
+    "decision": "M9 EMAIL GATE PASSED",
+    "note": "Owner confirmed both designated inbox receipts. Existing live acceptance evidence retained; no resends. Overall M9 remains pending Calendar and final hosted acceptance."
   }
 }

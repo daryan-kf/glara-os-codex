@@ -4,7 +4,7 @@
 
 **M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION**.
 
-Latest live email acceptance: [M9-email-acceptance.json](M9-email-acceptance.json). DNS/provider verification, live sends, authentic webhooks, unsubscribe, bounce/complaint and reconciliation have passed; inbox receipt confirmation remains pending. Overall M9 remains pending Calendar and final acceptance.
+Latest live email acceptance: [M9-email-acceptance.json](M9-email-acceptance.json). **M9 EMAIL GATE PASSED**. DNS/provider verification, live sends, authentic webhooks, unsubscribe, bounce/complaint and reconciliation passed; receipt is now **OWNER CONFIRMED INBOX RECEIPT**. Overall M9 remains pending Calendar and final acceptance.
 
 Latest email setup evidence: [M9-email-readiness.json](M9-email-readiness.json). The email-only development setup described at the end of this report supersedes earlier deployment/configuration stop snapshots. Earlier test counts retain their original scope.
 
@@ -251,7 +251,7 @@ The owner explicitly authorized computer control to finish DNS setup. Both avail
 
 Continued from `3d7001f905250cae8c0bd478449e32812a616d6d` on development `woozy-jaguar-392` only. Application source was unchanged. This section supersedes prior email/DNS stop conditions; prior evidence remains historical.
 
-**M9 EMAIL GATE PENDING EXTERNAL ACTION** — the only remaining email-gate action is the owner's inbox receipt confirmation. Provider delivery does not prove inbox visibility.
+**M9 EMAIL GATE PASSED** — the product owner has confirmed receipt of both designated acceptance messages. This confirmation supplements the independent provider delivery evidence; Codex did not inspect the mailbox.
 
 ### DNS and provider
 
@@ -275,7 +275,7 @@ The normal M9 workflow created fictional Realtor/property/opportunity/consultati
 | Unsubscribe         | Nine checks passed: opaque real token, GET confirmation without mutation, POST update, optional scope, idempotent repeat, blocked later optional approval/enqueue, transactional eligibility preserved |
 | Hard bounce         | Official Resend simulator produced a hard-bounce event and `all` technical suppression                                                                                                                 |
 | Complaint           | Official Resend simulator produced a complaint and `all_optional` suppression; not promoted to transactional suppression                                                                               |
-| Inbox receipt       | **PENDING OWNER CONFIRMATION** for exactly one copy of each of the two named messages                                                                                                                  |
+| Inbox receipt       | **OWNER CONFIRMED INBOX RECEIPT** for both designated messages; no Codex mailbox inspection                                                                                                            |
 
 Exactly four logical provider messages were submitted: two to the designated inbox and two to [official Resend event simulators](https://resend.com/docs/knowledge-base/what-email-addresses-to-use-for-testing). Only the two exact simulator addresses were temporarily added to the development allowlist; the original single-inbox allowlist was restored in `finally`. No random nonexistent address received a provider call. Provider content retrieval and live webhook evidence are distinguished from owner mailbox confirmation. The real API key was not invalidated.
 
@@ -289,8 +289,16 @@ All four paginated M9 reconciliation queries completed with **zero unexplained f
 
 `M9_EMAIL_ENABLED=false` was restored immediately after the send window; `M9_EMAIL_VERIFIED=true` is retained following real verification. Credentials, webhook, verified domain and single-inbox allowlist remain configured. Clearly labeled fictional fixtures, approval/audit records and suppression/preferences are retained for review; no acceptance proof was deleted. The acceptance-only company signature is explicitly fictional/test-purpose and requires a real rollout signature before operational use.
 
-The owner was asked to confirm receipt of **“Glara OS M9 acceptance — fictional consultation”** and **“Glara OS M9 acceptance — optional email preferences.”** No mailbox password was requested, and receipt is not marked passed without that confirmation.
+The product owner manually confirmed receipt of both **“Glara OS M9 acceptance — fictional consultation”** and **“Glara OS M9 acceptance — optional email preferences.”** Evidence classification: **OWNER CONFIRMED INBOX RECEIPT**. Codex did not inspect the mailbox. No resend was required or performed; independent provider delivery and idempotency evidence already exists.
 
 Machine-readable evidence: `docs/M9-email-acceptance.json`. Google Calendar setup and M10 were not started. Production was untouched. Overall M9 still requires Calendar and final hosted acceptance; inherited production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
 
 Publication checks: formatting and `git diff --check` passed. Secret scanning covered **373 tracked/non-ignored files**, with zero API-key patterns, zero locally available credential matches, zero development email-secret matches and no private environment/acceptance files included. Only report/evidence files changed.
+
+## Email gate closure — owner receipt confirmed
+
+Continued from `514fb64e8aa2c053dbe6c9dbed13803e6766ac01`. Receipt was recorded on 2026-09-16T17:27:57.477197+00:00. All recorded email-gate evidence was re-evaluated, including sender/DNS verification, allowlist and approval boundaries, reviewed content, live delivery, authentic webhooks, idempotency, unsubscribe, bounce/complaint suppression, unknown-outcome protections, clean reconciliation and secret isolation. **M9 EMAIL GATE PASSED**; no known remaining email-specific P0/P1 blocker. Earlier pending decisions above are historical snapshots.
+
+A fresh read-only development check confirmed `M9_EMAIL_ENABLED=false`, verified sender configuration, the original single-inbox allowlist and unchanged counts: 6 Communications, 5 outbox jobs, 4 provider mappings, 9 events, 0 ready jobs, 0 unknown outcomes. No replacement emails, provider changes or application changes were made. Existing 100 local tests and 13 browser smoke checks retain their recorded scope and were not rerun for this documentation-only closure.
+
+This closes the **email gate only**. Overall M9 remains pending Calendar and final overall acceptance. Google Calendar and M10 were not started. Production remains untouched; inherited production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.

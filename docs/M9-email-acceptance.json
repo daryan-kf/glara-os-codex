@@ -5,7 +5,7 @@
   "deployed_application_source_commit": "8d03f3e9abde1a79692e31650dfb795e8f10954d",
   "recorded_at": "2026-09-16T06:03:34.417157+00:00",
   "deployment": "woozy-jaguar-392",
-  "decision": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
+  "decision": "M9 EMAIL GATE PASSED",
   "domain_status": "verified",
   "spf": "VERIFIED by Resend; send TXT/MX and rsend CNAME match all four DNS perspectives",
   "dkim": "VERIFIED by Resend; exact TXT matches all four DNS perspectives",
@@ -340,9 +340,15 @@
     }
   },
   "inbox_receipt": {
-    "status": "PENDING OWNER CONFIRMATION",
-    "method": "Owner asked to confirm both named messages arrived once each; no authorized mailbox access",
-    "provider_delivery_is_not_inbox_confirmation": true
+    "status": "OWNER CONFIRMED INBOX RECEIPT",
+    "method": "Product owner manually confirmed in the task that both designated M9 acceptance emails arrived successfully in the authorized test inbox. Codex did not inspect the mailbox.",
+    "confirmed_by": "product_owner",
+    "recorded_at": "2026-09-16T17:27:57.477197+00:00",
+    "both_designated_emails_received": true,
+    "codex_mailbox_inspection": false,
+    "no_resend_required": true,
+    "replacement_emails_sent": 0,
+    "independent_provider_delivery_evidence": "Existing authentic Resend delivery events for both messages; preserved without repeat sends."
   },
   "authentic_webhooks": {
     "status": "PASSED",
@@ -485,7 +491,7 @@
   "final_sender_verified": true,
   "single_designated_inbox_allowlist_restored": true,
   "cleanup": "No pending sends. Clearly labeled fictional fixtures and audit/delivery/suppression records retained for review; no source deletion or resetting proof. Acceptance-only company signature retained, not production-ready.",
-  "remaining_blocker": "Owner confirmation that the designated inbox received exactly one transactional and one optional acceptance email.",
+  "remaining_blocker": null,
   "production": "UNTOUCHED",
   "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
   "calendar_configuration": "NOT STARTED",
@@ -573,5 +579,27 @@
     "private_env_files": [],
     "scope": "tracked/non-ignored source; API patterns and locally available private credential values; no values logged",
     "development_secret_value_matches": 0
+  },
+  "closure": {
+    "continued_from": "514fb64e8aa2c053dbe6c9dbed13803e6766ac01",
+    "recorded_at": "2026-09-16T17:27:57.477197+00:00",
+    "decision": "M9 EMAIL GATE PASSED",
+    "email_specific_p0_p1_blockers": [],
+    "existing_evidence_reused": true,
+    "additional_emails_sent": 0,
+    "safe_state_verified_at": "2026-09-16T17:27:57.477197+00:00",
+    "email_enabled": false,
+    "sender_verified": true,
+    "single_inbox_allowlist_verified": true,
+    "database_counts": {
+      "communications": 6,
+      "events": 9,
+      "mappings": 4,
+      "outbox": 5,
+      "ready": 0,
+      "unknown": 0
+    },
+    "overall_m9": "PENDING - Calendar and final overall M9 acceptance remain separate",
+    "production": "UNTOUCHED"
   }
 }

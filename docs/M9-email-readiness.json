@@ -1,6 +1,6 @@
 {
   "milestone": "M9",
-  "gate": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
+  "gate": "M9 EMAIL GATE PASSED",
   "base_and_deployed_source_commit": "8d03f3e9abde1a79692e31650dfb795e8f10954d",
   "recorded_at": "2026-09-16T06:03:34.417157+00:00",
   "deployment": "woozy-jaguar-392",
@@ -76,7 +76,7 @@
   "email_enabled": false,
   "email_verified": true,
   "live_send": "PASSED - two designated-inbox messages and two official Resend simulators",
-  "inbox_receipt": "PENDING OWNER CONFIRMATION",
+  "inbox_receipt": "OWNER CONFIRMED INBOX RECEIPT",
   "delivery_event": "PASSED - nine authentic Resend events matched with successful HTTP attempts",
   "live_idempotency": "PASSED - duplicate create/enqueue/dispatch and actual provider webhook replay",
   "live_unsubscribe": "PASSED - nine checks including separate transactional eligibility",
@@ -317,8 +317,8 @@
     "live_email_record": "docs/M9-email-acceptance.json"
   },
   "origin_correction": "Initial non-regional URL returned 404; corrected using CLI-confirmed eu-west-1 deployment and reran all four endpoint checks successfully",
-  "remaining_external_action": "Owner confirmation that the designated inbox received exactly one transactional and one optional acceptance email.",
-  "overall_m9": "PENDING - email, Calendar and final hosted acceptance",
+  "remaining_external_action": null,
+  "overall_m9": "PENDING - Calendar and final hosted acceptance",
   "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
   "production": "UNTOUCHED",
   "calendar_configuration": "NOT STARTED",
@@ -632,5 +632,17 @@
     "dns_account_access": "unavailable",
     "scope": "Historical setup limitation; DNS was subsequently added by owner and verified without UI control"
   },
-  "acceptance_record": "docs/M9-email-acceptance.json"
+  "acceptance_record": "docs/M9-email-acceptance.json",
+  "receipt_confirmation": {
+    "status": "OWNER CONFIRMED INBOX RECEIPT",
+    "method": "Product owner manually confirmed in the task that both designated M9 acceptance emails arrived successfully in the authorized test inbox. Codex did not inspect the mailbox.",
+    "confirmed_by": "product_owner",
+    "recorded_at": "2026-09-16T17:27:57.477197+00:00",
+    "both_designated_emails_received": true,
+    "codex_mailbox_inspection": false,
+    "no_resend_required": true,
+    "replacement_emails_sent": 0,
+    "independent_provider_delivery_evidence": "Existing authentic Resend delivery events for both messages; preserved without repeat sends."
+  },
+  "safe_state_verified_at": "2026-09-16T17:27:57.477197+00:00"
 }
