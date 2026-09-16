@@ -2,7 +2,7 @@
   "milestone": "M9",
   "gate": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
   "base_and_deployed_source_commit": "8d03f3e9abde1a79692e31650dfb795e8f10954d",
-  "recorded_at": "2026-09-16T05:28:02.661724+00:00",
+  "recorded_at": "2026-09-16T06:03:34.417157+00:00",
   "deployment": "woozy-jaguar-392",
   "configuration": {
     "M9_RESEND_KEY": "configured",
@@ -23,10 +23,10 @@
     "scope": "Development endpoint preparation; email disabled; no Calendar configuration"
   },
   "provider_account_authorization": "configured",
-  "domain_verification": "PENDING - Resend domain added; verification requested; exact DNS records missing",
-  "spf": "Root Hostinger SPF preserved; Resend send/rsend records missing",
-  "dkim": "Exact Resend public key retrieved; resend._domainkey TXT missing",
-  "dmarc": "Existing p=none record preserved; live message alignment not tested",
+  "domain_verification": "VERIFIED by actual Resend API after re-verification",
+  "spf": "VERIFIED by Resend; send TXT/MX and rsend CNAME match all four DNS perspectives",
+  "dkim": "VERIFIED by Resend; exact TXT matches all four DNS perspectives",
+  "dmarc": "Existing v=DMARC1; p=none preserved on all four DNS perspectives; received-message header alignment not independently inspected",
   "public_dns": {
     "glarahome.com TXT": [["v=spf1 include:_spf.mail.hostinger.com ~all"]],
     "glarahome.com MX": [
@@ -45,7 +45,7 @@
     "glarahome.com NS": ["solar.dns-parking.com", "lunar.dns-parking.com"]
   },
   "dns_changes": 0,
-  "sender": "Configured as requested; NOT VERIFIED while Resend domain status is pending",
+  "sender": "Support@glarahome.com permitted by verified sending domain and accepted by actual sends",
   "webhook": {
     "endpoint": "https://woozy-jaguar-392.eu-west-1.convex.site/m9/webhook",
     "provider_subscription": "configured; Resend reports enabled; development endpoint only",
@@ -57,16 +57,16 @@
       "email.delivery_delayed",
       "email.failed"
     ],
-    "authentic_signature": "NOT RUN",
+    "authentic_signature": "PASSED via actual provider events and HTTP 200 delivery attempts",
     "modified_body_and_expired_signature": "PASS on deployed endpoint with synthetic requests and actual configured signing secret; not provider-originated events",
-    "replay": "Repeated ignored synthetic event accepted without delivery mutation; actual provider delivery replay NOT RUN"
+    "replay": "PASSED actual Resend replay; two HTTP attempts, one internal event, unchanged status/version"
   },
   "unsubscribe": {
     "endpoint": "https://woozy-jaguar-392.eu-west-1.convex.site/m9/unsubscribe",
     "secret": "configured",
     "generation": "384 bits from node:crypto randomBytes; sent directly via Convex CLI stdin; never persisted locally",
     "public_confirmation": "passed",
-    "real_token_preference_update": "NOT RUN - live send pending"
+    "real_token_preference_update": "PASSED"
   },
   "test_recipient": {
     "status": "configured",
@@ -74,13 +74,24 @@
     "provenance": "Explicit owner designation in this task; address intentionally omitted from public repository"
   },
   "email_enabled": false,
-  "email_verified": false,
-  "live_send": "NOT RUN",
-  "inbox_receipt": "NOT RUN",
-  "delivery_event": "NOT RUN",
-  "live_idempotency": "NOT RUN - local contract coverage passed",
-  "live_unsubscribe": "NOT RUN - local contract coverage passed",
-  "bounce_complaint": "NOT RUN LIVE - local authenticated contract coverage passed",
+  "email_verified": true,
+  "live_send": "PASSED - two designated-inbox messages and two official Resend simulators",
+  "inbox_receipt": "PENDING OWNER CONFIRMATION",
+  "delivery_event": "PASSED - nine authentic Resend events matched with successful HTTP attempts",
+  "live_idempotency": "PASSED - duplicate create/enqueue/dispatch and actual provider webhook replay",
+  "live_unsubscribe": "PASSED - nine checks including separate transactional eligibility",
+  "bounce_complaint": {
+    "mechanism": "Official bounced@resend.dev and complained@resend.dev simulation addresses; explicitly limited temporary allowlist; no random nonexistent send",
+    "bounce": {
+      "status": "bounced",
+      "suppression_scopes": ["all"]
+    },
+    "complaint": {
+      "status": "bounced",
+      "suppression_scopes": ["all_optional"]
+    },
+    "result": "PASSED using real Resend-originated simulated events"
+  },
   "tests": {
     "local_m9": {
       "passed": 100,
@@ -302,19 +313,20 @@
       ],
       "passed": 6,
       "failed": 0
-    }
+    },
+    "live_email_record": "docs/M9-email-acceptance.json"
   },
   "origin_correction": "Initial non-regional URL returned 404; corrected using CLI-confirmed eu-west-1 deployment and reran all four endpoint checks successfully",
-  "remaining_external_action": "Restore the Codex computer-control runtime and resume DNS setup, or have the DNS administrator add the four exact public records in docs/M9-resend-dns.md. User authorization is already granted; no further permission is needed.",
+  "remaining_external_action": "Owner confirmation that the designated inbox received exactly one transactional and one optional acceptance email.",
   "overall_m9": "PENDING - email, Calendar and final hosted acceptance",
   "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
   "production": "UNTOUCHED",
   "calendar_configuration": "NOT STARTED",
   "m10": "NOT STARTED",
   "secrets_exposed": false,
-  "emails_sent": 0,
+  "emails_sent": 4,
   "secret_scan": {
-    "scanned_files": 372,
+    "scanned_files": 373,
     "secret_pattern_files": [],
     "private_value_matches": [],
     "private_env_files": [],
@@ -325,15 +337,19 @@
     "domain": {
       "id": "02e57ff4-b409-4917-bc37-32a58b0449ec",
       "name": "glarahome.com",
-      "status": "pending",
+      "status": "verified",
       "region": "us-east-1",
+      "capabilities": {
+        "sending": "enabled",
+        "receiving": "disabled"
+      },
       "records": [
         {
           "record": "DKIM",
           "name": "resend._domainkey",
           "value": "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYbAW9aGNoYn8EnyVhfLsqbHovBt/3ZMtTsEz8eerl/VXB/JSdW0VaqEeg/cAj1ib8Ecn8wcU6dGu3EexeD7jqX+BVM/EogsM0G5opGmH0h/6OK10JWn0Ecf8o8AkEoO3DEHlby479pTTJ5WXU7HrRD/PsgRCHle5TPm0xbdSsVQIDAQAB",
           "type": "TXT",
-          "status": "pending",
+          "status": "verified",
           "ttl": "Auto"
         },
         {
@@ -341,7 +357,7 @@
           "name": "send",
           "type": "MX",
           "ttl": "Auto",
-          "status": "pending",
+          "status": "verified",
           "value": "feedback-smtp.us-east-1.amazonses.com",
           "priority": 10
         },
@@ -351,23 +367,19 @@
           "value": "v=spf1 include:amazonses.com ~all",
           "type": "TXT",
           "ttl": "Auto",
-          "status": "pending"
+          "status": "verified"
         },
         {
           "record": "SPF",
           "name": "rsend",
           "value": "send.forge.rmta.net",
           "type": "CNAME",
-          "status": "not_started",
+          "status": "verified",
           "ttl": "3600"
         }
       ],
       "open_tracking": false,
-      "click_tracking": false,
-      "capabilities": {
-        "sending": "enabled",
-        "receiving": "disabled"
-      }
+      "click_tracking": false
     },
     "webhooks": [
       {
@@ -390,50 +402,235 @@
     "sending_region": "us-east-1"
   },
   "resend_dns": {
-    "at": "2026-09-16T05:25:44.227Z",
-    "domain": "glarahome.com",
-    "provider_status": "pending",
-    "records": [
+    "at": "2026-09-16T05:52:12.755Z",
+    "dns": [
       {
-        "type": "TXT",
-        "name": "resend._domainkey.glarahome.com",
-        "expected": "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYbAW9aGNoYn8EnyVhfLsqbHovBt/3ZMtTsEz8eerl/VXB/JSdW0VaqEeg/cAj1ib8Ecn8wcU6dGu3EexeD7jqX+BVM/EogsM0G5opGmH0h/6OK10JWn0Ecf8o8AkEoO3DEHlby479pTTJ5WXU7HrRD/PsgRCHle5TPm0xbdSsVQIDAQAB",
-        "priority": null,
-        "status": "missing",
-        "matches": false
+        "perspective": "Cloudflare",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
       },
       {
-        "type": "MX",
-        "name": "send.glarahome.com",
-        "expected": "feedback-smtp.us-east-1.amazonses.com",
-        "priority": 10,
-        "status": "missing",
-        "matches": false
+        "perspective": "Google",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
       },
       {
-        "type": "TXT",
-        "name": "send.glarahome.com",
-        "expected": "v=spf1 include:amazonses.com ~all",
-        "priority": null,
-        "status": "missing",
-        "matches": false
+        "perspective": "authoritative solar.dns-parking.com",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
       },
       {
-        "type": "CNAME",
-        "name": "rsend.glarahome.com",
-        "expected": "send.forge.rmta.net",
-        "priority": null,
-        "status": "missing",
-        "matches": false
+        "perspective": "authoritative lunar.dns-parking.com",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
       }
     ],
-    "dns_changes": 0
+    "dns_mutations": 0,
+    "reverification_requested": true
   },
   "dns_instructions": "docs/M9-resend-dns.md",
   "computer_control": {
     "authorized_by_owner": true,
     "browser_runtime": "failed to write kernel assets: The system cannot find the path specified. (os error 3)",
     "native_runtime": "same initialization failure after reset and retry",
-    "dns_account_access": "unavailable"
-  }
+    "dns_account_access": "unavailable",
+    "scope": "Historical setup limitation; DNS was subsequently added by owner and verified without UI control"
+  },
+  "acceptance_record": "docs/M9-email-acceptance.json"
 }

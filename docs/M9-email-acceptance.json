@@ -1,0 +1,577 @@
+{
+  "milestone": "M9",
+  "scope": "Email acceptance only; Calendar, final overall M9 acceptance and M10 excluded",
+  "base_commit": "3d7001f905250cae8c0bd478449e32812a616d6d",
+  "deployed_application_source_commit": "8d03f3e9abde1a79692e31650dfb795e8f10954d",
+  "recorded_at": "2026-09-16T06:03:34.417157+00:00",
+  "deployment": "woozy-jaguar-392",
+  "decision": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
+  "domain_status": "verified",
+  "spf": "VERIFIED by Resend; send TXT/MX and rsend CNAME match all four DNS perspectives",
+  "dkim": "VERIFIED by Resend; exact TXT matches all four DNS perspectives",
+  "dmarc": "Existing v=DMARC1; p=none preserved on all four DNS perspectives; received-message header alignment not independently inspected",
+  "dns": {
+    "at": "2026-09-16T05:52:12.755Z",
+    "dns": [
+      {
+        "perspective": "Cloudflare",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
+      },
+      {
+        "perspective": "Google",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
+      },
+      {
+        "perspective": "authoritative solar.dns-parking.com",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
+      },
+      {
+        "perspective": "authoritative lunar.dns-parking.com",
+        "checks": [
+          {
+            "name": "resend._domainkey.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          },
+          {
+            "name": "send.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "rsend.glarahome.com",
+            "type": "CNAME",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched",
+            "spf_record_count": 1
+          },
+          {
+            "name": "_dmarc.glarahome.com",
+            "type": "TXT",
+            "priority": null,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 5,
+            "status": "matched"
+          },
+          {
+            "name": "glarahome.com",
+            "type": "MX",
+            "priority": 10,
+            "status": "matched"
+          }
+        ]
+      }
+    ],
+    "dns_mutations": 0,
+    "reverification_requested": true
+  },
+  "sender": "Support@glarahome.com permitted by verified sending domain and accepted by actual sends",
+  "configuration": {
+    "M9_RESEND_KEY": "configured",
+    "M9_RESEND_WEBHOOK_SECRET": "configured",
+    "M9_UNSUBSCRIBE_SECRET": "configured",
+    "M9_EMAIL_FROM": "configured",
+    "M9_EMAIL_REPLY_TO": "configured",
+    "M9_EMAIL_TEST_ALLOWLIST": "configured",
+    "M9_PUBLIC_HTTP_ORIGIN": "configured"
+  },
+  "source_workflow": "Fictional CRM Realtor, property, opportunity and consultation created via normal authorized mutations; immutable transactional template; recorded owner acceptance consent; review token; approval; enqueue; existing fenced worker",
+  "human_authorization": "Product owner explicitly authorized this acceptance workflow; normal backend review/approval invoked using the existing fictional owner acceptance identity; no client role spoofing or dispatch bypass",
+  "send_count": {
+    "designated_inbox": 2,
+    "official_resend_simulators": 2,
+    "total_provider_messages": 4,
+    "non_allowlisted_attempts": 0
+  },
+  "live_send": "PASSED",
+  "content_checks": {
+    "transactional": {
+      "outbox_status": "complete",
+      "attempts": 1,
+      "mapping_count": 1,
+      "blocked_before_provider": null,
+      "checks": {
+        "from": true,
+        "reply_to": true,
+        "recipient": true,
+        "subject": true,
+        "body_equals_frozen_payload": true,
+        "reviewed_body_preserved": true,
+        "plain_text_only": true,
+        "no_unresolved_variables": true
+      }
+    },
+    "optional": {
+      "outbox_status": "complete",
+      "attempts": 1,
+      "mapping_count": 1,
+      "blocked_before_provider": null,
+      "checks": {
+        "from": true,
+        "reply_to": true,
+        "recipient": true,
+        "subject": true,
+        "body_equals_frozen_payload": true,
+        "reviewed_body_preserved": true,
+        "plain_text_only": true,
+        "no_unresolved_variables": true
+      }
+    },
+    "bounce": {
+      "outbox_status": "complete",
+      "attempts": 1,
+      "mapping_count": 1,
+      "blocked_before_provider": null,
+      "checks": {
+        "from": true,
+        "reply_to": true,
+        "recipient": true,
+        "subject": true,
+        "body_equals_frozen_payload": true,
+        "reviewed_body_preserved": true,
+        "plain_text_only": true,
+        "no_unresolved_variables": true
+      }
+    },
+    "complaint": {
+      "outbox_status": "complete",
+      "attempts": 1,
+      "mapping_count": 1,
+      "blocked_before_provider": null,
+      "checks": {
+        "from": true,
+        "reply_to": true,
+        "recipient": true,
+        "subject": true,
+        "body_equals_frozen_payload": true,
+        "reviewed_body_preserved": true,
+        "plain_text_only": true,
+        "no_unresolved_variables": true
+      }
+    },
+    "non_allowlisted": {
+      "outbox_status": "cancelled",
+      "attempts": 0,
+      "mapping_count": 0,
+      "blocked_before_provider": true
+    }
+  },
+  "idempotency": {
+    "duplicate_create": true,
+    "duplicate_enqueue": true,
+    "duplicate_dispatch": true,
+    "one_attempt_per_provider_message": true,
+    "one_mapping_per_provider_message": true,
+    "provider_event_replay": {
+      "provider_replay_requested": true,
+      "successful_http_attempts": 2,
+      "one_internal_event": true,
+      "event_count_unchanged": true,
+      "status_unchanged": true,
+      "version_unchanged": true
+    }
+  },
+  "inbox_receipt": {
+    "status": "PENDING OWNER CONFIRMATION",
+    "method": "Owner asked to confirm both named messages arrived once each; no authorized mailbox access",
+    "provider_delivery_is_not_inbox_confirmation": true
+  },
+  "authentic_webhooks": {
+    "status": "PASSED",
+    "provider_event_count": 9,
+    "all_listed_successfully_by_resend": true,
+    "initial_failed_attempts": 0,
+    "correlated_event_kinds": [
+      {
+        "test": "transactional",
+        "kind": "delivered",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "transactional",
+        "kind": "accepted",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "optional",
+        "kind": "delivered",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "optional",
+        "kind": "accepted",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "bounce",
+        "kind": "hard_bounce",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "bounce",
+        "kind": "accepted",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "complaint",
+        "kind": "delivered",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "complaint",
+        "kind": "complaint",
+        "http_200_attempts": 1
+      },
+      {
+        "test": "complaint",
+        "kind": "accepted",
+        "http_200_attempts": 1
+      }
+    ]
+  },
+  "delivery": {
+    "transactional": "delivered",
+    "optional": "delivered"
+  },
+  "unsubscribe": {
+    "opaque_token": true,
+    "confirmation": true,
+    "get_does_not_unsubscribe": true,
+    "post": true,
+    "optional_preference": true,
+    "repeat_idempotent": true,
+    "optional_approval_blocked": true,
+    "optional_enqueue_blocked": true,
+    "transactional_separate": true
+  },
+  "bounce_complaint": {
+    "mechanism": "Official bounced@resend.dev and complained@resend.dev simulation addresses; explicitly limited temporary allowlist; no random nonexistent send",
+    "bounce": {
+      "status": "bounced",
+      "suppression_scopes": ["all"]
+    },
+    "complaint": {
+      "status": "bounced",
+      "suppression_scopes": ["all_optional"]
+    },
+    "result": "PASSED using real Resend-originated simulated events"
+  },
+  "failure_safety": {
+    "evidence": "Existing local M9 contracts rerun; no deliberate real-key invalidation or new live provider outage",
+    "local_m9_passed": 100,
+    "local_m9_failed": 0,
+    "covers": [
+      "bounded 429 retry",
+      "5xx/transport uncertainty quarantined",
+      "expired dispatch claim recovery",
+      "configuration failure circuit",
+      "repeated failure pause",
+      "unknown sends never automatically retried"
+    ],
+    "hosted_health": {
+      "enabled": false,
+      "retry_waiting": 0,
+      "problems": 0,
+      "consecutive_failures": 0
+    }
+  },
+  "reconciliation": {
+    "at": "2026-09-16T06:00:09.919Z",
+    "queries": [
+      {
+        "name": "communications",
+        "pages": 1,
+        "returned_rows": 6,
+        "findings": []
+      },
+      {
+        "name": "outbox",
+        "pages": 1,
+        "returned_rows": 5,
+        "findings": []
+      },
+      {
+        "name": "events",
+        "pages": 1,
+        "returned_rows": 9,
+        "findings": []
+      },
+      {
+        "name": "provider_mappings",
+        "pages": 1,
+        "returned_rows": 4,
+        "findings": []
+      }
+    ],
+    "unexplained_findings": 0
+  },
+  "database_counts": {
+    "communications": 6,
+    "events": 9,
+    "mappings": 4,
+    "outbox": 5,
+    "ready": 0,
+    "unknown": 0
+  },
+  "final_email_enabled": false,
+  "final_sender_verified": true,
+  "single_designated_inbox_allowlist_restored": true,
+  "cleanup": "No pending sends. Clearly labeled fictional fixtures and audit/delivery/suppression records retained for review; no source deletion or resetting proof. Acceptance-only company signature retained, not production-ready.",
+  "remaining_blocker": "Owner confirmation that the designated inbox received exactly one transactional and one optional acceptance email.",
+  "production": "UNTOUCHED",
+  "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
+  "calendar_configuration": "NOT STARTED",
+  "m10": "NOT STARTED",
+  "secrets_exposed": false,
+  "browser_smoke": {
+    "passed": 13,
+    "failed": 0,
+    "scope": "Six roles across desktop and mobile plus anonymous redirect; route rendering, access guards and horizontal overflow only; not full workflow browser acceptance",
+    "evidence": {
+      "kind": "M9 email setup route/render guards only; no sends",
+      "results": [
+        {
+          "role": "owner",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "admin",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "sales",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "marketing",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "designer",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "staging_crew",
+          "viewport": "desktop",
+          "status": "passed"
+        },
+        {
+          "role": "owner",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "admin",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "sales",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "marketing",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "designer",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "staging_crew",
+          "viewport": "mobile",
+          "status": "passed"
+        },
+        {
+          "role": "anonymous",
+          "viewport": "desktop",
+          "status": "passed"
+        }
+      ]
+    }
+  },
+  "secret_scan": {
+    "scanned_files": 373,
+    "secret_pattern_files": [],
+    "private_value_matches": [],
+    "private_env_files": [],
+    "scope": "tracked/non-ignored source; API patterns and locally available private credential values; no values logged",
+    "development_secret_value_matches": 0
+  }
+}

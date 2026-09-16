@@ -201,5 +201,10 @@
   "email_setup_followup": {
     "record": "docs/M9-email-readiness.json",
     "note": "Later email-only development setup supersedes previous deployment/configuration snapshots; original tests retain their original scope. Overall M9 remains pending."
+  },
+  "email_acceptance_followup": {
+    "record": "docs/M9-email-acceptance.json",
+    "decision": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
+    "note": "Actual email acceptance now run; only inbox receipt confirmation remains for this email gate. Overall M9 remains pending Calendar and final hosted acceptance."
   }
 }

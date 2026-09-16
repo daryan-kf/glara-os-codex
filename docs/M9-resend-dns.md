@@ -1,8 +1,8 @@
 # M9 Resend DNS records for glarahome.com
 
-These exact records were returned by the authorized Resend API for `glarahome.com` on 2026-09-16 UTC. All four were absent in the public DNS check. This document contains public DNS verification material only, not API keys or signing secrets.
+These exact records were returned by the authorized Resend API for `glarahome.com` on 2026-09-16 UTC. All four were absent during initial setup. The owner subsequently added them; all four now match Google, Cloudflare and both authoritative nameservers, and Resend reports verified (2026-09-16 UTC). This document contains public DNS verification material only, not API keys or signing secrets.
 
-In Hostinger: **Domains → Domain portfolio → glarahome.com → Manage → DNS / Nameservers → DNS records**. Add the following records to this zone. Hostinger's Name field uses the relative names shown below. Use Auto/default TTL where available; 3600 seconds is suitable if a number is required.
+Historical setup location in Hostinger: **Domains → Domain portfolio → glarahome.com → Manage → DNS / Nameservers → DNS records**. The following records are already present; retain them. Hostinger's Name field uses the relative names shown below. Use Auto/default TTL where available; 3600 seconds is suitable if a number is required.
 
 | Type  | Host / Name         | Value / Target                                                                                                                                                                                                               | Priority | Purpose                                 |
 | ----- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------- |
@@ -15,6 +15,6 @@ Keep the existing root-domain Hostinger MX and SPF records, existing DKIM select
 
 The existing DMARC record is `v=DMARC1; p=none`; no DMARC edit is required for this setup. Later production policy review remains deferred. No DNS change has been performed by Codex.
 
-After saving these four records, tell Codex **“DNS added.”** Codex will recheck public DNS and Resend's actual verification status before enabling the controlled development acceptance window. Email stays disabled until then.
+DNS setup is complete. Do not recreate these records. Live email acceptance evidence is in `M9-email-acceptance.json`; development sending was restored to disabled afterward.
 
 References: [Hostinger DNS management](https://www.hostinger.com/support/1583249-how-to-manage-dns-records-at-hostinger/) and [Resend domain verification](https://resend.com/docs/dashboard/domains/introduction).

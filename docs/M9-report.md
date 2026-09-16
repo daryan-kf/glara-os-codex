@@ -4,9 +4,11 @@
 
 **M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION**.
 
+Latest live email acceptance: [M9-email-acceptance.json](M9-email-acceptance.json). DNS/provider verification, live sends, authentic webhooks, unsubscribe, bounce/complaint and reconciliation have passed; inbox receipt confirmation remains pending. Overall M9 remains pending Calendar and final acceptance.
+
 Latest email setup evidence: [M9-email-readiness.json](M9-email-readiness.json). The email-only development setup described at the end of this report supersedes earlier deployment/configuration stop snapshots. Earlier test counts retain their original scope.
 
-The complete specification through section 345 has now been received. This revision adds the local hardening required by sections 165–345. The local implementation is ready for the authorized hosted acceptance stage; live-provider, full M9 browser, fresh hosted regression and numerical reconciliation gates remain unexecuted. Their results are not inferred from local tests. M10 has not started.
+Historical implementation snapshot (later email evidence below supersedes its email-only pending items): the complete specification through section 345 has been received. That revision added the local hardening required by sections 165–345. The local implementation is ready for the authorized hosted acceptance stage; live-provider, full M9 browser, fresh hosted regression and numerical reconciliation gates remain unexecuted. Their results are not inferred from local tests. M10 has not started.
 
 Base: accepted M8 commit `bf785213e246be266aed367737742d5d6438f835`. Changes target `daryan-kf/glara-os-codex`.
 
@@ -244,3 +246,51 @@ After DNS publication, recheck both DNS and actual provider status before settin
 **M9 EMAIL GATE PENDING EXTERNAL ACTION**.
 
 The owner explicitly authorized computer control to finish DNS setup. Both available browser control and the separate Windows computer-control runtime failed during initialization with `failed to write kernel assets: The system cannot find the path specified. (os error 3)`. Resetting and retrying the native runtime produced the same error. This is a tooling failure, not missing permission. Resume the already-authorized DNS work once computer control is available, or have the DNS administrator apply the exact prepared records. No secret needs to be shared in chat.
+
+## Email acceptance after owner DNS setup
+
+Continued from `3d7001f905250cae8c0bd478449e32812a616d6d` on development `woozy-jaguar-392` only. Application source was unchanged. This section supersedes prior email/DNS stop conditions; prior evidence remains historical.
+
+**M9 EMAIL GATE PENDING EXTERNAL ACTION** — the only remaining email-gate action is the owner's inbox receipt confirmation. Provider delivery does not prove inbox visibility.
+
+### DNS and provider
+
+All four exact Resend records matched through Google, Cloudflare and both authoritative nameservers. Both existing Hostinger root MX entries, the single root Hostinger SPF and the existing `v=DMARC1; p=none` record also matched: **32/32 DNS comparisons passed**. No DNS edits were made. Resend initially reported partially verified; one re-verification request followed by a bounded recheck returned **verified**, including all SPF/DKIM records. Sending permission for `Support@glarahome.com` was then confirmed by actual accepted sends. Received-message DMARC header alignment was not independently inspected; published policy was preserved without strengthening it.
+
+All required private configuration was present. The regional development origin and explicitly designated single inbox were compared privately. Sender verification was enabled only after actual provider verification. Receiving, open tracking and click tracking remain disabled in Resend.
+
+### Live acceptance results
+
+The normal M9 workflow created fictional Realtor/property/opportunity/consultation records, a versioned transactional template, explicit owner acceptance-consent evidence, reviewed snapshots, approval decisions and outbox jobs. Existing server-side checks and the fenced worker performed delivery; no direct provider-send shortcut or client-supplied actor was used. The owner explicitly authorized the acceptance workflow; backend approval used the existing fictional owner test identity.
+
+| Check               | Actual result                                                                                                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Transactional send  | One source-backed fictional consultation message accepted and delivered                                                                                                                                |
+| Optional send       | One fictional optional-preference message accepted and delivered                                                                                                                                       |
+| Recipient exclusion | Non-allowlisted address cancelled before provider I/O; zero attempts and zero mappings                                                                                                                 |
+| Reviewed content    | From, Reply-To, recipient, subject and frozen body matched provider retrieval for all four sends; plain text only, no unresolved variables; required signature/unsubscribe suffix verified             |
+| Duplicate dispatch  | Duplicate create/enqueue returned the same records/jobs; repeat worker invocation produced no additional attempt or provider mapping                                                                   |
+| Authentic webhook   | Nine real Resend-originated events correlated; provider lists successful HTTP 200 attempts for each                                                                                                    |
+| Provider replay     | Replayed one actual delivered event; two successful HTTP deliveries, one internal event, unchanged status/version and event count                                                                      |
+| Unsubscribe         | Nine checks passed: opaque real token, GET confirmation without mutation, POST update, optional scope, idempotent repeat, blocked later optional approval/enqueue, transactional eligibility preserved |
+| Hard bounce         | Official Resend simulator produced a hard-bounce event and `all` technical suppression                                                                                                                 |
+| Complaint           | Official Resend simulator produced a complaint and `all_optional` suppression; not promoted to transactional suppression                                                                               |
+| Inbox receipt       | **PENDING OWNER CONFIRMATION** for exactly one copy of each of the two named messages                                                                                                                  |
+
+Exactly four logical provider messages were submitted: two to the designated inbox and two to [official Resend event simulators](https://resend.com/docs/knowledge-base/what-email-addresses-to-use-for-testing). Only the two exact simulator addresses were temporarily added to the development allowlist; the original single-inbox allowlist was restored in `finally`. No random nonexistent address received a provider call. Provider content retrieval and live webhook evidence are distinguished from owner mailbox confirmation. The real API key was not invalidated.
+
+The existing **100 M9 local tests passed again, 0 failed**, including bounded 429 retries, circuit behavior, stale claims and unknown-outcome quarantine. This failure-injection evidence remains local/contract evidence; no live provider failure was fabricated.
+
+The desktop/mobile route smoke suite also passed again: **13/13 checks**, covering six roles across two viewports plus anonymous redirect, with no horizontal overflow. These are rendering/access checks, not full browser workflow acceptance. No application source changed; full build/lint results remain historical rather than falsely represented as rerun.
+
+### Reconciliation and safe state
+
+All four paginated M9 reconciliation queries completed with **zero unexplained findings**. Actual counts: **6 Communications, 5 outbox jobs, 4 provider mappings, 9 delivery events, 0 ready jobs and 0 unknown outcomes**. The sixth communication is the deliberately blocked post-unsubscribe draft; the fifth outbox job is the non-allowlisted denial. No orphan job/mapping, duplicate send key, unsupported Delivered state, inconsistent event mapping or unsafe retry was reported. Final queue health showed zero retry waits, zero problem jobs and zero consecutive provider failures.
+
+`M9_EMAIL_ENABLED=false` was restored immediately after the send window; `M9_EMAIL_VERIFIED=true` is retained following real verification. Credentials, webhook, verified domain and single-inbox allowlist remain configured. Clearly labeled fictional fixtures, approval/audit records and suppression/preferences are retained for review; no acceptance proof was deleted. The acceptance-only company signature is explicitly fictional/test-purpose and requires a real rollout signature before operational use.
+
+The owner was asked to confirm receipt of **“Glara OS M9 acceptance — fictional consultation”** and **“Glara OS M9 acceptance — optional email preferences.”** No mailbox password was requested, and receipt is not marked passed without that confirmation.
+
+Machine-readable evidence: `docs/M9-email-acceptance.json`. Google Calendar setup and M10 were not started. Production was untouched. Overall M9 still requires Calendar and final hosted acceptance; inherited production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
+
+Publication checks: formatting and `git diff --check` passed. Secret scanning covered **373 tracked/non-ignored files**, with zero API-key patterns, zero locally available credential matches, zero development email-secret matches and no private environment/acceptance files included. Only report/evidence files changed.
