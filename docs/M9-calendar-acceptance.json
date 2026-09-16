@@ -1,0 +1,417 @@
+{
+  "milestone": "M9",
+  "scope": "Calendar setup and focused preflight only; final overall M9 acceptance and M10 excluded",
+  "continued_from": "6abca72d56bc3c88e5bb750d5250e5de5cdd7a06",
+  "recorded_at": "2026-09-16T17:46:44.067378+00:00",
+  "deployment": "woozy-jaguar-392",
+  "decision": "M9 CALENDAR GATE PENDING EXTERNAL ACTION",
+  "email_gate": "M9 EMAIL GATE PASSED",
+  "configuration": {
+    "M9_GOOGLE_CALENDAR_ID": "MISSING",
+    "M9_GOOGLE_CLIENT_ID": "MISSING",
+    "M9_GOOGLE_CLIENT_SECRET": "MISSING",
+    "M9_GOOGLE_REFRESH_TOKEN": "MISSING",
+    "M9_CALENDAR_ENABLED": "CONFIGURED"
+  },
+  "dedicated_calendar": {
+    "status": "NOT CREATED / NOT CONFIGURED",
+    "intended_name": "Glara OS — Development Acceptance",
+    "must_be_app_created": true,
+    "primary_allowed": false
+  },
+  "oauth": {
+    "requested_scope": "https://www.googleapis.com/auth/calendar.app.created",
+    "actually_granted_scope": null,
+    "cloud_client": "NOT CREATED - owner confirmed none exists",
+    "owner_consent": "NOT RUN",
+    "flow": "Prepared setup-only loopback callback with state/S256 PKCE and direct secret-to-Convex storage",
+    "redirect_uri": "http://127.0.0.1:58439/oauth/callback",
+    "listener_running": false,
+    "scope_reason": "Create an app-owned secondary development calendar and manage only app-created calendar events; no personal-calendar/Gmail/Drive/Contacts permissions"
+  },
+  "implementation_review": {
+    "files": [
+      "convex/calendarProvider.ts",
+      "convex/calendarSchema.ts",
+      "convex/calendarSync.ts",
+      "src/lib/communications/calendar-provider.ts",
+      "src/components/communications/calendar.tsx",
+      "tests/convex/communications.test.ts"
+    ],
+    "spec_sections": [
+      "111–145",
+      "276–299",
+      "current Calendar setup/live acceptance specification"
+    ],
+    "architecture": "Existing source-authoritative adapter retained; server-owned stable event mapping, etag writes, lease/revision checks, private minimal payload, no attendees, conflicts retained, explicit Keep Glara/Ignore",
+    "consultation_default_duration_minutes": 60,
+    "duration_is_m2_authoritative": false,
+    "external_controls_policy": "Owner/Admin only; other roles retain their existing M3 scheduling permissions"
+  },
+  "live_results": {
+    "create": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "safe_content": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "idempotency": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "update": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "cancellation": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "external_edit_conflict": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "external_delete": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "conflict_resolution": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "repair": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "spring_dst": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "fall_dst": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "consultation_projection": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "source_revision_race": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "concurrent_sync": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "provider_timeout": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "oauth_failure": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "projection_id_tampering": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable",
+    "m3_source_of_truth": "NOT RUN - Google development OAuth client, owner consent and dedicated calendar unavailable"
+  },
+  "authorization": {
+    "at": "2026-09-16T17:44:46.240Z",
+    "scope": "Hosted read-only administrative Calendar list/candidates/reconcile guards, including revoked session. No provider calls, source mutations or projection-ID tampering tests.",
+    "checks": [
+      {
+        "role": "owner",
+        "query": "list",
+        "expected": "allow",
+        "actual": "allow",
+        "denial_code": null,
+        "result": "passed"
+      },
+      {
+        "role": "owner",
+        "query": "candidates",
+        "expected": "allow",
+        "actual": "allow",
+        "denial_code": null,
+        "result": "passed"
+      },
+      {
+        "role": "owner",
+        "query": "reconcile",
+        "expected": "allow",
+        "actual": "allow",
+        "denial_code": null,
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "query": "list",
+        "expected": "allow",
+        "actual": "allow",
+        "denial_code": null,
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "query": "candidates",
+        "expected": "allow",
+        "actual": "allow",
+        "denial_code": null,
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "query": "reconcile",
+        "expected": "allow",
+        "actual": "allow",
+        "denial_code": null,
+        "result": "passed"
+      },
+      {
+        "role": "sales",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "sales",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "sales",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "designer",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "designer",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "designer",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "staging_crew",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "staging_crew",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "staging_crew",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "marketing",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "marketing",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "marketing",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "unassigned",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "unassigned",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "unassigned",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "archived",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "archived",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "archived",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "anonymous",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "anonymous",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "anonymous",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "revoked",
+        "query": "list",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "revoked",
+        "query": "candidates",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      },
+      {
+        "role": "revoked",
+        "query": "reconcile",
+        "expected": "deny",
+        "actual": "deny",
+        "denial_code": "FORBIDDEN",
+        "result": "passed"
+      }
+    ],
+    "passed": 30,
+    "failed": 0
+  },
+  "reconciliation": {
+    "scope": "Preflight only, empty Calendar tables; not live provider reconciliation",
+    "connections": 0,
+    "projections": 0,
+    "sync_events": 0,
+    "conflicts": 0,
+    "live_reconciliation": "NOT RUN",
+    "live_unexplained_mismatches": null
+  },
+  "cleanup": {
+    "external_calendar_creates": 0,
+    "external_event_writes": 0,
+    "attendees_created": 0,
+    "invitations_sent": 0,
+    "emails_sent": 0,
+    "authoritative_source_changes": 0,
+    "provider_credentials_revoked": 0,
+    "required": "None; no external Calendar resource was created"
+  },
+  "checks": {
+    "m9_existing_local": {
+      "passed": 100,
+      "failed": 0,
+      "scope": "Existing M9 suite, including mocked Calendar contracts; not live provider evidence"
+    },
+    "oauth_setup_contracts": {
+      "passed": 6,
+      "failed": 0,
+      "scope": "Narrow scope and PKCE; invalid/non-ASCII state; replay; missing refresh/broad grant; private sink; ambiguous create no retry"
+    },
+    "typescript": "PASSED",
+    "targeted_lint": "PASSED",
+    "build": "NOT RERUN - no deployed app/backend source changed",
+    "node_regressions": {
+      "passed": 19,
+      "failed": 0,
+      "includes_setup_contracts": 6
+    },
+    "convex_regressions": {
+      "passed": 449,
+      "failed": 0,
+      "test_files": 19,
+      "scope": "Full local Convex suite, including the 100 M9 contracts; not hosted final overall acceptance"
+    }
+  },
+  "defects": {
+    "application_fixes": [],
+    "note": "No application correction made. Live provider paths remain unassessed; lack of live results does not establish absence of P0/P1."
+  },
+  "final_calendar_enabled": false,
+  "calendar_flag_before": "UNSET (disabled by default)",
+  "calendar_flag_change": "Set explicitly false on authorized development deployment only",
+  "final_email_enabled": false,
+  "preflight": {
+    "at": "2026-09-16T17:40:34.070Z",
+    "deployment": "woozy-jaguar-392",
+    "configuration": {
+      "M9_GOOGLE_CALENDAR_ID": "MISSING",
+      "M9_GOOGLE_CLIENT_ID": "MISSING",
+      "M9_GOOGLE_CLIENT_SECRET": "MISSING",
+      "M9_GOOGLE_REFRESH_TOKEN": "MISSING",
+      "M9_CALENDAR_ENABLED": "CONFIGURED"
+    },
+    "calendar_flag_before": "UNSET",
+    "calendar_enabled": false,
+    "email_enabled": false,
+    "google_related_development_variable_names": [],
+    "google_related_local_variable_names": [],
+    "dedicated_calendar": "NOT CONFIGURED",
+    "counts": {
+      "conflicts": 0,
+      "connections": 0,
+      "events": 0,
+      "projections": 0
+    }
+  },
+  "tooling_blocker": "Both browser and native computer-control runtimes fail initialization: failed to write kernel assets: The system cannot find the path specified. (os error 3). No Google account connector or gcloud CLI available.",
+  "remaining_external_action": "Create the dedicated development Google Cloud OAuth web client (Calendar API enabled, app-created Calendar scope, exact loopback redirect) and store client ID/secret directly in Convex development. Restore computer control for Codex to perform setup, or owner follows docs/M9-calendar-setup.md. Then launch the prepared consent helper and have the owner approve Google consent. No codes/tokens/secrets in chat.",
+  "production": "UNTOUCHED",
+  "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
+  "final_overall_m9_acceptance": "NOT STARTED",
+  "m10": "NOT STARTED",
+  "secret_scan": {
+    "patterns_and_local_values": {
+      "scanned_files": 378,
+      "secret_pattern_files": [],
+      "private_value_matches": [],
+      "private_env_files": [],
+      "scope": "tracked/non-ignored source; API patterns and locally available private credential values; no values logged"
+    },
+    "configured_provider_values": {
+      "scanned_files": 378,
+      "configured_provider_secret_count": 4,
+      "provider_secret_matches": 0,
+      "google_tokens_or_codes_generated": false,
+      "secret_values_logged": false
+    }
+  }
+}

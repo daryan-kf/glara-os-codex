@@ -6,7 +6,7 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts && vitest run",
+    "test": "tsx --test tests/*.test.ts tests/*.test.mjs && vitest run",
     "test:e2e": "node tests/support/run-e2e.mjs",
     "build": "next build",
     "dev": "next dev",

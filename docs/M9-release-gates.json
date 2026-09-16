@@ -206,5 +206,10 @@
     "record": "docs/M9-email-acceptance.json",
     "decision": "M9 EMAIL GATE PASSED",
     "note": "Owner confirmed both designated inbox receipts. Existing live acceptance evidence retained; no resends. Overall M9 remains pending Calendar and final hosted acceptance."
+  },
+  "calendar_setup_followup": {
+    "record": "docs/M9-calendar-acceptance.json",
+    "decision": "M9 CALENDAR GATE PENDING EXTERNAL ACTION",
+    "note": "100 existing M9 contracts, 6 setup security contracts, 30 hosted read-only authorization checks passed. Live Calendar acceptance awaits Google client/consent. Overall M9 remains pending."
   }
 }

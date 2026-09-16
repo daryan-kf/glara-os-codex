@@ -4,6 +4,8 @@
 
 **M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION**.
 
+Latest Calendar setup: [M9-calendar-acceptance.json](M9-calendar-acceptance.json). **M9 CALENDAR GATE PENDING EXTERNAL ACTION** — Google Cloud client, owner consent and dedicated calendar are not configured. Prepared setup flow: [M9-calendar-setup.md](M9-calendar-setup.md).
+
 Latest live email acceptance: [M9-email-acceptance.json](M9-email-acceptance.json). **M9 EMAIL GATE PASSED**. DNS/provider verification, live sends, authentic webhooks, unsubscribe, bounce/complaint and reconciliation passed; receipt is now **OWNER CONFIRMED INBOX RECEIPT**. Overall M9 remains pending Calendar and final acceptance.
 
 Latest email setup evidence: [M9-email-readiness.json](M9-email-readiness.json). The email-only development setup described at the end of this report supersedes earlier deployment/configuration stop snapshots. Earlier test counts retain their original scope.
@@ -302,3 +304,33 @@ Continued from `514fb64e8aa2c053dbe6c9dbed13803e6766ac01`. Receipt was recorded 
 A fresh read-only development check confirmed `M9_EMAIL_ENABLED=false`, verified sender configuration, the original single-inbox allowlist and unchanged counts: 6 Communications, 5 outbox jobs, 4 provider mappings, 9 events, 0 ready jobs, 0 unknown outcomes. No replacement emails, provider changes or application changes were made. Existing 100 local tests and 13 browser smoke checks retain their recorded scope and were not rerun for this documentation-only closure.
 
 This closes the **email gate only**. Overall M9 remains pending Calendar and final overall acceptance. Google Calendar and M10 were not started. Production remains untouched; inherited production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
+
+## Calendar setup and focused development preflight
+
+Continued from `6abca72d56bc3c88e5bb750d5250e5de5cdd7a06` on **woozy-jaguar-392** only under explicit owner authorization. Reviewed the existing provider, schema, sync/reconciliation, source checks, UI, tests, report, original sections 111–145 and 276–299, and current Calendar acceptance specification. Existing M9 architecture is retained. Email gate remains **PASSED**.
+
+**M9 CALENDAR GATE PENDING EXTERNAL ACTION**. The four Google variables are **MISSING**: `M9_GOOGLE_CALENDAR_ID`, `M9_GOOGLE_CLIENT_ID`, `M9_GOOGLE_CLIENT_SECRET`, `M9_GOOGLE_REFRESH_TOKEN`. The owner confirmed there is no existing development client and requested a dedicated one. No client or calendar has been created. No authorized Google account connector or `gcloud` CLI is available. Both browser and native Windows control fail initialization with `failed to write kernel assets: The system cannot find the path specified. (os error 3)`. This prevents Codex from operating Google Cloud; user permission is already granted.
+
+Prepared `scripts/m9-google-authorize.mjs` with the sole requested scope `https://www.googleapis.com/auth/calendar.app.created`, loopback redirect `http://127.0.0.1:58439/oauth/callback`, state/S256 PKCE, single-use callback, bounded listener lifetime, exact scope validation, safe error codes and private credential transfer through CLI stdin to the fixed development deployment. It creates the dedicated **Glara OS — Development Acceptance** calendar after owner consent, preserving **America/Vancouver**, and never enables sync or creates attendees. It refuses duplicate authorization/calendar setup and does not blindly retry uncertain calendar creation. Runtime preflight correctly stopped at missing client configuration; no listener or actual Google consent flow is running. No credentials were generated or printed.
+
+### Actual checks
+
+- **100 existing local M9 tests passed**, including current Calendar mocked create/update/cancel, mapping, no-attendee, date-only/offset comparison, source-preservation and reconciliation boundaries. This is not live Google evidence.
+- **6 new setup security/contract tests passed**: narrow scope/PKCE; forged callback/replay; missing refresh token/broad grants; private credential sink and dedicated calendar creation contract; uncertain-create no retry; malformed non-ASCII state. The npm test command includes these tests.
+- **30 hosted read-only Calendar checks passed**, covering list/candidates/reconcile for ten categories: Owner and Admin allowed; Sales, Designer, Staging Crew, Marketing, anonymous, archived, unassigned and revoked-session identities denied. The revoked case signed out a fresh fictional-owner session, then verified backend denial. Source/projection mutation and ID-tampering acceptance remains pending, not inferred from these reads. Reproducible runner: `tests/support/m9-calendar-preflight.ts`.
+- TypeScript and targeted lint passed. Application/backend source was not changed or redeployed; a full application build was not rerun for setup-only tooling.
+- Preflight counts: **0 connections, 0 projections, 0 sync events, 0 conflicts**. This empty baseline is not live Calendar reconciliation or a zero-mismatch acceptance claim.
+
+Live create, exact event content, idempotency/concurrency, update, cancellation, external-edit conflict, external-delete/repair, spring/fall DST, Consultation projection, source-revision race, failure handling and M3 authority acceptance are **NOT RUN**. Existing local evidence remains separate. There is no discovered application defect recorded in this setup pass, but unexecuted live paths cannot be declared free of P0/P1 issues. Consultation end remains a 60-minute projection default, not authoritative M2 business data.
+
+### Safe state and next external step
+
+`M9_CALENDAR_ENABLED` was unset/disabled by default; it is now explicitly **false**. Fresh reads confirmed `M9_EMAIL_ENABLED=false`; email configuration and its passed gate remain intact. No Calendar event, attendee, invitation, replacement email or authoritative source mutation was created. No cleanup of external resources was needed. Production was untouched.
+
+The concrete next step is a dedicated Google Cloud development OAuth web client with Calendar API enabled, the one app-created Calendar scope and the exact loopback redirect above. Its client ID/secret must be stored directly in Convex development, never in chat. [M9-calendar-setup.md](M9-calendar-setup.md) contains the complete prepared setup. Codex can operate Google Cloud once computer control is restored; otherwise the owner must perform this inaccessible account configuration. After that, the prepared helper captures consent and stores the refresh token/calendar ID without manual token copying. Actual owner Google consent remains required.
+
+Overall M9 and final overall acceptance remain pending. M10 was not started. Inherited production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
+
+Calendar setup publication scan covered **378 tracked/non-ignored files**, with zero secret-pattern matches, private credential matches or private environment files. Exact-value comparison against the four configured Resend/OpenAI secrets found zero matches; no Google token or authorization code was generated. The Node regression run passed **19/19**, including the six new setup contracts.
+
+The full local Convex regression suite subsequently passed **449/449 tests in 19 files**. Combined with 19 Node tests, **468 local tests passed**, including the 100 existing M9 contracts and six setup contracts. These totals do not replace live Google or final overall hosted M9 acceptance.
