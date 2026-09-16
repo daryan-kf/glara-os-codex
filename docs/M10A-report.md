@@ -1,6 +1,32 @@
-# M10A — hardening and incident-response checkpoints
+# M10A — production hardening checkpoints
 
 Status: **IN PROGRESS — EARLIER HARDENING GATES OPEN; NOT A RELEASE PASS**.
+
+## Current continuation — Sections 131–224AC
+
+Implemented granular Owner-only emergency freezes, server-derived containment audits, supported session/refresh/recovery-code revocation, archived-account fresh-login denial, protected operational health and safe structured logging. Normal Realtor directory/search hydration now occurs after pagination. Clean-build testing also found and fixed an unconfigured `/unauthorized` page crash; the Turbopack project root is explicit.
+
+Added recovery manifest/preflight validation, a reproducible isolated native Convex restore drill, backup/monitoring/supply-chain/migration/performance/retention/authentication procedures, and a machine-checked ownership/evidence model. The [canonical register](M10A-readiness-controls.json) maps all supplied sections, preserves IR-01–IR-07, references the original Calendar deferral, rejects unsupported or stale PASS, and generates [current counts](M10A-readiness-summary.json). Only individually evidenced local/historical controls are closed; **overall M10A is NOT PASSED and M10B entry is blocked**. Current evidence is [M10A-continuation-results.json](M10A-continuation-results.json), indexed by [the evidence register](M10A-evidence-register.json).
+
+Verification:
+
+- Full local suite: **19 Node + 498 Convex = 517 passed**, zero failed. The 14 readiness tests and 19 Node tests were rerun after final relevant changes. TypeScript, lint and formatting passed.
+- Real isolated restore: **557 fictional rows across 99 schema tables**, one stored file, exact table/ID/history comparison, financial/Inventory projection comparison, role denial, all recovery freezes and rejection of a second nonempty import. Final measured import: **13,944 ms**. This is not production RTO. Populated M7–M9 recovery and actual protected backup scheduling/retention remain open.
+- Clean dependency installation passed using lockfile-SHA-512-verified cache after TLS download failures. The unchanged lockfile was preserved; postinstall auth patch verification passed. Clean optimized build passed without environment credentials. Dependency audit: **zero advisories**, with upstream deprecation/support risks separately retained.
+- Clean built-app HTTP: `/login` **200**, `/unauthorized` **200**, unauthenticated `/dashboard` **307**. Frame/nosniff/CSP headers present, no powered-by header and no premature HSTS. Missing-configuration sign-out crash corrected. This is HTTP smoke, not real-browser acceptance.
+- Public bundles: **47 files each**, no source maps, no credential-pattern matches in the clean bundle and no known private/provider-value matches in either checked bundle. Source scans and their precise scope/counts are in the artifact; values were never logged.
+- Performance: 501 fictional Realtors; page/search integrity and nine local operation baselines with ten measured samples each. These are in-process measurements, not mobile/network/provider SLA evidence. Larger multi-module scale and long-history acceptance remain open.
+- Read-only development flags: **M9_EMAIL_ENABLED=false**, **M9_CALENDAR_ENABLED=false**. Email's historical accepted gate and **OWNER CONFIRMED INBOX RECEIPT** remain preserved. Calendar stays **DEFERRED**, non-blocking for M10A only while disabled. No new provider emails or Calendar operations occurred.
+
+Code provenance: core runtime/recovery at `c3ebc082e799205adb0681bf2a8df334b5f5751f`; clean-build correction at `e74cf3d9c178118c5dc4c07cd616c6642935a53a`; final readiness guard at `2f5a554545ca4bf701c9d11e8b00f17b65c8ecd8`. Evidence declares relevant source paths so unrelated documentation does not invalidate a test, while security/dependency/configuration changes require re-verification.
+
+No shared development runtime activation or production modification occurred. Convex codegen uploaded source for development analysis/binding generation; that was not a runtime deployment. Six runtime deployments across three source/target drill attempts were confined to loopback-only isolated databases. Temporary processes stopped. The original restore succeeded, the first reproducible repeat refused an existing export filename, and a fresh unique-file repeat passed; failed setup/build attempts are retained as resolved check failures, not counted as acceptance passes.
+
+Remaining work is explicit: inherited auth/invitation/MFA/Owner recovery, hosted/browser security and runtime acceptance, strict CSP and environment assertions, actual operational monitoring/contacts/store, approved retention and provider policies, full migration tooling/rehearsal/rollback, bounded derived CRM/history queries and realistic hosted/mobile load. The M10A migration document is a preparation plan, **not a completed importer**. Local checks do not waive any of these P1 readiness requirements. Production authentication email/origin requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. No M10B or production work began.
+
+## Historical checkpoints through Section 130
+
+The following records preserve their original test scope and counts; current status is the canonical register above.
 
 Started from `ea50abeb32eb1816097c783eb9b5de210feffc94`. The initial attachment contained Sections 1–78; the continuation now supplies Sections 79–130. The incident-response continuation has been completed locally with explicit readiness gaps. Earlier security, environment, retention and recovery requirements remain open. This report records implemented and verified work only; it does not assert M10A completion.
 

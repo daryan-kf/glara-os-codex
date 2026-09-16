@@ -1,0 +1,285 @@
+{
+  "milestone": "M10A",
+  "sections": "131–224AC; inherited Sections 1–130 retained",
+  "decision": "IN PROGRESS — NOT PASSED",
+  "status_source": "docs/M10A-readiness-controls.json",
+  "source_commits": {
+    "backend_and_initial_controls": "c3ebc082e799205adb0681bf2a8df334b5f5751f",
+    "clean_build_fix": "e74cf3d9c178118c5dc4c07cd616c6642935a53a",
+    "final_readiness_guard": "2f5a554545ca4bf701c9d11e8b00f17b65c8ecd8"
+  },
+  "executed_at": "2026-09-16T20:50:21.854419+00:00",
+  "production_mutations": 0,
+  "shared_development_runtime_deployments": 0,
+  "development_codegen_analysis_uploads": true,
+  "isolated_local_runtime_deployments": 6,
+  "external_provider_sends": 0,
+  "tests": {
+    "full_suite": {
+      "node": 19,
+      "convex": 498,
+      "failed": 0,
+      "source_commit": "c3ebc082e799205adb0681bf2a8df334b5f5751f"
+    },
+    "final_affected_reruns": {
+      "readiness": 14,
+      "node": 19,
+      "failed": 0,
+      "notes": "Readiness and Node tests rerun after final readiness/Next fixes; unchanged backend tests not rerun unnecessarily",
+      "source_commit": "2f5a554545ca4bf701c9d11e8b00f17b65c8ecd8"
+    },
+    "typescript": "PASSED",
+    "lint": "PASSED",
+    "format": "PASSED",
+    "clean_build": {
+      "lockfile_sha256": "8e2feb532a86939ce246fd26522111b5335f6f78d87c1a430b97a3e0a4ee01cb",
+      "copied_files": 426,
+      "environment_files_copied": 0,
+      "install": {
+        "exit_code": 0,
+        "error": null
+      },
+      "build": {
+        "exit_code": 0,
+        "error": null
+      },
+      "public_bundle": {
+        "files": 47,
+        "source_maps": 0,
+        "credential_pattern_files": 0
+      }
+    },
+    "http_smoke": {
+      "environment": "local",
+      "configuration": "No environment credentials; clean build",
+      "routes": [
+        {
+          "route": "/login",
+          "status": 200,
+          "frame_deny": true,
+          "nosniff": true,
+          "no_powered_by": true,
+          "hsts_absent": true,
+          "csp_present": true,
+          "unconfigured_signout_absent": null
+        },
+        {
+          "route": "/unauthorized",
+          "status": 200,
+          "frame_deny": true,
+          "nosniff": true,
+          "no_powered_by": true,
+          "hsts_absent": true,
+          "csp_present": true,
+          "unconfigured_signout_absent": true
+        },
+        {
+          "route": "/dashboard",
+          "status": 307,
+          "frame_deny": true,
+          "nosniff": true,
+          "no_powered_by": true,
+          "hsts_absent": true,
+          "csp_present": true,
+          "unconfigured_signout_absent": null
+        }
+      ],
+      "result": "passed"
+    },
+    "hosted": "NOT RUN for new M10A controls",
+    "browser_mobile": "NOT RUN for new M10A controls",
+    "production": "NOT RUN — NOT AUTHORIZED"
+  },
+  "restore": {
+    "mode": "isolated_restore",
+    "production_modified": false,
+    "shared_development_modified": false,
+    "provider_calls": 0,
+    "source_rows": 557,
+    "source_tables": 99,
+    "fixture": {
+      "users": 6,
+      "realtors": 1,
+      "properties": 1,
+      "projects": 1,
+      "serialized_assets": 1,
+      "reservations": 1,
+      "agreements": 1,
+      "invoices": 1,
+      "payments": 1,
+      "storage_files": 1
+    },
+    "backup_bytes": 83295,
+    "backup_sha256": "fcc608275e2560c981721faca0081097c84665562d9cf6b4531cef1e8514ccc6",
+    "restore_elapsed_ms": 13944,
+    "exact_table_comparison": "passed",
+    "storage_integrity": "passed",
+    "financial_and_inventory_projections": "passed",
+    "role_denial": "passed",
+    "recovery_mode": "all capabilities frozen",
+    "nonempty_import": "rejected",
+    "status": "PASSED_WITH_SCOPE_LIMITATIONS",
+    "limitations": [
+      "Small fictional dataset on isolated local Convex backend; not hosted backup service acceptance",
+      "No production backup schedule, encryption/store ACL, retention approval or achieved RPO/RTO proven",
+      "No provider state or secrets restored; cron schedule empty only in isolated source copy",
+      "Data equality includes IDs, relationships, versions, audit, analytic facts and indexed projections; original commercial fixtures bypass opportunity won prerequisite only for setup",
+      "Administrator test identity used; no live browser/login acceptance"
+    ]
+  },
+  "performance": {
+    "environment": "local",
+    "dataset": {
+      "realtors": 501,
+      "projects": 1,
+      "serialized_assets": 1,
+      "invoices": 1
+    },
+    "concurrency": 1,
+    "measured": {
+      "dashboard": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 1.94,
+        "p95_ms": 2.72,
+        "max_ms": 2.72
+      },
+      "realtor_search": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 15.08,
+        "p95_ms": 26.35,
+        "max_ms": 26.35
+      },
+      "project_load": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 3.32,
+        "p95_ms": 4.08,
+        "max_ms": 4.08
+      },
+      "inventory_availability": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.88,
+        "p95_ms": 1.73,
+        "max_ms": 1.73
+      },
+      "invoice_ar": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.96,
+        "p95_ms": 1.14,
+        "max_ms": 1.14
+      },
+      "analytics": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 10.36,
+        "p95_ms": 14.25,
+        "max_ms": 14.25
+      },
+      "automation_queue": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.63,
+        "p95_ms": 0.75,
+        "max_ms": 0.75
+      },
+      "communication_history": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.38,
+        "p95_ms": 0.43,
+        "max_ms": 0.43
+      },
+      "ai_settings_setup": {
+        "samples": 10,
+        "failures": 0,
+        "p50_ms": 0.31,
+        "p95_ms": 0.37,
+        "max_ms": 0.37
+      }
+    },
+    "limitations": [
+      "Convex-test in-process; not hosted, browser, mobile or provider latency",
+      "Only Realtor list has scale data; other modules smoke baseline",
+      "AI settings read is not full provider request setup",
+      "No production SLA asserted"
+    ]
+  },
+  "dependency_audit": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 79,
+      "dev": 464,
+      "optional": 166,
+      "peer": 33,
+      "peerOptional": 0,
+      "total": 605
+    }
+  },
+  "package_cache_recovery": {
+    "verified": 16,
+    "integrity": "lockfile SHA-512",
+    "tls_verification_disabled": false
+  },
+  "bundle_and_flags": {
+    "executed_at": "2026-09-16T20:48:14.848Z",
+    "flags": {
+      "M9_EMAIL_ENABLED": "false",
+      "M9_CALENDAR_ENABLED": "false"
+    },
+    "builds": [
+      {
+        "type": "workspace",
+        "files": 47,
+        "source_maps": 0,
+        "private_value_matches": 0
+      },
+      {
+        "type": "clean",
+        "files": 47,
+        "source_maps": 0,
+        "private_value_matches": 0
+      }
+    ],
+    "secret_values_logged": false
+  },
+  "source_secret_scan": {
+    "scanned_files": 427,
+    "secret_pattern_files": [],
+    "private_value_matches": [],
+    "private_env_files": [],
+    "scope": "tracked/non-ignored source; API patterns and locally available private credential values; no values logged"
+  },
+  "provider_secret_scan": {
+    "scanned_files": 427,
+    "configured_provider_secret_count": 4,
+    "provider_secret_matches": 0,
+    "google_tokens_or_codes_generated": false,
+    "secret_values_logged": false
+  },
+  "resolved_check_failures": [
+    "Initial local backend fetch failed twice; official ZIP transfer succeeded; actual drill then passed",
+    "Repeat drill refused existing export filename; unique backup filename corrected and fresh-target repeat passed",
+    "npm TLS archive downloads failed; 16 exact lockfile archives fetched over verified HTTPS, SHA-512 verified and cached; offline clean npm ci passed",
+    "Clean unconfigured build reproduced missing auth provider on unauthorized page; fixed server-side rendering condition and pinned Turbopack root; build and HTTP smoke passed"
+  ],
+  "limitations": [
+    "No M10A overall pass, production activation or M10B work",
+    "Clean build uses a verified cache; independent hosted CI/branch protection is not configured",
+    "Dependency audit has no advisories, but deprecated transitive auth dependencies and toolchain require support review",
+    "Restore is a small fictional local native backend drill; protected production store, full populated M7–M9 recovery, schedule, RPO/RTO and migration/rollback still unverified",
+    "No external alert delivery, independent human recovery, privileged MFA or approved legal retention policy proven",
+    "Canonical register retains unfinished local hardening, full migration tooling/rehearsal, indexed CRM/history work and realistic hosted/mobile load"
+  ],
+  "readiness_gate_negative_check": "Passed: valid register with open blockers returns exit code 1 for --require-pass"
+}
