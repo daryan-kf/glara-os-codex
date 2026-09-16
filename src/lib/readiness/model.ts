@@ -344,8 +344,8 @@ export function evaluateReadiness(
       )
         errors.push("CALENDAR_STATUS_CONFLICT");
       if (
-        context.calendar.production_enabled ||
-        context.calendar.development_enabled
+        context.calendar.production_enabled !== false ||
+        context.calendar.development_enabled !== false
       )
         errors.push("DEFERRED_CALENDAR_ENABLED");
     }

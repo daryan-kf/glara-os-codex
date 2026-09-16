@@ -105,6 +105,8 @@ describe("M10A readiness fails closed", () => {
       "docs/deferred-integrations.json#m9-google-calendar";
     f.context.calendar.production_enabled = true;
     expect(f.check().errors).toContain("DEFERRED_CALENDAR_ENABLED");
+    Object.assign(f.context.calendar, { production_enabled: undefined });
+    expect(f.check().errors).toContain("DEFERRED_CALENDAR_ENABLED");
   });
   it("detects a conflicting Calendar PASS or canonical activation", () => {
     const f = fixture();
