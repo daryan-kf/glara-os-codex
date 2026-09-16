@@ -69,6 +69,16 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   jwt: { durationMs: 60 * 60 * 1000 },
   signIn: { maxFailedAttempsPerHour: 5 },
   callbacks: {
+    async beforeSessionCreation(ctx, { userId }) {
+      const profile = await (
+        ctx as unknown as import("./_generated/server").MutationCtx
+      ).db
+        .query("profiles")
+        .withIndex("by_user", (q) => q.eq("userId", userId))
+        .unique();
+      if (!profile || profile.deleted_at || !profile.roles.length)
+        throw new Error("Access denied");
+    },
     async redirect({ redirectTo }) {
       return authenticationRedirect(
         redirectTo,

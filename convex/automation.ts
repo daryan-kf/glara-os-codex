@@ -558,6 +558,12 @@ export const failed = internalMutation({
 export const tick = internalAction({
   args: {},
   handler: async (ctx) => {
+    if (
+      await ctx.runQuery(makeFunctionReference<"query">("emergency:blocked"), {
+        capability: "automation",
+      })
+    )
+      return { evaluated: 0 };
     let evaluated = 0;
     for (let batchNumber = 0; batchNumber < 4; batchNumber++) {
       const batch: import("./_generated/dataModel").Doc<"automation_queue">[] =

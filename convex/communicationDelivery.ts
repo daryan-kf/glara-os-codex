@@ -1,3 +1,4 @@
+import { frozen } from "./emergencyCore";
 import { internal } from "./_generated/api";
 import type { Doc } from "./_generated/dataModel";
 import { internalMutation, internalQuery } from "./functions";
@@ -23,6 +24,7 @@ export const claim = internalMutation({
     unsubscribe_url: v.string(),
   },
   handler: async (ctx, a) => {
+    if (await frozen(ctx, "email")) return null;
     if (
       process.env.M9_EMAIL_ENABLED !== "true" ||
       !process.env.M9_EMAIL_TEST_ALLOWLIST ||
@@ -572,6 +574,7 @@ async function reopenTask(
 export const dispatch = internalMutation({
   args: { id: v.id("communication_outbox"), claim_version: v.number() },
   handler: async (ctx, a) => {
+    if (await frozen(ctx, "email")) return false;
     const job = await ctx.db.get(a.id),
       config = await core.settings(ctx);
     if (

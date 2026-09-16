@@ -1,5 +1,9 @@
 # Glara OS incident response
 
+## Current implementation supplement — Sections 131–224AC
+
+Read [M10A-safe-mode.md](M10A-safe-mode.md) before using the older per-module containment instructions below. Granular Owner-only transactional controls, a forced recovery environment mode and supported session/code revocation now exist and have local tests. This updates earlier statements that these controls were unimplemented; it does not close IR-01/IR-02/IR-06 without their remaining end-to-end evidence. [Backup/recovery procedure](M10A-backup-recovery.md) includes a real isolated fictional restore, not a production recovery claim. All seven original follow-ups remain open in the [canonical readiness register](M10A-readiness-controls.json); the original follow-up file retains their opening history.
+
 Scope: M10A Sections 79–130. **DETECT → CONTAIN → PRESERVE → ASSESS → RECOVER → VERIFY → LEARN.** This is an operator runbook, not an application endpoint. Commands below require the legitimate platform operator or an authenticated application role; they do not confer access. M10A exercises use isolated local fixtures only. Production actions require separately authorized incident authority and the verified production environment. M10B remains unauthorized.
 
 ## First ten minutes

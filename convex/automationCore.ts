@@ -1,3 +1,4 @@
+import { frozen } from "./emergencyCore";
 import { makeFunctionReference } from "convex/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
@@ -385,6 +386,7 @@ export async function processSource(
   actor: Id<"users"> | null = null,
   repair = false,
 ) {
+  if (await frozen(ctx, "automation")) return { created: 0 };
   const queue = await ctx.db
     .query("automation_queue")
     .withIndex("by_source", (q) => q.eq("table", table).eq("entity_id", id))

@@ -18,7 +18,7 @@ const patterns = [
 const sensitiveFiles = files.filter(
   (f) =>
     (/(^|\/)\.env(?:\.|$)/.test(f) && f !== ".env.example") ||
-    /\.dpapi$|(^|\/)\.acceptance\//.test(f),
+    /\.dpapi$|(^|\/)(?:\.acceptance|\.incidents|\.backups)\//.test(f),
 );
 const patternFiles = files.filter((f) =>
   patterns.some((p) => p.test(readFileSync(f, "utf8"))),

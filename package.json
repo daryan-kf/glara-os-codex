@@ -1,7 +1,7 @@
 {
   "name": "glara-os",
   "version": "0.1.0",
-  "description": "Private operating system for Glara Home Staging — M8 AI Copilot & Intelligence Layer",
+  "description": "Private operating system for Glara Home Staging \u2014 M8 AI Copilot & Intelligence Layer",
   "scripts": {
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
@@ -15,7 +15,10 @@
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy",
     "postinstall": "node scripts/patch-convex-auth.mjs",
-    "security:secrets": "node scripts/check-secrets.mjs"
+    "security:secrets": "node scripts/check-secrets.mjs",
+    "readiness:check": "tsx scripts/check-readiness.ts",
+    "readiness:summary": "tsx scripts/check-readiness.ts --write",
+    "readiness:gate": "tsx scripts/check-readiness.ts --require-pass"
   },
   "keywords": [],
   "author": "",

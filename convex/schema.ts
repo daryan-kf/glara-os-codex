@@ -1,3 +1,4 @@
+import { capabilityValue } from "./emergencyModel";
 import { calendarTables } from "./calendarSchema";
 import { communicationTables } from "./communicationSchema";
 import { aiTables } from "./aiSchema";
@@ -25,6 +26,24 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  emergency_controls: defineTable({
+    capability: capabilityValue,
+    frozen: v.boolean(),
+    version: v.number(),
+    changed_by: v.id("users"),
+    reason: v.string(),
+    incident: v.union(v.string(), v.null()),
+    updated_at: v.number(),
+  }).index("by_capability", ["capability"]),
+  security_revocations: defineTable({
+    target_id: v.id("users"),
+    actor_id: v.id("users"),
+    reason: v.string(),
+    incident: v.union(v.string(), v.null()),
+    status: v.union(v.literal("pending"), v.literal("complete")),
+    created_at: v.number(),
+    completed_at: v.optional(v.number()),
+  }).index("by_target", ["target_id"]),
   ...communicationTables,
   ...calendarTables,
   ...aiTables,

@@ -252,6 +252,27 @@ export const read = query({
               .toLowerCase()
               .includes(filters.area.toLowerCase())),
       );
+      // Hydrate only the visible page when ordering does not depend on activity history.
+      // Derived follow-up filters retain their complete-history semantics below.
+      if (!filters.followup && filters.sort !== "followup") {
+        matches.sort((a, b) =>
+          filters.sort === "newest"
+            ? b.created_at.localeCompare(a.created_at)
+            : (a.last_name + a.first_name + a._id)
+                .toLowerCase()
+                .localeCompare(
+                  (b.last_name + b.first_name + b._id).toLowerCase(),
+                ),
+        );
+        const selected = matches.slice(
+          op === "search" ? 0 : (page - 1) * 25,
+          op === "search" ? 8 : page * 25,
+        );
+        return {
+          rows: await Promise.all(selected.map((r) => directory(ctx, r))),
+          total: matches.length,
+        };
+      }
       let rows = await Promise.all(matches.map((r) => directory(ctx, r)));
       const day = (s: string) =>
           new Date(s).toLocaleDateString("en-CA", {

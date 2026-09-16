@@ -1,3 +1,4 @@
+import { requireCapability } from "./emergencyCore";
 import { mutation, query, internalMutation } from "./_generated/server";
 import type { QueryCtx, MutationCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
@@ -102,6 +103,7 @@ export const list = query({
 export const prepare = mutation({
   args: { source: calendarSource },
   handler: async (ctx, a) => {
+    await requireCapability(ctx, "calendar");
     const actor = await requireRoles(ctx, ["owner", "admin"]),
       source = await snapshot(ctx, a.source);
     const connection = await ctx.db
@@ -343,6 +345,7 @@ export const projectStatus = query({
 export const verifyDispatch = query({
   args: { id: v.id("calendar_projections"), version: v.number() },
   handler: async (ctx, a) => {
+    await requireCapability(ctx, "calendar");
     await requireRoles(ctx, ["owner", "admin"]);
     const row = await ctx.db.get(a.id);
     if (!row) return deny("UNAVAILABLE");

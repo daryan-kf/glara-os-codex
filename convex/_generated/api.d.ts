@@ -41,16 +41,21 @@ import type * as communicationSchema from "../communicationSchema.js";
 import type * as communications from "../communications.js";
 import type * as crm from "../crm.js";
 import type * as crons from "../crons.js";
+import type * as emergency from "../emergency.js";
+import type * as emergencyCore from "../emergencyCore.js";
+import type * as emergencyModel from "../emergencyModel.js";
 import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as inventory from "../inventory.js";
 import type * as inventoryCore from "../inventoryCore.js";
 import type * as inventorySchema from "../inventorySchema.js";
+import type * as operationalHealth from "../operationalHealth.js";
 import type * as operations from "../operations.js";
 import type * as operationsCore from "../operationsCore.js";
 import type * as operationsSchema from "../operationsSchema.js";
 import type * as profiles from "../profiles.js";
 import type * as sales from "../sales.js";
+import type * as securityAdmin from "../securityAdmin.js";
 
 import type {
   ApiFromModules,
@@ -92,16 +97,21 @@ declare const fullApi: ApiFromModules<{
   communications: typeof communications;
   crm: typeof crm;
   crons: typeof crons;
+  emergency: typeof emergency;
+  emergencyCore: typeof emergencyCore;
+  emergencyModel: typeof emergencyModel;
   functions: typeof functions;
   http: typeof http;
   inventory: typeof inventory;
   inventoryCore: typeof inventoryCore;
   inventorySchema: typeof inventorySchema;
+  operationalHealth: typeof operationalHealth;
   operations: typeof operations;
   operationsCore: typeof operationsCore;
   operationsSchema: typeof operationsSchema;
   profiles: typeof profiles;
   sales: typeof sales;
+  securityAdmin: typeof securityAdmin;
 }>;
 
 /**

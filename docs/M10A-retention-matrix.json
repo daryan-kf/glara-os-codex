@@ -1,0 +1,118 @@
+{
+  "status": "PROPOSED — NOT APPROVED; NO AUTOMATIC DELETION ENABLED",
+  "canonical_control": "docs/M10A-readiness-controls.json#PRIVACY-POLICY",
+  "domains": [
+    {
+      "domain": "crm_contacts",
+      "handling": "Archive by default; minimize identifying contact fields after approved request",
+      "accountable_role": "Business / Privacy Owner",
+      "proposed_retention": "Review annually; actual deletion period requires approval",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "activity_history",
+      "handling": "Preserve relationship links and minimize free-text; redact approved personal content",
+      "accountable_role": "Privacy Owner",
+      "proposed_retention": "Proposed 24 months after relationship closure, subject to holds",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "commercial_financial",
+      "handling": "No automatic deletion; preserve allocation/reversal/accounting evidence",
+      "accountable_role": "Finance / Privacy Owner",
+      "proposed_retention": "Qualified accounting/legal period required",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "inventory_history",
+      "handling": "Retain identity/movements/condition through asset retirement and claims",
+      "accountable_role": "Operations / Privacy Owner",
+      "proposed_retention": "Period after retirement requires approval",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "audit_logs",
+      "handling": "Append-only provenance; restrict read access and sensitive before/after values",
+      "accountable_role": "Security Owner",
+      "proposed_retention": "Proposed 24 months hot access; archival/hold period requires approval",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "authentication",
+      "handling": "Invalidate sessions/codes on containment; never copy to production migration",
+      "accountable_role": "Security Owner",
+      "proposed_retention": "Framework expiry plus approved purge/hold policy",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "communication_content",
+      "handling": "Restrict bodies/recipient data, preserve minimal delivery/consent linkage",
+      "accountable_role": "Privacy Owner",
+      "proposed_retention": "Proposed 12 months; retention may differ for agreement evidence",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "consent_suppression",
+      "handling": "Do not erase suppression in a way that resumes unwanted messages",
+      "accountable_role": "Privacy Owner",
+      "proposed_retention": "Minimal proof and expiry require approved policy",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "provider_events",
+      "handling": "Retain safe verified event metadata; avoid raw payload logs",
+      "accountable_role": "Technical / Privacy Owner",
+      "proposed_retention": "Proposed 90 days operational; legal/evidence holds reviewed",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "ai_history",
+      "handling": "Minimize prompts/context/output; preserve approval and action audit separately",
+      "accountable_role": "Privacy / Security Owner",
+      "proposed_retention": "Existing runtime expiry is not policy approval; approve configured duration",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "automation_history",
+      "handling": "Preserve dedupe and action identity; redact private text where approved",
+      "accountable_role": "Operations / Security Owner",
+      "proposed_retention": "Proposed 12 months history; do not remove live dedupe keys",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "incident_evidence",
+      "handling": "Restricted immutable evidence, approved independent custodians and access log",
+      "accountable_role": "Security / Privacy Owner",
+      "proposed_retention": "Incident-specific hold; expiry approved at closure",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "operational_logs",
+      "handling": "Allowlisted codes and correlation IDs; no secrets/messages/request bodies",
+      "accountable_role": "Security Owner",
+      "proposed_retention": "Proposed 30 days searchable, 90 days restricted archive",
+      "approved_by": null,
+      "approval_evidence": null
+    },
+    {
+      "domain": "backups",
+      "handling": "Encrypted restricted store, separation from secrets, recoverable key custody",
+      "accountable_role": "Technical / Security Owner",
+      "proposed_retention": "Proposed 14 daily and 8 weekly; vendor plan reviewed",
+      "approved_by": null,
+      "approval_evidence": null
+    }
+  ]
+}

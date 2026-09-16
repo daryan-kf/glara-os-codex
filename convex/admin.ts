@@ -47,6 +47,12 @@ export const provision = internalAction({
     sendInvitation: v.optional(v.boolean()),
   },
   handler: async (ctx, args): Promise<string> => {
+    if (
+      await ctx.runQuery(internal.emergency.blocked, {
+        capability: "onboarding",
+      })
+    )
+      throw Error("Onboarding is restricted.");
     const email = z.email().max(254).parse(args.email.trim().toLowerCase());
     if (
       args.password &&

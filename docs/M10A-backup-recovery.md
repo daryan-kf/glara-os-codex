@@ -1,0 +1,32 @@
+# Backup and recovery — M10A
+
+Current gate status is authoritative in [readiness controls](M10A-readiness-controls.json). An isolated fictional restore is demonstrated; production recovery readiness is not passed.
+
+## Inventory and isolation
+
+Authoritative scope is the entire Convex schema: profiles/roles, CRM and source history, opportunities/quotes, projects/rooms/checklists/events, products/physical assets/quantity stock/reservations/movements/inspection, commercial source records and financial allocations/reversals/credits, communications/consent/suppression, audit, automation/AI state and analytics. Export file storage explicitly; metadata without bytes is insufficient. Preserve all relationships, IDs, versions, original actors and timestamps. Capture the schema/source SHA and complete table counts before export.
+
+Keep source, secrets and provider state separate. Code is restored from Git, deployment configuration from an independently protected configuration inventory, and provider credentials from a restricted secret manager after containment. Database snapshots may contain authentication material and private messages: never commit them, attach them to public issues, or send them to an AI provider. Restore snapshots never grant permission to replay queues or send historical communications. Reconcile unknown sends with provider evidence before any retry.
+
+Official [Convex backup documentation](https://docs.convex.dev/database/backup-restore) describes snapshots and optional storage inclusion; code, environment configuration and scheduled functions are outside that backup. Scheduled backup availability depends on the plan. [CLI import](https://docs.convex.dev/database/import-export/import) preserves IDs and creation timestamps in snapshot ZIPs. Default nonempty-target rejection is required; this runbook never uses `--replace` or `--replace-all`.
+
+## Restricted backup operation
+
+Technical Lead obtains a named operator, source deployment identity, approved destination and encryption/ACL attestation first. Create a supported export with `convex export --include-file-storage --path <restricted-path>` against an explicitly selected deployment. Record backup ID, source SHA/environment/deployment, creation time, byte count, SHA-256, table counts, storage inclusion, operator and restricted-store identifier. Use `src/lib/recovery/model.ts` to reject corrupt manifests, missing protection, source/shared/production targets and outbound-enabled recovery targets. Preflight success is not restore proof. Do not label an unencrypted local ZIP as encrypted.
+
+Proposed production policy, awaiting Business/Security Owner approval: daily encrypted snapshots plus a pre-change snapshot, 14 daily and 8 weekly copies in an independently recoverable restricted store. Vendor retention may differ; required external retention must be configured and proven. Proposed RPO is 24 hours and RTO is one business day. These are planning targets, not achieved guarantees. Financial recovery needs a gap assessment against bank/provider records; never manufacture transactions to hide a missing interval. The small drill's import timing is not production RTO.
+
+## Isolated drill and procedure
+
+The measured evidence is in `M10A-continuation-results.json`. The actual Convex backend was downloaded from the official release for `precompiled-2026-09-11-157eb19`; it ran on loopback-only ports 3320–3323 with beacon disabled and distinct generated local credentials. No hosted deployment was imported into. The fixture creates fictional M0–M6 data through existing functions, with a setup-only won-opportunity transition. All 99 schema tables are compared, including empty M7–M9 tables. This does not demonstrate populated historical M7–M9 recovery.
+
+To reproduce on Windows with Node 22.9+ (Node 24 used), Python, dependencies installed and those ports free:
+
+1. Download that official Convex Windows backend ZIP to `.acceptance/m10/convex-backend.zip`, record its checksum and extract into `.acceptance/m10/backend/`. The executable must be `convex-local-backend.exe`.
+2. Run `python scripts/prepare-recovery-drill.py`. This creates a private isolated source copy and setup-only internal fixture helpers, with an empty cron schedule. These helpers are never deployed to shared development/production.
+3. Run `node node_modules/tsx/dist/cli.mjs scripts/isolated-recovery-drill.mjs`. It creates fresh source/target databases, strips inherited provider/deployment variables, starts loopback backends, deploys the private copy, creates fictional data and storage, exports, checks the target is empty, enables recovery mode, imports without replacement, compares tables/relationships, verifies financial/Inventory reads and role denial, checks storage content, and rejects a second nonempty import. Processes stop in `finally`; logs and snapshots remain ignored/private for review.
+4. Review the result's scope and limitations. Capture only sanitized metrics in Git. Test independent hosted restoration, protected storage, larger/populated histories and staffing before claiming full readiness.
+
+Recovery mode overrides application unfreeze requests and keeps financial/Inventory writes, new onboarding, automation, AI, Email and Calendar frozen while reads remain available. Re-enable one capability only after integrity verification, source-compatible deployment, revoked restored sessions/recovery codes, rotated compromised credentials and Incident Commander approval. A snapshot restores historical sessions too; this is a security dependency, never permission to reactivate them.
+
+On export failure: alert the Technical Lead through the approved independent channel, retain the last verified backup, record the missed interval and actual RPO exposure, retry with a bound and investigate. On restore failure: keep target isolated/frozen, preserve sanitized diagnostics and checksum, do not overwrite the source, choose another verified backup or forward-fix in a new target. Reconcile every listed domain; a count match alone is insufficient. IR-05 remains open for full cross-module recovery, migration and compatible deployment rollback evidence.

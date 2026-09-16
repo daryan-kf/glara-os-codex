@@ -1,0 +1,9 @@
+# Authentication decisions and remaining gates
+
+Keep the existing Convex Auth architecture and cryptography. The current M10A change uses supported session invalidation and a before-session callback to reject archived, absent or unassigned profiles. Do not implement custom token signing, hand-built TOTP or bypasses for a locked-out Owner.
+
+Current internal operator provisioning is not a formal invitation lifecycle and has not been approved as an equivalent replacement. Required work remains: role-bound expiring single-use invitation issuance, mismatch/replay/expiry handling, inviter revocation, safe onboarding delivery, and independent direct-backend tests. Password recovery uses existing framework behavior and safe origin handling; complete account enumeration/rate-limit/recovery replay/browser/production-origin evidence is still required. The historically accepted M9 sender does not mark production authentication delivery as passed.
+
+Privileged MFA is a mandatory M10B blocker. A supported identity architecture must be selected and verified against Next.js/Convex before enablement; no unsupported claim that the current password flow implements MFA. Named platform operators must also use strong MFA and independent recovery channels. Record product-owner approval and actual account evidence; do not silently waive MFA because other hardening passes.
+
+Trusted Owner recovery requires another independently verified accountable operator/channel outside the compromised application session, documented proofing, attributable platform changes and subsequent session/code revocation. The new self-revocation refusal does not solve Owner recovery. Restricted contact and incident-store templates require real humans and ACL review before go-live; no contact details belong in this public repository. These are tracked by IR-01, IR-03, IR-04, AUTH-MFA and AUTH-RECOVERY.

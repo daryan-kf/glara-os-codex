@@ -1,3 +1,6 @@
+import { requireCapability } from "./emergencyCore";
+import { commercialTables } from "./commercialSchema";
+import { inventoryTables } from "./inventorySchema";
 import { touched as automationTouched } from "./automationCore";
 import {
   mutation as baseMutation,
@@ -32,6 +35,20 @@ async function instrument(
   handler: Definition["handler"],
   args: Record<string, unknown>,
 ) {
+  const checked = new Set<string>();
+  const financial = Object.keys(commercialTables),
+    inventory = Object.keys(inventoryTables);
+  const checkWrite = async (table: string) => {
+    const capability = financial.includes(table)
+      ? "financial"
+      : inventory.includes(table)
+        ? "inventory"
+        : null;
+    if (capability && !checked.has(capability)) {
+      await requireCapability(ctx, capability);
+      checked.add(capability);
+    }
+  };
   const touched = new Map<string, Touch>();
   const automationWrites = new Map<string, string>();
   const touch = async (id: string, table: SourceTable, inserted = false) => {
@@ -53,6 +70,8 @@ async function instrument(
     get(target, key, receiver) {
       if (key === "insert")
         return async (...parameters: unknown[]) => {
+          if (typeof parameters[0] === "string")
+            await checkWrite(parameters[0]);
           const result: unknown = await Reflect.apply(
             target.insert,
             target,
@@ -71,6 +90,16 @@ async function instrument(
         return async (...parameters: unknown[]) => {
           const id = parameters[0];
           if (typeof id === "string") {
+            for (const table of [...financial, ...inventory])
+              if (
+                ctx.db.normalizeId(
+                  table as keyof import("./_generated/dataModel").DataModel,
+                  id,
+                )
+              ) {
+                await checkWrite(table);
+                break;
+              }
             for (const name of [
               "profiles",
               "realtors",

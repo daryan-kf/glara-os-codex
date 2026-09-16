@@ -818,5 +818,7 @@
     "M9_EMAIL_ENABLED": false,
     "M9_CALENDAR_ENABLED": false,
     "verification": "Read-only development CLI check; no values changed"
-  }
+  },
+  "current_status_source": "docs/M10A-readiness-controls.json",
+  "historical_scope_note": "This file retains earlier checkpoint evidence through Section 130. Current continuation results are in docs/M10A-continuation-results.json; counts and deployment scope here are historical, not a fresh PASS."
 }

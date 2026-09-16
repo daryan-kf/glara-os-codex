@@ -78,5 +78,7 @@
       "m10b_blocker": true,
       "evidence": "Incident procedure does not waive earlier M10A gates"
     }
-  ]
+  ],
+  "canonical_register": "docs/M10A-readiness-controls.json",
+  "history_note": "Original IR-01 through IR-07 descriptions and opening evidence retained unchanged from 9a02e14d67c4387a4bccccf5dc226e2a998876f3. Current ownership, evidence and closure decisions are canonical in the readiness register."
 }

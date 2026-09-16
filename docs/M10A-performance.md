@@ -1,0 +1,11 @@
+# Performance baseline and limits
+
+`tests/convex/performance.test.ts` records an in-process Convex-test baseline under transaction limits with 501 fictional Realtors and a small project/Inventory/commercial fixture. It verifies stable ordering, non-overlapping pages, empty out-of-range page and eight-result search. Nine operation families are measured with ten samples after warm-up; p95 is the maximum for this small sample. See the measured artifact in `M10A-continuation-results.json`. No hosted/network/mobile/provider SLA is inferred.
+
+Fixed: normal CRM name/newest lists and search now hydrate activity/owner/brokerage data only for the visible 25-row page or eight search results, preserving total counts and ordering. Follow-up filters/sort still require complete derived activity data; they were not silently truncated to obtain a faster but incorrect result.
+
+Remaining material bounds work: CRM still scans up to 10,001 Realtors and fails closed above 10,000; derived follow-up sorting and single-Realtor activity history retain unbounded collections. This is an explicit M10A performance blocker requiring indexed aggregates/pagination with invariant-preserving tests. Reference-choice collections and representative long audit/provider histories need further scale testing. Commercial dashboard uses a 501-row cap with capacity error, not a fake complete total. New health reads use indexed 101-row samples with visible partial flags.
+
+Existing regression suites cover version conflicts, reservation/movement/financial allocation consistency, automation dedupe, AI stale proposals and outbox claims/idempotency. These are functional concurrency proofs, not sustained throughput/load evidence. Provider work is in actions with bounded timeout/retry/circuit behavior; outage contracts are not live latency measurements. Full high-volume multi-module fixtures, concurrent stress, queue backlog recovery, full AI request setup, and desktop/mobile real-browser performance remain open.
+
+Proposed investigation thresholds: investigate a >2x p95 change against the same machine/dataset/runtime baseline; establish hosted query and touch-to-result targets with the business before production. No universal SLA is approved. Preserve safe error/capacity responses instead of dropping rows or integrity checks to meet a timing target.

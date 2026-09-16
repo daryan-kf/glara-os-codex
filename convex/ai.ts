@@ -1,3 +1,4 @@
+import { requireCapability } from "./emergencyCore";
 import { v } from "convex/values";
 import {
   query,
@@ -210,6 +211,7 @@ export const saveSettings = mutation({
 export const request = mutation({
   args: { input: v.string() },
   handler: async (ctx, a): Promise<Id<"ai_requests">> => {
+    await requireCapability(ctx, "ai");
     const data = parse(requestSchema, a.input),
       scope = router(data.question, data.scope),
       { u } = await authorize(ctx, scope);
@@ -359,6 +361,7 @@ export const begin = internalMutation({
     model: string;
     history: { question: string; answer: string }[];
   } | null> => {
+    await requireCapability(ctx, "ai");
     const { r, u } = await owns(ctx, a.id);
     if (r.status !== "queued") return null;
     if (Date.now() >= r.created_at + 120000) deny("AI_TIMEOUT");
@@ -455,6 +458,7 @@ export const finish = internalMutation({
     let error = a.error ? safeError(Error(a.error)) : null,
       result: Insight | null = null;
     try {
+      await requireCapability(ctx, "ai");
       const { u } = await owns(ctx, a.id);
       const liveConfig = (await config(ctx)).value;
       if (
@@ -723,6 +727,7 @@ export const decide = mutation({
     ctx,
     a,
   ): Promise<{ status: string; result_id: string | null }> => {
+    await requireCapability(ctx, "ai");
     const u = await requireRoles(ctx, roles),
       p = await ctx.db.get(a.id);
     if (!p || p.user_id !== u.userId || p.role_stamp !== profileStamp(u))

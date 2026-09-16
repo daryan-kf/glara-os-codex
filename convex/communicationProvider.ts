@@ -19,6 +19,8 @@ const provider = () =>
 export const tick = internalAction({
   args: {},
   handler: async (ctx) => {
+    if (await ctx.runQuery(internal.emergency.blocked, { capability: "email" }))
+      return;
     await ctx.runMutation(internal.communicationDelivery.sweep, {});
     if (
       process.env.M9_EMAIL_ENABLED !== "true" ||
