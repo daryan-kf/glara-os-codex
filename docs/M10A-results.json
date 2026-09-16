@@ -1,0 +1,505 @@
+{
+  "milestone": "M10A",
+  "base_commit": "ea50abeb32eb1816097c783eb9b5de210feffc94",
+  "status": "IN PROGRESS - SPECIFICATION INCOMPLETE; NOT PASSED",
+  "specification": {
+    "received_sections": "1–77 and partial 78",
+    "ends_after": "Communications",
+    "remaining_sections_requested": true
+  },
+  "production_mutations": 0,
+  "development_deployments": 0,
+  "calendar": "DEFERRED AND DISABLED - unchanged",
+  "email_gate": "PASSED - historical evidence preserved; no sends",
+  "initial_defects": [
+    {
+      "finding": "Webhook character count rather than streaming byte cap",
+      "expected": "413",
+      "observed": "400 at signature processing",
+      "fixed_locally": true
+    },
+    {
+      "finding": "Malformed Content-Length response lacked no-store header",
+      "expected": "400/no-store",
+      "observed": "400 without no-store",
+      "fixed_locally": true
+    },
+    {
+      "finding": "No distributed webhook ingress budget",
+      "expected": "429",
+      "observed": "400 at signature processing",
+      "fixed_locally": true
+    },
+    {
+      "finding": "Unsubscribe ignored oversized POST body",
+      "expected": "413",
+      "observed": "200",
+      "fixed_locally": true
+    }
+  ],
+  "tests": {
+    "initial_http_reproductions": {
+      "failed": 4
+    },
+    "hardening": {
+      "passed": 14,
+      "failed": 0
+    },
+    "m9": {
+      "passed": 102,
+      "failed": 0
+    },
+    "full_node": {
+      "passed": 19,
+      "failed": 0
+    },
+    "full_convex": {
+      "passed": 465,
+      "failed": 0
+    },
+    "typescript": "PASSED",
+    "lint": "PASSED",
+    "build": "PASSED",
+    "hosted": "NOT RUN - no deployment",
+    "production": "NOT RUN - not authorized",
+    "format": "PASSED",
+    "secret_scan": {
+      "release_candidate_files": 389,
+      "credential_pattern_matches": 0,
+      "private_environment_files": 0,
+      "locally_available_private_value_matches": 0,
+      "configured_development_provider_secrets_compared": 4,
+      "provider_secret_matches": 0,
+      "secret_values_logged": false,
+      "scope": "Tracked and non-ignored release candidates. Not a full Git-history or built-browser-bundle scan."
+    },
+    "http_smoke": {
+      "scope": "Local production-build HTTP smoke only; no browser interaction or deployment",
+      "results": [
+        {
+          "route": "/login",
+          "status": 200,
+          "headers": "PASS",
+          "unauthenticated": true
+        },
+        {
+          "route": "/dashboard",
+          "status": 307,
+          "headers": "PASS",
+          "unauthenticated": true
+        }
+      ]
+    },
+    "browser": "NOT RUN - browser/computer-control initialization failed; HTTP smoke is not browser acceptance"
+  },
+  "requirements": [
+    {
+      "section": 1,
+      "title": "ABSOLUTE PRODUCTION BOUNDARY",
+      "status": "BOUNDARY PRESERVED - production untouched, Calendar deferred, no feature expansion"
+    },
+    {
+      "section": 2,
+      "title": "M10A OBJECTIVE",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 3,
+      "title": "NO FEATURE CREEP",
+      "status": "BOUNDARY PRESERVED - production untouched, Calendar deferred, no feature expansion"
+    },
+    {
+      "section": 4,
+      "title": "PRODUCTION ENVIRONMENT SPECIFICATION",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 5,
+      "title": "ENVIRONMENT ISOLATION",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 6,
+      "title": "ENVIRONMENT ASSERTION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 7,
+      "title": "DEVELOPMENT DATA BOUNDARY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 8,
+      "title": "PRODUCTION SEED POLICY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 9,
+      "title": "FEATURE FLAG BASELINE",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 10,
+      "title": "DEFERRED INTEGRATION REGISTER",
+      "status": "BOUNDARY PRESERVED - production untouched, Calendar deferred, no feature expansion"
+    },
+    {
+      "section": 11,
+      "title": "SECRET INVENTORY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 12,
+      "title": "SECRET CLASSIFICATION",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 13,
+      "title": "SECRET STORAGE",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 14,
+      "title": "SECRET ROTATION RUNBOOK",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 15,
+      "title": "SECRET SCAN",
+      "status": "PARTIAL - release candidate patterns and known private values passed; history/browser artifacts remain open"
+    },
+    {
+      "section": 16,
+      "title": "AUTHENTICATION INVENTORY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 17,
+      "title": "INVITATION SOURCE OF TRUTH",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 18,
+      "title": "INVITATION TOKEN SECURITY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 19,
+      "title": "EXPIRED INVITATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 20,
+      "title": "REUSED INVITATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 21,
+      "title": "INVITATION EMAIL MISMATCH",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 22,
+      "title": "ROLE CHANGE AFTER INVITATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 23,
+      "title": "INVITER REVOCATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 24,
+      "title": "RECOVERY FLOW",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 25,
+      "title": "RECOVERY TOKEN REPLAY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 26,
+      "title": "RECOVERY REDIRECT",
+      "status": "PARTIAL IMPLEMENTATION AND LOCAL TESTS - hosted/production proof pending"
+    },
+    {
+      "section": 27,
+      "title": "ACCOUNT ENUMERATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 28,
+      "title": "SESSION SECURITY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 29,
+      "title": "ROLE REVOCATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 30,
+      "title": "SESSION FIXATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 31,
+      "title": "COOKIE SECURITY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 32,
+      "title": "MFA READINESS",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 33,
+      "title": "OWNER ACCOUNT PROTECTION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 34,
+      "title": "AUTH RATE LIMITING",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 35,
+      "title": "AUTH AUDIT",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 36,
+      "title": "AUTH TEST MATRIX",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 37,
+      "title": "AUTHORIZATION ARCHITECTURE REVIEW",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 38,
+      "title": "IDOR REVIEW",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 39,
+      "title": "CROSS-TENANCY / COMPANY BOUNDARY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 40,
+      "title": "OWNER / ADMIN BOUNDARY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 41,
+      "title": "SALES BOUNDARY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 42,
+      "title": "DESIGNER BOUNDARY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 43,
+      "title": "CREW BOUNDARY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 44,
+      "title": "MARKETING BOUNDARY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 45,
+      "title": "ARCHIVED / DISABLED",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 46,
+      "title": "PRIVILEGE ESCALATION TESTS",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 47,
+      "title": "PUBLIC ENDPOINT INVENTORY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 48,
+      "title": "PUBLIC ENDPOINT MINIMIZATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 49,
+      "title": "WEBHOOK SECURITY REVIEW",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 50,
+      "title": "CSRF REVIEW",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 51,
+      "title": "XSS REVIEW",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 52,
+      "title": "HTML SANITIZATION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 53,
+      "title": "INJECTION REVIEW",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 54,
+      "title": "SSRF REVIEW",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 55,
+      "title": "OPEN REDIRECT REVIEW",
+      "status": "PARTIAL IMPLEMENTATION AND LOCAL TESTS - hosted/production proof pending"
+    },
+    {
+      "section": 56,
+      "title": "SECURITY HEADERS",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 57,
+      "title": "CONTENT SECURITY POLICY",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 58,
+      "title": "FRAME PROTECTION",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 59,
+      "title": "HTTPS",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 60,
+      "title": "HSTS",
+      "status": "PARTIAL IMPLEMENTATION AND LOCAL TESTS - hosted/production proof pending"
+    },
+    {
+      "section": 61,
+      "title": "CORS",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 62,
+      "title": "REQUEST SIZE LIMITS",
+      "status": "PARTIAL IMPLEMENTATION AND LOCAL TESTS - hosted/production proof pending"
+    },
+    {
+      "section": 63,
+      "title": "INPUT LENGTH LIMITS",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 64,
+      "title": "FILE UPLOAD INVENTORY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 65,
+      "title": "FILE ACCESS",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 66,
+      "title": "MALWARE BOUNDARY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 67,
+      "title": "RATE-LIMIT INVENTORY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 68,
+      "title": "DISTRIBUTED RATE LIMITING",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 69,
+      "title": "RATE-LIMIT FAILURE MODE",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 70,
+      "title": "ABUSE TESTS",
+      "status": "OPEN - final verification incomplete"
+    },
+    {
+      "section": 71,
+      "title": "DATA CLASSIFICATION",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 72,
+      "title": "DATA MINIMIZATION",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 73,
+      "title": "LOGGING PRIVACY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 74,
+      "title": "ERROR PRIVACY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 75,
+      "title": "AUDIT LOG INTEGRITY",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 76,
+      "title": "AUDIT ACTOR",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 77,
+      "title": "AUDIT TIME",
+      "status": "INITIAL SOURCE REVIEW / DOCUMENTED - full acceptance remains open"
+    },
+    {
+      "section": 78,
+      "title": "RETENTION MODEL",
+      "status": "BLOCKED - supplied section truncated"
+    }
+  ],
+  "unresolved": [
+    "Remaining specification from partial Section 78 onward",
+    "Role-bound expiring/revocable invitation lifecycle and complete auth matrix",
+    "Application MFA strategy/implementation for privileged roles",
+    "Direct backend account enumeration, recovery initiation rate limits and raw framework errors",
+    "Cross-environment runtime provider/acceptance assertions",
+    "Strict CSP and complete browser/CSRF checks",
+    "Fresh exhaustive hosted authorization/IDOR matrix",
+    "Retention policy completion and approval",
+    "Tested backup/restore, observability, incident, migration/rollback and performance evidence"
+  ],
+  "m10b": "NOT AUTHORIZED",
+  "development_flags": {
+    "deployment": "woozy-jaguar-392",
+    "M9_EMAIL_ENABLED": false,
+    "M9_CALENDAR_ENABLED": false,
+    "verification": "Read-only development CLI check; no values changed"
+  }
+}

@@ -5,7 +5,7 @@
 - **M9 EMAIL GATE PASSED**. Development email remains disabled after acceptance; this does not authorize production delivery or waive production authentication/email requirements.
 - **M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT**. The implementation is retained; live acceptance is incomplete.
 - Calendar is **NON-BLOCKING FOR M10A PRODUCTION HARDENING** only while disabled.
-- M10A hardening/preparation is authorized for a subsequent task. No M10A implementation was performed in the deferral task.
+- M10A hardening/preparation has now started in a separate authorized task. See [M10A-report.md](M10A-report.md); its supplied specification is truncated within Section 78 and the gate is not passed. No M10A implementation was performed in the earlier deferral task.
 - Overall M9 is not newly declared PASS. Historical incomplete final acceptance/review evidence remains incomplete.
 
 ## Disabled-by-default integration policy

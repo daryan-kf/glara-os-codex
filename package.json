@@ -14,7 +14,8 @@
     "format:check": "prettier --check src tests scripts convex/*.ts *.ts *.json *.mjs docs README.md",
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy",
-    "postinstall": "node scripts/patch-convex-auth.mjs"
+    "postinstall": "node scripts/patch-convex-auth.mjs",
+    "security:secrets": "node scripts/check-secrets.mjs"
   },
   "keywords": [],
   "author": "",

@@ -472,14 +472,20 @@ export const mapping = internalQuery({
       .unique(),
 });
 export const publicLimit = internalMutation({
-  args: {},
-  handler: async (ctx) => {
+  args: {
+    scope: v.optional(v.union(v.literal("unsubscribe"), v.literal("webhook"))),
+  },
+  handler: async (ctx, { scope = "unsubscribe" }) => {
     const window = Math.floor(Date.now() / 60000),
       old = await ctx.db
         .query("communication_public_limits")
-        .withIndex("by_key", (q) => q.eq("key", "unsubscribe"))
+        .withIndex("by_key", (q) => q.eq("key", scope))
         .unique();
-    if (old?.window === window && old.count >= 120) return false;
+    if (
+      old?.window === window &&
+      old.count >= (scope === "webhook" ? 300 : 120)
+    )
+      return false;
     if (old)
       await ctx.db.patch(old._id, {
         window,
@@ -487,7 +493,7 @@ export const publicLimit = internalMutation({
       });
     else
       await ctx.db.insert("communication_public_limits", {
-        key: "unsubscribe",
+        key: scope,
         window,
         count: 1,
       });

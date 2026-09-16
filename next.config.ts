@@ -1,3 +1,4 @@
+import { hstsHeader } from "./src/lib/security/origin";
 import type { NextConfig } from "next";
 const config: NextConfig = {
   poweredByHeader: false,
@@ -13,10 +14,10 @@ const config: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=31536000; includeSubDomains",
-          },
+          ...hstsHeader(
+            process.env.GLARA_ENVIRONMENT,
+            process.env.GLARA_HTTPS_READY,
+          ),
           {
             key: "Content-Security-Policy",
             value:

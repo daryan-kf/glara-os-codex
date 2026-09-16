@@ -1,3 +1,7 @@
+import {
+  applicationOrigin,
+  authenticationRedirect,
+} from "../src/lib/security/origin";
 import { convexAuth } from "@convex-dev/auth/server";
 import { Password } from "@convex-dev/auth/providers/Password";
 import { Email } from "@convex-dev/auth/providers/Email";
@@ -7,6 +11,10 @@ const resetEmail = Email({
   from: "Glara Home Support <Support@glarahome.com>",
   maxAge: 15 * 60,
   async sendVerificationRequest({ identifier, token }) {
+    const origin = applicationOrigin(
+      process.env.SITE_URL,
+      process.env.GLARA_ENVIRONMENT,
+    );
     const key = process.env.AUTH_RESEND_KEY;
     if (!key) throw new Error("Email delivery is not configured.");
     const response = await fetch("https://api.resend.com/emails", {
@@ -15,6 +23,7 @@ const resetEmail = Email({
         Authorization: "Bearer " + key,
         "Content-Type": "application/json",
       },
+      signal: AbortSignal.timeout(15000),
       body: JSON.stringify({
         from: "Glara Home Support <Support@glarahome.com>",
         to: identifier,
@@ -23,7 +32,7 @@ const resetEmail = Email({
           "Use this single-use verification code to set or reset your Glara OS password:\n\n" +
           token +
           "\n\nOpen " +
-          process.env.SITE_URL +
+          origin +
           "/update-password and enter your email, this code and a new password. The code expires in 15 minutes. If you did not request this, ignore this email. Support: Support@glarahome.com",
       }),
     });
@@ -61,15 +70,11 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   signIn: { maxFailedAttempsPerHour: 5 },
   callbacks: {
     async redirect({ redirectTo }) {
-      const base = process.env.SITE_URL;
-      if (!base) throw new Error("Missing application origin.");
-      const target = new URL(redirectTo, base);
-      if (
-        target.origin !== new URL(base).origin ||
-        !["/login", "/update-password", "/dashboard"].includes(target.pathname)
-      )
-        throw new Error("Redirect not allowed.");
-      return target.toString();
+      return authenticationRedirect(
+        redirectTo,
+        process.env.SITE_URL,
+        process.env.GLARA_ENVIRONMENT,
+      );
     },
   },
 });
