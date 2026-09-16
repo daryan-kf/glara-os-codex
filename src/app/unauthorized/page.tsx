@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isConfigured } from "@/lib/env";
 import { SignOutButton } from "@/components/sign-out-button";
 import { AuthLayout } from "@/components/auth-layout";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,13 @@ export default function Page() {
         <Button asChild>
           <Link href="/dashboard">Go to dashboard</Link>
         </Button>
-        <SignOutButton />
+        {isConfigured() ? (
+          <SignOutButton />
+        ) : (
+          <Button asChild variant="outline">
+            <Link href="/login">Return to sign in</Link>
+          </Button>
+        )}
       </div>
     </AuthLayout>
   );

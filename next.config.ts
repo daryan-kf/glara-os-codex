@@ -2,6 +2,7 @@ import { hstsHeader } from "./src/lib/security/origin";
 import type { NextConfig } from "next";
 const config: NextConfig = {
   poweredByHeader: false,
+  turbopack: { root: process.cwd() },
   async headers() {
     return [
       {
