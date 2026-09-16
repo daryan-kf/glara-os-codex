@@ -1,0 +1,127 @@
+{
+  "classification": "RESTRICTED when populated; template contains no personal contact details",
+  "readiness": "UNASSIGNED - fill and exercise before M10B",
+  "contacts": [
+    {
+      "role": "business_owner",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "incident_commander",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "technical_owner",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "security_privacy_owner",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "frontend_hosting_provider",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "convex_platform_provider",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "email_provider_resend",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "ai_provider_openai",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "domain_dns_provider",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "privacy_legal_contact",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    },
+    {
+      "role": "cyber_insurance_if_applicable",
+      "primary_name": null,
+      "approved_contact": null,
+      "backup_name": null,
+      "backup_contact": null,
+      "availability": null,
+      "account_or_contract_reference": null,
+      "verified_at": null
+    }
+  ],
+  "trusted_owner_recovery": {
+    "pre_enrolled_operator": null,
+    "independent_identity_verification_channel": null,
+    "mfa_recovery_reference": null,
+    "last_exercised_at": null
+  },
+  "escalation": [
+    "Use assigned primary then backup",
+    "IC records unacknowledged response and escalates to business owner",
+    "Do not infer contact details from source authors or test accounts"
+  ]
+}

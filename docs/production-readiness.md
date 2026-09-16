@@ -5,7 +5,7 @@
 - **M9 EMAIL GATE PASSED**. Development email remains disabled after acceptance; this does not authorize production delivery or waive production authentication/email requirements.
 - **M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT**. The implementation is retained; live acceptance is incomplete.
 - Calendar is **NON-BLOCKING FOR M10A PRODUCTION HARDENING** only while disabled.
-- M10A hardening/preparation has now started in a separate authorized task. See [M10A-report.md](M10A-report.md); its supplied specification is truncated within Section 78 and the gate is not passed. No M10A implementation was performed in the earlier deferral task.
+- M10A hardening/preparation has now started in a separate authorized task. See [M10A-report.md](M10A-report.md); Sections 1–130 have been received and the gate is not passed. No M10A implementation was performed in the earlier deferral task.
 - Overall M9 is not newly declared PASS. Historical incomplete final acceptance/review evidence remains incomplete.
 
 ## Disabled-by-default integration policy
@@ -31,3 +31,7 @@ The [M9 deferral core check](M9-deferral-core-check.json) records 102 passing lo
 Production invitation/onboarding delivery, password recovery, reused/expired links, production redirect/origin validation, required transactional provider/sender setup and other inherited security/operational readiness items remain **DEFERRED — REQUIRED BEFORE PRODUCTION** where applicable. The accepted development sender/email evidence is preserved without promoting these production obligations to passed.
 
 The current M10A authorization excludes production deployment, customer traffic, production Email/Calendar enablement, real-customer data migration, external customer communication and M10B Go-Live. No production changes are authorized by this sequencing document.
+
+## Incident response readiness
+
+The [incident runbook](incident-response.md) and [five local drills](M10A-incident-drills.json) cover Sections 79–130. Review [IR-01–IR-07](M10A-incident-followups.json) during M10B: none is waived by a local test pass. Fill the restricted contact/incident templates outside the public repository; assign real responders, verify trusted Owner recovery, storage ACLs, monitoring, global containment and backup/restore before production readiness. Local drills do not authorize external notification, production rollback, provider enablement or M10B.

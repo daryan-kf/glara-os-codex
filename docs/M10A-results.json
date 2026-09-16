@@ -1,11 +1,11 @@
 {
   "milestone": "M10A",
   "base_commit": "ea50abeb32eb1816097c783eb9b5de210feffc94",
-  "status": "IN PROGRESS - SPECIFICATION INCOMPLETE; NOT PASSED",
+  "status": "IN PROGRESS - EARLIER HARDENING GATES REMAIN OPEN; NOT PASSED",
   "specification": {
-    "received_sections": "1–77 and partial 78",
-    "ends_after": "Communications",
-    "remaining_sections_requested": true
+    "received_sections": "1–130",
+    "continuation": "Sections 79–130 received and incident-response work completed locally with tracked readiness gaps",
+    "retention_note": "Section 78 lists record domains; approved retention periods and policy remain unresolved"
   },
   "production_mutations": 0,
   "development_deployments": 0,
@@ -54,12 +54,12 @@
       "failed": 0
     },
     "full_convex": {
-      "passed": 465,
+      "passed": 470,
       "failed": 0
     },
     "typescript": "PASSED",
     "lint": "PASSED",
-    "build": "PASSED",
+    "build": "PASSED at source base d8f26d3; continuation changes only docs/tests/ignore rules, no runtime code",
     "hosted": "NOT RUN - no deployment",
     "production": "NOT RUN - not authorized",
     "format": "PASSED",
@@ -71,10 +71,10 @@
       "configured_development_provider_secrets_compared": 4,
       "provider_secret_matches": 0,
       "secret_values_logged": false,
-      "scope": "Tracked and non-ignored release candidates. Not a full Git-history or built-browser-bundle scan."
+      "scope": "Tracked and non-ignored release candidates. Not a full Git-history or built-browser-bundle scan. Historical initial checkpoint; continuation scan recorded in incident evidence."
     },
     "http_smoke": {
-      "scope": "Local production-build HTTP smoke only; no browser interaction or deployment",
+      "scope": "Historical local production-build HTTP smoke at source base d8f26d3; not rerun for docs/tests continuation",
       "results": [
         {
           "route": "/login",
@@ -90,7 +90,12 @@
         }
       ]
     },
-    "browser": "NOT RUN - browser/computer-control initialization failed; HTTP smoke is not browser acceptance"
+    "browser": "NOT RERUN - no UI or runtime changes in Sections 79–130 checkpoint",
+    "incident_response": {
+      "drills_passed": 5,
+      "evidence": "docs/M10A-incident-drills.json",
+      "acceptance": "LOCAL PASS WITH TRACKED READINESS GAPS"
+    }
   },
   "requirements": [
     {
@@ -481,11 +486,322 @@
     {
       "section": 78,
       "title": "RETENTION MODEL",
-      "status": "BLOCKED - supplied section truncated"
+      "status": "OPEN - approved retention specification and legal/privacy review not completed"
+    },
+    {
+      "section": 79,
+      "title": "INCIDENT RESPONSE OBJECTIVE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 80,
+      "title": "INCIDENT CLASSIFICATION",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 81,
+      "title": "INCIDENT SEVERITY",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 82,
+      "title": "INCIDENT AUTHORITY",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 83,
+      "title": "INCIDENT DECLARATION",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 84,
+      "title": "INCIDENT TIMELINE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 85,
+      "title": "EVIDENCE PRESERVATION",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 86,
+      "title": "NO SECRET COPYING",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 87,
+      "title": "SECURITY INCIDENT CONTAINMENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 88,
+      "title": "GLOBAL SAFE MODE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 89,
+      "title": "SAFE-MODE AUTHORIZATION",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 90,
+      "title": "EMAIL INCIDENT RUNBOOK",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 91,
+      "title": "EMAIL STORM CONTAINMENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 92,
+      "title": "RESEND CREDENTIAL COMPROMISE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 93,
+      "title": "WEBHOOK COMPROMISE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 94,
+      "title": "UNSUBSCRIBE SECRET COMPROMISE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 95,
+      "title": "OPENAI KEY COMPROMISE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 96,
+      "title": "AUTH INCIDENT RUNBOOK",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 97,
+      "title": "OWNER ACCOUNT INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 98,
+      "title": "FINANCIAL DATA INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 99,
+      "title": "INVENTORY INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 100,
+      "title": "ANALYTICS INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 101,
+      "title": "AUTOMATION INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 102,
+      "title": "AI INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 103,
+      "title": "PROVIDER OUTAGE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 104,
+      "title": "CONVEX OUTAGE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 105,
+      "title": "FRONTEND OUTAGE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 106,
+      "title": "DEPLOYMENT INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 107,
+      "title": "MIGRATION INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 108,
+      "title": "BACKUP RESTORE INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 109,
+      "title": "PRIVACY INCIDENT ASSESSMENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 110,
+      "title": "WRONG-RECIPIENT EMAIL INCIDENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 111,
+      "title": "INCIDENT COMMUNICATION",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 112,
+      "title": "CUSTOMER/EXTERNAL NOTIFICATION",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 113,
+      "title": "STATUS UPDATE CADENCE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 114,
+      "title": "RECOVERY CRITERIA",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 115,
+      "title": "RE-ENABLEMENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 116,
+      "title": "POST-RECOVERY RECONCILIATION",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 117,
+      "title": "INCIDENT CLOSURE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 118,
+      "title": "POST-INCIDENT REVIEW",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 119,
+      "title": "ROOT CAUSE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 120,
+      "title": "CORRECTIVE ACTION TRACKING",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 121,
+      "title": "INCIDENT REGISTER",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 122,
+      "title": "INCIDENT RUNBOOK DOCUMENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 123,
+      "title": "EMERGENCY CONTACT REGISTER",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 124,
+      "title": "INCIDENT DRILL",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 125,
+      "title": "DRILL — SALES ACCOUNT COMPROMISE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 126,
+      "title": "DRILL — EMAIL STORM",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 127,
+      "title": "DRILL — BAD DEPLOYMENT",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 128,
+      "title": "DRILL — PROVIDER OUTAGE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 129,
+      "title": "DRILL — OPENAI COMPROMISE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
+    },
+    {
+      "section": 130,
+      "title": "INCIDENT RESPONSE ACCEPTANCE",
+      "status": "LOCAL DRILLS EXECUTED / DOCUMENTED; readiness gaps tracked, no production acceptance",
+      "evidence": "docs/incident-response.md; docs/M10A-incident-drills.json; docs/M10A-incident-followups.json"
     }
   ],
   "unresolved": [
-    "Remaining specification from partial Section 78 onward",
     "Role-bound expiring/revocable invitation lifecycle and complete auth matrix",
     "Application MFA strategy/implementation for privileged roles",
     "Direct backend account enumeration, recovery initiation rate limits and raw framework errors",
@@ -493,7 +809,8 @@
     "Strict CSP and complete browser/CSRF checks",
     "Fresh exhaustive hosted authorization/IDOR matrix",
     "Retention policy completion and approval",
-    "Tested backup/restore, observability, incident, migration/rollback and performance evidence"
+    "Tested backup/restore, observability, incident, migration/rollback and performance evidence",
+    "Incident readiness gaps IR-01 through IR-07; see docs/M10A-incident-followups.json"
   ],
   "m10b": "NOT AUTHORIZED",
   "development_flags": {

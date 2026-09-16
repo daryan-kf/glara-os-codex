@@ -11,3 +11,6 @@ test-results/
 supabase/.temp/
 .vercel/
 .acceptance/
+
+# Private operational incident records must never be published.
+.incidents/

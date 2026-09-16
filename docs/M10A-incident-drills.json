@@ -1,0 +1,127 @@
+{
+  "scope": "M10A Sections 79–130, local technical drills and operator tabletop only",
+  "status": "LOCAL INCIDENT RESPONSE ACCEPTANCE PASSED WITH TRACKED READINESS GAPS",
+  "overall_m10a": "IN PROGRESS - NOT PASSED",
+  "source_base_commit": "d8f26d3a5d155080e2528a8c7e6efcbdd21ad105",
+  "executed_at_utc": "2026-09-16T19:17:56.745000+00:00",
+  "executor": "Codex local test runner; no human responder attendance or production exercise claimed",
+  "drills": [
+    {
+      "id": "IR-A",
+      "scenario": "Compromised fictional Sales account",
+      "technical_result": "PASSED",
+      "observed": "Protected CRM reads/mutations and M8/M9 calls denied using the same existing-session identity after internal archival; original audit rows and user identity preserved; assigned Realtor/Opportunity IDs identified",
+      "recovery_evidence": "No provider calls; unaffected Owner can inspect opportunity",
+      "readiness_followup": "IR-01"
+    },
+    {
+      "id": "IR-B",
+      "scenario": "Runaway fictional email queue",
+      "technical_result": "PASSED",
+      "observed": "Four independently consented fictional recipients queued; duplicate enqueue returns existing jobs; anonymous/Sales pause attempts denied; Owner pause plus disabled environment leaves zero dispatch attempts",
+      "recovery_evidence": "Clean M9 reconciliation; unpausing alone cannot override disabled environment. Explicit local mocked recovery completes four jobs once, repeated worker causes no duplicates, and fresh reconciliation is clean; local test flag returned to false.",
+      "readiness_followup": "IR-02"
+    },
+    {
+      "id": "IR-C",
+      "scenario": "Hypothetical bad release with M5/M6 inconsistency",
+      "technical_result": "PASSED",
+      "observed": "Fictional derived cash bucket changed from 1000 to 1001; independent rebuild detects one bucket drift and zero source drift without silent repair",
+      "recovery_evidence": "Explicit source-backed Owner repair yields zero drift; M5 payment and original audit records unchanged",
+      "readiness_followup": "IR-05"
+    },
+    {
+      "id": "IR-D",
+      "scenario": "Mock Resend outage",
+      "technical_result": "PASSED",
+      "observed": "Three mock HTTP 503 results become unknown delivery and trigger circuit pause; operator sees three problems",
+      "recovery_evidence": "Resume with mock provider healthy makes zero additional send calls; unknown jobs remain held; core CRM mutation succeeds",
+      "readiness_followup": "IR-06"
+    },
+    {
+      "id": "IR-E",
+      "scenario": "Hypothetical OpenAI key compromise",
+      "technical_result": "PASSED",
+      "observed": "Owner disables existing AI config and security approval; anonymous/Sales setting changes denied; queued and new provider work rejected",
+      "recovery_evidence": "Zero provider calls and unchanged Opportunity; core Sales CRM creation succeeds; key rotation and provider usage review documented, not executed",
+      "readiness_followup": "IR-06"
+    }
+  ],
+  "rollback_tabletop": {
+    "current_source_sha": "d8f26d3a5d155080e2528a8c7e6efcbdd21ad105",
+    "candidate_prior_baseline_sha": "ea50abeb32eb1816097c783eb9b5de210feffc94",
+    "hypothetical_bad_deployment": "SIMULATED ONLY - no actual defective deployment asserted",
+    "actual_production_deployed_sha": null,
+    "last_known_good_production_deployed_sha": null,
+    "schema_comparison": "git diff between the two source commits over convex/schema.ts and convex/*Schema.ts returned no changes",
+    "migration_implications": "No schema migration in this source interval; actual persisted production state and deployed release remain unverified",
+    "decision": "HOLD deployment; prefer a reviewed forward fix retaining HTTP/origin hardening. Blind rollback to the prior baseline would remove security fixes. Use isolated source-backed derived repair for the fictional drift only.",
+    "irreversible_boundary": "No external effect or production state rolled back; real sends/payments cannot be undone by code rollback",
+    "restoration": "No deployed rollback or backup restore performed; IR-05 remains open"
+  },
+  "tabletop_sequence": [
+    "Declare fictional scenario/category/severity; record known source baseline",
+    "Identify narrow existing containment and privileged actor requirements",
+    "Preserve original source/audit evidence in local fixture assertions",
+    "Assess effects separately from hypotheses and provider uncertainty",
+    "Exercise safe recovery or explicitly hold for missing external evidence",
+    "Verify independent reconciliation and denied access where relevant",
+    "Track remaining deficiencies with accountable roles and pre-M10B deadlines"
+  ],
+  "acceptance_130": {
+    "severity_ownership_declaration_timeline": "DOCUMENTED",
+    "evidence_and_no_secret_copying": "DOCUMENTED",
+    "safe_mode_strategy_and_authorization": "DOCUMENTED existing controls plus explicit coverage/audit gaps; no public control added",
+    "required_runbooks": "DOCUMENTED in docs/incident-response.md",
+    "recovery_reconciliation_reenable_closure_postmortem": "DOCUMENTED",
+    "incident_register_and_contacts": "EMPTY RESTRICTED-USE TEMPLATES - production assignments pending",
+    "fictional_drills": "5 PASSED locally; rollback decision tabletop recorded",
+    "deficiencies": "7 explicitly tracked in docs/M10A-incident-followups.json; no waiver",
+    "unauthenticated_privileged_bypass": "NONE ADDED; anonymous/Sales app-setting control attempts rejected in drills"
+  },
+  "tests": {
+    "incident_drills_passed": 5,
+    "convex_passed": 470,
+    "convex_failed": 0,
+    "node_passed": 19,
+    "node_failed": 0,
+    "total_passed": 489,
+    "typescript": "PASSED",
+    "lint": "PASSED",
+    "format": "PASSED",
+    "secrets": {
+      "files_scanned": 396,
+      "credential_pattern_matches": 0,
+      "private_environment_files": 0,
+      "known_local_private_value_matches": 0,
+      "development_provider_secrets_compared": 4,
+      "provider_secret_matches": 0,
+      "values_logged": false,
+      "scope": "Tracked/non-ignored release candidates; not full Git history/browser bundle acceptance"
+    },
+    "final_recovery_refinement": "Five incident tests rerun and passed after adding four-job mocked successful recovery and no-duplicate assertions; no runtime code changed"
+  },
+  "initial_fixture_failures": "Four harness/setup assumptions corrected: invalid response shape, contact-frequency guard in two scenarios, missing required CRM assignment. Application controls unchanged.",
+  "real_provider_requests": 0,
+  "hosted_deployments": 0,
+  "hosted_mutations": 0,
+  "production_changes": 0,
+  "live_email_sends": 0,
+  "live_key_rotations": 0,
+  "calendar_setup_or_enablement": false,
+  "m10b_authorized": false,
+  "limitations": [
+    "Local Convex test identity is not browser-session or hosted revocation evidence",
+    "Provider HTTP calls in outage drill mocked; no live provider recovery claimed",
+    "Runbook/empty templates do not enforce storage ACLs or appoint real responders",
+    "No actual rollback, restore, legal assessment or external incident communication",
+    "Auth, global-freeze, monitoring and earlier M10A security gates remain unresolved"
+  ],
+  "development_verification": {
+    "method": "Read-only Convex CLI, exact development deployment",
+    "deployment": "woozy-jaguar-392",
+    "M9_EMAIL_ENABLED": false,
+    "M9_CALENDAR_ENABLED": false,
+    "configuration_changes": 0
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "status": "OPEN - readiness gaps, not waived",
+  "items": [
+    {
+      "id": "IR-01",
+      "severity": "P1",
+      "action": "Complete account/session/recovery/invitation revocation and trusted Owner recovery; archive alone is not revocation",
+      "accountable_role": "Security/Technical Lead",
+      "assigned_person": null,
+      "deadline": "Before compromised-account restoration and M10B",
+      "status": "open",
+      "m10b_blocker": true,
+      "evidence": "M10A Sections 17–36; existing archive drill only proves business-access denial"
+    },
+    {
+      "id": "IR-02",
+      "severity": "P1",
+      "action": "Atomic and attributable emergency freeze coverage for automation, financial/Inventory mutations and invitation issuance",
+      "accountable_role": "Technical Lead",
+      "assigned_person": null,
+      "deadline": "Before M10B; before claiming global technical containment",
+      "status": "open",
+      "m10b_blocker": true,
+      "evidence": "Current per-rule/settings controls preserve data but cannot stop all in-flight work"
+    },
+    {
+      "id": "IR-03",
+      "severity": "P1",
+      "action": "Attributable platform operator evidence and incident linkage for environment changes/internal administration",
+      "accountable_role": "Security/Technical Lead",
+      "assigned_person": null,
+      "deadline": "Before M10B",
+      "status": "open",
+      "m10b_blocker": true,
+      "evidence": "Internal profile audit is system/null actor; app settings reasons are externally linked"
+    },
+    {
+      "id": "IR-04",
+      "severity": "P1",
+      "action": "Assign and verify responder contacts, independent Owner recovery channel, restricted incident store ACLs and incident monitoring",
+      "accountable_role": "Business Owner / Security Owner",
+      "assigned_person": null,
+      "deadline": "Before M10B",
+      "status": "open",
+      "m10b_blocker": true,
+      "evidence": "Templates contain no real contact data or staffed on-call claims"
+    },
+    {
+      "id": "IR-05",
+      "severity": "P1",
+      "action": "Execute isolated backup/restore, migration and compatible deployment rollback drills",
+      "accountable_role": "Technical Lead",
+      "assigned_person": null,
+      "deadline": "Before M10B",
+      "status": "open",
+      "m10b_blocker": true,
+      "evidence": "Tabletop decision and local projection repair are not restore/deployment acceptance"
+    },
+    {
+      "id": "IR-06",
+      "severity": "P1",
+      "action": "Hosted/browser account revocation and safe-mode acceptance, genuine provider credential rotation/recovery where required",
+      "accountable_role": "Security/Technical Lead",
+      "assigned_person": null,
+      "deadline": "Before M10B under explicit external acceptance authorization",
+      "status": "open",
+      "m10b_blocker": true,
+      "evidence": "Local mocked drills do not rotate real credentials or prove hosted controls"
+    },
+    {
+      "id": "IR-07",
+      "severity": "P1",
+      "action": "Complete existing M10A auth/MFA, environment, retention and monitoring hardening requirements",
+      "accountable_role": "Security/Technical Lead",
+      "assigned_person": null,
+      "deadline": "Before M10B",
+      "status": "open",
+      "m10b_blocker": true,
+      "evidence": "Incident procedure does not waive earlier M10A gates"
+    }
+  ]
+}

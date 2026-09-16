@@ -1,0 +1,151 @@
+{
+  "template_version": 1,
+  "classification": "RESTRICTED when populated; never commit real incident records",
+  "records": [],
+  "categories": [
+    "security",
+    "privacy",
+    "data_integrity",
+    "availability",
+    "communication",
+    "ai",
+    "automation",
+    "external_integration"
+  ],
+  "severities": ["SEV-0", "SEV-1", "SEV-2", "SEV-3"],
+  "statuses": [
+    "declared",
+    "containing",
+    "investigating",
+    "recovering",
+    "monitoring",
+    "closed"
+  ],
+  "record_template": {
+    "incident_id": null,
+    "fictional_drill": false,
+    "severity": null,
+    "initial_severity": null,
+    "categories": [],
+    "status": "declared",
+    "detected_at": null,
+    "declared_at": null,
+    "reporter_reference": null,
+    "affected_environment": null,
+    "verified_deployment_id": null,
+    "affected_systems": [],
+    "commander": null,
+    "technical_lead": null,
+    "security_privacy_owner": null,
+    "business_owner": null,
+    "known_symptoms": [],
+    "confirmed_facts": [],
+    "hypotheses": [],
+    "unknowns": [],
+    "current_deployed_sha": null,
+    "last_known_good_deployed_sha": null,
+    "containment": {
+      "state": "not_verified",
+      "capabilities": [],
+      "in_flight_risk": null
+    },
+    "privacy_assessment": {
+      "restricted_annex_reference": null,
+      "data_categories": [],
+      "affected_record_count": null,
+      "affected_person_count": null,
+      "uncertainty": null,
+      "access_duration": null,
+      "actual_access_evidence": null,
+      "unauthorized_recipient_reference": null,
+      "legal_review_reference": null
+    },
+    "timeline": [],
+    "timeline_entry_template": {
+      "sequence": null,
+      "event_type": null,
+      "recorded_at_utc": null,
+      "occurred_at_utc": null,
+      "time_source": "operator_clock_or_server_provider_reference",
+      "actor_reference": null,
+      "confirmed_or_hypothesis": null,
+      "description": null,
+      "evidence_ids": [],
+      "corrects_sequence": null
+    },
+    "evidence": [],
+    "evidence_entry_template": {
+      "evidence_id": null,
+      "source_system": null,
+      "restricted_location_reference": null,
+      "collector": null,
+      "collected_at": null,
+      "sha256": null,
+      "original_or_sanitized": null,
+      "contains_secret_values": false
+    },
+    "capability_change_template": {
+      "capability": null,
+      "enabled": false,
+      "reason": null,
+      "authorized_by": null,
+      "executed_by": null,
+      "recorded_at": null,
+      "authoritative_change_at": null,
+      "platform_or_app_audit_id": null,
+      "verification": null,
+      "re_enable_prerequisites": []
+    },
+    "capability_changes": [],
+    "recovery": {
+      "criteria_evidence": [],
+      "reconciliation_references": [],
+      "unexplained_drift": null,
+      "observation_window": null,
+      "accepted_workaround": null,
+      "approved_by": []
+    },
+    "next_update_at": null,
+    "next_decision": null,
+    "external_notification": {
+      "decision": "not_authorized",
+      "human_approvals": [],
+      "approved_content_reference": null,
+      "delivery_evidence_reference": null
+    },
+    "closed_at": null,
+    "closure_authorized_by": null,
+    "postmortem_reference": null,
+    "postmortem_template": {
+      "summary": null,
+      "impact": null,
+      "timeline_reference": null,
+      "detection": null,
+      "root_cause": null,
+      "contributing_factors": [],
+      "containment": null,
+      "recovery": null,
+      "what_worked": [],
+      "what_failed": []
+    },
+    "corrective_actions": [],
+    "corrective_action_template": {
+      "id": null,
+      "work_reference": null,
+      "owner": null,
+      "deadline": null,
+      "status": "open",
+      "severity": null,
+      "m10b_blocker": null,
+      "verification_reference": null
+    }
+  },
+  "storage_requirements": [
+    "Restrict actual records and contact details to approved incident responders",
+    "Use append-oriented audited operational storage; templates are not WORM or access controls",
+    "Keep secret values out of records; preserve only necessary restricted evidence",
+    "Assign sequence and preserve corrections as appended references",
+    "Use authoritative server/provider UTC where available; label operator timestamps",
+    "Set record retention and legal hold through approved policy; no invented deletion schedule"
+  ]
+}
