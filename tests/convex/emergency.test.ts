@@ -268,3 +268,43 @@ it("supported account revocation destroys sessions/refresh tokens and codes; fre
     }),
   ).rejects.toThrow("Access denied");
 });
+
+it("platform role changes revoke old sessions and pending recovery before restoring access", async () => {
+  const f = await operationsFixture();
+  await f.t.action(internal.admin.setProfile, {
+    userId: f.who("sales").id,
+    name: "Fictional promoted user",
+    roles: ["admin"],
+    archived: false,
+  });
+  await expect(
+    f.c("sales").query(api.operationalHealth.health, {}),
+  ).rejects.toThrow();
+  const sessions = await f.t.run((ctx) =>
+    ctx.db
+      .query("authSessions")
+      .withIndex("userId", (q) => q.eq("userId", f.who("sales").id))
+      .collect(),
+  );
+  expect(sessions).toEqual([]);
+});
+it("interrupted and competing platform profile changes remain contained", async () => {
+  const f = await operationsFixture(),
+    args = {
+      userId: f.who("sales").id,
+      name: "Fictional change",
+      roles: ["admin" as const],
+      archived: false,
+    };
+  const first = await f.t.mutation(internal.admin.beginProfileChange, {
+    userId: args.userId,
+  });
+  await expect(f.c("sales").query(api.sales.summary, {})).rejects.toThrow();
+  await f.t.mutation(internal.admin.beginProfileChange, {
+    userId: args.userId,
+  });
+  await expect(
+    f.t.mutation(internal.admin.finishProfileChange, { ...args, lock: first }),
+  ).rejects.toThrow();
+  await expect(f.c("sales").query(api.sales.summary, {})).rejects.toThrow();
+});

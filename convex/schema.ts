@@ -26,6 +26,16 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  operational_alerts: defineTable({
+    key: v.string(),
+    priority: v.union(v.literal("high"), v.literal("medium")),
+    active: v.boolean(),
+    observed_at: v.number(),
+    acknowledged_by: v.union(v.id("users"), v.null()),
+    acknowledged_at: v.union(v.number(), v.null()),
+    resolved_at: v.union(v.number(), v.null()),
+    version: v.number(),
+  }).index("by_key", ["key"]),
   emergency_controls: defineTable({
     capability: capabilityValue,
     frozen: v.boolean(),
@@ -55,6 +65,7 @@ export default defineSchema({
   profiles: defineTable({
     userId: v.id("users"),
     display_name: v.string(),
+    pending_change_token: v.optional(v.string()),
     roles: v.array(roleValue),
     ...stamps,
   }).index("by_user", ["userId"]),

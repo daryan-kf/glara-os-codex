@@ -107,3 +107,70 @@ it("internal health rejects unauthorized roles and archived operators and expose
     f.c("admin").query(api.operationalHealth.health, {}),
   ).rejects.toThrow();
 });
+
+it("operational alerts dedupe, acknowledgement preserves active conditions and resolution requires fresh observation", async () => {
+  const f = await operationsFixture(),
+    owner = f.c("owner"),
+    admin = f.c("admin");
+  await owner.mutation(api.operationalHealth.refresh, {});
+  const first = await owner.query(api.operationalHealth.alerts, {});
+  expect(first.length).toBeGreaterThan(0);
+  await owner.mutation(api.operationalHealth.refresh, {});
+  const next = await owner.query(api.operationalHealth.alerts, {});
+  expect(next.map((r) => r._id)).toEqual(first.map((r) => r._id));
+  const row = next[0];
+  await admin.mutation(api.operationalHealth.acknowledge, {
+    id: row._id,
+    version: row.version,
+  });
+  expect(
+    (await owner.query(api.operationalHealth.alerts, {})).find(
+      (r) => r._id === row._id,
+    ),
+  ).toMatchObject({
+    active: true,
+    acknowledged_by: f.who("admin").id,
+    resolved_at: null,
+  });
+  for (const role of [
+    "sales",
+    "marketing",
+    "designer",
+    "staging_crew",
+  ] as const) {
+    await expect(
+      f.c(role).mutation(api.operationalHealth.refresh, {}),
+    ).rejects.toThrow();
+    await expect(
+      f.c(role).mutation(api.operationalHealth.acknowledge, {
+        id: row._id,
+        version: row.version,
+      }),
+    ).rejects.toThrow();
+  }
+  await expect(
+    owner.mutation(api.operationalHealth.acknowledge, {
+      id: row._id,
+      version: row.version,
+    }),
+  ).rejects.toThrow("CONFLICT");
+  // Simulated obsolete condition in the isolated test database; public caller cannot insert arbitrary alerts.
+  const id = await f.t.run((ctx) =>
+    ctx.db.insert("operational_alerts", {
+      key: "email.provider_failure",
+      priority: "high",
+      active: true,
+      observed_at: 1,
+      acknowledged_at: null,
+      acknowledged_by: null,
+      resolved_at: null,
+      version: 1,
+    }),
+  );
+  await owner.mutation(api.operationalHealth.refresh, {});
+  expect(
+    (await owner.query(api.operationalHealth.alerts, {})).find(
+      (r) => r._id === id,
+    ),
+  ).toMatchObject({ active: false });
+});

@@ -25,6 +25,39 @@ import {
   type Stage,
 } from "../src/lib/sales/model";
 type Ctx = QueryCtx | MutationCtx;
+const manager = (u: Doc<"profiles">) =>
+  u.roles.some((r) => r === "owner" || r === "admin");
+const assigned = (u: Doc<"profiles">, row: { assigned_to: Id<"users"> }) =>
+  manager(u) || row.assigned_to === u.userId;
+async function propertyVisible(
+  ctx: Ctx,
+  u: Doc<"profiles">,
+  p: Doc<"properties">,
+) {
+  if (manager(u) || !u.roles.includes("sales")) return true;
+  const realtor = await ctx.db.get(p.realtor_id);
+  return (
+    realtor?.assigned_to === u.userId ||
+    !!(await ctx.db
+      .query("opportunities")
+      .withIndex("by_property", (q) =>
+        q.eq("property_id", p._id).eq("deleted_at", null),
+      )
+      .filter((q) => q.eq(q.field("assigned_to"), u.userId))
+      .first())
+  );
+}
+async function visibleProperties(
+  ctx: Ctx,
+  u: Doc<"profiles">,
+  rows: Doc<"properties">[],
+) {
+  const allowed = await Promise.all(
+    rows.map((p) => propertyVisible(ctx, u, p)),
+  );
+  return rows.filter((_, i) => allowed[i]);
+}
+
 const stageValue = v.union(
   v.literal("new"),
   v.literal("contacted"),
@@ -77,11 +110,15 @@ async function property(ctx: Ctx, id: Id<"properties">) {
   if (!p || p.deleted_at) return deny("UNAVAILABLE");
   const r = await ctx.db.get(p.realtor_id);
   if (!r || r.deleted_at) return deny("UNAVAILABLE");
+  const u = await requireRoles(ctx, operational);
+  if (!(await propertyVisible(ctx, u, p))) deny("UNAVAILABLE");
   return p;
 }
 async function opportunity(ctx: Ctx, id: Id<"opportunities">) {
   const o = await ctx.db.get(id);
   if (!o || o.deleted_at) return deny("UNAVAILABLE");
+  const u = await requireRoles(ctx, operational);
+  if (!assigned(u, o)) deny("UNAVAILABLE");
   await property(ctx, o.property_id);
   return o;
 }
@@ -205,6 +242,8 @@ async function addAction(
   return id;
 }
 async function cards(ctx: Ctx, rows: Doc<"opportunities">[]) {
+  const user = await requireRoles(ctx, operational);
+  rows = rows.filter((r) => assigned(user, r));
   const properties = new Map<string, Doc<"properties"> | null>(),
     realtors = new Map<string, Doc<"realtors"> | null>(),
     names = new Map<string, string>();
@@ -290,7 +329,7 @@ export const listProperties = query({
     const result = await query.paginate(bounded(a.paginationOpts));
     return {
       ...result,
-      page: result.page.map((p) =>
+      page: (await visibleProperties(ctx, user, result.page)).map((p) =>
         privateAccess
           ? p
           : {
@@ -323,6 +362,7 @@ export const listOpportunities = query({
   },
   handler: async (ctx, a) => {
     const user = await requireRoles(ctx, operational);
+    if (!manager(user)) a.assigned_to = user.userId;
     if (a.archived && !user.roles.some((r) => r === "owner" || r === "admin"))
       deny();
     let base =
@@ -387,7 +427,7 @@ export const listOpportunities = query({
 export const pipeline = query({
   args: {},
   handler: async (ctx) => {
-    await requireRoles(ctx, operational);
+    const user = await requireRoles(ctx, operational);
     return Promise.all(
       stages.map(async (stage) => ({
         stage,
@@ -401,10 +441,12 @@ export const pipeline = query({
             .order("desc")
             .take(6),
         ),
-        totals: await ctx.db
-          .query("sales_metrics")
-          .withIndex("by_key", (q) => q.eq("key", "stage:" + stage))
-          .unique(),
+        totals: !manager(user)
+          ? null
+          : await ctx.db
+              .query("sales_metrics")
+              .withIndex("by_key", (q) => q.eq("key", "stage:" + stage))
+              .unique(),
       })),
     );
   },
@@ -412,7 +454,52 @@ export const pipeline = query({
 export const summary = query({
   args: {},
   handler: async (ctx) => {
-    await requireRoles(ctx, operational);
+    const user = await requireRoles(ctx, operational);
+    if (!manager(user)) {
+      const rows = await ctx.db
+        .query("opportunities")
+        .withIndex("by_assigned", (q) =>
+          q.eq("assigned_to", user.userId).eq("deleted_at", null),
+        )
+        .take(501);
+      if (rows.length > 500)
+        deny("LIMIT", "Personal pipeline requires paginated review.");
+      let awaiting = 0,
+        overdue = 0;
+      for (const o of rows) {
+        const next = await nextAction(ctx, o._id);
+        if (active(o.stage as Stage) && next?.due_at && next.due_at < now())
+          overdue++;
+        const quotes = await ctx.db
+          .query("quotes")
+          .withIndex("by_opportunity", (q) =>
+            q.eq("opportunity_id", o._id).eq("deleted_at", null),
+          )
+          .filter((q) =>
+            q.and(
+              q.eq(q.field("status"), "sent"),
+              q.gte(q.field("valid_until"), now().slice(0, 10)),
+            ),
+          )
+          .take(501);
+        awaiting += quotes.length;
+      }
+      const open = rows.filter((o) => active(o.stage as Stage));
+      return {
+        open_count: open.length,
+        open_value_cents: String(
+          open.reduce((n, o) => n + BigInt(o.estimated_value_cents), 0n),
+        ),
+        won: rows.filter((o) => o.won_at && month(o.won_at) === month(now()))
+          .length,
+        lost: rows.filter((o) => o.lost_at && month(o.lost_at) === month(now()))
+          .length,
+        awaiting: Math.min(awaiting, 500),
+        awaiting_limited: awaiting > 500,
+        overdue,
+        overdue_limited: false,
+      };
+    }
     const stats = await Promise.all(
       stages.map((stage) =>
         ctx.db
@@ -475,7 +562,7 @@ export const getProperty = query({
       "designer",
     ]);
     const p = await ctx.db.get(id);
-    if (!p) return null;
+    if (!p || !(await propertyVisible(ctx, user, p))) return null;
     const full = user.roles.some((r) => operational.includes(r));
     if (p.deleted_at && !user.roles.some((r) => r === "owner" || r === "admin"))
       return null;
@@ -495,12 +582,14 @@ export const getProperty = query({
       realtor_name: r ? `${r.first_name} ${r.last_name}` : "Unavailable",
     };
     if (!full) return { property: safe, commercial: false as const };
-    const opportunities = await ctx.db
-      .query("opportunities")
-      .withIndex("by_property", (q) =>
-        q.eq("property_id", id).eq("deleted_at", null),
-      )
-      .take(21);
+    const opportunities = (
+      await ctx.db
+        .query("opportunities")
+        .withIndex("by_property", (q) =>
+          q.eq("property_id", id).eq("deleted_at", null),
+        )
+        .take(21)
+    ).filter((o) => assigned(user, o));
     const activities = await ctx.db
       .query("activities")
       .withIndex("by_property", (q) =>
@@ -513,7 +602,9 @@ export const getProperty = query({
       commercial: true as const,
       opportunities: await cards(ctx, opportunities.slice(0, 20)),
       hasMore: opportunities.length > 20,
-      activities,
+      activities: activities.filter(
+        (a) => manager(user) || a.assigned_to === user.userId,
+      ),
       consultations: (
         await Promise.all(
           opportunities.slice(0, 20).map((o) =>
@@ -550,6 +641,7 @@ export const getOpportunity = query({
     const o = await ctx.db.get(id);
     if (
       !o ||
+      !assigned(user, o) ||
       (o.deleted_at && !user.roles.some((r) => r === "owner" || r === "admin"))
     )
       return null;
@@ -605,7 +697,7 @@ export const options = query({
     q: v.string(),
   },
   handler: async (ctx, a) => {
-    await requireRoles(ctx, operational);
+    const user = await requireRoles(ctx, operational);
     const q = a.q.trim().slice(0, 100);
     if (a.kind === "realtors") {
       const rows = q
@@ -620,10 +712,12 @@ export const options = query({
             .withIndex("by_archived", (s) => s.eq("deleted_at", null))
             .order("desc")
             .take(20);
-      return rows.map((r) => ({
-        id: r._id,
-        name: r.first_name + " " + r.last_name,
-      }));
+      return rows
+        .filter((r) => assigned(user, r))
+        .map((r) => ({
+          id: r._id,
+          name: r.first_name + " " + r.last_name,
+        }));
     }
     if (a.kind === "properties") {
       const rows = q
@@ -638,9 +732,9 @@ export const options = query({
             .withIndex("by_archived", (q) => q.eq("deleted_at", null))
             .order("desc")
             .take(20);
-      return rows.map((p) => ({
+      return (await visibleProperties(ctx, user, rows)).map((p) => ({
         id: p._id,
-        name: p.address_line_1 + " · " + p.city,
+        name: p.address_line_1 + " Â· " + p.city,
       }));
     }
     const properties = q
@@ -671,7 +765,7 @@ export const options = query({
           .take(20);
     return (await cards(ctx, rows)).map((o) => ({
       id: o._id,
-      name: o.address + " — " + o.stage,
+      name: o.address + " â€” " + o.stage,
     }));
   },
 });
@@ -687,7 +781,7 @@ export const saveProperty = mutation({
     const rid = ctx.db.normalizeId("realtors", d.realtor_id);
     if (!rid) return deny("INVALID_INPUT");
     const r = await ctx.db.get(rid);
-    if (!r || r.deleted_at) return deny("UNAVAILABLE");
+    if (!r || r.deleted_at || !assigned(user, r)) return deny("UNAVAILABLE");
     const old = a.id ? await property(ctx, a.id) : null;
     if (old) version(old, a.version);
     if (
@@ -768,6 +862,7 @@ export const saveOpportunity = mutation({
     const pid = ctx.db.normalizeId("properties", d.property_id),
       owner = ctx.db.normalizeId("users", d.assigned_to);
     if (!pid || !owner) return deny("INVALID_INPUT");
+    if (!manager(user) && owner !== user.userId) deny("FORBIDDEN");
     const p = await property(ctx, pid);
     await assignee(ctx, owner);
     const old = a.id ? await opportunity(ctx, a.id) : null;
@@ -1375,6 +1470,8 @@ export const getQuote = query({
         !user.roles.some((r) => r === "owner" || r === "admin"))
     )
       return null;
+    const parent = await ctx.db.get(quote.opportunity_id);
+    if (!parent || !assigned(user, parent)) return null;
     return {
       quote,
       items: await ctx.db
@@ -1391,7 +1488,7 @@ export const listQuotes = query({
     status: v.optional(v.string()),
   },
   handler: async (ctx, a) => {
-    await requireRoles(ctx, operational);
+    const user = await requireRoles(ctx, operational);
     const result = await ctx.db
       .query("quotes")
       .withIndex("by_status", (q) =>
@@ -1401,7 +1498,13 @@ export const listQuotes = query({
       )
       .order("desc")
       .paginate(bounded(a.paginationOpts));
-    return result;
+    const allowed = await Promise.all(
+      result.page.map(async (q) => {
+        const o = await ctx.db.get(q.opportunity_id);
+        return !!o && assigned(user, o);
+      }),
+    );
+    return { ...result, page: result.page.filter((_, i) => allowed[i]) };
   },
 });
 export const archive = mutation({
@@ -1425,6 +1528,15 @@ export const archive = mutation({
     if (!id) return deny("INVALID_INPUT");
     const old = await ctx.db.get(id);
     if (!old) return deny("UNAVAILABLE");
+    if (!manager(user)) {
+      if (a.kind === "properties")
+        await property(ctx, ctx.db.normalizeId("properties", a.id)!);
+      else if (a.kind === "opportunities")
+        await opportunity(ctx, ctx.db.normalizeId("opportunities", a.id)!);
+      else if ("opportunity_id" in old)
+        await opportunity(ctx, old.opportunity_id);
+      else deny("UNAVAILABLE");
+    }
     version(old, a.version);
     if (!a.restore) {
       const linked =
@@ -1575,16 +1687,20 @@ export const globalSearch = query({
     ]);
     const term = q.trim().slice(0, 100);
     if (term.length < 2) return [];
-    const properties = await ctx.db
-      .query("properties")
-      .withSearchIndex("search", (s) =>
-        s.search("search_text", term).eq("deleted_at", null),
-      )
-      .take(8);
+    const properties = await visibleProperties(
+      ctx,
+      user,
+      await ctx.db
+        .query("properties")
+        .withSearchIndex("search", (s) =>
+          s.search("search_text", term).eq("deleted_at", null),
+        )
+        .take(8),
+    );
     const results = properties.map((p) => ({
       type: "Property",
       id: p._id as string,
-      title: p.address_line_1 + " · " + p.city,
+      title: p.address_line_1 + " Â· " + p.city,
       href: "/properties/" + p._id,
     }));
     if (user.roles.some((r) => operational.includes(r)))
@@ -1595,12 +1711,13 @@ export const globalSearch = query({
             s.eq("property_id", p._id).eq("deleted_at", null),
           )
           .take(2))
-          results.push({
-            type: "Opportunity",
-            id: o._id,
-            title: p.address_line_1 + " — " + o.stage,
-            href: "/opportunities/" + o._id,
-          });
+          if (assigned(user, o))
+            results.push({
+              type: "Opportunity",
+              id: o._id,
+              title: p.address_line_1 + " â€” " + o.stage,
+              href: "/opportunities/" + o._id,
+            });
       }
     return results;
   },
@@ -1609,7 +1726,34 @@ export const globalSearch = query({
 export const topRealtors = query({
   args: {},
   handler: async (ctx) => {
-    await requireRoles(ctx, operational);
+    const user = await requireRoles(ctx, operational);
+    if (!manager(user)) {
+      const rows = await ctx.db
+        .query("opportunities")
+        .withIndex("by_assigned", (q) =>
+          q.eq("assigned_to", user.userId).eq("deleted_at", null),
+        )
+        .take(501);
+      if (rows.length > 500) deny("LIMIT");
+      const counts = new Map<Id<"realtors">, number>();
+      for (const o of rows)
+        counts.set(o.realtor_id, (counts.get(o.realtor_id) ?? 0) + 1);
+      return Promise.all(
+        [...counts.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(async ([id, count]) => {
+            const r = await ctx.db.get(id);
+            return {
+              id,
+              count,
+              name: r
+                ? r.first_name + " " + r.last_name
+                : "Realtor unavailable",
+            };
+          }),
+      );
+    }
     const rows = await ctx.db
       .query("sales_realtor_counts")
       .withIndex("by_count", (q) => q.gt("count", 0))

@@ -88,7 +88,7 @@ it("IR-A compromised Sales archival denies existing-session CRM/M8/M9 access and
   }));
   expect(assigned.realtor?.assigned_to).toBe(f.who("sales").id);
   expect(assigned.opportunity?.assigned_to).toBe(f.who("sales").id);
-  await f.t.mutation(internal.admin.setProfile, {
+  await f.t.action(internal.admin.setProfile, {
     userId: f.who("sales").id,
     name: "Fictional compromised Sales",
     roles: ["sales"],

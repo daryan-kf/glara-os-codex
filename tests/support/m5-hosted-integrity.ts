@@ -572,7 +572,9 @@ main()
   })
   .finally(() =>
     writeFileSync(
-      "docs/M5-hosted-integrity-results.json",
+      process.env.GLARA_M10_ACCEPTANCE === "yes"
+        ? ".acceptance/m10/m5-integrity.json"
+        : "docs/M5-hosted-integrity-results.json",
       JSON.stringify(
         {
           deployment: "woozy-jaguar-392",

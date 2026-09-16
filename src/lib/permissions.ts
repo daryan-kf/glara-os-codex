@@ -8,6 +8,12 @@ export const roles = [
 ] as const;
 export type Role = (typeof roles)[number];
 export const modules = {
+  security: {
+    title: "Security & operations",
+    description: "Emergency controls and operational evidence.",
+    milestone: "M10A",
+    detail: "Authorized health review and incident containment.",
+  },
   communications: {
     title: "Communications",
     description: "Thoughtful communication, confidently delivered.",
@@ -162,6 +168,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   admin: [
+    "security",
     "communications",
     "automation",
     "inventory",

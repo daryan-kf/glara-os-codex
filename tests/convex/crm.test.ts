@@ -97,6 +97,7 @@ describe("Convex M1 transactional security", () => {
       r = await f.write("sales", { op: "realtor_create", data: f.data });
     const safe = await f.read("marketing", { op: "detail", id: r.id });
     expect(safe).not.toHaveProperty("notes");
+    expect(safe).toHaveProperty("next_action", null);
     expect(safe).not.toHaveProperty("relationship_score");
     expect(safe).toHaveProperty("owner_name", "Fictional sales");
     expect(

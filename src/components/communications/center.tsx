@@ -237,6 +237,7 @@ function Compose({
       <label className="grid gap-2 text-sm">
         Purpose
         <select
+          aria-label="Purpose"
           className={inputClass}
           value={category}
           onChange={(e) => {
@@ -279,7 +280,7 @@ function Compose({
             ?.filter((t) => t.category === category && t.current)
             .map((t) => (
               <option value={t.current!._id} key={t._id}>
-                {t.name} · version {t.version}
+                {t.name} Â· version {t.version}
               </option>
             ))}
         </select>
@@ -393,7 +394,7 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
                   ?.filter((t) => t.category === row.category && t.current)
                   .map((t) => (
                     <option key={t._id} value={t.current!._id}>
-                      {t.name} · version {t.version}
+                      {t.name} Â· version {t.version}
                     </option>
                   ))}
               </select>
@@ -543,7 +544,7 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
       {history.results.length ? (
         history.results.map((event) => (
           <p key={event._id} className="text-sm">
-            {event.kind.replaceAll("_", " ")} ·{" "}
+            {event.kind.replaceAll("_", " ")} Â·{" "}
             {new Date(event.occurred_at).toLocaleString()}
           </p>
         ))
@@ -580,7 +581,7 @@ function Templates() {
       {rows?.map((t) => (
         <details key={t._id}>
           <summary className="cursor-pointer">
-            {t.name} · version {t.version}
+            {t.name} Â· version {t.version}
           </summary>
           <pre className="whitespace-pre-wrap py-4 text-sm">
             {t.current?.subject}
@@ -656,6 +657,7 @@ function Preferences() {
       <label className="grid gap-2 text-sm">
         Purpose
         <select
+          aria-label="Purpose"
           className={inputClass}
           value={category}
           onChange={(e) => {
@@ -862,7 +864,7 @@ function Settings() {
   return (
     <section className={panel + " max-w-3xl"}>
       <h2 className="text-xl font-semibold">Communication settings</h2>
-      <p className="text-sm">Sender: {config.sender} · Resend</p>
+      <p className="text-sm">Sender: {config.sender} Â· Resend</p>
       <p className="text-sm">
         Live provider acceptance: pending external evidence
       </p>
@@ -909,7 +911,7 @@ function Settings() {
         </label>
         <Field
           name="lag"
-          label="Queue age warning (minutes, 1–1440)"
+          label="Queue age warning (minutes, 1â€“1440)"
           value={String(config.config?.queue_lag_minutes ?? 15)}
         />
         <label className="grid gap-2 text-sm">
@@ -937,20 +939,20 @@ function Settings() {
       {operations && (
         <div className="space-y-2 text-sm">
           <p>
-            Delivery {operations.enabled ? "enabled" : "disabled"} ·{" "}
-            {operations.paused ? "paused" : "running"} · provider{" "}
+            Delivery {operations.enabled ? "enabled" : "disabled"} Â·{" "}
+            {operations.paused ? "paused" : "running"} Â· provider{" "}
             {operations.provider_configured
               ? "configured"
               : "configuration required"}
           </p>
           <p role={operations.lag_warning ? "alert" : undefined}>
             Oldest due job: {operations.lag_minutes} minutes{" "}
-            {operations.lag_warning ? "— review delayed queue" : ""}
+            {operations.lag_warning ? "â€” review delayed queue" : ""}
           </p>
           <p>
             Retries waiting: {operations.retry_waiting}
-            {operations.partial ? "+" : ""} · consecutive provider failures:{" "}
-            {operations.consecutive_failures} · rejected webhooks:{" "}
+            {operations.partial ? "+" : ""} Â· consecutive provider failures:{" "}
+            {operations.consecutive_failures} Â· rejected webhooks:{" "}
             {operations.webhook_failures}
           </p>
           {operations.circuit_reason && (

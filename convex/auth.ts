@@ -2,6 +2,7 @@ import {
   applicationOrigin,
   authenticationRedirect,
 } from "../src/lib/security/origin";
+import { productionCapabilityAllowed } from "../src/lib/security/preflight";
 import { convexAuth } from "@convex-dev/auth/server";
 import { Password } from "@convex-dev/auth/providers/Password";
 import { Email } from "@convex-dev/auth/providers/Email";
@@ -11,6 +12,11 @@ const resetEmail = Email({
   from: "Glara Home Support <Support@glarahome.com>",
   maxAge: 15 * 60,
   async sendVerificationRequest({ identifier, token }) {
+    if (
+      process.env.AUTH_EMAIL_ENABLED !== "true" ||
+      !productionCapabilityAllowed(process.env, "auth_email")
+    )
+      throw new Error("Email delivery is disabled.");
     const origin = applicationOrigin(
       process.env.SITE_URL,
       process.env.GLARA_ENVIRONMENT,

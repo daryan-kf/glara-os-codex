@@ -1,3 +1,4 @@
+import { SecurityCenter } from "@/components/security-center";
 import { Copilot } from "@/components/ai/copilot";
 import {
   AutomationCenter,
@@ -54,6 +55,7 @@ export default async function ModulePage({
         description="The M8 backend has not been deployed yet."
       />
     );
+  if (moduleKey === "security") return <SecurityCenter roles={user.roles} />;
   if (moduleKey === "automation") return <AutomationCenter />;
   if (moduleKey === "notifications") return <NotificationCenter />;
   if (moduleKey === "dashboard" || moduleKey === "reports")
@@ -104,18 +106,10 @@ export default async function ModulePage({
     <>
       <PageTitle title={info.title} description={info.description} />
       <EmptyState
-        title={
-          moduleKey === "settings"
-            ? "Your workspace foundation is in place"
-            : info.title + ", coming into focus"
-        }
+        title={info.title + ", coming into focus"}
         description={info.detail}
       >
-        <StatusBadge>
-          {moduleKey === "settings"
-            ? "Configuration managed by your administrator"
-            : "Planned for " + info.milestone}
-        </StatusBadge>
+        <StatusBadge>{"Planned for " + info.milestone}</StatusBadge>
       </EmptyState>
     </>
   );

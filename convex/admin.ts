@@ -1,21 +1,83 @@
 import { internalAction, internalMutation } from "./functions";
-import { createAccount } from "@convex-dev/auth/server";
+import { createAccount, invalidateSessions } from "@convex-dev/auth/server";
 import { internal, api } from "./_generated/api";
 import { roleValue } from "./schema";
 import { v } from "convex/values";
 import { z } from "zod";
-export const setProfile = internalMutation({
-  args: {
-    userId: v.id("users"),
-    name: v.string(),
-    roles: v.array(roleValue),
-    archived: v.boolean(),
+const profileArgs = {
+  userId: v.id("users"),
+  name: v.string(),
+  roles: v.array(roleValue),
+  archived: v.boolean(),
+};
+// Platform-only containment precedes supported invalidation; a failed action stays archived.
+export const beginProfileChange = internalMutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, { userId }) => {
+    const old = await ctx.db
+      .query("profiles")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .unique();
+    const lock = crypto.randomUUID();
+    if (old) {
+      await ctx.db.patch(old._id, {
+        deleted_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        pending_change_token: lock,
+      });
+      await ctx.db.insert("audit_logs", {
+        actor_id: null,
+        action: "PLATFORM_PROFILE_CONTAINED",
+        entity: "profiles",
+        entity_id: userId,
+        old_value: old,
+        new_value: { archived: true },
+        created_at: new Date().toISOString(),
+      });
+    } else {
+      const now = new Date().toISOString();
+      await ctx.db.insert("profiles", {
+        userId,
+        display_name: "Pending operator provisioning",
+        roles: [],
+        deleted_at: now,
+        created_at: now,
+        updated_at: new Date().toISOString(),
+        pending_change_token: lock,
+      });
+    }
+    return lock;
   },
+});
+export const finishProfileChange = internalMutation({
+  args: { ...profileArgs, lock: v.string() },
   handler: async (ctx, args) => {
     const old = await ctx.db
       .query("profiles")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .unique();
+    if (!old || old.pending_change_token !== args.lock || !old.deleted_at)
+      throw Error("Profile change requires operator review.");
+    if (
+      await ctx.db
+        .query("authSessions")
+        .withIndex("userId", (q) => q.eq("userId", args.userId))
+        .first()
+    )
+      throw Error("Session invalidation incomplete.");
+    const accounts = await ctx.db
+      .query("authAccounts")
+      .withIndex("userIdAndProvider", (q) => q.eq("userId", args.userId))
+      .take(21);
+    if (accounts.length > 20) throw Error("Account review required.");
+    for (const account of accounts) {
+      const codes = await ctx.db
+        .query("authVerificationCodes")
+        .withIndex("accountId", (q) => q.eq("accountId", account._id))
+        .take(101);
+      if (codes.length > 100) throw Error("Recovery review required.");
+      for (const code of codes) await ctx.db.delete(code._id);
+    }
     const now = new Date().toISOString();
     const value = {
       userId: args.userId,
@@ -23,18 +85,35 @@ export const setProfile = internalMutation({
       roles: args.roles,
       deleted_at: args.archived ? now : null,
       updated_at: now,
+      pending_change_token: undefined,
     };
-    if (old) await ctx.db.patch(old._id, value);
-    else await ctx.db.insert("profiles", { ...value, created_at: now });
+    await ctx.db.patch(old._id, value);
     await ctx.db.insert("audit_logs", {
       actor_id: null,
-      action: old ? "UPDATE" : "INSERT",
+      action: "PLATFORM_PROFILE_CHANGED_SESSIONS_REVOKED",
       entity: "profiles",
       entity_id: args.userId,
-      old_value: old ?? null,
+      old_value: old,
       new_value: value,
       created_at: now,
     });
+  },
+});
+export const setProfile = internalAction({
+  args: profileArgs,
+  handler: async (ctx, args): Promise<null> => {
+    z.string().trim().min(1).max(120).parse(args.name);
+    if (new Set(args.roles).size !== args.roles.length)
+      throw Error("Duplicate roles.");
+    const lock = await ctx.runMutation(internal.admin.beginProfileChange, {
+      userId: args.userId,
+    });
+    await invalidateSessions(ctx, { userId: args.userId });
+    await ctx.runMutation(internal.admin.finishProfileChange, {
+      ...args,
+      lock,
+    });
+    return null;
   },
 });
 // Internal actions are callable only by trusted deployment administration, never by browser clients.
@@ -57,7 +136,8 @@ export const provision = internalAction({
     if (
       args.password &&
       (!email.endsWith("@accounts.example.test") ||
-        process.env.GLARA_ACCEPTANCE_MODE !== "true")
+        process.env.GLARA_ACCEPTANCE_MODE !== "true" ||
+        process.env.GLARA_ENVIRONMENT === "production")
     )
       throw new Error(
         "Direct password provisioning is restricted to disposable acceptance accounts.",
@@ -71,7 +151,7 @@ export const provision = internalAction({
       shouldLinkViaEmail: false,
       shouldLinkViaPhone: false,
     });
-    await ctx.runMutation(internal.admin.setProfile, {
+    await ctx.runAction(internal.admin.setProfile, {
       userId: user._id,
       name: args.name,
       roles: args.roles,
@@ -91,7 +171,10 @@ export const provisionAcceptance = internalAction({
     role: v.union(roleValue, v.literal("unassigned"), v.literal("archived")),
   },
   handler: async (ctx, { role }): Promise<string> => {
-    if (process.env.GLARA_ACCEPTANCE_MODE !== "true")
+    if (
+      process.env.GLARA_ACCEPTANCE_MODE !== "true" ||
+      process.env.GLARA_ENVIRONMENT === "production"
+    )
       throw new Error("Disposable acceptance is disabled.");
     const passwords: Record<string, string> = JSON.parse(
       process.env.GLARA_ACCEPTANCE_PASSWORDS ?? "{}",
@@ -106,7 +189,7 @@ export const provisionAcceptance = internalAction({
       password: passwords[role],
     });
     if (role === "archived")
-      await ctx.runMutation(internal.admin.setProfile, {
+      await ctx.runAction(internal.admin.setProfile, {
         userId: userId as import("./_generated/dataModel").Id<"users">,
         name: "Fictional archived",
         roles: ["sales"],

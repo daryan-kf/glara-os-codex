@@ -417,7 +417,7 @@ export function validateCoverage(raw: unknown, controls: Control[]) {
     .safeParse(raw);
   if (!parsed.success) return ["INVALID_COVERAGE_MAP"];
   const required = [
-    ...Array.from({ length: 224 }, (_, i) => String(i + 1)),
+    ...Array.from({ length: 474 }, (_, i) => String(i + 1)),
     ...[..."ABCDEFGHIJKLMNOPQRSTUVWXYZ", "AA", "AB", "AC"].map(
       (s) => "224" + s,
     ),

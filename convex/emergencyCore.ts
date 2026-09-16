@@ -1,10 +1,12 @@
 import type { QueryCtx, MutationCtx } from "./_generated/server";
 import type { Capability } from "./emergencyModel";
+import { productionCapabilityAllowed } from "../src/lib/security/preflight";
 import { deny } from "./access";
 export async function frozen(
   ctx: QueryCtx | MutationCtx,
   capability: Capability,
 ) {
+  if (!productionCapabilityAllowed(process.env, capability)) return true;
   if (process.env.GLARA_RECOVERY_MODE === "true") return true;
   const row = await ctx.db
     .query("emergency_controls")

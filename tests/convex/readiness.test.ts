@@ -231,6 +231,7 @@ it("coverage rejects silently dropped requirements or inherited incident control
   );
   expect(errors).toContain("INVALID_SECTION_REFERENCE:2");
   expect(errors).toContain("UNCOVERED_SECTION:224AC");
+  expect(errors).toContain("UNCOVERED_SECTION:474");
   expect(errors).toContain("MISSING_INHERITED_CONTROL:IR-07");
   expect(errors).toContain("MISSING_INHERITED_CONTROL:M9-CALENDAR");
 });

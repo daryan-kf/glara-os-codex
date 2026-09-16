@@ -48,6 +48,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 const icons = {
+  security: Settings,
   communications: Megaphone,
   copilot: Search,
   dashboard: LayoutDashboard,
@@ -270,7 +271,7 @@ function SignOut() {
           Sign out of Glara OS?
         </DialogTitle>
         <DialogDescription className="mt-2 text-sm text-muted-foreground">
-          You can sign back in whenever you’re ready.
+          You can sign back in whenever youâ€™re ready.
         </DialogDescription>
         <div className="mt-6 flex justify-end gap-3">
           <DialogClose asChild>
@@ -386,7 +387,7 @@ export function Shell({
           {children}
         </main>
         <footer className="mx-8 hidden items-center justify-between border-t py-5 text-xs text-muted-foreground lg:flex">
-          <span>Glara Home Staging · Metro Vancouver</span>
+          <span>Glara Home Staging Â· Metro Vancouver</span>
           <span className="flex items-center gap-1.5">
             <Check className="size-3" />
             Private workspace

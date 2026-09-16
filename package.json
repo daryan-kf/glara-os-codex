@@ -18,7 +18,8 @@
     "security:secrets": "node scripts/check-secrets.mjs",
     "readiness:check": "tsx scripts/check-readiness.ts",
     "readiness:summary": "tsx scripts/check-readiness.ts --write",
-    "readiness:gate": "tsx scripts/check-readiness.ts --require-pass"
+    "readiness:gate": "tsx scripts/check-readiness.ts --require-pass",
+    "configuration:preflight": "tsx scripts/configuration-preflight.ts"
   },
   "keywords": [],
   "author": "",

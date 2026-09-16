@@ -19,6 +19,14 @@ const envelope = z.object({
   data: z.unknown().optional(),
 });
 type Ctx = QueryCtx | MutationCtx;
+const canReadRealtor = (p: Doc<"profiles">, r: Doc<"realtors">) =>
+  p.roles.some((role) => ["owner", "admin", "marketing"].includes(role)) ||
+  r.assigned_to === p.userId;
+async function requireAssignedRealtor(ctx: Ctx, r: Doc<"realtors">) {
+  const p = await requireRoles(ctx, operational);
+  if (!canReadRealtor(p, r)) deny("UNAVAILABLE");
+}
+
 function parse<T>(schema: z.ZodType<T>, value: unknown): T {
   const result = schema.safeParse(value);
   if (!result.success) return deny("INVALID_INPUT", "Invalid input.");
@@ -93,6 +101,7 @@ async function directory(
   ctx: Ctx,
   row: Doc<"realtors">,
   includePrivate = false,
+  includeActionTitle = true,
 ) {
   const { phone_key, ...safe } = clean(row);
   void phone_key;
@@ -125,7 +134,8 @@ async function directory(
     first_contact_date: contacts[0] ?? null,
     last_contact_date: contacts.at(-1) ?? null,
     next_followup_date: row.deleted_at ? null : (next?.due_at ?? null),
-    next_action: row.deleted_at ? null : (next?.title ?? null),
+    next_action:
+      row.deleted_at || !includeActionTitle ? null : (next?.title ?? null),
   };
   if (!includePrivate) return result;
   const privateRow = await ctx.db
@@ -174,6 +184,7 @@ async function addActivity(
   const realtor = await ctx.db.get(rid);
   if (!realtor || realtor.deleted_at)
     deny("UNAVAILABLE", "Realtor unavailable");
+  await requireAssignedRealtor(ctx, realtor);
   await assignee(ctx, assigned);
   const id = await ctx.db.insert("activities", {
     ...data,
@@ -230,6 +241,7 @@ export const read = query({
         digits = q.replace(/\D/g, "");
       const matches = all.filter(
         (r) =>
+          canReadRealtor(profile, r) &&
           Boolean(r.deleted_at) === (filters.archived === "true") &&
           (!q ||
             q
@@ -269,11 +281,15 @@ export const read = query({
           op === "search" ? 8 : page * 25,
         );
         return {
-          rows: await Promise.all(selected.map((r) => directory(ctx, r))),
+          rows: await Promise.all(
+            selected.map((r) => directory(ctx, r, false, write)),
+          ),
           total: matches.length,
         };
       }
-      let rows = await Promise.all(matches.map((r) => directory(ctx, r)));
+      let rows = await Promise.all(
+        matches.map((r) => directory(ctx, r, false, write)),
+      );
       const day = (s: string) =>
           new Date(s).toLocaleDateString("en-CA", {
             timeZone: "America/Vancouver",
@@ -311,8 +327,9 @@ export const read = query({
     }
     if (op === "detail") {
       const r = await ctx.db.get(docId(ctx, "realtors", String(raw.id ?? "")));
-      if (!r || (r.deleted_at && !manage)) return null;
-      return await directory(ctx, r, write);
+      if (!r || !canReadRealtor(profile, r) || (r.deleted_at && !manage))
+        return null;
+      return await directory(ctx, r, write, write);
     }
     if (op === "choices" || op === "sources") {
       if (op === "choices" && !write) return deny();
@@ -335,7 +352,8 @@ export const read = query({
     if (op === "activities") {
       const rid = docId(ctx, "realtors", String(raw.id ?? "")),
         r = await ctx.db.get(rid);
-      if (!r || (r.deleted_at && !manage)) return { rows: [] };
+      if (!r || !canReadRealtor(profile, r) || (r.deleted_at && !manage))
+        return { rows: [] };
       const rows = (await activities(ctx, rid))
         .filter((a) => !raw.status || a.status === raw.status)
         .sort((a, b) =>
@@ -359,6 +377,7 @@ export const read = query({
         const r = await ctx.db.get(a.realtor_id);
         if (
           r &&
+          canReadRealtor(profile, r) &&
           !r.deleted_at &&
           (!raw.assigned_to || a.assigned_to === raw.assigned_to)
         )
@@ -389,7 +408,7 @@ export const read = query({
       return op === "brokerage_options"
         ? rows.slice(0, 20).map((b) => ({
             id: b._id,
-            name: b.name + (b.office_name ? " · " + b.office_name : ""),
+            name: b.name + (b.office_name ? " Ã‚Â· " + b.office_name : ""),
           }))
         : { rows: rows.slice((page - 1) * 25, page * 25).map(clean) };
     }
@@ -415,6 +434,11 @@ export const write = mutation({
     if (op === "realtor_create" || op === "realtor_update") {
       const d = parse(realtorInput, data),
         owner = docId(ctx, "users", d.assigned_to);
+      if (
+        !profile.roles.some((r) => ["owner", "admin"].includes(r)) &&
+        owner !== actor
+      )
+        deny("FORBIDDEN");
       await assignee(ctx, owner);
       const brokerage = d.brokerage_id
           ? docId(ctx, "brokerages", d.brokerage_id)
@@ -438,6 +462,7 @@ export const write = mutation({
           : null;
       if (op === "realtor_update" && (!old || old.deleted_at))
         return deny("UNAVAILABLE", "Realtor is archived or unavailable.");
+      if (old) await requireAssignedRealtor(ctx, old);
       if (old && old.version !== version) return deny("CONFLICT");
       const email = d.email.trim().toLowerCase() || null,
         phone = d.phone.replace(/\D/g, "") || null;
@@ -517,6 +542,7 @@ export const write = mutation({
       const rid = docId(ctx, "realtors", id),
         old = await ctx.db.get(rid);
       if (!old) return deny();
+      await requireAssignedRealtor(ctx, old);
       if (old.version !== version) return deny("CONFLICT");
       if (
         op === "realtor_archive" &&
@@ -562,6 +588,7 @@ export const write = mutation({
         return deny("UNAVAILABLE", "This activity is no longer open.");
       const r = await ctx.db.get(old.realtor_id);
       if (!r || r.deleted_at) return deny("UNAVAILABLE", "Realtor unavailable");
+      await requireAssignedRealtor(ctx, r);
       await ctx.db.patch(aid, {
         status: op === "activity_complete" ? "completed" : "cancelled",
         completed_at:
