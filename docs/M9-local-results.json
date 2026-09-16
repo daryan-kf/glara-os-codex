@@ -1,0 +1,123 @@
+{
+  "milestone": "M9",
+  "base_commit": "bf785213e246be266aed367737742d5d6438f835",
+  "recorded_at": "2026-09-16T00:20:10.2795622Z",
+  "decision": "M9 DEVELOPMENT GATE PENDING EXTERNAL ACTION",
+  "local": {
+    "node_tests": {
+      "passed": 13,
+      "failed": 0
+    },
+    "convex_tests": {
+      "total": 405,
+      "failed": 0,
+      "success": true,
+      "passed": 405
+    },
+    "m9_tests": {
+      "passed": 56,
+      "failed": 0
+    },
+    "typescript": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed",
+    "dependency_audit": {
+      "vulnerabilities": 0,
+      "packages": 457,
+      "source": "npm install svix --save-exact"
+    }
+  },
+  "browser_compatibility": {
+    "results": [
+      {
+        "role": "owner",
+        "viewport": "desktop",
+        "status": "passed"
+      },
+      {
+        "role": "admin",
+        "viewport": "desktop",
+        "status": "passed"
+      },
+      {
+        "role": "sales",
+        "viewport": "desktop",
+        "status": "passed"
+      },
+      {
+        "role": "marketing",
+        "viewport": "desktop",
+        "status": "passed"
+      },
+      {
+        "role": "designer",
+        "viewport": "desktop",
+        "status": "passed"
+      },
+      {
+        "role": "staging_crew",
+        "viewport": "desktop",
+        "status": "passed"
+      },
+      {
+        "role": "owner",
+        "viewport": "mobile",
+        "status": "passed"
+      },
+      {
+        "role": "admin",
+        "viewport": "mobile",
+        "status": "passed"
+      },
+      {
+        "role": "sales",
+        "viewport": "mobile",
+        "status": "passed"
+      },
+      {
+        "role": "marketing",
+        "viewport": "mobile",
+        "status": "passed"
+      },
+      {
+        "role": "designer",
+        "viewport": "mobile",
+        "status": "passed"
+      },
+      {
+        "role": "staging_crew",
+        "viewport": "mobile",
+        "status": "passed"
+      },
+      {
+        "role": "anonymous",
+        "viewport": "desktop",
+        "status": "passed"
+      }
+    ],
+    "failed": 0,
+    "passed": 13,
+    "scope": "M8 backend compatibility and route guards only"
+  },
+  "hosted_m9": "NOT RUN — deployment approval pending",
+  "browser_m9": "NOT RUN — deployment approval pending",
+  "live_email": "NOT RUN — provider verification and designated inbox pending",
+  "live_calendar": "NOT RUN — provider configuration and designated calendar pending",
+  "production": "NOT AUTHORIZED",
+  "production_email_auth": "DEFERRED — REQUIRED BEFORE PRODUCTION",
+  "secret_scan": {
+    "scanned_files": 368,
+    "secret_pattern_files": [],
+    "private_env_files": [],
+    "scope": "tracked and non-ignored source; patterns are supplementary to review"
+  },
+  "known_limitations": [
+    "Specification continuation after section 165 not supplied",
+    "Source pickers are bounded recent-record lists",
+    "Date/category filters are bounded post-page filters",
+    "Plain text only; no attachments or bulk sending",
+    "Consultations use a 60-minute calendar projection duration",
+    "No M10 work"
+  ]
+}

@@ -1,3 +1,5 @@
+import { CommunicationHistory } from "@/components/communications/history";
+import type { Id } from "../../../../../convex/_generated/dataModel";
 import { requireUser } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import { recordId } from "@/lib/crm/model";
@@ -12,5 +14,15 @@ export default async function Page({
     redirect("/unauthorized");
   const { id } = await params;
   if (!recordId.safeParse(id).success) notFound();
-  return <InvoiceDetail id={id} />;
+  return (
+    <>
+      <InvoiceDetail id={id} />
+      {user.communications_version === 1 &&
+        user.roles.some((r) => r === "owner" || r === "admin") && (
+          <CommunicationHistory
+            source={{ type: "invoice", id: id as Id<"invoices"> }}
+          />
+        )}
+    </>
+  );
 }

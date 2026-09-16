@@ -8,6 +8,7 @@ export const viewer = query({
     if (!profile) return null;
     const user = await ctx.db.get(profile.userId);
     return {
+      communications_version: 1,
       ai_version: 1,
       analytics_version: 1,
       automation_version: 1,

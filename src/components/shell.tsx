@@ -48,6 +48,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 const icons = {
+  communications: Megaphone,
   copilot: Search,
   dashboard: LayoutDashboard,
   realtors: Users,

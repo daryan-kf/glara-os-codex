@@ -1,3 +1,5 @@
+import { calendarTables } from "./calendarSchema";
+import { communicationTables } from "./communicationSchema";
 import { aiTables } from "./aiSchema";
 import { automationTables } from "./automationSchema";
 import { eventContextFields, analyticsTables } from "./analyticsSchema";
@@ -23,6 +25,8 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  ...communicationTables,
+  ...calendarTables,
   ...aiTables,
   ...automationTables,
   ...analyticsTables,

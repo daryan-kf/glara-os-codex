@@ -1,3 +1,5 @@
+import { CommunicationHistory } from "@/components/communications/history";
+import type { Id } from "../../../../../convex/_generated/dataModel";
 import { CopilotLink } from "@/components/ai/copilot";
 import { z } from "zod";
 import Link from "next/link";
@@ -165,6 +167,11 @@ export default async function Page({
                   <Fact title="Average listing price (CAD)">
                     {record.average_listing_price ?? "Not recorded"}
                   </Fact>
+                  {user.communications_version === 1 && (
+                    <CommunicationHistory
+                      source={{ type: "realtor", id: id as Id<"realtors"> }}
+                    />
+                  )}
                 </>
               )}
               {record.luxury_agent && (
@@ -253,6 +260,11 @@ export default async function Page({
                   href={(p) => "/realtors/" + id + "?page=" + p}
                 />
               </section>
+              {user.communications_version === 1 && (
+                <CommunicationHistory
+                  source={{ type: "realtor", id: id as Id<"realtors"> }}
+                />
+              )}
             </>
           ) : (
             <EmptyState
@@ -280,6 +292,11 @@ export default async function Page({
           </section>
         </div>
       </div>
+      {user.communications_version === 1 && (
+        <CommunicationHistory
+          source={{ type: "realtor", id: id as Id<"realtors"> }}
+        />
+      )}
     </>
   );
 }

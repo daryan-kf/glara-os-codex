@@ -8,6 +8,13 @@ export const roles = [
 ] as const;
 export type Role = (typeof roles)[number];
 export const modules = {
+  communications: {
+    title: "Communications",
+    description: "Thoughtful communication, confidently delivered.",
+    milestone: "M9",
+    detail:
+      "Reviewed messages, recipient preferences, and accountable delivery.",
+  },
   copilot: {
     title: "Ask Glara",
     description: "Evidence-grounded intelligence.",
@@ -123,6 +130,7 @@ export const modules = {
 export type Module = keyof typeof modules;
 const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
   sales: [
+    "communications",
     "projects",
     "copilot",
     "dashboard",
@@ -154,6 +162,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   admin: [
+    "communications",
     "automation",
     "inventory",
     "opportunities",
@@ -169,6 +178,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   marketing: [
+    "communications",
     "projects",
     "properties",
     "copilot",

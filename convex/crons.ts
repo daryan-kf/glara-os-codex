@@ -10,4 +10,9 @@ crons.interval(
   { hours: 1 },
   makeFunctionReference<"mutation">("ai:retentionSweep"),
 );
+crons.interval(
+  "communications-outbox",
+  { minutes: 1 },
+  makeFunctionReference<"action">("communicationProvider:tick"),
+);
 export default crons;

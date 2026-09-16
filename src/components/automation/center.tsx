@@ -342,6 +342,16 @@ function ActionCard({
           ? " · task complete, source still open"
           : ""}
       </p>
+      {a.task &&
+        a.task.status === "open" &&
+        (a.task.realtor_id || a.task.opportunity_id) && (
+          <Link
+            className="mt-3 inline-block min-h-11 rounded-lg border px-3 py-2 text-sm"
+            href={`/communications?activity=${a.activity_id}`}
+          >
+            Prepare communication
+          </Link>
+        )}
       <details className="mt-4">
         <summary className="min-h-11 cursor-pointer text-sm font-medium">
           Update action

@@ -167,3 +167,7 @@ M7 passed development hosted acceptance on `woozy-jaguar-392`: 64 main hosted ch
 Owner/Admin can open `/automation` to initialize the disabled rule library, preview a source, configure a versioned rule, and explicitly enroll existing records in 20-record batches. The internal due queue runs every five minutes with bounded work and safe retries. `/notifications` contains role-safe personal updates and automated tasks. Completion, source resolution, suppression and escalation are separate audited events.
 
 See [the M7 release report](docs/M7-report.md) for scope, security, scheduling, activation and test evidence. No rule sends external messages or changes financial/inventory facts. All production email/auth dependencies remain deferred and required before production.
+
+## M9 communications
+
+M9 adds reviewed communications, consent/preference history, an outbox, provider evidence and external calendar projections. External delivery defaults to disabled; configure private provider values only in the Convex development environment. See [M9 report](docs/M9-report.md) for scope, setup, security boundaries and pending external acceptance. Production email/auth requirements remain deferred and required before production. M10 is not implemented.

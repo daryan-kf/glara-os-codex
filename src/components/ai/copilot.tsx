@@ -557,6 +557,14 @@ function Response({
           </div>
           <StatusBadge>{out.evidence_state} evidence</StatusBadge>
           {out.draft && <Draft value={out.draft} />}
+          {out.draft && !r.stale && r.scope.feature === "realtor" && (
+            <Link
+              className="inline-block min-h-11 rounded-lg border px-4 py-3 text-sm"
+              href={`/communications?ai=${id}`}
+            >
+              Review in Communications
+            </Link>
+          )}
           {out.recommendations.length > 0 && (
             <div>
               <h3 className="font-semibold">AI Recommendations</h3>
