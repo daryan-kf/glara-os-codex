@@ -2,11 +2,11 @@
   "milestone": "M9",
   "gate": "M9 EMAIL GATE PENDING EXTERNAL ACTION",
   "base_and_deployed_source_commit": "8d03f3e9abde1a79692e31650dfb795e8f10954d",
-  "recorded_at": "2026-09-16T05:09:04.001Z",
+  "recorded_at": "2026-09-16T05:28:02.661724+00:00",
   "deployment": "woozy-jaguar-392",
   "configuration": {
-    "M9_RESEND_KEY": "missing",
-    "M9_RESEND_WEBHOOK_SECRET": "missing",
+    "M9_RESEND_KEY": "configured",
+    "M9_RESEND_WEBHOOK_SECRET": "configured",
     "M9_UNSUBSCRIBE_SECRET": "configured",
     "M9_EMAIL_FROM": "configured",
     "M9_EMAIL_REPLY_TO": "configured",
@@ -22,10 +22,10 @@
     "status": "passed",
     "scope": "Development endpoint preparation; email disabled; no Calendar configuration"
   },
-  "provider_account_authorization": "awaiting_account_authorization",
-  "domain_verification": "PENDING - actual Resend account status unavailable",
-  "spf": "Existing Hostinger SPF present; actual Resend return-path records unavailable",
-  "dkim": "PENDING - exact provider selector/public key unavailable",
+  "provider_account_authorization": "configured",
+  "domain_verification": "PENDING - Resend domain added; verification requested; exact DNS records missing",
+  "spf": "Root Hostinger SPF preserved; Resend send/rsend records missing",
+  "dkim": "Exact Resend public key retrieved; resend._domainkey TXT missing",
   "dmarc": "Existing p=none record preserved; live message alignment not tested",
   "public_dns": {
     "glarahome.com TXT": [["v=spf1 include:_spf.mail.hostinger.com ~all"]],
@@ -45,10 +45,10 @@
     "glarahome.com NS": ["solar.dns-parking.com", "lunar.dns-parking.com"]
   },
   "dns_changes": 0,
-  "sender": "Configured as requested; Resend permission NOT VERIFIED",
+  "sender": "Configured as requested; NOT VERIFIED while Resend domain status is pending",
   "webhook": {
     "endpoint": "https://woozy-jaguar-392.eu-west-1.convex.site/m9/webhook",
-    "provider_subscription": "PENDING - account authorization required",
+    "provider_subscription": "configured; Resend reports enabled; development endpoint only",
     "events": [
       "email.sent",
       "email.delivered",
@@ -58,8 +58,8 @@
       "email.failed"
     ],
     "authentic_signature": "NOT RUN",
-    "modified_body_and_expired_signature": "LOCAL CONTRACT PASS ONLY",
-    "replay": "LOCAL CONTRACT PASS ONLY"
+    "modified_body_and_expired_signature": "PASS on deployed endpoint with synthetic requests and actual configured signing secret; not provider-originated events",
+    "replay": "Repeated ignored synthetic event accepted without delivery mutation; actual provider delivery replay NOT RUN"
   },
   "unsubscribe": {
     "endpoint": "https://woozy-jaguar-392.eu-west-1.convex.site/m9/unsubscribe",
@@ -257,10 +257,55 @@
         }
       ]
     },
-    "scope": "Focused setup checks only; not full hosted M9 security/mutation acceptance or M1-M8 regression"
+    "scope": "Focused setup checks only; not full hosted M9 security/mutation acceptance or M1-M8 regression",
+    "hosted_signature_boundary": {
+      "at": "2026-09-16T05:26:49.966Z",
+      "deployment": "woozy-jaguar-392",
+      "scope": "Synthetic Svix signature boundary test with configured provider secret and ignored event type; NOT authentic Resend delivery evidence; no communications or delivery mappings created",
+      "checks": [
+        {
+          "name": "valid_signed_ignored_event",
+          "expected": 200,
+          "status": 200,
+          "result": "passed"
+        },
+        {
+          "name": "repeat_signed_ignored_event",
+          "expected": 200,
+          "status": 200,
+          "result": "passed"
+        },
+        {
+          "name": "missing_signature",
+          "expected": 400,
+          "status": 400,
+          "result": "passed"
+        },
+        {
+          "name": "invalid_signature",
+          "expected": 400,
+          "status": 400,
+          "result": "passed"
+        },
+        {
+          "name": "modified_body",
+          "expected": 400,
+          "status": 400,
+          "result": "passed"
+        },
+        {
+          "name": "expired_signature",
+          "expected": 400,
+          "status": 400,
+          "result": "passed"
+        }
+      ],
+      "passed": 6,
+      "failed": 0
+    }
   },
   "origin_correction": "Initial non-regional URL returned 404; corrected using CLI-confirmed eu-west-1 deployment and reran all four endpoint checks successfully",
-  "remaining_external_action": "Approve Glara OS M9 Development Setup in the official Resend consent page for the team owning glarahome.com. Then retrieve real provider DNS requirements and complete domain/webhook/live acceptance.",
+  "remaining_external_action": "Restore the Codex computer-control runtime and resume DNS setup, or have the DNS administrator add the four exact public records in docs/M9-resend-dns.md. User authorization is already granted; no further permission is needed.",
   "overall_m9": "PENDING - email, Calendar and final hosted acceptance",
   "production_email_auth": "DEFERRED - REQUIRED BEFORE PRODUCTION",
   "production": "UNTOUCHED",
@@ -269,11 +314,126 @@
   "secrets_exposed": false,
   "emails_sent": 0,
   "secret_scan": {
-    "scanned_files": 371,
+    "scanned_files": 372,
     "secret_pattern_files": [],
     "private_value_matches": [],
     "private_env_files": [],
     "scope": "tracked/non-ignored source; API patterns and locally available private credential values; no values logged",
     "development_secret_value_matches": 0
+  },
+  "provider_configuration": {
+    "domain": {
+      "id": "02e57ff4-b409-4917-bc37-32a58b0449ec",
+      "name": "glarahome.com",
+      "status": "pending",
+      "region": "us-east-1",
+      "records": [
+        {
+          "record": "DKIM",
+          "name": "resend._domainkey",
+          "value": "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYbAW9aGNoYn8EnyVhfLsqbHovBt/3ZMtTsEz8eerl/VXB/JSdW0VaqEeg/cAj1ib8Ecn8wcU6dGu3EexeD7jqX+BVM/EogsM0G5opGmH0h/6OK10JWn0Ecf8o8AkEoO3DEHlby479pTTJ5WXU7HrRD/PsgRCHle5TPm0xbdSsVQIDAQAB",
+          "type": "TXT",
+          "status": "pending",
+          "ttl": "Auto"
+        },
+        {
+          "record": "SPF",
+          "name": "send",
+          "type": "MX",
+          "ttl": "Auto",
+          "status": "pending",
+          "value": "feedback-smtp.us-east-1.amazonses.com",
+          "priority": 10
+        },
+        {
+          "record": "SPF",
+          "name": "send",
+          "value": "v=spf1 include:amazonses.com ~all",
+          "type": "TXT",
+          "ttl": "Auto",
+          "status": "pending"
+        },
+        {
+          "record": "SPF",
+          "name": "rsend",
+          "value": "send.forge.rmta.net",
+          "type": "CNAME",
+          "status": "not_started",
+          "ttl": "3600"
+        }
+      ],
+      "open_tracking": false,
+      "click_tracking": false,
+      "capabilities": {
+        "sending": "enabled",
+        "receiving": "disabled"
+      }
+    },
+    "webhooks": [
+      {
+        "id": "83bc359d-2c11-4a27-88e9-68466a8d849d",
+        "endpoint": "https://woozy-jaguar-392.eu-west-1.convex.site/m9/webhook",
+        "status": "enabled",
+        "events": [
+          "email.sent",
+          "email.delivered",
+          "email.bounced",
+          "email.complained",
+          "email.delivery_delayed",
+          "email.failed"
+        ]
+      }
+    ],
+    "tracking": "disabled",
+    "receiving": "disabled",
+    "tls_requested": "enforced",
+    "sending_region": "us-east-1"
+  },
+  "resend_dns": {
+    "at": "2026-09-16T05:25:44.227Z",
+    "domain": "glarahome.com",
+    "provider_status": "pending",
+    "records": [
+      {
+        "type": "TXT",
+        "name": "resend._domainkey.glarahome.com",
+        "expected": "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYbAW9aGNoYn8EnyVhfLsqbHovBt/3ZMtTsEz8eerl/VXB/JSdW0VaqEeg/cAj1ib8Ecn8wcU6dGu3EexeD7jqX+BVM/EogsM0G5opGmH0h/6OK10JWn0Ecf8o8AkEoO3DEHlby479pTTJ5WXU7HrRD/PsgRCHle5TPm0xbdSsVQIDAQAB",
+        "priority": null,
+        "status": "missing",
+        "matches": false
+      },
+      {
+        "type": "MX",
+        "name": "send.glarahome.com",
+        "expected": "feedback-smtp.us-east-1.amazonses.com",
+        "priority": 10,
+        "status": "missing",
+        "matches": false
+      },
+      {
+        "type": "TXT",
+        "name": "send.glarahome.com",
+        "expected": "v=spf1 include:amazonses.com ~all",
+        "priority": null,
+        "status": "missing",
+        "matches": false
+      },
+      {
+        "type": "CNAME",
+        "name": "rsend.glarahome.com",
+        "expected": "send.forge.rmta.net",
+        "priority": null,
+        "status": "missing",
+        "matches": false
+      }
+    ],
+    "dns_changes": 0
+  },
+  "dns_instructions": "docs/M9-resend-dns.md",
+  "computer_control": {
+    "authorized_by_owner": true,
+    "browser_runtime": "failed to write kernel assets: The system cannot find the path specified. (os error 3)",
+    "native_runtime": "same initialization failure after reset and retry",
+    "dns_account_access": "unavailable"
   }
 }

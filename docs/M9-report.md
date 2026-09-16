@@ -167,6 +167,8 @@ The next external stage requires private provider configuration and verification
 
 ## M9 Resend development setup and email readiness
 
+This initial setup snapshot predates account approval. The following **Resend account connected** section and `M9-email-readiness.json` contain the current provider/DNS status.
+
 Continued from `8d03f3e9abde1a79692e31650dfb795e8f10954d` under the owner's explicit email setup authorization. The existing source was deployed to **development `woozy-jaguar-392`**, project `glara-os`, with backend TypeScript checking enabled. No business implementation was rebuilt. Google Calendar configuration and M10 were not started; production was untouched.
 
 **M9 EMAIL GATE PENDING EXTERNAL ACTION**. This is preparation plus focused safety verification, not live delivery acceptance.
@@ -222,3 +224,23 @@ The endpoint is deployed, but a real Resend webhook subscription and signing sec
 Live send, inbox receipt, authentic delivery event, live idempotency, real-token unsubscribe and live bounce/complaint acceptance are **NOT RUN**. No email was sent. Provider/DNS verification remains pending. The real key must not be deliberately invalidated for failure tests, and bounce/complaint acceptance must use only official provider mechanisms with appropriate recipient authorization.
 
 Final environment state: development email **disabled**, verified guard **disabled**. Overall M9 remains pending email, Calendar and final hosted acceptance. All inherited production email/auth dependencies remain **DEFERRED — REQUIRED BEFORE PRODUCTION**. The commit containing this report is returned separately after push.
+
+## Resend account connected — DNS administrator action required
+
+The owner's Resend authorization completed. Codex created the requested development API key and stored it directly as `M9_RESEND_KEY` on `woozy-jaguar-392`; no key was displayed or committed. The temporary account-authorization callback completed and its listener stopped.
+
+The provider account initially contained no `glarahome.com` domain or matching development webhook. Codex added the requested domain in Resend's default `us-east-1` sending region, requested enforced TLS, disabled receiving and both open/click tracking, and requested domain verification. The actual Resend domain status is **pending**. The four exact provider-returned DNS records are documented in [M9-resend-dns.md](M9-resend-dns.md); each is currently missing from public DNS. The extra `rsend` CNAME is included because it was returned by the actual provider response, not inferred from examples.
+
+Codex created one webhook for the confirmed regional development endpoint with the six already supported email events, and stored the provider-generated signing secret directly as `M9_RESEND_WEBHOOK_SECRET`. Resend reports the webhook **enabled**. All nine required M9 email environment variables are now **configured**. Email enablement and sender verification guards remain **disabled** until domain verification and controlled acceptance pass.
+
+Six additional hosted signature-boundary checks passed: correctly signed ignored event, repetition of that ignored event, missing signature, invalid signature, modified body and expired signature. These requests were deliberately **synthetic**, signed in memory using the configured secret, and used an ignored event type so they created no communication/delivery mappings. They demonstrate deployed signature verification, not authentic Resend delivery, inbox receipt, or real delivery-event idempotency. Rejection counters were incremented by these negative tests.
+
+No emails were sent. Live send/receipt/delivery/idempotency/unsubscribe/bounce/complaint gates remain **NOT RUN**. Previous 100 local M9 tests, 9 role checks, 4 endpoint checks and 13 browser checks retain their recorded scope and were not falsely represented as rerun in this account-connection follow-up. No application code changed.
+
+**Exact external action:** the DNS administrator must add the four public records in `docs/M9-resend-dns.md` to the `glarahome.com` zone. Codex has no authorized DNS connector, and browser control remains unavailable; Resend authorization alone does not grant Hostinger DNS access. Existing Hostinger MX/SPF, other DKIM selectors, nameservers and DMARC were preserved. The new SPF belongs to the `send` subdomain, so no second root SPF is needed.
+
+After DNS publication, recheck both DNS and actual provider status before setting verification or temporarily enabling development email. Production remains untouched; Calendar configuration and M10 have not started. All production email/auth requirements remain **DEFERRED — REQUIRED BEFORE PRODUCTION**.
+
+**M9 EMAIL GATE PENDING EXTERNAL ACTION**.
+
+The owner explicitly authorized computer control to finish DNS setup. Both available browser control and the separate Windows computer-control runtime failed during initialization with `failed to write kernel assets: The system cannot find the path specified. (os error 3)`. Resetting and retrying the native runtime produced the same error. This is a tooling failure, not missing permission. Resume the already-authorized DNS work once computer control is available, or have the DNS administrator apply the exact prepared records. No secret needs to be shared in chat.
