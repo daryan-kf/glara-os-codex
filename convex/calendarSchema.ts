@@ -43,6 +43,14 @@ export const calendarTables = {
     ),
     snapshot: projectionValue,
     provider_etag: v.optional(v.string()),
+    observed: v.optional(
+      v.object({
+        start: v.string(),
+        end: v.string(),
+        has_attendees: v.boolean(),
+        missing: v.boolean(),
+      }),
+    ),
     version: v.number(),
     lease_until: v.optional(v.number()),
     last_sync_at: v.optional(v.number()),

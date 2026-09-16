@@ -68,6 +68,7 @@ export const communicationTables = {
     .index("by_requester", ["requested_by", "created_at"])
     .index("by_requester_status", ["requested_by", "status", "created_at"])
     .index("by_send_key", ["send_key"])
+    .index("by_activity", ["activity_id", "created_at"])
     .searchIndex("search_subject", {
       searchField: "subject",
       filterFields: [
@@ -147,6 +148,7 @@ export const communicationTables = {
   }).index("by_email", ["email", "created_at"]),
   communication_unsubscribe_tokens: defineTable({
     token_hash: v.string(),
+    generation: v.optional(v.number()),
     recipient_key: v.string(),
     scope: scopeValue,
     revoked_at: v.optional(v.number()),
@@ -172,12 +174,15 @@ export const communicationTables = {
     next_attempt_at: v.number(),
     claimed_at: v.optional(v.number()),
     lease_until: v.optional(v.number()),
+    dispatch_started_at: v.optional(v.number()),
+    claim_version: v.optional(v.number()),
     last_code: v.optional(v.string()),
     ...stamp,
   })
     .index("by_communication", ["communication_id"])
     .index("by_send_key", ["send_key"])
-    .index("by_due", ["status", "next_attempt_at"]),
+    .index("by_due", ["status", "next_attempt_at"])
+    .index("by_lease", ["status", "lease_until"]),
   communication_provider_messages: defineTable({
     communication_id: v.id("communications"),
     provider: v.literal("resend"),
@@ -204,7 +209,9 @@ export const communicationTables = {
   })
     .index("by_event", ["event_id"])
     .index("by_communication", ["communication_id", "occurred_at"])
-    .index("by_provider", ["provider_id"]),
+    .index("by_provider", ["provider_id"])
+    .index("by_provider_kind", ["provider_id", "kind"])
+    .index("by_unmapped", ["provider_id", "communication_id"]),
   communication_public_limits: defineTable({
     key: v.string(),
     count: v.number(),
@@ -220,6 +227,17 @@ export const communicationTables = {
     signature: v.string(),
     secondary_approval: v.boolean(),
     paused: v.boolean(),
+    queue_lag_minutes: v.optional(v.number()),
+    consecutive_failures: v.optional(v.number()),
+    circuit_reason: v.optional(v.string()),
+    token_generation: v.optional(v.number()),
+    webhook_failures: v.optional(v.number()),
+    transactional_basis: v.optional(
+      v.union(
+        v.literal("documented_service"),
+        v.literal("explicit_request_only"),
+      ),
+    ),
     ...stamp,
   }).index("by_key", ["key"]),
 };

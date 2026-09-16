@@ -1,6 +1,7 @@
 import { mutation, query, internalMutation } from "./_generated/server";
 import type { QueryCtx, MutationCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
+import { paginationOptsValidator } from "convex/server";
 import { calendarSource } from "./calendarSchema";
 import { requireRoles, deny } from "./access";
 import { v } from "convex/values";
@@ -184,18 +185,27 @@ export const finish = internalMutation({
     ),
     etag: v.optional(v.string()),
     code: v.string(),
+    observed: v.optional(
+      v.object({
+        start: v.string(),
+        end: v.string(),
+        has_attendees: v.boolean(),
+        missing: v.boolean(),
+      }),
+    ),
   },
   handler: async (ctx, a) => {
     const row = await ctx.db.get(a.id);
     if (!row || row.version !== a.version) return;
     const current = await snapshot(ctx, row.source),
-      stale = JSON.stringify(current) !== JSON.stringify(row.snapshot);
+      stale = !sameSnapshot(current, row.snapshot);
     await ctx.db.patch(row._id, {
       external_id: a.external_id,
       status: stale && a.status === "synced" ? "pending" : a.status,
       provider_etag: a.etag ?? row.provider_etag,
       lease_until: undefined,
       last_code: a.code,
+      observed: a.observed,
       last_sync_at: Date.now(),
       version: row.version + 1,
       updated_at: Date.now(),
@@ -330,3 +340,98 @@ export const projectStatus = query({
     );
   },
 });
+export const verifyDispatch = query({
+  args: { id: v.id("calendar_projections"), version: v.number() },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    const row = await ctx.db.get(a.id);
+    if (!row) return deny("UNAVAILABLE");
+    const connection = await ctx.db.get(row.connection_id);
+    if (
+      !connection?.enabled ||
+      process.env.M9_CALENDAR_ENABLED !== "true" ||
+      connection.calendar_id !== process.env.M9_GOOGLE_CALENDAR_ID
+    )
+      deny("CONFIGURATION_REQUIRED");
+    version(row, a.version);
+    if (
+      row.status !== "syncing" ||
+      (row.lease_until ?? 0) < Date.now() ||
+      !sameSnapshot(await snapshot(ctx, row.source), row.snapshot)
+    )
+      deny("CONFLICT");
+    return true;
+  },
+});
+export const reconcilePage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    if (a.paginationOpts.numItems < 1 || a.paginationOpts.numItems > 25)
+      deny("INVALID_INPUT");
+    const page = await ctx.db
+      .query("calendar_projections")
+      .paginate(a.paginationOpts);
+    const rows = [];
+    for (const row of page.page) {
+      const issues: string[] = [];
+      const same = await ctx.db
+        .query("calendar_projections")
+        .withIndex("by_source", (q) =>
+          q
+            .eq("source_key", row.source_key)
+            .eq("connection_id", row.connection_id),
+        )
+        .take(2);
+      if (same.length > 1) issues.push("duplicate_source_projection");
+      if (row.external_id) {
+        const external = await ctx.db
+          .query("calendar_projections")
+          .withIndex("by_external", (q) => q.eq("external_id", row.external_id))
+          .take(2);
+        if (external.length > 1) issues.push("duplicate_external_identity");
+      }
+      if (["unknown", "conflict", "failed"].includes(row.status))
+        issues.push("provider_review_required");
+      if (row.observed?.has_attendees) issues.push("unexpected_attendees");
+      try {
+        if (
+          row.status === "synced" &&
+          !sameSnapshot(await snapshot(ctx, row.source), row.snapshot)
+        )
+          issues.push("stale_projection");
+      } catch {
+        issues.push("source_unavailable");
+      }
+      rows.push({ id: row._id, issues });
+    }
+    return { ...page, page: rows };
+  },
+});
+export const sourceStatus = query({
+  args: { source: calendarSource },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    await snapshot(ctx, a.source);
+    return ctx.db
+      .query("calendar_projections")
+      .withIndex("by_source", (q) =>
+        q.eq("source_key", `${a.source.type}:${a.source.id}`),
+      )
+      .first();
+  },
+});
+
+function sameSnapshot(
+  a: Doc<"calendar_projections">["snapshot"],
+  b: Doc<"calendar_projections">["snapshot"],
+) {
+  return (
+    a.title === b.title &&
+    a.location === b.location &&
+    a.start === b.start &&
+    a.end === b.end &&
+    a.cancelled === b.cancelled &&
+    a.revision === b.revision
+  );
+}

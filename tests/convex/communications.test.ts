@@ -1,8 +1,10 @@
+import { createHash } from "node:crypto";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { operationsFixture } from "../support/operations-unit-fixture";
 import { api, internal } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import {
+  render,
   deliveryState,
   covers,
   content,
@@ -58,12 +60,19 @@ async function fixture() {
       id,
       version: (await get(id)).row.version,
     });
-  const claim = (id: Id<"communication_outbox">) =>
-    f.t.mutation(internal.communicationDelivery.claim, {
+  const claim = async (id: Id<"communication_outbox">) => {
+    const data = await f.t.mutation(internal.communicationDelivery.claim, {
       id,
       token_hash: "a".repeat(64),
       unsubscribe_url: "https://example.test/unsubscribe?token=fictional",
     });
+    if (data)
+      await f.t.mutation(internal.communicationDelivery.dispatch, {
+        id,
+        claim_version: data.claim_version,
+      });
+    return data;
+  };
   return { ...f, source, create, consent, get, approve, queue, claim };
 }
 beforeEach(() => {
@@ -955,6 +964,12 @@ it("unknown-delivery reconciliation validates provider content before recording 
   const current = await f.t.run((ctx) => ctx.db.get(job));
   const remote = {
     id: "verified-provider-id",
+    tags: [
+      {
+        name: "glara_send",
+        value: createHash("sha256").update(claimed!.send_key).digest("hex"),
+      },
+    ],
     to: ["wrong@example.test"],
     from: `Glara Home Staging <${claimed!.from}>`,
     subject: claimed!.subject,
@@ -1015,7 +1030,7 @@ it("an exhausted recipient daily budget defers dispatch atomically", async () =>
   const job = await f.queue(id);
   await f.t.run((ctx) =>
     ctx.db.insert("communication_rate_buckets", {
-      key: "recipient:m9-fictional@example.test",
+      key: "recipient:sales_relationship:m9-fictional@example.test",
       window: Math.floor(Date.now() / 86400000),
       count: 3,
     }),
@@ -1047,4 +1062,545 @@ it("calendar events containing attendees are never treated as safe projections",
       },
     ),
   ).toBe(false);
+});
+
+describe("M9 complete specification hardening", () => {
+  const reserve = (
+    f: Awaited<ReturnType<typeof fixture>>,
+    id: Id<"communication_outbox">,
+  ) =>
+    f.t.mutation(internal.communicationDelivery.claim, {
+      id,
+      token_hash: "c".repeat(64),
+      unsubscribe_url: "https://example.test/unsubscribe",
+    });
+  it("rejects relabeling optional relationship outreach as transactional even for Owner", async () => {
+    const f = await fixture();
+    await expect(
+      f.c("owner").mutation(api.communications.create, {
+        source: f.source,
+        recipient: f.source,
+        category: "transactional",
+        subject: "Fictional",
+        body: "Fictional",
+        request_key: crypto.randomUUID(),
+      }),
+    ).rejects.toThrow();
+  });
+  it("deduplicates equivalent M7 handoffs across different request keys", async () => {
+    const f = await fixture();
+    const activity = await f.t.run((ctx) =>
+      ctx.db
+        .query("activities")
+        .withIndex("by_opportunity", (q) => q.eq("opportunity_id", f.oid))
+        .first(),
+    );
+    const fields = {
+      source: { type: "opportunity", id: f.oid },
+      activity_id: activity!._id,
+    };
+    const first = await f.create(fields);
+    expect(await f.create(fields)).toBe(first);
+    expect((await f.t.run((ctx) => ctx.db.get(activity!._id)))?.status).toBe(
+      "open",
+    );
+  });
+  it("reclaims an expired unused lease, and rejects the stale worker's dispatch fence", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    const job = await f.queue(id);
+    const first = await reserve(f, job);
+    await f.t.run((ctx) => ctx.db.patch(job, { lease_until: 0 }));
+    expect(await f.t.mutation(internal.communicationDelivery.sweep, {})).toBe(
+      1,
+    );
+    expect((await f.t.run((ctx) => ctx.db.get(job)))?.status).toBe("ready");
+    const second = await reserve(f, job);
+    expect(
+      await f.t.mutation(internal.communicationDelivery.dispatch, {
+        id: job,
+        claim_version: first!.claim_version,
+      }),
+    ).toBe(false);
+    expect(
+      await f.t.mutation(internal.communicationDelivery.dispatch, {
+        id: job,
+        claim_version: second!.claim_version,
+      }),
+    ).toBe(true);
+    expect(
+      await f.t.mutation(internal.communicationDelivery.dispatch, {
+        id: job,
+        claim_version: second!.claim_version,
+      }),
+    ).toBe(false);
+  });
+  it.each(["consent", "suppression", "email", "pause", "role"])(
+    "blocks %s change after claim but before dispatch",
+    async (kind) => {
+      const f = await fixture();
+      const consent = await f.consent();
+      const id = await f.create();
+      await f.approve(id);
+      const job = await f.queue(id);
+      const reserved = await reserve(f, job);
+      if (kind === "consent")
+        await f.c("owner").mutation(api.communications.revokeConsent, {
+          id: consent,
+          reason: "Fictional consent withdrawn",
+        });
+      if (kind === "suppression")
+        await f.c("owner").mutation(api.communications.suppress, {
+          email: "m9-fictional@example.test",
+          scope: "all_optional",
+          reason: "Fictional stop request",
+        });
+      if (kind === "email")
+        await f.t.run((ctx) =>
+          ctx.db.patch(f.source.id, { email: "replacement@example.test" }),
+        );
+      if (kind === "pause") vi.stubEnv("M9_EMAIL_ENABLED", "false");
+      if (kind === "role")
+        await f.t.run(async (ctx) => {
+          const p = await ctx.db
+            .query("profiles")
+            .withIndex("by_user", (q) => q.eq("userId", f.who("sales").id))
+            .unique();
+          await ctx.db.patch(p!._id, { roles: ["designer"] });
+        });
+      expect(
+        await f.t.mutation(internal.communicationDelivery.dispatch, {
+          id: job,
+          claim_version: reserved!.claim_version,
+        }),
+      ).toBe(false);
+      expect((await f.t.run((ctx) => ctx.db.get(job)))?.attempts).toBe(0);
+    },
+  );
+  it("refuses fabricated outcomes for a lease never dispatched", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    const job = await f.queue(id);
+    await reserve(f, job);
+    await f.t.mutation(internal.communicationDelivery.outcome, {
+      id: job,
+      result: "accepted",
+      provider_id: "fictional-forged",
+      code: "accepted",
+    });
+    expect((await f.get(id)).row.status).toBe("queued");
+  });
+  it("preserves dispatched snapshots after a known rejection and stale source", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    const job = await f.queue(id);
+    await f.claim(job);
+    const snapshot = (await f.get(id)).row.snapshot;
+    await f.t.mutation(internal.communicationDelivery.outcome, {
+      id: job,
+      result: "retryable",
+      code: "rate_limited",
+    });
+    await f.t.run(async (ctx) => {
+      await ctx.db.patch(job, { next_attempt_at: 0 });
+      await ctx.db.patch(f.source.id, { email: "changed@example.test" });
+    });
+    expect(await f.claim(job)).toBe(null);
+    const row = (await f.get(id)).row;
+    expect(row.status).toBe("failed");
+    expect(row.snapshot).toEqual(snapshot);
+    await expect(
+      f.c("sales").mutation(api.communications.edit, {
+        id,
+        version: row.version,
+        subject: "Changed",
+        body: "Changed",
+      }),
+    ).rejects.toThrow();
+  });
+  it("complaint suppresses optional scope without pretending all transactional service is forbidden", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    const job = await f.queue(id);
+    await f.claim(job);
+    await f.t.mutation(internal.communicationDelivery.outcome, {
+      id: job,
+      result: "accepted",
+      provider_id: "complaint-test",
+      code: "accepted",
+    });
+    await f.t.mutation(internal.communicationDelivery.delivery, {
+      provider_id: "complaint-test",
+      event_id: "complaint-event",
+      kind: "complaint",
+      occurred_at: Date.now(),
+    });
+    const suppression = await f.t.run((ctx) =>
+      ctx.db.query("communication_suppressions").first(),
+    );
+    expect(suppression?.scope).toBe("all_optional");
+    await expect(
+      f.c("owner").mutation(api.communications.revokeSuppression, {
+        id: suppression!._id,
+        reason: "Attempt unsafe override",
+      }),
+    ).rejects.toThrow();
+  });
+  it("revoking a token generation invalidates old links without clearing existing preferences", async () => {
+    const f = await fixture();
+    await f.consent();
+    const id = await f.create();
+    await f.approve(id);
+    await f.claim(await f.queue(id));
+    const config = await f
+      .c("owner")
+      .query(api.communications.configuration, {});
+    await f
+      .c("owner")
+      .mutation(api.communications.rotateUnsubscribeGeneration, {
+        version: config.config!.version,
+        reason: "Fictional compromised token rotation",
+      });
+    await f.t.mutation(internal.communicationDelivery.unsubscribe, {
+      token_hash: "a".repeat(64),
+    });
+    expect(
+      await f.t.run((ctx) =>
+        ctx.db.query("communication_preferences").collect(),
+      ),
+    ).toHaveLength(0);
+  });
+  it("paginates delivery history and rejects oversized reads and unauthorized users", async () => {
+    const f = await fixture();
+    const id = await f.create();
+    await f.t.run(async (ctx) => {
+      for (let i = 0; i < 27; i++)
+        await ctx.db.insert("communication_delivery_events", {
+          communication_id: id,
+          provider_id: "fictional",
+          event_id: `page-${i}`,
+          kind: "accepted",
+          occurred_at: i,
+          created_at: i,
+        });
+    });
+    const first = await f.c("sales").query(api.communications.deliveryHistory, {
+      id,
+      paginationOpts: { numItems: 20, cursor: null },
+    });
+    const second = await f
+      .c("sales")
+      .query(api.communications.deliveryHistory, {
+        id,
+        paginationOpts: { numItems: 20, cursor: first.continueCursor },
+      });
+    expect(first.page).toHaveLength(20);
+    expect(second.page).toHaveLength(7);
+    expect(second.isDone).toBe(true);
+    await expect(
+      f.c("marketing").query(api.communications.deliveryHistory, {
+        id,
+        paginationOpts: { numItems: 20, cursor: null },
+      }),
+    ).rejects.toThrow();
+    await expect(
+      f.c("owner").query(api.communications.deliveryHistory, {
+        id,
+        paginationOpts: { numItems: 500, cursor: null },
+      }),
+    ).rejects.toThrow();
+  });
+  it("detects missing provenance without repairing business truth", async () => {
+    const f = await fixture(),
+      id = await f.create();
+    await f.t.run((ctx) => ctx.db.patch(id, { status: "delivered" }));
+    const report = await f.c("owner").query(api.communications.reconcilePage, {
+      paginationOpts: { numItems: 25, cursor: null },
+    });
+    expect(report.page[0].issues).toContain("missing_provider_evidence");
+    await expect(
+      f.c("sales").query(api.communications.reconcilePage, {
+        paginationOpts: { numItems: 25, cursor: null },
+      }),
+    ).rejects.toThrow();
+  });
+  it("disabling a template invalidates an approved queued message", async () => {
+    const f = await fixture();
+    await f.consent();
+    await f.c("owner").mutation(api.communications.saveTemplate, {
+      key: "disable-check",
+      name: "Fictional",
+      category: "sales_relationship",
+      subject: "Hello {{recipient_name}}",
+      body: "Fictional message",
+      version: 0,
+      active: true,
+    });
+    const template = (
+      await f.c("owner").query(api.communications.templates, {})
+    )[0];
+    const id = await f.create({ template_version_id: template.current!._id });
+    await f.approve(id);
+    const job = await f.queue(id);
+    await f.c("owner").mutation(api.communications.setTemplateActive, {
+      id: template._id,
+      version: template.version,
+      active: false,
+    });
+    expect(await f.claim(job)).toBe(null);
+  });
+});
+
+it.each([
+  "{{Missing}}",
+  "{{ recipient_name }}",
+  "{{recipient_name}",
+  "{other}",
+  "{{recipient_name}} {{not_allowed}}",
+])("rejects malformed or unresolved template %s", (value) => {
+  expect(() => render(value, { recipient_name: "Fictional" })).toThrow();
+});
+it("two concurrent reviewers cannot approve different revisions", async () => {
+  const f = await fixture();
+  await f.consent();
+  const id = await f.create(),
+    reviewed = await f.get(id);
+  const args = {
+    id,
+    version: reviewed.row.version,
+    review_token: reviewed.eligibility.review_token,
+  };
+  const results = await Promise.allSettled([
+    f.c("sales").mutation(api.communications.approve, args),
+    f.c("owner").mutation(api.communications.approve, args),
+  ]);
+  expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
+  expect((await f.get(id)).decisions).toHaveLength(1);
+});
+it.each(["unassigned", "revoked"])(
+  "denies %s profiles at backend boundaries",
+  async () => {
+    const f = await fixture();
+    await f.t.run(async (ctx) => {
+      const p = await ctx.db
+        .query("profiles")
+        .withIndex("by_user", (q) => q.eq("userId", f.who("sales").id))
+        .unique();
+      await ctx.db.patch(p!._id, { roles: [] });
+    });
+    await expect(
+      f.c("sales").query(api.communications.configuration, {}),
+    ).rejects.toThrow();
+  },
+);
+it("Owner retains immutable history after a source is archived but cannot approve another send", async () => {
+  const f = await fixture();
+  const id = await f.create();
+  await f.t.run((ctx) =>
+    ctx.db.patch(f.source.id, { deleted_at: new Date().toISOString() }),
+  );
+  const detail = await f.c("owner").query(api.communications.get, { id });
+  expect(detail.row._id).toBe(id);
+  expect(detail.eligibility.allowed).toBe(false);
+  await expect(f.get(id)).rejects.toThrow();
+});
+it("due work continues across bounded batches without calling a provider", async () => {
+  const f = await fixture();
+  await f.consent();
+  for (let i = 0; i < 12; i++) {
+    const id = await f.create();
+    await f.approve(id);
+    await f.t.run(async (ctx) => {
+      const row = await ctx.db.get(id);
+      await ctx.db.patch(id, { status: "queued" });
+      await ctx.db.insert("communication_outbox", {
+        communication_id: id,
+        send_key: row!.send_key,
+        status: "ready",
+        attempts: 0,
+        next_attempt_at: 0,
+        version: 1,
+        created_at: i,
+        updated_at: i,
+      });
+    });
+  }
+  const first = await f.t.query(internal.communicationDelivery.due, {});
+  expect(first).toHaveLength(10);
+  await f.t.run(async (ctx) => {
+    for (const id of first) await ctx.db.patch(id, { status: "cancelled" });
+  });
+  expect(await f.t.query(internal.communicationDelivery.due, {})).toHaveLength(
+    2,
+  );
+});
+it("pauses after repeated provider failures and never requeues unknown jobs on resume", async () => {
+  const f = await fixture();
+  await f.consent();
+  for (let i = 0; i < 3; i++) {
+    const id = await f.create();
+    await f.approve(id);
+    const job = await f.queue(id);
+    await f.claim(job);
+    await f.t.mutation(internal.communicationDelivery.outcome, {
+      id: job,
+      result: "unknown",
+      code: "transport_uncertain",
+    });
+    await f.t.run((ctx) => ctx.db.patch(id, { updated_at: 0 }));
+  }
+  const health = await f
+    .c("owner")
+    .query(api.communications.operationsHealth, {});
+  expect(health.paused).toBe(true);
+  expect(health.consecutive_failures).toBe(3);
+  expect(await f.t.query(internal.communicationDelivery.due, {})).toHaveLength(
+    0,
+  );
+});
+it("expired optional tokens cannot change preferences", async () => {
+  const f = await fixture();
+  await f.t.run((ctx) =>
+    ctx.db.insert("communication_unsubscribe_tokens", {
+      token_hash: "expired",
+      recipient_key: `realtor:${f.source.id}`,
+      scope: "all_optional",
+      expires_at: 1,
+      created_at: 0,
+    }),
+  );
+  await f.t.mutation(internal.communicationDelivery.unsubscribe, {
+    token_hash: "expired",
+  });
+  expect(
+    await f.t.run((ctx) => ctx.db.query("communication_preferences").collect()),
+  ).toHaveLength(0);
+});
+it("calendar OAuth, create, update and cancel contracts reuse a stable identity with no attendees", async () => {
+  vi.stubEnv("M9_GOOGLE_CALENDAR_ID", "fictional-calendar@example.test");
+  vi.stubEnv("M9_CALENDAR_ENABLED", "true");
+  const f = await operationsFixture(),
+    project = await f.create();
+  await f.ready(project);
+  await f.schedule(project);
+  const event = await f.t.run((ctx) =>
+    ctx.db
+      .query("operations_events")
+      .withIndex("by_project", (q) => q.eq("project_id", project))
+      .first(),
+  );
+  const source = { type: "operations_event" as const, id: event!._id };
+  await f
+    .c("owner")
+    .mutation(api.calendarSync.configure, { enabled: true, version: 0 });
+  let remote: Record<string, unknown> | null = null;
+  const methods: string[] = [],
+    externalIds: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string, init: RequestInit = {}) => {
+      if (url.includes("oauth2.googleapis.com")) {
+        expect(String(init.body)).toContain("grant_type=refresh_token");
+        return Response.json({ access_token: "fictional-contract-token" });
+      }
+      const method = init.method ?? "GET";
+      methods.push(method);
+      expect(url).toContain("sendUpdates=none");
+      if (method === "GET")
+        return remote
+          ? Response.json(remote)
+          : new Response(null, { status: 404 });
+      if (method === "DELETE") {
+        expect(init.headers).toHaveProperty("If-Match");
+        remote = null;
+        return new Response(null, { status: 204 });
+      }
+      const payload = JSON.parse(String(init.body)) as Record<string, unknown>;
+      expect(payload).not.toHaveProperty("attendees");
+      externalIds.push(String(payload.id));
+      if (method === "PUT") expect(init.headers).toHaveProperty("If-Match");
+      remote = { ...payload, etag: `revision-${methods.length}` };
+      return Response.json(remote);
+    }),
+  );
+  expect(
+    (await f.c("owner").action(api.calendarProvider.sync, { source })).status,
+  ).toBe("synced");
+  await f.t.run((ctx) =>
+    ctx.db.patch(event!._id, {
+      start_at: "2026-11-01T09:00:00Z",
+      end_at: "2026-11-01T10:00:00Z",
+      version: event!.version + 1,
+    }),
+  );
+  expect(
+    (await f.c("owner").action(api.calendarProvider.sync, { source })).status,
+  ).toBe("synced");
+  await f.t.run((ctx) =>
+    ctx.db.patch(event!._id, {
+      status: "cancelled",
+      version: event!.version + 2,
+    }),
+  );
+  expect(
+    (await f.c("owner").action(api.calendarProvider.sync, { source })).status,
+  ).toBe("cancelled");
+  expect(new Set(externalIds).size).toBe(1);
+  expect(methods).toEqual(["GET", "POST", "GET", "PUT", "GET", "DELETE"]);
+});
+it("early bounce beyond one evidence batch still wins and history linking continues", async () => {
+  const f = await fixture();
+  await f.consent();
+  const id = await f.create();
+  await f.approve(id);
+  const job = await f.queue(id);
+  await f.claim(job);
+  await f.t.run(async (ctx) => {
+    for (let i = 0; i < 105; i++)
+      await ctx.db.insert("communication_delivery_events", {
+        provider_id: "large-early-history",
+        event_id: `early-${i}`,
+        kind: i === 104 ? "hard_bounce" : "accepted",
+        occurred_at: i,
+        created_at: i,
+      });
+  });
+  await f.t.mutation(internal.communicationDelivery.outcome, {
+    id: job,
+    result: "accepted",
+    provider_id: "large-early-history",
+    code: "accepted",
+  });
+  expect((await f.get(id)).row.status).toBe("bounced");
+  await f.t.mutation(internal.communicationDelivery.attachPendingEvidence, {
+    provider_id: "large-early-history",
+  });
+  expect(
+    await f.t.run((ctx) =>
+      ctx.db
+        .query("communication_delivery_events")
+        .withIndex("by_unmapped", (q) =>
+          q
+            .eq("provider_id", "large-early-history")
+            .eq("communication_id", undefined),
+        )
+        .collect(),
+    ),
+  ).toHaveLength(0);
+});
+
+it("provider failure is not hidden by an earlier or replayed acceptance event", () => {
+  expect(deliveryState("sent", "failed")).toBe("failed");
+  expect(deliveryState("failed", "accepted")).toBe("failed");
+  expect(deliveryState("failed", "soft_bounce")).toBe("failed");
+  expect(deliveryState("failed", "delivered")).toBe("delivered");
+  expect(deliveryState("delivered", "failed")).toBe("delivered");
 });

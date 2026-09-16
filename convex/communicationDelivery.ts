@@ -1,3 +1,5 @@
+import { internal } from "./_generated/api";
+import type { Doc } from "./_generated/dataModel";
 import { internalMutation, internalQuery } from "./functions";
 import { v } from "convex/values";
 import * as core from "./communicationCore";
@@ -82,7 +84,7 @@ export const claim = internalMutation({
     }
     if (invalid) {
       await ctx.db.patch(row._id, {
-        status: "needs_review",
+        status: job.attempts ? "failed" : "needs_review",
         version: row.version + 1,
         updated_at: Date.now(),
       });
@@ -108,7 +110,7 @@ export const claim = internalMutation({
         updated_at: Date.now(),
       });
       await ctx.db.patch(row._id, {
-        status: "needs_review",
+        status: job.attempts ? "failed" : "needs_review",
         version: row.version + 1,
         updated_at: Date.now(),
       });
@@ -119,7 +121,7 @@ export const claim = internalMutation({
       const window = Math.floor(Date.now() / 86400000),
         limits = [
           { key: `user:${row.approved_by}`, limit: 50 },
-          { key: `recipient:${row.snapshot.email}`, limit: 3 },
+          { key: `recipient:${row.category}:${row.snapshot.email}`, limit: 3 },
           { key: `category:${row.category}`, limit: 100 },
         ];
       for (const limit of limits) {
@@ -162,6 +164,7 @@ export const claim = internalMutation({
     if (row.category !== "transactional" && !job.payload && !priorToken)
       await ctx.db.insert("communication_unsubscribe_tokens", {
         token_hash: a.token_hash,
+        generation: config.token_generation ?? 0,
         recipient_key: row.recipient_key,
         scope: "all_optional",
         expires_at: Date.now() + 365 * 86400000,
@@ -181,7 +184,9 @@ export const claim = internalMutation({
     await ctx.db.patch(job._id, {
       status: "claimed",
       payload,
-      attempts: job.attempts + 1,
+      attempts: job.attempts,
+      dispatch_started_at: undefined,
+      claim_version: job.version + 1,
       claimed_at: Date.now(),
       lease_until: Date.now() + 120000,
       version: job.version + 1,
@@ -190,6 +195,7 @@ export const claim = internalMutation({
     await core.audit(ctx, p!.userId, "dispatch_claimed", row._id);
     return {
       id: job._id,
+      claim_version: job.version + 1,
       communication_id: row._id,
       send_key: row.send_key,
       email: row.snapshot.email,
@@ -214,10 +220,17 @@ export const outcome = internalMutation({
   },
   handler: async (ctx, a) => {
     const job = await ctx.db.get(a.id);
-    if (!job || !["claimed", "unknown"].includes(job.status)) return;
+    if (
+      !job ||
+      !job.dispatch_started_at ||
+      !["claimed", "unknown"].includes(job.status)
+    )
+      return;
     const row = await ctx.db.get(job.communication_id);
     if (!row) return;
     if (a.result === "accepted" && a.provider_id) {
+      const config = await core.settings(ctx);
+      if (config) await ctx.db.patch(config._id, { consecutive_failures: 0 });
       const mapping = await ctx.db
         .query("communication_provider_messages")
         .withIndex("by_provider", (q) =>
@@ -242,17 +255,7 @@ export const outcome = internalMutation({
         version: job.version + 1,
         updated_at: Date.now(),
       });
-      let state = deliveryState(row.status, "accepted");
-      const pending = await ctx.db
-        .query("communication_delivery_events")
-        .withIndex("by_provider", (q) => q.eq("provider_id", a.provider_id!))
-        .take(100);
-      for (const e of pending) {
-        state = deliveryState(state, e.kind);
-        await ctx.db.patch(e._id, { communication_id: row._id });
-        if (e.kind === "hard_bounce" || e.kind === "complaint")
-          await suppression(ctx, row.snapshot!.email, e.kind);
-      }
+      const state = await foldEvidence(ctx, row, a.provider_id);
       await ctx.db.patch(row._id, {
         status: state,
         version: row.version + 1,
@@ -277,11 +280,24 @@ export const outcome = internalMutation({
         version: row.version + 1,
         updated_at: Date.now(),
       });
+      {
+        const config = await core.settings(ctx);
+        if (config) {
+          const failures = (config.consecutive_failures ?? 0) + 1;
+          await ctx.db.patch(config._id, {
+            consecutive_failures: failures,
+            ...(failures >= 3
+              ? { paused: true, circuit_reason: "repeated_provider_failure" }
+              : {}),
+          });
+        }
+      }
       if (a.code === "configuration_rejected") {
         const config = await core.settings(ctx);
         if (config)
           await ctx.db.patch(config._id, {
             paused: true,
+            circuit_reason: "configuration_rejected",
             version: config.version + 1,
             updated_at: Date.now(),
           });
@@ -298,17 +314,19 @@ async function suppression(
   email: string,
   reason: string,
 ) {
+  const scope =
+    reason === "complaint" ? ("all_optional" as const) : ("all" as const);
   const old = await ctx.db
     .query("communication_suppressions")
     .withIndex("by_email", (q) => q.eq("email", email))
     .order("desc")
     .take(100);
   if (
-    !old.some((x) => !x.revoked_at && x.scope === "all" && x.reason === reason)
+    !old.some((x) => !x.revoked_at && x.scope === scope && x.reason === reason)
   ) {
     const id = await ctx.db.insert("communication_suppressions", {
       email,
-      scope: "all",
+      scope,
       reason,
       created_at: Date.now(),
     });
@@ -362,18 +380,7 @@ export const delivery = internalMutation({
     });
     if (a.kind === "hard_bounce" || a.kind === "complaint") {
       await suppression(ctx, row.snapshot.email, a.kind);
-      if (row.activity_id) {
-        const task = await ctx.db.get(row.activity_id);
-        if (task && !task.deleted_at && task.status !== "open")
-          await ctx.db.patch(task._id, {
-            status: "open",
-            completed_at: null,
-            completed_by: undefined,
-            due_at: new Date().toISOString(),
-            version: (task.version ?? 0) + 1,
-            updated_at: new Date().toISOString(),
-          });
-      }
+      await reopenTask(ctx, row.activity_id);
     }
     await core.audit(ctx, null, "delivery_event", row._id, { kind: a.kind });
   },
@@ -383,21 +390,26 @@ export const sweep = internalMutation({
   handler: async (ctx) => {
     const jobs = await ctx.db
       .query("communication_outbox")
-      .withIndex("by_due", (q) => q.eq("status", "claimed"))
+      .withIndex("by_lease", (q) =>
+        q.eq("status", "claimed").lt("lease_until", Date.now()),
+      )
       .take(100);
     let expired = 0;
     for (const job of jobs)
       if ((job.lease_until ?? 0) < Date.now()) {
+        const safe =
+          job.claim_version !== undefined && !job.dispatch_started_at;
         await ctx.db.patch(job._id, {
-          status: "unknown",
-          last_code: "lease_expired",
+          status: safe ? "ready" : "unknown",
+          next_attempt_at: Date.now(),
+          last_code: safe ? "unused_claim_recovered" : "lease_expired",
           version: job.version + 1,
           updated_at: Date.now(),
         });
         const row = await ctx.db.get(job.communication_id);
         if (row)
           await ctx.db.patch(row._id, {
-            status: "delivery_unknown",
+            status: safe ? "queued" : "delivery_unknown",
             version: row.version + 1,
             updated_at: Date.now(),
           });
@@ -414,8 +426,10 @@ export const unsubscribe = internalMutation({
       .query("communication_unsubscribe_tokens")
       .withIndex("by_hash", (q) => q.eq("token_hash", a.token_hash))
       .unique();
+    const config = await core.settings(ctx);
     if (
       !token ||
+      (token.generation ?? 0) !== (config?.token_generation ?? 0) ||
       token.revoked_at ||
       token.expires_at < Date.now() ||
       token.used_at
@@ -517,8 +531,9 @@ export const reconcileVerified = internalMutation({
       version: job.version + 1,
       updated_at: Date.now(),
     });
+    const state = await foldEvidence(ctx, row, a.provider_id);
     await ctx.db.patch(row._id, {
-      status: "sent",
+      status: state,
       version: row.version + 1,
       updated_at: Date.now(),
     });
@@ -526,5 +541,181 @@ export const reconcileVerified = internalMutation({
       reason: a.reason,
     });
     return true;
+  },
+});
+
+async function reopenTask(
+  ctx: Parameters<typeof core.audit>[0],
+  id: import("./_generated/dataModel").Id<"activities"> | undefined,
+) {
+  if (!id) return;
+  const task = await ctx.db.get(id);
+  if (task && !task.deleted_at && task.status !== "open") {
+    await ctx.db.patch(id, {
+      status: "open",
+      completed_at: null,
+      completed_by: undefined,
+      due_at: new Date().toISOString(),
+      version: (task.version ?? 0) + 1,
+      updated_at: new Date().toISOString(),
+    });
+    await core.audit(ctx, null, "followup_reopened", id);
+  }
+}
+// This committed fence is the last check before provider I/O. After it, a crash is uncertain.
+export const dispatch = internalMutation({
+  args: { id: v.id("communication_outbox"), claim_version: v.number() },
+  handler: async (ctx, a) => {
+    const job = await ctx.db.get(a.id),
+      config = await core.settings(ctx);
+    if (
+      !job ||
+      job.status !== "claimed" ||
+      job.claim_version !== a.claim_version ||
+      job.dispatch_started_at ||
+      (job.lease_until ?? 0) < Date.now()
+    )
+      return false;
+    const row = await ctx.db.get(job.communication_id);
+    let valid =
+      !!row?.snapshot &&
+      row.status === "queued" &&
+      !config?.paused &&
+      process.env.M9_EMAIL_ENABLED === "true" &&
+      process.env.M9_EMAIL_VERIFIED === "true" &&
+      (process.env.M9_EMAIL_TEST_ALLOWLIST ?? "")
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .includes(row?.snapshot?.email ?? "");
+    if (valid && row?.approved_by && row.snapshot) {
+      const actor = await ctx.db
+        .query("profiles")
+        .withIndex("by_user", (q) => q.eq("userId", row.approved_by!))
+        .unique();
+      try {
+        if (!actor || actor.deleted_at) valid = false;
+        else {
+          const fresh = await core.evaluate(ctx, row, actor),
+            prior = row.decision_id && (await ctx.db.get(row.decision_id));
+          valid =
+            fresh.allowed &&
+            fresh.fingerprint === row.snapshot.source_fingerprint &&
+            fresh.subject === row.snapshot.subject &&
+            fresh.body === row.snapshot.body &&
+            fresh.signature === row.snapshot.signature &&
+            !!prior &&
+            fresh.policy_version === prior.policy_version &&
+            JSON.stringify(fresh.consent_ids) ===
+              JSON.stringify(prior.consent_ids) &&
+            JSON.stringify(fresh.preference_ids) ===
+              JSON.stringify(prior.preference_ids);
+        }
+      } catch {
+        valid = false;
+      }
+    } else valid = false;
+    if (!valid) {
+      await ctx.db.patch(job._id, {
+        status: "cancelled",
+        last_code: "dispatch_recheck_blocked",
+        version: job.version + 1,
+        updated_at: Date.now(),
+      });
+      if (row)
+        await ctx.db.patch(row._id, {
+          status: job.attempts ? "failed" : "needs_review",
+          version: row.version + 1,
+          updated_at: Date.now(),
+        });
+      await core.audit(
+        ctx,
+        null,
+        "dispatch_recheck_blocked",
+        job.communication_id,
+      );
+      return false;
+    }
+    await ctx.db.patch(job._id, {
+      dispatch_started_at: Date.now(),
+      attempts: job.attempts + 1,
+      version: job.version + 1,
+      updated_at: Date.now(),
+    });
+    return true;
+  },
+});
+export const webhookRejected = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const config = await core.settings(ctx);
+    if (config)
+      await ctx.db.patch(config._id, {
+        webhook_failures: (config.webhook_failures ?? 0) + 1,
+      });
+  },
+});
+
+async function foldEvidence(
+  ctx: Parameters<typeof core.audit>[0],
+  row: Doc<"communications">,
+  providerId: string,
+): Promise<Doc<"communications">["status"]> {
+  let state = deliveryState(row.status, "accepted");
+  // One indexed observation per normalized kind avoids truncating decisive evidence.
+  for (const kind of [
+    "accepted",
+    "soft_bounce",
+    "failed",
+    "delivered",
+    "hard_bounce",
+    "complaint",
+  ] as const) {
+    const event = await ctx.db
+      .query("communication_delivery_events")
+      .withIndex("by_provider_kind", (q) =>
+        q.eq("provider_id", providerId).eq("kind", kind),
+      )
+      .first();
+    if (!event) continue;
+    state = deliveryState(state, kind);
+    if (kind === "hard_bounce" || kind === "complaint") {
+      await suppression(ctx, row.snapshot!.email, kind);
+      await reopenTask(ctx, row.activity_id);
+    }
+  }
+  await attachEvidence(ctx, providerId, row._id);
+  return state;
+}
+async function attachEvidence(
+  ctx: Parameters<typeof core.audit>[0],
+  providerId: string,
+  id: Doc<"communications">["_id"],
+) {
+  const events = await ctx.db
+    .query("communication_delivery_events")
+    .withIndex("by_unmapped", (q) =>
+      q.eq("provider_id", providerId).eq("communication_id", undefined),
+    )
+    .take(100);
+  for (const event of events)
+    await ctx.db.patch(event._id, { communication_id: id });
+  if (events.length === 100)
+    await ctx.scheduler.runAfter(
+      0,
+      internal.communicationDelivery.attachPendingEvidence,
+      { provider_id: providerId },
+    );
+}
+export const attachPendingEvidence = internalMutation({
+  args: { provider_id: v.string() },
+  handler: async (ctx, a): Promise<void> => {
+    const mapping = await ctx.db
+      .query("communication_provider_messages")
+      .withIndex("by_provider", (q) =>
+        q.eq("provider", "resend").eq("provider_id", a.provider_id),
+      )
+      .unique();
+    if (mapping)
+      await attachEvidence(ctx, a.provider_id, mapping.communication_id);
   },
 });

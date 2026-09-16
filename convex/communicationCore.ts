@@ -240,7 +240,8 @@ export async function authorized(
 ) {
   const row = await ctx.db.get(id);
   if (!row) return deny("UNAVAILABLE");
-  await sourceFacts(ctx, row.source, row.recipient, p, row.category, true);
+  if (!isManager(p))
+    await sourceFacts(ctx, row.source, row.recipient, p, row.category, true);
   return row;
 }
 export async function evaluate(
@@ -258,7 +259,10 @@ export async function evaluate(
     ),
     t = Date.now(),
     reasons: string[] = [];
+  const policy = await settings(ctx);
   if (!f.valid_email) reasons.push("invalid_recipient_email");
+  if (!categoryCompatible(row.source.type, row.category))
+    reasons.push("source_purpose_mismatch");
   const consents = await ctx.db
     .query("communication_consents")
     .withIndex("by_recipient", (q) => q.eq("recipient_key", row.recipient_key))
@@ -282,11 +286,14 @@ export async function evaluate(
       (!c.expires_at || c.expires_at > t) &&
       covers(c.scope, row.category) &&
       (row.category === "transactional"
-        ? [
-            "transactional_service",
-            "recipient_requested",
-            "express_consent",
-          ].includes(c.basis)
+        ? (policy?.transactional_basis === "explicit_request_only"
+            ? ["recipient_requested"]
+            : [
+                "transactional_service",
+                "recipient_requested",
+                "express_consent",
+              ]
+          ).includes(c.basis)
         : c.basis === "express_consent"),
   );
   if (!active.length) reasons.push("documented_eligibility_required");
@@ -350,10 +357,32 @@ export async function evaluate(
     suppression_ids: suppressions
       .filter((c) => !c.revoked_at)
       .map((c) => c._id),
-    policy_version: POLICY_VERSION,
+    eligibility_basis: active.map((c) => ({
+      basis: c.basis,
+      observed_at: c.observed_at,
+    })),
+    policy_version:
+      POLICY_VERSION +
+      ":" +
+      (policy?.transactional_basis ?? "documented_service") +
+      ":" +
+      (policy?.token_generation ?? 0),
   };
 }
-export function reviewToken(d: Awaited<ReturnType<typeof evaluate>>) {
+export function reviewToken(
+  d: Pick<
+    Awaited<ReturnType<typeof evaluate>>,
+    | "email"
+    | "subject"
+    | "body"
+    | "signature"
+    | "fingerprint"
+    | "consent_ids"
+    | "preference_ids"
+    | "suppression_ids"
+    | "policy_version"
+  >,
+) {
   return JSON.stringify({
     email: d.email,
     subject: d.subject,
@@ -403,4 +432,14 @@ export async function sourceAccess(ctx: Ctx, s: Source, p: Profile) {
   } catch {
     return false;
   }
+}
+
+export function categoryCompatible(
+  source: Source["type"],
+  category: Doc<"communications">["category"],
+) {
+  if (source === "realtor") return category !== "transactional";
+  if (source === "opportunity" || source === "quote")
+    return category === "sales_relationship";
+  return category === "transactional";
 }

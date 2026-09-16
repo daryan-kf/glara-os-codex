@@ -21,6 +21,9 @@ export const sync = action({
         "unknown",
       code = "transport_uncertain",
       etag: string | undefined;
+    let observed:
+      | { start: string; end: string; has_attendees: boolean; missing: boolean }
+      | undefined;
     try {
       const response = await fetch("https://oauth2.googleapis.com/token", {
         method: "POST",
@@ -45,6 +48,21 @@ export const sync = action({
             prepared.calendar_id,
           ),
           remote = await provider.getEvent(external);
+        if (remote && remote.id !== external)
+          throw new Error("calendar_conflict");
+        observed = {
+          start: (remote?.start?.dateTime ?? remote?.start?.date ?? "").slice(
+            0,
+            80,
+          ),
+          end: (remote?.end?.dateTime ?? remote?.end?.date ?? "").slice(0, 80),
+          has_attendees: !!remote?.attendees?.length,
+          missing: !remote,
+        };
+        await ctx.runQuery(api.calendarSync.verifyDispatch, {
+          id: prepared.id,
+          version: prepared.revision,
+        });
         if (
           remote?.attendees?.length ||
           (remote &&
@@ -83,6 +101,7 @@ export const sync = action({
                   remote.etag,
                 )
             : await provider.createEvent(prepared.source, external);
+          if (result.id !== external) throw new Error("calendar_conflict");
           status = "synced";
           etag = result.etag;
           code = "synced";
@@ -102,6 +121,7 @@ export const sync = action({
       status,
       etag,
       code,
+      observed,
     });
     return { status };
   },

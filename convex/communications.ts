@@ -124,7 +124,20 @@ export const get = query({
       .withIndex("by_communication", (q) => q.eq("communication_id", a.id))
       .order("desc")
       .take(30);
-    const eligibility = await core.evaluate(ctx, row, p);
+    const eligibility = await core.evaluate(ctx, row, p).catch(() => ({
+      email: row.snapshot?.email ?? "",
+      subject: row.snapshot?.subject ?? row.subject,
+      body: row.snapshot?.body ?? row.body,
+      signature: row.snapshot?.signature ?? "",
+      fingerprint: "unavailable",
+      consent_ids: [],
+      preference_ids: [],
+      suppression_ids: [],
+      policy_version: "unavailable",
+      reasons: ["source_unavailable_for_sending"],
+      allowed: false,
+      eligibility_basis: [],
+    }));
     return {
       row,
       events,
@@ -137,6 +150,7 @@ export const get = query({
         subject: eligibility.subject,
         body: eligibility.body,
         signature: eligibility.signature,
+        basis: eligibility.eligibility_basis,
       },
     };
   },
@@ -156,6 +170,11 @@ export const create = mutation({
   handler: async (ctx, a) => {
     const p = await core.user(ctx);
     await core.sourceFacts(ctx, a.source, a.recipient, p, a.category);
+    if (!core.categoryCompatible(a.source.type, a.category))
+      deny(
+        "INVALID_INPUT",
+        "This source does not support that message purpose.",
+      );
     if (!/^[A-Za-z0-9_-]{16,100}$/.test(a.request_key)) deny("INVALID_INPUT");
     const parsed = content.safeParse({ subject: a.subject, body: a.body });
     if (!parsed.success)
@@ -185,6 +204,32 @@ export const create = mutation({
         )
       )
         deny();
+    }
+    if (a.activity_id) {
+      const drafts = await ctx.db
+        .query("communications")
+        .withIndex("by_activity", (q) => q.eq("activity_id", a.activity_id!))
+        .order("desc")
+        .take(101);
+      if (drafts.length > 100)
+        deny(
+          "LIMIT",
+          "Review this follow-up's existing communication history.",
+        );
+      const duplicate = drafts.find(
+        (r) =>
+          !r.deleted_at &&
+          r.source_key === core.key(a.source) &&
+          r.recipient_key === core.key(a.recipient) &&
+          r.category === a.category &&
+          !["cancelled", "sent", "delivered", "bounced", "failed"].includes(
+            r.status,
+          ),
+      );
+      if (duplicate) {
+        await core.authorized(ctx, duplicate._id, p);
+        return duplicate._id;
+      }
     }
     if (a.ai_draft_id) {
       const request = await ctx.db.get(a.ai_draft_id);
@@ -255,6 +300,15 @@ export const edit = mutation({
       row = await core.authorized(ctx, a.id, p);
     core.version(row, a.version);
     if (!editable(row.status) || row.deleted_at) deny("CONFLICT");
+    const dispatched = await ctx.db
+      .query("communication_outbox")
+      .withIndex("by_communication", (q) => q.eq("communication_id", row._id))
+      .unique();
+    if (dispatched?.attempts)
+      deny(
+        "CONFLICT",
+        "A dispatched snapshot is immutable. Create a new reviewed communication.",
+      );
     const data = content.safeParse({ subject: a.subject, body: a.body });
     if (!data.success) return deny("INVALID_INPUT");
     await ctx.db.patch(row._id, {
@@ -282,6 +336,15 @@ export const approve = mutation({
       row = await core.authorized(ctx, a.id, p);
     core.version(row, a.version);
     if (!editable(row.status) || row.deleted_at) deny("CONFLICT");
+    const dispatched = await ctx.db
+      .query("communication_outbox")
+      .withIndex("by_communication", (q) => q.eq("communication_id", row._id))
+      .unique();
+    if (dispatched?.attempts)
+      deny(
+        "CONFLICT",
+        "A dispatched snapshot is immutable. Create a new reviewed communication.",
+      );
     const config = await core.settings(ctx);
     if (config?.secondary_approval && p.userId === row.requested_by)
       deny("SECOND_REVIEW_REQUIRED");
@@ -388,6 +451,8 @@ export const enqueue = mutation({
       recent.some(
         (r) =>
           r._id !== row._id &&
+          r.category === row.category &&
+          row.category !== "transactional" &&
           r.updated_at > Date.now() - 3600000 &&
           ["queued", "sent", "delivered", "delivery_unknown"].includes(
             r.status,
@@ -571,6 +636,11 @@ export const recordConsent = mutation({
   handler: async (ctx, a) => {
     const p = await requireRoles(ctx, ["owner", "admin"]);
     await core.sourceFacts(ctx, a.source, a.recipient, p, a.category);
+    if (!core.categoryCompatible(a.source.type, a.category))
+      deny(
+        "INVALID_INPUT",
+        "This source does not support that message purpose.",
+      );
     if (
       a.evidence.trim().length < 8 ||
       a.evidence.length > 2000 ||
@@ -629,6 +699,11 @@ export const preference = mutation({
   handler: async (ctx, a) => {
     const p = await requireRoles(ctx, ["owner", "admin"]);
     await core.sourceFacts(ctx, a.source, a.recipient, p, a.category);
+    if (!core.categoryCompatible(a.source.type, a.category))
+      deny(
+        "INVALID_INPUT",
+        "This source does not support that message purpose.",
+      );
     if (a.reason.trim().length < 8 || a.reason.length > 500)
       deny("INVALID_INPUT");
     const recipient_key = core.key(a.recipient),
@@ -698,6 +773,11 @@ export const revokeSuppression = mutation({
       deny("INVALID_INPUT");
     const row = await ctx.db.get(a.id);
     if (!row) deny("UNAVAILABLE");
+    if (row!.reason === "hard_bounce" || row!.reason === "complaint")
+      deny(
+        "INVALID_INPUT",
+        "Provider suppression cannot be overridden. Correct a bounced address; keep complaint preferences in force.",
+      );
     await ctx.db.patch(a.id, {
       revoked_at: Date.now(),
       revoked_by: p.userId,
@@ -735,6 +815,13 @@ export const saveSettings = mutation({
     signature: v.string(),
     secondary_approval: v.boolean(),
     paused: v.boolean(),
+    queue_lag_minutes: v.optional(v.number()),
+    transactional_basis: v.optional(
+      v.union(
+        v.literal("documented_service"),
+        v.literal("explicit_request_only"),
+      ),
+    ),
   },
   handler: async (ctx, a) => {
     const p = await requireRoles(ctx, ["owner", "admin"]);
@@ -742,6 +829,13 @@ export const saveSettings = mutation({
       a.signature.trim().length < 20 ||
       a.signature.length > 1000 ||
       /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(a.signature)
+    )
+      deny("INVALID_INPUT");
+    if (
+      a.queue_lag_minutes !== undefined &&
+      (!Number.isInteger(a.queue_lag_minutes) ||
+        a.queue_lag_minutes < 1 ||
+        a.queue_lag_minutes > 1440)
     )
       deny("INVALID_INPUT");
     const old = await core.settings(ctx);
@@ -752,6 +846,13 @@ export const saveSettings = mutation({
       signature: a.signature,
       secondary_approval: a.secondary_approval,
       paused: a.paused,
+      queue_lag_minutes: a.queue_lag_minutes ?? old?.queue_lag_minutes ?? 15,
+      transactional_basis:
+        a.transactional_basis ??
+        old?.transactional_basis ??
+        "documented_service",
+      consecutive_failures: a.paused ? (old?.consecutive_failures ?? 0) : 0,
+      circuit_reason: a.paused ? old?.circuit_reason : undefined,
       version: a.version + 1,
       updated_at: Date.now(),
     };
@@ -894,7 +995,34 @@ export const sources = query({
           });
       }
     }
-    return { rows, limited: true };
+    if (a.category === "transactional") {
+      const consultations = await ctx.db
+        .query("consultations")
+        .order("desc")
+        .take(50);
+      for (const c of consultations) {
+        const o = await ctx.db.get(c.opportunity_id);
+        if (!o) continue;
+        const source = { type: "consultation" as const, id: c._id },
+          recipient = { type: "realtor" as const, id: o.realtor_id };
+        try {
+          await core.sourceFacts(ctx, source, recipient, p, a.category);
+          rows.push({
+            source,
+            recipient,
+            label: `Consultation · ${c.scheduled_at}`,
+          });
+        } catch {
+          /* Current source access required. */
+        }
+      }
+    }
+    return {
+      rows: rows.filter((r) =>
+        core.categoryCompatible(r.source.type, a.category),
+      ),
+      limited: true,
+    };
   },
 });
 export const queueHealth = query({
@@ -993,5 +1121,242 @@ export const requestReview = mutation({
       updated_at: Date.now(),
     });
     await core.audit(ctx, p.userId, "review_requested", row._id);
+  },
+});
+export const deliveryHistory = query({
+  args: { id: v.id("communications"), paginationOpts: paginationOptsValidator },
+  handler: async (ctx, a) => {
+    await core.authorized(ctx, a.id, await core.user(ctx));
+    if (a.paginationOpts.numItems < 1 || a.paginationOpts.numItems > 50)
+      deny("INVALID_INPUT");
+    return ctx.db
+      .query("communication_delivery_events")
+      .withIndex("by_communication", (q) => q.eq("communication_id", a.id))
+      .order("desc")
+      .paginate(a.paginationOpts);
+  },
+});
+export const operationsHealth = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    const config = await core.settings(ctx),
+      now = Date.now();
+    const ready = await ctx.db
+      .query("communication_outbox")
+      .withIndex("by_due", (q) => q.eq("status", "ready"))
+      .take(101);
+    const oldest = ready
+      .filter((j) => j.next_attempt_at <= now)
+      .reduce((age, j) => Math.max(age, now - j.next_attempt_at), 0);
+    const recent = await ctx.db
+      .query("communication_outbox")
+      .order("desc")
+      .take(100);
+    return {
+      lag_minutes: Math.floor(oldest / 60000),
+      lag_warning: oldest > (config?.queue_lag_minutes ?? 15) * 60000,
+      retry_waiting: ready.filter(
+        (j) => j.attempts > 0 && j.next_attempt_at > now,
+      ).length,
+      partial: ready.length > 100,
+      paused: config?.paused ?? true,
+      circuit_reason: config?.circuit_reason,
+      consecutive_failures: config?.consecutive_failures ?? 0,
+      webhook_failures: config?.webhook_failures ?? 0,
+      problems: recent
+        .filter((j) => ["unknown", "failed"].includes(j.status))
+        .map((j) => ({
+          id: j.communication_id,
+          status: j.status,
+          code: j.last_code,
+        })),
+      provider_configured:
+        !!process.env.M9_RESEND_KEY && process.env.M9_EMAIL_VERIFIED === "true",
+      enabled: process.env.M9_EMAIL_ENABLED === "true",
+    };
+  },
+});
+export const rotateUnsubscribeGeneration = mutation({
+  args: { version: v.number(), reason: v.string() },
+  handler: async (ctx, a) => {
+    const p = await requireRoles(ctx, ["owner", "admin"]),
+      config = await core.settings(ctx);
+    if (!config) return deny("UNAVAILABLE");
+    core.version(config, a.version);
+    if (a.reason.trim().length < 8 || a.reason.length > 500)
+      deny("INVALID_INPUT");
+    await ctx.db.patch(config._id, {
+      token_generation: (config.token_generation ?? 0) + 1,
+      version: config.version + 1,
+      updated_at: Date.now(),
+    });
+    await core.audit(
+      ctx,
+      p.userId,
+      "unsubscribe_generation_revoked",
+      config._id,
+      { reason: a.reason },
+    );
+  },
+});
+export const setTemplateActive = mutation({
+  args: {
+    id: v.id("communication_templates"),
+    version: v.number(),
+    active: v.boolean(),
+  },
+  handler: async (ctx, a) => {
+    const p = await requireRoles(ctx, ["owner", "admin"]),
+      row = await ctx.db.get(a.id);
+    if (!row) return deny("UNAVAILABLE");
+    core.version(row, a.version);
+    await ctx.db.patch(row._id, {
+      active: a.active,
+      version: row.version + 1,
+      updated_at: Date.now(),
+    });
+    await core.audit(
+      ctx,
+      p.userId,
+      a.active ? "template_enabled" : "template_disabled",
+      row._id,
+    );
+  },
+});
+// Bounded independent reconciliation. Callers aggregate every page; partial pages never prove a clean database.
+export const reconcilePage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    if (a.paginationOpts.numItems < 1 || a.paginationOpts.numItems > 25)
+      deny("INVALID_INPUT");
+    const page = await ctx.db
+      .query("communications")
+      .paginate(a.paginationOpts);
+    const findings: { id: Id<"communications">; issues: string[] }[] = [];
+    for (const row of page.page) {
+      const issues: string[] = [];
+      const jobs = await ctx.db
+        .query("communication_outbox")
+        .withIndex("by_communication", (q) => q.eq("communication_id", row._id))
+        .take(2);
+      const duplicates = await ctx.db
+        .query("communications")
+        .withIndex("by_send_key", (q) => q.eq("send_key", row.send_key))
+        .take(2);
+      const mappings = await ctx.db
+        .query("communication_provider_messages")
+        .withIndex("by_communication", (q) => q.eq("communication_id", row._id))
+        .take(2);
+      if (duplicates.length > 1 || jobs.length > 1 || mappings.length > 1)
+        issues.push("duplicate_identity");
+      const job = jobs[0],
+        mapping = mappings[0];
+      if (row.status === "queued" && !job) issues.push("missing_outbox");
+      if (job && job.send_key !== row.send_key)
+        issues.push("outbox_key_mismatch");
+      if (mapping && mapping.send_key !== row.send_key)
+        issues.push("provider_key_mismatch");
+      if (["sent", "delivered", "bounced"].includes(row.status) && !mapping)
+        issues.push("missing_provider_evidence");
+      if (row.status === "delivery_unknown")
+        issues.push("unknown_requires_investigation");
+      if (job?.status === "ready" && row.status !== "queued")
+        issues.push("unsafe_retry_state");
+      if (mapping) {
+        const events = await Promise.all(
+          (["delivered", "hard_bounce", "complaint"] as const).map((kind) =>
+            ctx.db
+              .query("communication_delivery_events")
+              .withIndex("by_provider_kind", (q) =>
+                q.eq("provider_id", mapping.provider_id).eq("kind", kind),
+              )
+              .first(),
+          ),
+        );
+        if (row.status === "delivered" && !events[0])
+          issues.push("delivered_without_event");
+        if ((events[1] || events[2]) && row.status !== "bounced")
+          issues.push("bounce_status_mismatch");
+        if ((events[1] || events[2]) && row.snapshot) {
+          const suppressions = await ctx.db
+            .query("communication_suppressions")
+            .withIndex("by_email", (q) => q.eq("email", row.snapshot!.email))
+            .order("desc")
+            .take(101);
+          if (suppressions.length > 100)
+            issues.push("suppression_history_requires_review");
+          if (
+            events[1] &&
+            !suppressions.some(
+              (s) =>
+                !s.revoked_at &&
+                s.scope === "all" &&
+                s.reason === "hard_bounce",
+            )
+          )
+            issues.push("hard_bounce_suppression_missing");
+          if (
+            events[2] &&
+            !suppressions.some(
+              (s) =>
+                !s.revoked_at &&
+                s.scope === "all_optional" &&
+                s.reason === "complaint",
+            )
+          )
+            issues.push("complaint_suppression_missing");
+        }
+      }
+      findings.push({ id: row._id, issues });
+    }
+    return { ...page, page: findings };
+  },
+});
+export const outboxReconcilePage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    if (a.paginationOpts.numItems < 1 || a.paginationOpts.numItems > 50)
+      deny("INVALID_INPUT");
+    const page = await ctx.db
+      .query("communication_outbox")
+      .paginate(a.paginationOpts);
+    return {
+      ...page,
+      page: await Promise.all(
+        page.page.map(async (j) => ({
+          id: j._id,
+          orphan: !(await ctx.db.get(j.communication_id)),
+        })),
+      ),
+    };
+  },
+});
+export const eventReconcilePage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, ["owner", "admin"]);
+    if (a.paginationOpts.numItems < 1 || a.paginationOpts.numItems > 50)
+      deny("INVALID_INPUT");
+    const page = await ctx.db
+      .query("communication_delivery_events")
+      .paginate(a.paginationOpts);
+    const rows = [];
+    for (const event of page.page) {
+      const mapping = await ctx.db
+        .query("communication_provider_messages")
+        .withIndex("by_provider", (q) =>
+          q.eq("provider", "resend").eq("provider_id", event.provider_id),
+        )
+        .unique();
+      rows.push({
+        id: event._id,
+        mismatch:
+          !mapping || mapping.communication_id !== event.communication_id,
+      });
+    }
+    return { ...page, page: rows };
   },
 });

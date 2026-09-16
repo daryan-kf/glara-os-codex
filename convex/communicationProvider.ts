@@ -51,8 +51,16 @@ export const tick = internalAction({
         from: data.from,
         replyTo: data.reply_to,
       });
+      if (
+        !(await ctx.runMutation(internal.communicationDelivery.dispatch, {
+          id,
+          claim_version: data.claim_version,
+        }))
+      )
+        continue;
       const result = await sender.sendEmail({
         key: data.send_key,
+        correlation: createHash("sha256").update(data.send_key).digest("hex"),
         to: data.email,
         subject: data.subject,
         text: data.body,
@@ -99,6 +107,7 @@ export const verifyEvent = internalAction({
         /* Rotation accepts either current or previous signature, never unsigned payloads. */
       }
     }
+    await ctx.runMutation(internal.communicationDelivery.webhookRejected, {});
     return false;
   },
 });
@@ -113,14 +122,16 @@ export const unsubscribe = internalAction({
 });
 export const reconcile = action({
   args: { id: v.id("communications") },
-  handler: async (ctx, a) => {
+  handler: async (ctx, a): Promise<{ status: string }> => {
     const config = await ctx.runQuery(api.communications.configuration, {});
     if (!config.manager) throw new Error("Access denied");
     const mapping = await ctx.runQuery(internal.communicationDelivery.mapping, {
       id: a.id,
     });
     if (!mapping) return { status: "manual_provider_investigation_required" };
-    const result = await provider().getDeliveryStatus(mapping.provider_id);
+    const result = await provider()
+      .getDeliveryStatus(mapping.provider_id)
+      .catch(() => null);
     if (!result || result.id !== mapping.provider_id)
       return { status: "provider_unavailable" };
     const kind = eventKind(`email.${result.status}`);
@@ -156,8 +167,8 @@ export const reconcileUnknown = action({
         headers: { Authorization: `Bearer ${process.env.M9_RESEND_KEY ?? ""}` },
         signal: AbortSignal.timeout(15000),
       },
-    );
-    if (!response.ok) return { status: "provider_unavailable" };
+    ).catch(() => null);
+    if (!response?.ok) return { status: "provider_unavailable" };
     const remote = z
       .object({
         id: z.string(),
@@ -165,12 +176,18 @@ export const reconcileUnknown = action({
         from: z.string(),
         subject: z.string(),
         text: z.string(),
+        tags: z.array(z.object({ name: z.string(), value: z.string() })),
         created_at: z.string().refine((s) => Number.isFinite(Date.parse(s))),
       })
       .safeParse(await response.json());
     if (
       !remote.success ||
       remote.data.id !== a.provider_id ||
+      !remote.data.tags.some(
+        (t) =>
+          t.name === "glara_send" &&
+          t.value === createHash("sha256").update(job.send_key).digest("hex"),
+      ) ||
       remote.data.to.length !== 1 ||
       remote.data.to[0].toLowerCase() !== row.snapshot!.email ||
       remote.data.subject !== row.snapshot!.subject ||

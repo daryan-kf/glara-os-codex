@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+import { ReconciliationReview } from "./reconciliation";
 import { DraftHandoff } from "./handoff";
 import { vancouverUtc } from "@/lib/operations/time";
 import { useState } from "react";
@@ -301,6 +303,11 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
     templates = useQuery(api.communications.templates, {});
   const requestReview = useMutation(api.communications.requestReview),
     unknown = useAction(api.communicationProvider.reconcileUnknown);
+  const history = usePaginatedQuery(
+    api.communications.deliveryHistory,
+    { id },
+    { initialNumItems: 20 },
+  );
   const data = useQuery(api.communications.get, { id }),
     approve = useMutation(api.communications.approve),
     enqueue = useMutation(api.communications.enqueue),
@@ -401,6 +408,12 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
             ? "Eligibility checks passed for review"
             : "Review required"}
         </strong>
+        {eligibility.basis.map((b, i) => (
+          <p key={i}>
+            {b.basis.replaceAll("_", " ")} recorded{" "}
+            {new Date(b.observed_at).toLocaleDateString()}
+          </p>
+        ))}
         {eligibility.reasons.map((r) => (
           <p key={r} className="mt-2">
             {r.replaceAll("_", " ")}
@@ -456,7 +469,7 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
               void work.run(() => enqueue({ id, version: row.version }))
             }
           >
-            Queue approved send
+            Send approved message to {preview.email}
           </Button>
         )}
         {[
@@ -527,8 +540,8 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
         </form>
       )}
       <h3 className="font-semibold">Delivery history</h3>
-      {data.events.length ? (
-        data.events.map((event) => (
+      {history.results.length ? (
+        history.results.map((event) => (
           <p key={event._id} className="text-sm">
             {event.kind.replaceAll("_", " ")} ·{" "}
             {new Date(event.occurred_at).toLocaleString()}
@@ -538,6 +551,11 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
         <p className="text-sm text-muted-foreground">
           No provider delivery evidence yet.
         </p>
+      )}
+      {history.status === "CanLoadMore" && (
+        <Button variant="outline" onClick={() => history.loadMore(20)}>
+          More delivery history
+        </Button>
       )}
       <p className="text-xs text-muted-foreground">
         Sending does not automatically complete a linked follow-up. Provider
@@ -549,6 +567,7 @@ function MessageReview({ id }: { id: Id<"communications"> }) {
 function Templates() {
   const rows = useQuery(api.communications.templates, {}),
     save = useMutation(api.communications.saveTemplate),
+    setActive = useMutation(api.communications.setTemplateActive),
     work = useWork();
   return (
     <section className={panel + " max-w-3xl"}>
@@ -568,6 +587,17 @@ function Templates() {
             {"\n\n"}
             {t.current?.body}
           </pre>
+          <Button
+            variant="outline"
+            disabled={work.busy}
+            onClick={() =>
+              void work.run(() =>
+                setActive({ id: t._id, version: t.version, active: false }),
+              )
+            }
+          >
+            Disable template
+          </Button>
         </details>
       ))}
       <form
@@ -825,6 +855,7 @@ function Preferences() {
 function Settings() {
   const config = useQuery(api.communications.configuration, {}),
     health = useQuery(api.communications.queueHealth, {}),
+    operations = useQuery(api.communications.operationsHealth, {}),
     save = useMutation(api.communications.saveSettings),
     work = useWork();
   if (!config) return <LoadingState />;
@@ -847,6 +878,9 @@ function Settings() {
               signature: String(f.get("signature")),
               secondary_approval: f.get("secondary") === "on",
               paused: f.get("paused") === "on",
+              queue_lag_minutes: Number(f.get("lag")),
+              transactional_basis: String(f.get("policy")) as
+                "documented_service" | "explicit_request_only",
             }),
           );
         }}
@@ -873,10 +907,70 @@ function Settings() {
           />
           Pause outgoing delivery
         </label>
+        <Field
+          name="lag"
+          label="Queue age warning (minutes, 1–1440)"
+          value={String(config.config?.queue_lag_minutes ?? 15)}
+        />
+        <label className="grid gap-2 text-sm">
+          Transactional eligibility policy
+          <select
+            name="policy"
+            className={inputClass}
+            defaultValue={
+              config.config?.transactional_basis ?? "documented_service"
+            }
+          >
+            <option value="documented_service">
+              Documented service or request
+            </option>
+            <option value="explicit_request_only">
+              Explicit recipient request only
+            </option>
+          </select>
+        </label>
         <Button disabled={work.busy}>Save settings</Button>
         <p role="status">{work.notice}</p>
       </form>
+      <ReconciliationReview />
       <h3 className="font-semibold">Queue health</h3>
+      {operations && (
+        <div className="space-y-2 text-sm">
+          <p>
+            Delivery {operations.enabled ? "enabled" : "disabled"} ·{" "}
+            {operations.paused ? "paused" : "running"} · provider{" "}
+            {operations.provider_configured
+              ? "configured"
+              : "configuration required"}
+          </p>
+          <p role={operations.lag_warning ? "alert" : undefined}>
+            Oldest due job: {operations.lag_minutes} minutes{" "}
+            {operations.lag_warning ? "— review delayed queue" : ""}
+          </p>
+          <p>
+            Retries waiting: {operations.retry_waiting}
+            {operations.partial ? "+" : ""} · consecutive provider failures:{" "}
+            {operations.consecutive_failures} · rejected webhooks:{" "}
+            {operations.webhook_failures}
+          </p>
+          {operations.circuit_reason && (
+            <p>
+              Paused for {operations.circuit_reason.replaceAll("_", " ")}.
+              Correct provider configuration before resuming. Unknown deliveries
+              require evidence and will not retry.
+            </p>
+          )}
+          {operations.problems.map((p) => (
+            <Link
+              key={p.id}
+              href={`/communications?messageId=${p.id}`}
+              className="block min-h-11 py-3 underline"
+            >
+              Review {p.status}: {p.code?.replaceAll("_", " ")}
+            </Link>
+          ))}
+        </div>
+      )}
       <div className="flex flex-wrap gap-3">
         {health?.map((h) => (
           <StatusBadge key={h.state}>

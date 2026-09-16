@@ -81,14 +81,17 @@ export function deliveryState(
   if (event === "hard_bounce" || event === "complaint") return "bounced";
   if (current === "bounced" || current === "delivered") return current;
   if (event === "delivered") return "delivered";
+  if (event === "failed" || current === "failed") return "failed";
   if (event === "accepted") return "sent";
-  return current === "sent" ? current : "failed";
+  return current;
 }
 export function render(template: string, facts: Record<string, string>) {
-  return template.replace(/\{\{([a-z_]+)\}\}/g, (_, key: string) => {
+  const rendered = template.replace(/\{\{([a-z_]+)\}\}/g, (_, key: string) => {
     if (!(key in facts)) throw new Error("Unsupported template field");
     return facts[key];
   });
+  if (/[{}]/.test(rendered)) throw new Error("Unresolved template field");
+  return rendered;
 }
 export const editable = (state: State) =>
   [

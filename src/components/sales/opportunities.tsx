@@ -1,4 +1,5 @@
 "use client";
+import { ConsultationCalendarStatus } from "@/components/communications/calendar";
 import { CopilotLink } from "@/components/ai/copilot";
 
 import { Handoff } from "@/components/operations/create";
@@ -641,6 +642,7 @@ export function OpportunityDetail({ id }: { id: string }) {
               <p className="mt-2 text-sm">{c.notes}</p>
               {c.status === "scheduled" && (
                 <>
+                  <ConsultationCalendarStatus id={c._id} />
                   <ConsultationStatus id={c._id} version={c.version} />
                   <ConsultationEditor key={c._id} id={id} existing={c} />
                 </>

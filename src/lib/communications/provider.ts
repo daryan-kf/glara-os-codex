@@ -26,6 +26,7 @@ export interface EmailProvider {
     to: string;
     subject: string;
     text: string;
+    correlation?: string;
   }): Promise<SendResult>;
   getDeliveryStatus(id: string): Promise<{ id: string; status: string } | null>;
   verifyConfiguration(): boolean;
@@ -44,6 +45,7 @@ export class ResendProvider implements EmailProvider {
     to: string;
     subject: string;
     text: string;
+    correlation?: string;
   }): Promise<SendResult> {
     if (!this.verifyConfiguration())
       return { result: "rejected", code: "configuration_rejected" };
@@ -61,6 +63,9 @@ export class ResendProvider implements EmailProvider {
           reply_to: this.config.replyTo,
           subject: input.subject,
           text: input.text,
+          ...(input.correlation
+            ? { tags: [{ name: "glara_send", value: input.correlation }] }
+            : {}),
         }),
         signal: AbortSignal.timeout(20000),
       });

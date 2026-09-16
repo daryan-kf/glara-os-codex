@@ -5,7 +5,7 @@ import { useQuery, useAction, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { LoadingState, StatusBadge } from "@/components/primitives";
-import { classifyCrmError } from "@/lib/crm/errors";
+import { communicationError } from "@/lib/communications/errors";
 export function CalendarConnections() {
   const list = useQuery(api.calendarSync.list, {}),
     events = useQuery(api.calendarSync.candidates, {}),
@@ -21,7 +21,7 @@ export function CalendarConnections() {
       await work();
       setNotice("Calendar request processed.");
     } catch (e) {
-      setNotice(classifyCrmError(e).message);
+      setNotice(communicationError(e));
     } finally {
       setBusy(false);
     }
@@ -87,6 +87,29 @@ export function CalendarConnections() {
             <p className="text-sm text-muted-foreground">
               {p.last_code.replaceAll("_", " ")}
             </p>
+          )}
+          {p.status === "conflict" && (
+            <div className="grid gap-3 text-sm sm:grid-cols-2">
+              <div>
+                <strong>Glara schedule</strong>
+                <p>
+                  {p.snapshot.start} → {p.snapshot.end}
+                </p>
+              </div>
+              <div>
+                <strong>External observation</strong>
+                <p>
+                  {p.observed?.missing
+                    ? "Event missing"
+                    : `${p.observed?.start ?? "Unavailable"} → ${p.observed?.end ?? "Unavailable"}`}
+                </p>
+                {p.observed?.has_attendees && (
+                  <p>
+                    Unexpected attendees: remove them externally before resync.
+                  </p>
+                )}
+              </div>
+            </div>
           )}
           {p.status === "conflict" ? (
             <div className="flex flex-wrap gap-2">
@@ -161,5 +184,28 @@ export function ProjectCalendarStatus({
         Review calendar sync
       </Link>
     </section>
+  );
+}
+export function ConsultationCalendarStatus({
+  id,
+}: {
+  id: import("../../../convex/_generated/dataModel").Id<"consultations">;
+}) {
+  const viewer = useQuery(api.profiles.viewer, {});
+  const enabled =
+    !!viewer?.communications_version &&
+    viewer.roles.some((r) => r === "owner" || r === "admin");
+  const row = useQuery(
+    api.calendarSync.sourceStatus,
+    enabled ? { source: { type: "consultation", id } } : "skip",
+  );
+  if (!enabled) return null;
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+      <StatusBadge>Calendar: {row?.status ?? "not synced"}</StatusBadge>
+      <Link href="/calendar" className="min-h-11 py-3 underline">
+        Review sync / conflict
+      </Link>
+    </div>
   );
 }
