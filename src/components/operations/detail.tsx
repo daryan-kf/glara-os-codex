@@ -100,6 +100,10 @@ export function ProjectDetail({ id }: { id: string }) {
               Source quote →
             </Link>
           )}
+          <Link href={`/projects/${p.id}/commercial`}>
+            Commercial (agreements & invoices) →
+          </Link>
+          <Link href={`/projects/${p.id}/inventory`}>Inventory →</Link>
         </div>
       )}
       <div className="mb-6 flex flex-wrap gap-3 text-xs text-muted-foreground">
