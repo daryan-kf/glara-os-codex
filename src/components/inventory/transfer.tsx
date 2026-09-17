@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useConvex, useMutation } from "convex/react";
+import { useAction, useConvex, useMutation } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
@@ -27,11 +27,26 @@ const columns = [
   "staging_eligible",
   "retail_eligible",
   "active",
+  "image_urls",
 ] as const;
 const importRow = productInput.extend({
   category: z.string().trim().min(1).max(80),
 });
 type ImportRow = z.infer<typeof importRow>;
+type ImageItem = { sku: string; urls: string[] };
+function imageList(value: string) {
+  const urls = value.split(/[\s,;|]+/).filter(Boolean);
+  for (const url of urls) {
+    try {
+      if (new URL(url).protocol !== "https:") throw new Error();
+    } catch {
+      return { urls, error: `"${url}" is not an https image address.` };
+    }
+  }
+  if (urls.length > 6)
+    return { urls, error: "A product holds up to 6 photos." };
+  return { urls };
+}
 function flag(value: string, fallback: boolean) {
   const v = value.trim().toLowerCase();
   if (["yes", "true", "1", "y"].includes(v)) return true;
@@ -57,12 +72,14 @@ function download(name: string, bytes: Uint8Array) {
   URL.revokeObjectURL(url);
 }
 function mapRows(table: string[][]) {
-  if (!table.length) return { rows: [], errors: ["The file is empty."] };
+  if (!table.length)
+    return { rows: [], images: [], errors: ["The file is empty."] };
   const headers = table[0].map((h) => h.trim().toLowerCase());
   for (const required of ["sku", "name", "category"])
     if (!headers.includes(required))
       return {
         rows: [],
+        images: [],
         errors: [`Missing required column "${required}". Use the template.`],
       };
   const cell = (row: string[], key: string) => {
@@ -70,9 +87,12 @@ function mapRows(table: string[][]) {
     return index < 0 ? "" : (row[index] ?? "").trim();
   };
   const rows: ImportRow[] = [];
+  const images: ImageItem[] = [];
   const errors: string[] = [];
   table.slice(1).forEach((raw, i) => {
     if (raw.every((value) => !value.trim())) return;
+    const photos = imageList(cell(raw, "image_urls"));
+    if (photos.error) errors.push(`Row ${i + 2}: ${photos.error}`);
     const candidate = {
       sku: cell(raw, "sku"),
       name: cell(raw, "name"),
@@ -96,8 +116,11 @@ function mapRows(table: string[][]) {
       active: flag(cell(raw, "active"), true),
     };
     const parsed = importRow.safeParse(candidate);
-    if (parsed.success) rows.push(parsed.data);
-    else
+    if (parsed.success) {
+      rows.push(parsed.data);
+      if (photos.urls.length && !photos.error)
+        images.push({ sku: parsed.data.sku, urls: photos.urls });
+    } else
       errors.push(
         `Row ${i + 2}: ${parsed.error.issues
           .map((issue) => issue.path.join(".") + " — " + issue.message)
@@ -106,15 +129,17 @@ function mapRows(table: string[][]) {
   });
   if (!rows.length && !errors.length)
     errors.push("No product rows found under the header row.");
-  return { rows, errors };
+  return { rows, images, errors };
 }
 export function CatalogTransfer() {
   const convex = useConvex();
   const importProducts = useMutation(api.inventory.importProducts);
+  const importImages = useAction(api.inventory.importProductImages);
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
     [errors, setErrors] = useState<string[]>([]),
-    [pending, setPending] = useState<ImportRow[]>([]);
+    [pending, setPending] = useState<ImportRow[]>([]),
+    [pendingImages, setPendingImages] = useState<ImageItem[]>([]);
   async function exportCatalog() {
     setBusy(true);
     setMessage("");
@@ -144,6 +169,7 @@ export function CatalogTransfer() {
             r.staging_eligible ? "yes" : "no",
             r.retail_eligible ? "yes" : "no",
             r.active ? "yes" : "no",
+            r.image_urls,
             String(r.available_units) + (r.partial ? "+" : ""),
           ]);
         if (page.done) break;
@@ -183,6 +209,7 @@ export function CatalogTransfer() {
           "yes",
           "no",
           "yes",
+          "https://example.com/sofa-photo.jpg",
         ],
       ]),
     );
@@ -199,9 +226,14 @@ export function CatalogTransfer() {
       const mapped = mapRows(table);
       setErrors(mapped.errors.slice(0, 20));
       setPending(mapped.errors.length ? [] : mapped.rows);
+      setPendingImages(mapped.errors.length ? [] : mapped.images);
       if (!mapped.errors.length)
         setMessage(
-          `${mapped.rows.length} products ready to import from ${file.name}.`,
+          `${mapped.rows.length} products ready to import from ${file.name}` +
+            (mapped.images.length
+              ? ` (photos for ${mapped.images.length} of them will be downloaded)`
+              : "") +
+            ".",
         );
     } catch {
       setErrors([
@@ -225,8 +257,36 @@ export function CatalogTransfer() {
         updated += result.updated;
       }
       setPending([]);
+      let photos = "";
+      if (pendingImages.length) {
+        setMessage(
+          `${created} created, ${updated} updated. Downloading photos…`,
+        );
+        let added = 0,
+          skipped = 0;
+        const photoErrors: string[] = [];
+        for (let i = 0; i < pendingImages.length; i += 10)
+          for (const item of await importImages({
+            input: JSON.stringify(pendingImages.slice(i, i + 10)),
+          })) {
+            added += item.added;
+            skipped += item.skipped;
+            for (const error of item.errors)
+              photoErrors.push(item.sku + " — " + error);
+          }
+        setPendingImages([]);
+        setErrors(photoErrors.slice(0, 20));
+        photos =
+          ` ${added} photos downloaded` +
+          (skipped
+            ? `, ${skipped} skipped for products that already have photos`
+            : "") +
+          (photoErrors.length ? `, ${photoErrors.length} failed` : "") +
+          ".";
+      }
       setMessage(
-        `Import complete: ${created} created, ${updated} updated by SKU.`,
+        `Import complete: ${created} created, ${updated} updated by SKU.` +
+          photos,
       );
     } catch {
       setErrors([
@@ -242,7 +302,8 @@ export function CatalogTransfer() {
         Export the catalog as an Excel workbook, or bulk-import products from an
         .xlsx or .csv sheet. Rows are matched by SKU: new SKUs are created,
         existing SKUs are updated. Missing categories are created automatically.
-        Prices are CAD.
+        Prices are CAD. The image_urls column downloads up to 6 https photos per
+        product; products that already have photos keep them.
       </p>
       <div className="flex flex-wrap gap-3">
         <Button type="button" disabled={busy} onClick={exportCatalog}>

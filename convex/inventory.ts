@@ -1,6 +1,13 @@
 import { damageTransitions } from "../src/lib/inventory/model";
 import { cents } from "../src/lib/sales/model";
-import { query, mutation } from "./functions";
+import {
+  query,
+  mutation,
+  internalMutation,
+  internalQuery,
+  action,
+} from "./functions";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { z } from "zod";
@@ -438,6 +445,128 @@ export const removeProductImage = mutation({
     return null;
   },
 });
+export const imageImportContext = internalQuery({
+  args: { sku: v.string() },
+  handler: async (ctx, args) => {
+    await manager(ctx);
+    const p = await ctx.db
+      .query("products")
+      .withIndex("by_sku", (q) => q.eq("sku", args.sku).eq("deleted_at", null))
+      .unique();
+    return p ? { id: p._id, images: (p.image_ids ?? []).length } : null;
+  },
+});
+// The importing action validated the fetched response's type and size before
+// storing, so this trusted finish step only enforces product state and limits.
+export const finishImageImport = internalMutation({
+  args: {
+    product_id: v.id("products"),
+    storage_id: v.id("_storage"),
+    source_url: v.string(),
+  },
+  handler: async (ctx, args): Promise<{ ok: boolean; message?: string }> => {
+    const u = await manager(ctx);
+    const p = await ctx.db.get(args.product_id);
+    const reject = async (message: string) => {
+      await ctx.storage.delete(args.storage_id);
+      return { ok: false, message };
+    };
+    if (!p || p.deleted_at) return reject("Product unavailable.");
+    const images = p.image_ids ?? [];
+    if (images.length >= 6) return reject("photo limit reached");
+    await ctx.db.patch(p._id, {
+      image_ids: [...images, args.storage_id],
+      updated_at: now(),
+    });
+    await audit(ctx, u.userId, p._id, "product_image_imported", null, {
+      sku: p.sku,
+      url: args.source_url,
+      images: images.length + 1,
+    });
+    return { ok: true };
+  },
+});
+const imageImportRows = z
+  .array(
+    z.object({
+      sku: z.string().trim().min(1).max(64),
+      urls: z.array(z.url().startsWith("https://").max(2048)).min(1).max(6),
+    }),
+  )
+  .min(1)
+  .max(10);
+export const importProductImages = action({
+  args: { input: v.string() },
+  handler: async (
+    ctx,
+    args,
+  ): Promise<
+    Array<{ sku: string; added: number; skipped: number; errors: string[] }>
+  > => {
+    const items = parse(imageImportRows, args.input);
+    const results = [];
+    for (const item of items) {
+      const result = {
+        sku: item.sku,
+        added: 0,
+        skipped: 0,
+        errors: [] as string[],
+      };
+      const context = await ctx.runQuery(
+        internal.inventory.imageImportContext,
+        { sku: item.sku },
+      );
+      if (!context) {
+        result.errors.push("Product not found.");
+        results.push(result);
+        continue;
+      }
+      if (context.images > 0) {
+        // Existing photos are kept; remove them in the app to replace them.
+        result.skipped = item.urls.length;
+        results.push(result);
+        continue;
+      }
+      let count = context.images;
+      for (const url of item.urls) {
+        if (count >= 6) {
+          result.errors.push("Photo limit of 6 reached.");
+          break;
+        }
+        try {
+          const response = await fetch(url, {
+            signal: AbortSignal.timeout(15000),
+          });
+          const type = (response.headers.get("content-type") ?? "")
+            .split(";")[0]
+            .trim();
+          if (!response.ok || !imageTypes.includes(type)) {
+            result.errors.push(url + ": not a downloadable image.");
+            continue;
+          }
+          const blob = await response.blob();
+          if (blob.size > 5 * 1024 * 1024) {
+            result.errors.push(url + ": larger than 5 MB.");
+            continue;
+          }
+          const storageId = await ctx.storage.store(new Blob([blob], { type }));
+          const attached = await ctx.runMutation(
+            internal.inventory.finishImageImport,
+            { product_id: context.id, storage_id: storageId, source_url: url },
+          );
+          if (attached.ok) {
+            result.added++;
+            count++;
+          } else result.errors.push(url + ": " + (attached.message ?? ""));
+        } catch {
+          result.errors.push(url + ": download failed.");
+        }
+      }
+      results.push(result);
+    }
+    return results;
+  },
+});
 const importRows = z
   .array(productInput.extend({ category: z.string().trim().min(1).max(80) }))
   .min(1)
@@ -577,6 +706,13 @@ export const exportCatalog = query({
           staging_eligible: p.staging_eligible,
           retail_eligible: p.retail_eligible,
           active: p.active,
+          image_urls: (
+            await Promise.all(
+              (p.image_ids ?? []).map((id) => ctx.storage.getUrl(id)),
+            )
+          )
+            .filter(Boolean)
+            .join(" "),
           available_units:
             p.track_mode === "serialized"
               ? assets.filter((a) => a.status === "available").length

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { api } from "../../convex/_generated/api";
 import { inventoryFixture as fixture } from "../support/inventory-unit-fixture";
 // convex-test's storage.store records size but not contentType; real uploads
@@ -102,5 +102,71 @@ describe("product photos", () => {
         }),
       ).rejects.toThrow();
     }
+  });
+});
+describe("photo import from spreadsheet URLs", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  const respond = (type: string, bytes = 32) =>
+    new Response(new Uint8Array(bytes), {
+      headers: { "content-type": type },
+    });
+  it("downloads validated https photos, skips products that already have photos", async () => {
+    const f = await fixture();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: unknown) =>
+        String(url).includes("broken")
+          ? respond("text/html")
+          : respond("image/jpeg"),
+      ),
+    );
+    const first = await f.owner.action(api.inventory.importProductImages, {
+      input: JSON.stringify([
+        {
+          sku: "TEST-CHAIR",
+          urls: [
+            "https://media.example.test/chair-front.jpg",
+            "https://media.example.test/broken.jpg",
+          ],
+        },
+        { sku: "GHOST-SKU", urls: ["https://media.example.test/x.jpg"] },
+      ]),
+    });
+    expect(first[0]).toMatchObject({ sku: "TEST-CHAIR", added: 1 });
+    expect(first[0].errors).toHaveLength(1);
+    expect(first[1].errors).toEqual(["Product not found."]);
+    const detail = await f.owner.query(api.inventory.product, {
+      id: f.product,
+    });
+    expect(detail.images).toHaveLength(1);
+    const second = await f.owner.action(api.inventory.importProductImages, {
+      input: JSON.stringify([
+        {
+          sku: "TEST-CHAIR",
+          urls: ["https://media.example.test/chair-front.jpg"],
+        },
+      ]),
+    });
+    expect(second[0]).toMatchObject({ added: 0, skipped: 1 });
+  });
+  it("refuses http URLs and non-manager callers before any download", async () => {
+    const f = await fixture();
+    const fetchSpy = vi.fn(async () => respond("image/jpeg"));
+    vi.stubGlobal("fetch", fetchSpy);
+    await expect(
+      f.owner.action(api.inventory.importProductImages, {
+        input: JSON.stringify([
+          { sku: "TEST-CHAIR", urls: ["http://media.example.test/x.jpg"] },
+        ]),
+      }),
+    ).rejects.toThrow("INVALID_INPUT");
+    await expect(
+      f.c("designer").action(api.inventory.importProductImages, {
+        input: JSON.stringify([
+          { sku: "TEST-CHAIR", urls: ["https://media.example.test/x.jpg"] },
+        ]),
+      }),
+    ).rejects.toThrow();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
