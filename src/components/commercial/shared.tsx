@@ -178,21 +178,27 @@ export function Amounts({
   };
 }) {
   return (
-    <dl className="ml-auto grid max-w-sm grid-cols-2 gap-3 py-4 text-sm">
-      <dt>Subtotal</dt>
+    <dl className="ml-auto my-4 grid w-full max-w-sm grid-cols-2 gap-y-2 rounded-xl border bg-muted/40 px-5 py-4 text-sm">
+      <dt className="text-muted-foreground">Subtotal</dt>
       <dd className="text-right">{dollars(data.subtotal_cents)}</dd>
-      <dt>Discount</dt>
-      <dd className="text-right">{dollars(data.discount_cents)}</dd>
+      {data.discount_cents !== "0" && (
+        <>
+          <dt className="text-muted-foreground">Discount</dt>
+          <dd className="text-right">−{dollars(data.discount_cents)}</dd>
+        </>
+      )}
       {data.tax_lines.map((t) => (
         <div key={t.name} className="contents">
-          <dt>
+          <dt className="text-muted-foreground">
             {t.name} ({t.basis_points / 100}%)
           </dt>
           <dd className="text-right">{dollars(t.amount_cents)}</dd>
         </div>
       ))}
-      <dt className="border-t pt-3 font-semibold">Total CAD</dt>
-      <dd className="border-t pt-3 text-right font-semibold">
+      <dt className="mt-2 border-t pt-3 font-display text-base font-semibold">
+        Total CAD
+      </dt>
+      <dd className="mt-2 border-t pt-3 text-right font-display text-base font-semibold">
         {dollars(data.total_cents)}
       </dd>
     </dl>
@@ -205,15 +211,17 @@ export function BillTo({
 }) {
   return (
     <div className="my-5 text-sm leading-7">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground">
+      <p className="mb-1 text-xs font-semibold uppercase tracking-[.2em] text-muted-foreground">
         Bill to
       </p>
-      <strong>{data.name}</strong>
-      <p>{data.company}</p>
+      <strong className="text-base">{data.name}</strong>
+      {data.company && <p>{data.company}</p>}
       <p className="whitespace-pre-line">{data.address}</p>
-      <p>
-        {data.contact} · {data.email} · {data.phone}
-      </p>
+      {[data.contact, data.email, data.phone].some(Boolean) && (
+        <p className="text-muted-foreground">
+          {[data.contact, data.email, data.phone].filter(Boolean).join(" · ")}
+        </p>
+      )}
     </div>
   );
 }
@@ -230,11 +238,34 @@ export function Print() {
 }
 export function Document({ children }: { children: React.ReactNode }) {
   return (
-    <article className="commercial-document rounded-xl border bg-card p-5 sm:p-9">
-      <p className="mb-6 text-xs uppercase tracking-[.2em]">
-        Glara Home Staging · Commercial record
-      </p>
-      {children}
+    <article className="commercial-document overflow-hidden rounded-xl border bg-card">
+      <header className="flex flex-wrap items-center justify-between gap-4 px-6 pb-5 pt-7 sm:px-10">
+        {/* eslint-disable-next-line @next/next/no-img-element -- brand SVG lockup, no optimization needed. */}
+        <img
+          src="/glara-logo.svg"
+          alt="GLARA Home Staging"
+          className="h-24 w-auto sm:h-28"
+        />
+        <div className="text-right text-xs leading-6 text-muted-foreground">
+          <p className="font-display text-base tracking-wide text-foreground">
+            Glara Home Staging
+          </p>
+          <p>Metro Vancouver · British Columbia</p>
+          <p>Support@glarahome.com · glarahome.com</p>
+        </div>
+      </header>
+      <div
+        className="h-1 w-full"
+        style={{
+          background: "#a9907c",
+          printColorAdjust: "exact",
+          WebkitPrintColorAdjust: "exact",
+        }}
+      />
+      <div className="px-6 pb-8 pt-6 sm:px-10">{children}</div>
+      <footer className="border-t px-6 py-4 text-center text-[.65rem] uppercase tracking-[.2em] text-muted-foreground sm:px-10">
+        Glara Home Staging · Beautiful spaces. Thoughtful operations.
+      </footer>
     </article>
   );
 }

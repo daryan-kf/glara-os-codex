@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 348" width="400" height="348" role="img" aria-label="GLARA Home Staging">
+  <title>GLARA Home Staging</title>
+  <style>
+    .stroke { fill: none; stroke: #a9907c; stroke-width: 7; }
+    .pane, .mono { fill: #b39b88; }
+    .word { fill: #6b5a4d; }
+    .sub  { fill: #a9907c; }
+    .rule { stroke: #a9907c; stroke-width: 2; }
+    @media (prefers-color-scheme: dark) {
+      .stroke { stroke: #c9b19c; }
+      .pane, .mono { fill: #c9b19c; }
+      .word { fill: #ece1d6; }
+      .sub  { fill: #bda78f; }
+      .rule { stroke: #bda78f; }
+    }
+  </style>
+
+  <!-- Monogram: open G, roofline with window, serif H -->
+  <g transform="translate(79 13)">
+    <path class="stroke" d="M125 153.2 A82.5 82.5 0 1 1 164.7 89.7" stroke-linecap="butt" />
+    <path class="stroke" d="M5 190 L77.5 115 L118 155.5" stroke-linejoin="miter" stroke-linecap="butt" />
+    <g class="pane">
+      <rect x="64.7" y="149.7" width="14" height="12" />
+      <rect x="83.2" y="149.7" width="14" height="12" />
+      <rect x="64.7" y="165.2" width="14" height="12" />
+      <rect x="83.2" y="165.2" width="14" height="12" />
+    </g>
+    <text class="mono" x="162" y="197" text-anchor="middle"
+          font-family="'Cormorant Garamond','Playfair Display',Didot,'Bodoni MT',Georgia,'Times New Roman',serif"
+          font-size="190">H</text>
+  </g>
+
+  <!-- Wordmark. `x` is nudged right of centre because SVG letter-spacing also
+       applies after the final glyph, which otherwise pulls the block left. -->
+  <text class="word" x="210" y="290" text-anchor="middle"
+        font-family="'Cormorant Garamond','Playfair Display',Didot,'Bodoni MT',Georgia,'Times New Roman',serif"
+        font-size="72" letter-spacing="20">GLARA</text>
+
+  <line class="rule" x1="154" y1="308" x2="246" y2="308" />
+
+  <text class="sub" x="203" y="336" text-anchor="middle"
+        font-family="'Cormorant Garamond',Georgia,'Times New Roman',serif"
+        font-size="16" letter-spacing="7">HOME STAGING</text>
+</svg>

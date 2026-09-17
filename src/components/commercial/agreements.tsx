@@ -6,7 +6,7 @@ import { useQuery, useMutation } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import { PageTitle, StatusBadge } from "@/components/primitives";
+import { StatusBadge } from "@/components/primitives";
 import {
   Loading,
   Panel,
@@ -200,49 +200,92 @@ export function AgreementDetail({ id }: { id: string }) {
       </div>
       {a.manage && <CommercialHistory id={a._id} />}
       <Document>
-        <PageTitle
-          title={a.number}
-          description={`${a.identity.project_number} · ${a.identity.property_address}`}
-        />
-        <StatusBadge>{a.status}</StatusBadge>
-        <BillTo data={a.bill_to} />
-        <h2 className="text-xl">{a.terms.description}</h2>
-        <p className="my-4">
-          Service: {a.terms.staging_start_date} to {a.terms.package_end_date} ·
-          Effective {a.terms.effective_date}
-        </p>
-        <Amounts data={a} />
-        <p className="mb-5 font-medium">
-          Required deposit: {dollars(a.deposit_cents)}
-        </p>
-        {(
-          [
-            "scope",
-            "payment_terms",
-            "extension_terms",
-            "cancellation_terms",
-            "liability_terms",
-            "special_terms",
-          ] as const
-        ).map((k) => (
-          <section key={k} className="my-4">
-            <h3 className="font-semibold capitalize">
-              {k.replaceAll("_", " ")}
-            </h3>
-            <p className="whitespace-pre-wrap text-sm leading-7">
-              {a.terms[k] || "Not specified"}
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.3em] text-muted-foreground">
+              Staging Agreement
             </p>
-          </section>
-        ))}
-        {a.acceptance && (
-          <p className="border-t pt-5 text-sm">
+            <h1 className="mt-1 font-display text-3xl">{a.number}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {a.identity.project_number} · {a.identity.property_address}
+            </p>
+          </div>
+          <div className="text-right text-sm leading-7">
+            <StatusBadge>{a.status}</StatusBadge>
+            <p className="mt-2 text-muted-foreground">
+              Effective {a.terms.effective_date}
+            </p>
+          </div>
+        </div>
+        <div className="mt-6 grid gap-6 border-y py-6 sm:grid-cols-2">
+          <BillTo data={a.bill_to} />
+          <div className="text-sm leading-7 sm:text-right">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-[.2em] text-muted-foreground">
+              Service period
+            </p>
+            <p>
+              <strong>{a.terms.staging_start_date}</strong> to{" "}
+              <strong>{a.terms.package_end_date}</strong>
+            </p>
+            <p className="text-muted-foreground">
+              Staging installation through package end
+            </p>
+          </div>
+        </div>
+        <h2 className="mt-6 font-display text-xl leading-8">
+          {a.terms.description}
+        </h2>
+        <Amounts data={a} />
+        <p className="ml-auto w-full max-w-sm rounded-xl border border-primary/30 bg-primary/5 px-5 py-3 text-right text-sm">
+          Required deposit:{" "}
+          <strong className="font-display text-base">
+            {dollars(a.deposit_cents)}
+          </strong>
+        </p>
+        <div className="mt-8 space-y-5">
+          {(
+            [
+              "scope",
+              "payment_terms",
+              "extension_terms",
+              "cancellation_terms",
+              "liability_terms",
+              "special_terms",
+            ] as const
+          )
+            .filter((k) => a.terms[k])
+            .map((k) => (
+              <section key={k}>
+                <h3 className="mb-1 text-xs font-semibold uppercase tracking-[.2em] text-muted-foreground">
+                  {k.replaceAll("_", " ")}
+                </h3>
+                <p className="whitespace-pre-wrap text-sm leading-7">
+                  {a.terms[k]}
+                </p>
+              </section>
+            ))}
+        </div>
+        {a.acceptance ? (
+          <p className="mt-8 border-t pt-5 text-sm">
             Acceptance recorded for {a.acceptance.name} ({a.acceptance.email})
             by {a.acceptance.method.replaceAll("_", " ")} on{" "}
             {a.acceptance.recorded_at}. Reference: {a.acceptance.reference}
           </p>
+        ) : (
+          <div className="mt-10 grid gap-10 border-t pt-8 sm:grid-cols-2">
+            {["Accepted by (client)", "Glara Home Staging"].map((party) => (
+              <div key={party} className="text-sm">
+                <div className="h-10 border-b" />
+                <p className="mt-2 font-medium">{party}</p>
+                <p className="text-xs text-muted-foreground">
+                  Name, signature and date
+                </p>
+              </div>
+            ))}
+          </div>
         )}
         {a.replaces_id && (
-          <p className="text-sm">
+          <p className="mt-4 text-xs text-muted-foreground">
             Replaces a prior agreement; its record is retained.
           </p>
         )}
