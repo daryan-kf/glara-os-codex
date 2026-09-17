@@ -99,7 +99,7 @@ export default async function RealtorsPage({
           </label>
           {writable && (
             <label className="space-y-2 text-sm">
-              Assigned owner
+              Team member
               <select
                 name="assigned_to"
                 defaultValue={filters.assigned_to}
@@ -211,10 +211,10 @@ export default async function RealtorsPage({
               <thead className="bg-muted/60">
                 <tr>
                   {[
-                    "Realtor / Brokerage",
+                    "Customer / Brokerage",
                     "Area",
                     "Status",
-                    "Owner",
+                    "Team member",
                     "Lead source",
                     ...(writable ? ["Last contact", "Next follow-up"] : []),
                   ].map((t) => (

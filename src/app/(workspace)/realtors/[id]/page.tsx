@@ -140,7 +140,7 @@ export default async function Page({
               <Fact title="Customer type">
                 {record.contact_type === "builder" ? "Builder" : "Realtor"}
               </Fact>
-              <Fact title="Assigned owner">{record.owner_name}</Fact>
+              <Fact title="Assigned team member">{record.owner_name}</Fact>
               <Fact title="Lead source">{record.lead_source_name}</Fact>
               <Fact title="Relationship status">
                 {label(record.relationship_status)}

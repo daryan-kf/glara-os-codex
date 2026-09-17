@@ -434,7 +434,7 @@ export function RealtorForm({
         </Field>
         <Field
           name="assigned_to"
-          title="Assigned owner"
+          title="Assigned team member"
           required
           defaultValue={record?.assigned_to ?? currentUser}
         >
