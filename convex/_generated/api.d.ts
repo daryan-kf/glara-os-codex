@@ -50,6 +50,7 @@ import type * as http from "../http.js";
 import type * as integrity from "../integrity.js";
 import type * as inventory from "../inventory.js";
 import type * as inventoryCore from "../inventoryCore.js";
+import type * as inventoryMaintenance from "../inventoryMaintenance.js";
 import type * as inventorySchema from "../inventorySchema.js";
 import type * as migration from "../migration.js";
 import type * as operationalHealth from "../operationalHealth.js";
@@ -109,6 +110,7 @@ declare const fullApi: ApiFromModules<{
   integrity: typeof integrity;
   inventory: typeof inventory;
   inventoryCore: typeof inventoryCore;
+  inventoryMaintenance: typeof inventoryMaintenance;
   inventorySchema: typeof inventorySchema;
   migration: typeof migration;
   operationalHealth: typeof operationalHealth;
