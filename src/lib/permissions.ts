@@ -130,7 +130,7 @@ export const modules = {
     description: "Your place in Glara OS.",
     milestone: "M0",
     detail:
-      "Your identity and assigned access are managed securely by your company owner.",
+      "Update your display name and password; roles and access are managed by your company owner.",
   },
 } as const;
 export type Module = keyof typeof modules;

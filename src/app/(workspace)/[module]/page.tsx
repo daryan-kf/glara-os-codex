@@ -8,12 +8,8 @@ import { AnalyticsDashboard } from "@/components/analytics/dashboard";
 import { notFound } from "next/navigation";
 import { modules, type Module } from "@/lib/permissions";
 import { requireModule } from "@/lib/auth";
-import {
-  PageTitle,
-  EmptyState,
-  StatusBadge,
-  Avatar,
-} from "@/components/primitives";
+import { PageTitle, EmptyState, StatusBadge } from "@/components/primitives";
+import { ProfileSettings } from "@/components/profile";
 export async function generateMetadata({
   params,
 }: {
@@ -73,33 +69,9 @@ export default async function ModulePage({
           title="Your profile"
           description="Your identity within the Glara team."
         />
-        <section className="max-w-2xl rounded-2xl border bg-card p-8">
-          <div className="mb-8 flex items-center gap-4">
-            <Avatar name={user.name} />
-            <h2 className="text-xl font-semibold">{user.name}</h2>
-          </div>
-          <dl className="space-y-6">
-            <div>
-              <dt className="text-sm text-muted-foreground">Work email</dt>
-              <dd className="mt-1 break-all">{user.email}</dd>
-            </div>
-            <div>
-              <dt className="mb-2 text-sm text-muted-foreground">
-                Assigned roles
-              </dt>
-              <dd className="flex flex-wrap gap-2">
-                {user.roles.map((role) => (
-                  <StatusBadge key={role}>
-                    {role.replaceAll("_", " ")}
-                  </StatusBadge>
-                ))}
-              </dd>
-            </div>
-          </dl>
-          <p className="mt-8 border-t pt-6 text-sm text-muted-foreground">
-            Contact the company owner to update your profile or access.
-          </p>
-        </section>
+        <ProfileSettings
+          user={{ name: user.name, email: user.email, roles: user.roles }}
+        />
       </>
     );
   return (
