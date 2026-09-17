@@ -561,12 +561,21 @@ export function ProductEditor({ product }: { product?: Product }) {
           throw new Error(
             "Choose an unambiguous category: select one from the list or enter a new category name.",
           );
+        // Tracking mode and detailed attributes left the form; keep stored
+        // values on edits (spreadsheet imports still fill them) and default
+        // new products to serialized so each unit gets a GLA number.
+        const track_mode = product?.track_mode ?? "serialized";
         const id = await save({
           id: product?._id,
           version,
           category_id: categoryId as Id<"inventory_categories">,
           input: JSON.stringify({
             ...fields,
+            track_mode,
+            brand: product?.brand ?? "",
+            material: product?.material ?? "",
+            dimensions: product?.dimensions ?? "",
+            weight: product?.weight ?? "",
             active: fields.active === "yes",
             staging_eligible: fields.staging_eligible === "yes",
             retail_eligible: fields.retail_eligible === "yes",
@@ -574,7 +583,7 @@ export function ProductEditor({ product }: { product?: Product }) {
         });
         if (!product && quantity > 0) {
           // Serialized units are received one by one so each gets a GLA number.
-          const serialized = fields.track_mode !== "quantity";
+          const serialized = track_mode !== "quantity";
           const receipt = {
             product_id: id,
             location_id: receiving_location as Id<"inventory_locations">,
@@ -608,25 +617,12 @@ export function ProductEditor({ product }: { product?: Product }) {
           label="New category (created on save; overrides the selection)"
           name="new_category"
         />
-        <Field
-          label="Tracking mode"
-          name="track_mode"
-          options={["serialized", "quantity"]}
-          value={product?.track_mode ?? "serialized"}
-        />
-        {[
-          "brand",
-          "collection",
-          "color",
-          "material",
-          "dimensions",
-          "weight",
-        ].map((k) => (
+        {["collection", "color"].map((k) => (
           <Field
             key={k}
             label={label(k)}
             name={k}
-            value={product?.[k as "brand"]}
+            value={product?.[k as "collection"]}
           />
         ))}
         {(
@@ -686,8 +682,8 @@ export function ProductEditor({ product }: { product?: Product }) {
         value={product?.description}
       />
       <p className="text-xs text-muted-foreground">
-        Each color or size with its own SKU is a separate product. Tracking mode
-        is fixed after the first movement.
+        Each color or size with its own SKU is a separate product. Every
+        received unit gets its own GLA asset number.
       </p>
     </Form>
   );
