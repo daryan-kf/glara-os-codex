@@ -56,6 +56,10 @@ export const inventoryTables = {
     dimensions: v.string(),
     weight: v.string(),
     track_mode: v.union(v.literal("serialized"), v.literal("quantity")),
+    // Exact CAD cents as strings, matching commercial storage; absent means not set.
+    purchase_price_cents: v.optional(v.string()),
+    rental_price_cents: v.optional(v.string()),
+    sale_price_cents: v.optional(v.string()),
     staging_eligible: v.boolean(),
     retail_eligible: v.boolean(),
     active: v.boolean(),

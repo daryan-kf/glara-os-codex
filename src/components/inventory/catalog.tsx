@@ -22,6 +22,7 @@ import {
   dateTime,
 } from "@/components/operations/shared";
 import { conditions, locationTypes, assetStates } from "@/lib/inventory/model";
+import { decimal, dollars } from "@/lib/sales/model";
 import { day } from "@/lib/operations/model";
 export function Loading() {
   return (
@@ -343,6 +344,20 @@ export function ProductEditor({ product }: { product?: Product }) {
             value={product?.[k as "brand"]}
           />
         ))}
+        {(
+          [
+            ["Purchase price (CAD)", "purchase_price", "purchase_price_cents"],
+            ["Rental price (CAD)", "rental_price", "rental_price_cents"],
+            ["Sale price (CAD)", "sale_price", "sale_price_cents"],
+          ] as const
+        ).map(([fieldLabel, name, key]) => (
+          <Field
+            key={name}
+            label={fieldLabel}
+            name={name}
+            value={product?.[key] ? decimal(product[key]!) : ""}
+          />
+        ))}
         <Field
           label="Staging eligible"
           name="staging_eligible"
@@ -553,6 +568,22 @@ export function ProductDetail({ id }: { id: string }) {
         </StatusBadge>
       </div>
       <p className="mb-6 text-sm text-muted-foreground">{p.description}</p>
+      {p.manage && (
+        <div className="mb-6 grid gap-4 sm:grid-cols-3">
+          {(
+            [
+              ["Purchase price", p.purchase_price_cents],
+              ["Rental price", p.rental_price_cents],
+              ["Sale price", p.sale_price_cents],
+            ] as const
+          ).map(([k, value]) => (
+            <div key={k} className="rounded-xl border p-5">
+              <p className="text-xs text-muted-foreground">{k}</p>
+              <p className="mt-2 text-2xl">{value ? dollars(value) : "—"}</p>
+            </div>
+          ))}
+        </div>
+      )}
       <Panel title="Availability by date">
         <AvailabilityPicker
           product={p}

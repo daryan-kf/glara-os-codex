@@ -1,4 +1,5 @@
 import { damageTransitions } from "../src/lib/inventory/model";
+import { cents } from "../src/lib/sales/model";
 import { query, mutation } from "./functions";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
@@ -322,8 +323,17 @@ export const saveProduct = mutation({
           "Resolve reservations before disabling this product.",
         );
     }
+    const { purchase_price, rental_price, sale_price, ...details } = data;
     const fields = {
-      ...data,
+      ...details,
+      // Exact CAD cents; an empty input clears the stored price.
+      purchase_price_cents: purchase_price
+        ? String(cents(purchase_price))
+        : undefined,
+      rental_price_cents: rental_price
+        ? String(cents(rental_price))
+        : undefined,
+      sale_price_cents: sale_price ? String(cents(sale_price)) : undefined,
       category_id: args.category_id,
       search_text: [
         data.sku,
@@ -348,8 +358,22 @@ export const saveProduct = mutation({
       u.userId,
       id,
       "product_saved",
-      row ? { sku: row.sku, version: row.version } : null,
-      { sku: data.sku, active: data.active },
+      row
+        ? {
+            sku: row.sku,
+            version: row.version,
+            purchase_price_cents: row.purchase_price_cents ?? null,
+            rental_price_cents: row.rental_price_cents ?? null,
+            sale_price_cents: row.sale_price_cents ?? null,
+          }
+        : null,
+      {
+        sku: data.sku,
+        active: data.active,
+        purchase_price_cents: fields.purchase_price_cents ?? null,
+        rental_price_cents: fields.rental_price_cents ?? null,
+        sale_price_cents: fields.sale_price_cents ?? null,
+      },
     );
     return id;
   },
@@ -1458,6 +1482,12 @@ export const list = query({
         continue;
       result.push({
         ...p,
+        // Pricing is commercial data; only Owner/Admin receive stored values.
+        purchase_price_cents: isAdmin(u)
+          ? (p.purchase_price_cents ?? null)
+          : null,
+        rental_price_cents: isAdmin(u) ? (p.rental_price_cents ?? null) : null,
+        sale_price_cents: isAdmin(u) ? (p.sale_price_cents ?? null) : null,
         matched_asset_id: asset?.product_id === p._id ? asset._id : null,
         category_name: category?.name ?? "Category",
         available: usableNow,
@@ -1496,6 +1526,12 @@ export const product = query({
     ]);
     return {
       ...p,
+      // Pricing is commercial data; only Owner/Admin receive stored values.
+      purchase_price_cents: isAdmin(u)
+        ? (p.purchase_price_cents ?? null)
+        : null,
+      rental_price_cents: isAdmin(u) ? (p.rental_price_cents ?? null) : null,
+      sale_price_cents: isAdmin(u) ? (p.sale_price_cents ?? null) : null,
       manage: isAdmin(u),
       category_name: category?.name ?? "Category",
       assets: assets.slice(0, 100).map((a) => ({

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { money } from "../sales/model";
 
 export const conditions = [
   "new",
@@ -122,6 +123,9 @@ export const productInput = z
     dimensions: z.string().trim().max(160).default(""),
     weight: z.string().trim().max(80).default(""),
     track_mode: z.enum(["serialized", "quantity"]),
+    purchase_price: z.union([z.literal(""), money]).default(""),
+    rental_price: z.union([z.literal(""), money]).default(""),
+    sale_price: z.union([z.literal(""), money]).default(""),
     staging_eligible: z.boolean(),
     retail_eligible: z.boolean(),
     active: z.boolean(),
