@@ -1,5 +1,6 @@
 "use client";
 import { useInventoryOptions } from "./options";
+import { CatalogTransfer } from "./transfer";
 import { CopilotLink } from "@/components/ai/copilot";
 
 import { useState } from "react";
@@ -451,6 +452,9 @@ export function InventorySettings() {
       <Link href="/inventory" className="text-sm text-primary">
         ← Inventory
       </Link>
+      <div className="mt-6">
+        <CatalogTransfer />
+      </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Panel title="Categories">
           {data.categories.map((c) => (

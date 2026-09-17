@@ -378,6 +378,156 @@ export const saveProduct = mutation({
     return id;
   },
 });
+const importRows = z
+  .array(productInput.extend({ category: z.string().trim().min(1).max(80) }))
+  .min(1)
+  .max(100);
+export const importProducts = mutation({
+  args: { input: v.string() },
+  handler: async (ctx, args) => {
+    const u = await manager(ctx),
+      rows = parse(importRows, args.input);
+    const result = { created: 0, updated: 0 };
+    for (const row of rows) {
+      const { category, purchase_price, rental_price, sale_price, ...data } =
+        row;
+      const key = category.toLowerCase();
+      let categoryRow = await ctx.db
+        .query("inventory_categories")
+        .withIndex("by_name", (q) => q.eq("name_key", key))
+        .unique();
+      if (!categoryRow) {
+        const id = await ctx.db.insert("inventory_categories", {
+          name: category,
+          name_key: key,
+          active: true,
+          version: 1,
+          ...stamps(),
+        });
+        await audit(ctx, u.userId, id, "category_imported", null, {
+          name: category,
+          active: true,
+        });
+        categoryRow = (await ctx.db.get(id))!;
+      }
+      if (!categoryRow.active)
+        deny("INVALID_INPUT", `Category "${category}" is inactive.`);
+      const existing = await ctx.db
+        .query("products")
+        .withIndex("by_sku", (q) =>
+          q.eq("sku", data.sku).eq("deleted_at", null),
+        )
+        .unique();
+      if (
+        existing &&
+        existing.track_mode !== data.track_mode &&
+        (await ctx.db
+          .query("inventory_movements")
+          .withIndex("by_product", (q) => q.eq("product_id", existing._id))
+          .first())
+      )
+        deny(
+          "DEPENDENCY",
+          `${data.sku}: tracking mode cannot change after inventory history exists.`,
+        );
+      const fields = {
+        ...data,
+        purchase_price_cents: purchase_price
+          ? String(cents(purchase_price))
+          : undefined,
+        rental_price_cents: rental_price
+          ? String(cents(rental_price))
+          : undefined,
+        sale_price_cents: sale_price ? String(cents(sale_price)) : undefined,
+        category_id: categoryRow._id,
+        search_text: [
+          data.sku,
+          data.name,
+          data.brand,
+          data.collection,
+          data.color,
+          data.material,
+        ].join(" "),
+      };
+      const id =
+        existing?._id ??
+        (await ctx.db.insert("products", {
+          ...fields,
+          version: 1,
+          ...stamps(),
+        }));
+      if (existing) {
+        await ctx.db.patch(id, {
+          ...fields,
+          version: existing.version + 1,
+          updated_at: now(),
+        });
+        result.updated++;
+      } else result.created++;
+      await audit(
+        ctx,
+        u.userId,
+        id,
+        "product_imported",
+        existing ? { sku: existing.sku, version: existing.version } : null,
+        { sku: data.sku, active: data.active },
+      );
+    }
+    return result;
+  },
+});
+export const exportCatalog = query({
+  args: { cursor: v.union(v.string(), v.null()) },
+  handler: async (ctx, args) => {
+    await manager(ctx);
+    const page = await ctx.db
+      .query("products")
+      .withIndex("by_active", (q) => q.eq("deleted_at", null))
+      .paginate({ numItems: 50, cursor: args.cursor });
+    const rows = await Promise.all(
+      page.page.map(async (p) => {
+        const [category, assets, stock] = await Promise.all([
+          ctx.db.get(p.category_id),
+          ctx.db
+            .query("inventory_assets")
+            .withIndex("by_product", (q) =>
+              q.eq("product_id", p._id).eq("deleted_at", null),
+            )
+            .take(101),
+          ctx.db
+            .query("inventory_stock")
+            .withIndex("by_product_location", (q) => q.eq("product_id", p._id))
+            .take(101),
+        ]);
+        return {
+          sku: p.sku,
+          name: p.name,
+          category: category?.name ?? "",
+          track_mode: p.track_mode,
+          brand: p.brand,
+          collection: p.collection,
+          description: p.description,
+          color: p.color,
+          material: p.material,
+          dimensions: p.dimensions,
+          weight: p.weight,
+          purchase_price_cents: p.purchase_price_cents ?? null,
+          rental_price_cents: p.rental_price_cents ?? null,
+          sale_price_cents: p.sale_price_cents ?? null,
+          staging_eligible: p.staging_eligible,
+          retail_eligible: p.retail_eligible,
+          active: p.active,
+          available_units:
+            p.track_mode === "serialized"
+              ? assets.filter((a) => a.status === "available").length
+              : stock.reduce((n, s) => n + s.available, 0),
+          partial: assets.length > 100 || stock.length > 100,
+        };
+      }),
+    );
+    return { rows, cursor: page.continueCursor, done: page.isDone };
+  },
+});
 export const receive = mutation({
   args: {
     product_id: v.id("products"),
