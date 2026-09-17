@@ -36,6 +36,38 @@ test("CAD arithmetic uses exact cents, integer quantities and half-up quote tax"
     false,
   );
 });
+test("monthly quote lines bill once per rental month and sale quotes refuse them", () => {
+  const d = quoteInput.parse({
+    opportunity_id: "a".repeat(32),
+    quote_type: "staging",
+    rental_months: 3,
+    items: [
+      {
+        description: "Sofa rental",
+        quantity: 2,
+        unit_price: "100.00",
+        kind: "monthly",
+      },
+      { description: "Staging service", quantity: 1, unit_price: "500.00" },
+    ],
+    discount: "0.00",
+    tax_rate: "0.00",
+    valid_until: "2099-01-01",
+  });
+  assert.equal(quoteMath(d).subtotal_cents, "110000");
+  assert.equal(quoteMath({ ...d, rental_months: 1 }).subtotal_cents, "70000");
+  assert.equal(
+    quoteInput.safeParse({
+      ...d,
+      quote_type: "sale",
+    }).success,
+    false,
+  );
+  assert.equal(
+    quoteInput.safeParse({ ...d, rental_months: 25 }).success,
+    false,
+  );
+});
 test("sales stage graph is explicit and lost requires a valid reason", () => {
   assert.deepEqual(transitions("new"), ["contacted", "lost"]);
   assert.deepEqual(transitions("won"), ["contacted"]);

@@ -22,7 +22,61 @@ import {
   label,
   quoteMath,
   quoteInput,
+  quoteTypes,
 } from "@/lib/sales/model";
+type QuoteType = (typeof quoteTypes)[number];
+function ProductPicker({
+  pricing,
+  onAdd,
+}: {
+  pricing: "rental" | "sale";
+  onAdd: (item: {
+    description: string;
+    unit_price: string;
+    product_id: string;
+  }) => void;
+}) {
+  const [term, setTerm] = useState("");
+  const rows = useQuery(api.sales.quoteProducts, { search: term, pricing });
+  return (
+    <div className="space-y-3 rounded-xl border p-4">
+      <label className="grid gap-2 text-sm">
+        Add from inventory ({pricing} price)
+        <input
+          className={inputClass}
+          value={term}
+          placeholder="Search products by name or SKU"
+          onChange={(e) => setTerm(e.target.value)}
+        />
+      </label>
+      <div className="flex flex-wrap gap-2">
+        {(rows ?? []).map((p) => (
+          <Button
+            key={p.id}
+            type="button"
+            variant="outline"
+            onClick={() =>
+              onAdd({
+                description: `${p.name} (${p.sku})`,
+                unit_price: p.price_cents ? decimal(p.price_cents) : "0.00",
+                product_id: p.id,
+              })
+            }
+          >
+            {p.name}
+            {" · "}
+            {p.price_cents
+              ? dollars(p.price_cents)
+              : "no " + pricing + " price"}
+          </Button>
+        ))}
+        {rows && !rows.length && (
+          <p className="text-sm text-muted-foreground">No matching products.</p>
+        )}
+      </div>
+    </div>
+  );
+}
 export function Quotes() {
   const [cursor, setCursor] = useState<string | null>(null),
     [status, setStatus] = useState("");
@@ -204,12 +258,33 @@ function QuoteForm({
 }) {
   const router = useRouter(),
     save = useMutation(api.sales.saveQuote);
+  const [quoteType, setQuoteType] = useState<QuoteType>(
+      (record?.quote.quote_type as QuoteType) ?? "staging",
+    ),
+    [months, setMonths] = useState(record?.quote.rental_months ?? 1);
   const [items, setItems] = useState(
       record?.items.map((i) => ({
         description: i.description,
         quantity: i.quantity,
         unit_price: decimal(i.unit_price_cents),
-      })) ?? [{ description: "", quantity: 1, unit_price: "0.00" }],
+        kind: (i.kind as "item" | "monthly") ?? "item",
+        product_id: (i.product_id as string) ?? "",
+      })) ?? [
+        {
+          description: "Staging service",
+          quantity: 1,
+          unit_price: "0.00",
+          kind: "item" as const,
+          product_id: "",
+        },
+        {
+          description: "Delivery, packing, unpacking & return to warehouse",
+          quantity: 1,
+          unit_price: "0.00",
+          kind: "item" as const,
+          product_id: "",
+        },
+      ],
     ),
     [discount, setDiscount] = useState(
       record ? decimal(record.quote.discount_cents) : "0.00",
@@ -226,6 +301,8 @@ function QuoteForm({
       quoteInput.parse({
         opportunity_id:
           record?.quote.opportunity_id ?? opportunityId ?? "a".repeat(32),
+        quote_type: quoteType,
+        rental_months: months,
         items,
         discount,
         tax_rate: rate,
@@ -247,7 +324,14 @@ function QuoteForm({
             const saved = await save({
               id: record?.quote._id,
               version: loadedVersion ?? 0,
-              input: JSON.stringify({ ...d, items, discount, tax_rate: rate }),
+              input: JSON.stringify({
+                ...d,
+                quote_type: quoteType,
+                rental_months: months,
+                items,
+                discount,
+                tax_rate: rate,
+              }),
             });
             router.push("/quotes/" + saved);
           }}
@@ -277,11 +361,66 @@ function QuoteForm({
             value={record?.quote.valid_until ?? defaultDate}
             required
           />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="grid gap-2 text-sm">
+              Quote type
+              <select
+                className={inputClass}
+                value={quoteType}
+                onChange={(e) => {
+                  const next = e.target.value as QuoteType;
+                  setQuoteType(next);
+                  if (next === "sale")
+                    setItems(items.map((v) => ({ ...v, kind: "item" })));
+                }}
+              >
+                {quoteTypes.map((t) => (
+                  <option key={t} value={t}>
+                    {label(t)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {quoteType !== "sale" && (
+              <label className="grid gap-2 text-sm">
+                Rental period (months)
+                <input
+                  className={inputClass}
+                  type="number"
+                  min={1}
+                  max={24}
+                  value={months}
+                  required
+                  onChange={(e) => setMonths(Number(e.target.value))}
+                />
+              </label>
+            )}
+          </div>
+          <ProductPicker
+            pricing={quoteType === "sale" ? "sale" : "rental"}
+            onAdd={(added) =>
+              setItems(
+                [
+                  ...items.filter(
+                    (v) => v.description || v.unit_price !== "0.00",
+                  ),
+                  {
+                    ...added,
+                    quantity: 1,
+                    kind:
+                      quoteType === "sale"
+                        ? ("item" as const)
+                        : ("monthly" as const),
+                  },
+                ].slice(0, 50),
+              )
+            }
+          />
           <div className="space-y-4">
             {items.map((item, i) => (
               <fieldset
                 key={i}
-                className="grid gap-3 rounded-xl border p-4 sm:grid-cols-[2fr_1fr_1fr_auto]"
+                className="grid gap-3 rounded-xl border p-4 sm:grid-cols-[2fr_1fr_1fr_1fr_auto]"
               >
                 <legend className="px-2 text-xs font-semibold">
                   Item {i + 1}
@@ -336,6 +475,26 @@ function QuoteForm({
                     }
                   />
                 </label>
+                <label className="grid gap-2 text-sm">
+                  Billing {i + 1}
+                  <select
+                    className={inputClass}
+                    value={item.kind}
+                    disabled={quoteType === "sale"}
+                    onChange={(e) =>
+                      setItems(
+                        items.map((v, j) =>
+                          j === i
+                            ? { ...v, kind: e.target.value as "item" }
+                            : v,
+                        ),
+                      )
+                    }
+                  >
+                    <option value="item">One time</option>
+                    <option value="monthly">Per month</option>
+                  </select>
+                </label>
                 <Button
                   variant="outline"
                   type="button"
@@ -355,7 +514,13 @@ function QuoteForm({
             onClick={() =>
               setItems([
                 ...items,
-                { description: "", quantity: 1, unit_price: "0.00" },
+                {
+                  description: "",
+                  quantity: 1,
+                  unit_price: "0.00",
+                  kind: "item",
+                  product_id: "",
+                },
               ])
             }
           >
@@ -438,6 +603,12 @@ export function QuoteDetail({ id }: { id: string }) {
           {label(q.status)}
           {q.status === "sent" && expired ? " · validity expired" : ""}
         </StatusBadge>
+        <StatusBadge>
+          {label(q.quote_type ?? "staging")}
+          {(q.quote_type ?? "staging") !== "sale"
+            ? ` · ${q.rental_months ?? 1} month${(q.rental_months ?? 1) > 1 ? "s" : ""}`
+            : ""}
+        </StatusBadge>
         <Button variant="outline" asChild>
           <Link href={"/opportunities/" + q.opportunity_id}>
             Open opportunity
@@ -477,6 +648,9 @@ export function QuoteDetail({ id }: { id: string }) {
                   <h3 className="font-medium">{item.description}</h3>
                   <p className="text-sm text-muted-foreground">
                     {item.quantity} × {dollars(item.unit_price_cents)}
+                    {item.kind === "monthly"
+                      ? ` × ${q.rental_months ?? 1} month${(q.rental_months ?? 1) > 1 ? "s" : ""}`
+                      : ""}
                   </p>
                 </div>
                 <strong>{dollars(item.total_cents)}</strong>

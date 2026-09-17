@@ -305,6 +305,9 @@ export default defineSchema({
     number: v.string(),
     opportunity_id: v.id("opportunities"),
     status: v.string(),
+    // Absent on pre-existing rows; read as staging with a one-month period.
+    quote_type: v.optional(v.string()),
+    rental_months: v.optional(v.number()),
     subtotal_cents: v.string(),
     discount_cents: v.string(),
     tax_cents: v.string(),
@@ -329,6 +332,9 @@ export default defineSchema({
     unit_price_cents: v.string(),
     total_cents: v.string(),
     sort_order: v.number(),
+    // "monthly" lines billed the quote's rental_months times; absent means "item".
+    kind: v.optional(v.string()),
+    product_id: v.optional(v.id("products")),
   }).index("by_quote", ["quote_id"]),
   sales_realtor_counts: defineTable({
     realtor_id: v.id("realtors"),

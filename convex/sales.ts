@@ -1273,9 +1273,21 @@ export const saveQuote = mutation({
       totals.subtotal_cents,
       totals.discount_cents,
     );
+    const products = await Promise.all(
+      d.items.map(async (item) => {
+        if (!item.product_id) return undefined;
+        const pid = ctx.db.normalizeId("products", item.product_id);
+        const linked = pid ? await ctx.db.get(pid) : null;
+        if (!linked || linked.deleted_at)
+          return deny("INVALID_INPUT", "Linked product unavailable.");
+        return linked._id;
+      }),
+    );
     const { lines, ...money } = totals;
     const value = {
       ...money,
+      quote_type: d.quote_type,
+      rental_months: d.rental_months,
       valid_until: d.valid_until,
       version: (old?.version ?? 0) + 1,
       updated_at: now(),
@@ -1317,6 +1329,8 @@ export const saveQuote = mutation({
         unit_price_cents: String(cents(item.unit_price)),
         total_cents: lines[i],
         sort_order: i,
+        kind: item.kind,
+        product_id: products[i],
       });
     await audit(
       ctx,
@@ -1432,6 +1446,8 @@ export const reviseQuote = mutation({
         unit_price_cents: item.unit_price_cents,
         total_cents: item.total_cents,
         sort_order: item.sort_order,
+        kind: item.kind,
+        product_id: item.product_id,
       });
     await ctx.db.patch(old._id, {
       status: "superseded",
@@ -1505,6 +1521,42 @@ export const listQuotes = query({
       }),
     );
     return { ...result, page: result.page.filter((_, i) => allowed[i]) };
+  },
+});
+// Deliberate quoting projection: the sales team sees only the price relevant
+// to the quote type (rental or sale), never acquisition costs.
+export const quoteProducts = query({
+  args: {
+    search: v.string(),
+    pricing: v.union(v.literal("rental"), v.literal("sale")),
+  },
+  handler: async (ctx, a) => {
+    await requireRoles(ctx, operational);
+    const term = a.search.trim().slice(0, 100);
+    const rows = term
+      ? await ctx.db
+          .query("products")
+          .withSearchIndex("search", (q) =>
+            q.search("search_text", term).eq("deleted_at", null),
+          )
+          .take(20)
+      : await ctx.db
+          .query("products")
+          .withIndex("by_active", (q) =>
+            q.eq("deleted_at", null).eq("active", true),
+          )
+          .take(20);
+    return rows
+      .filter((p) => p.active)
+      .map((p) => ({
+        id: p._id,
+        name: p.name,
+        sku: p.sku,
+        price_cents:
+          (a.pricing === "rental"
+            ? p.rental_price_cents
+            : p.sale_price_cents) ?? null,
+      }));
   },
 });
 export const archive = mutation({

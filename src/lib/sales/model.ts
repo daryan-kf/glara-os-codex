@@ -138,25 +138,42 @@ export const actionInput = z
   .refine((d) => !!d.opportunity_id !== !!d.property_id, {
     message: "Choose exactly one activity parent.",
   });
+export const quoteTypes = ["staging", "rental", "sale"] as const;
 export const itemInput = z.object({
   description: z.string().trim().min(1).max(500),
   quantity: z.coerce.number().int().min(1).max(1000),
   unit_price: money,
+  // "monthly" lines bill once per rental month; "item" lines bill once.
+  kind: z.enum(["item", "monthly"]).default("item"),
+  product_id: z.union([recordId, z.literal("")]).default(""),
 });
-export const quoteInput = z.object({
-  opportunity_id: recordId,
-  items: z.array(itemInput).min(1).max(50),
-  discount: money,
-  tax_rate: z
-    .string()
-    .regex(
-      /^(0|[1-9]\d?)(\.\d{1,2})?$|^100(\.00?)?$/,
-      "Tax rate must be 0–100%.",
-    ),
-  valid_until: z.iso.date(),
-});
+export const quoteInput = z
+  .object({
+    opportunity_id: recordId,
+    quote_type: z.enum(quoteTypes).default("staging"),
+    rental_months: z.coerce.number().int().min(1).max(24).default(1),
+    items: z.array(itemInput).min(1).max(50),
+    discount: money,
+    tax_rate: z
+      .string()
+      .regex(
+        /^(0|[1-9]\d?)(\.\d{1,2})?$|^100(\.00?)?$/,
+        "Tax rate must be 0–100%.",
+      ),
+    valid_until: z.iso.date(),
+  })
+  .refine(
+    (d) => d.quote_type !== "sale" || d.items.every((i) => i.kind === "item"),
+    { message: "Sale quotes bill every line once." },
+  );
 export function quoteMath(data: z.infer<typeof quoteInput>) {
-  const lines = data.items.map((i) => cents(i.unit_price) * BigInt(i.quantity));
+  const months = BigInt(data.rental_months);
+  const lines = data.items.map(
+    (i) =>
+      cents(i.unit_price) *
+      BigInt(i.quantity) *
+      (i.kind === "monthly" ? months : 1n),
+  );
   const subtotal = lines.reduce((a, b) => a + b, 0n),
     discount = cents(data.discount);
   if (discount > subtotal) throw new Error("Discount exceeds subtotal.");
