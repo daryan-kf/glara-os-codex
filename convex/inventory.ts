@@ -378,6 +378,66 @@ export const saveProduct = mutation({
     return id;
   },
 });
+const imageTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+export const imageUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    await manager(ctx);
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+export const attachProductImage = mutation({
+  args: { product_id: v.id("products"), storage_id: v.id("_storage") },
+  handler: async (ctx, args): Promise<{ ok: boolean; message?: string }> => {
+    const u = await manager(ctx);
+    const p = await ctx.db.get(args.product_id);
+    // Throwing would roll back the blob cleanup, so refusals are returned
+    // as values and the rejected upload is deleted in the same transaction.
+    const reject = async (message: string) => {
+      await ctx.storage.delete(args.storage_id);
+      return { ok: false, message };
+    };
+    if (!p || p.deleted_at) return reject("Product unavailable.");
+    const metadata = await ctx.db.system.get(args.storage_id);
+    if (!metadata || !imageTypes.includes(metadata.contentType ?? ""))
+      return reject("Upload a JPEG, PNG, WebP or GIF image.");
+    if (metadata.size > 5 * 1024 * 1024)
+      return reject("Images must be 5 MB or smaller.");
+    const images = p.image_ids ?? [];
+    if (images.includes(args.storage_id)) return { ok: true };
+    if (images.length >= 6) return reject("A product holds up to 6 photos.");
+    await ctx.db.patch(p._id, {
+      image_ids: [...images, args.storage_id],
+      updated_at: now(),
+    });
+    await audit(ctx, u.userId, p._id, "product_image_added", null, {
+      sku: p.sku,
+      images: images.length + 1,
+    });
+    return { ok: true };
+  },
+});
+export const removeProductImage = mutation({
+  args: { product_id: v.id("products"), storage_id: v.id("_storage") },
+  handler: async (ctx, args) => {
+    const u = await manager(ctx);
+    const p = await ctx.db.get(args.product_id);
+    if (!p) return deny("UNAVAILABLE");
+    const images = p.image_ids ?? [];
+    if (!images.includes(args.storage_id))
+      return deny("INVALID_INPUT", "Photo is not attached to this product.");
+    await ctx.db.patch(p._id, {
+      image_ids: images.filter((id) => id !== args.storage_id),
+      updated_at: now(),
+    });
+    await ctx.storage.delete(args.storage_id);
+    await audit(ctx, u.userId, p._id, "product_image_removed", null, {
+      sku: p.sku,
+      images: images.length - 1,
+    });
+    return null;
+  },
+});
 const importRows = z
   .array(productInput.extend({ category: z.string().trim().min(1).max(80) }))
   .min(1)
@@ -1638,6 +1698,9 @@ export const list = query({
           : null,
         rental_price_cents: isAdmin(u) ? (p.rental_price_cents ?? null) : null,
         sale_price_cents: isAdmin(u) ? (p.sale_price_cents ?? null) : null,
+        image_url: p.image_ids?.length
+          ? await ctx.storage.getUrl(p.image_ids[0])
+          : null,
         matched_asset_id: asset?.product_id === p._id ? asset._id : null,
         category_name: category?.name ?? "Category",
         available: usableNow,
@@ -1682,6 +1745,16 @@ export const product = query({
         : null,
       rental_price_cents: isAdmin(u) ? (p.rental_price_cents ?? null) : null,
       sale_price_cents: isAdmin(u) ? (p.sale_price_cents ?? null) : null,
+      images: (
+        await Promise.all(
+          (p.image_ids ?? []).map(async (id) => ({
+            id,
+            url: await ctx.storage.getUrl(id),
+          })),
+        )
+      ).filter((image): image is { id: typeof image.id; url: string } =>
+        Boolean(image.url),
+      ),
       manage: isAdmin(u),
       category_name: category?.name ?? "Category",
       assets: assets.slice(0, 100).map((a) => ({

@@ -214,14 +214,24 @@ export function InventoryCatalog() {
                 key={p._id}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs tracking-wider text-muted-foreground">
-                      {p.sku}
-                    </p>
-                    <h2 className="mt-1 text-xl font-semibold">{p.name}</h2>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {p.category_name} · {p.color || "Color not set"}
-                    </p>
+                  <div className="flex min-w-0 items-start gap-4">
+                    {p.image_url && (
+                      // eslint-disable-next-line @next/next/no-img-element -- Convex storage serves un-optimizable signed URLs.
+                      <img
+                        src={p.image_url}
+                        alt={p.name}
+                        className="h-16 w-16 shrink-0 rounded-lg border object-cover"
+                      />
+                    )}
+                    <div className="min-w-0">
+                      <p className="text-xs tracking-wider text-muted-foreground">
+                        {p.sku}
+                      </p>
+                      <h2 className="mt-1 text-xl font-semibold">{p.name}</h2>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {p.category_name} · {p.color || "Color not set"}
+                      </p>
+                    </div>
                   </div>
                   <StatusBadge>{p.track_mode}</StatusBadge>
                 </div>
@@ -282,6 +292,102 @@ export function InventoryCatalog() {
   );
 }
 type Product = FunctionReturnType<typeof api.inventory.product>;
+function ProductPhotos({ product }: { product: Product }) {
+  const uploadUrl = useMutation(api.inventory.imageUploadUrl),
+    attach = useMutation(api.inventory.attachProductImage),
+    remove = useMutation(api.inventory.removeProductImage);
+  const [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  if (!product.images.length && !product.manage) return null;
+  async function upload(file: File) {
+    setBusy(true);
+    setError("");
+    try {
+      const target = await uploadUrl();
+      const response = await fetch(target, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!response.ok) throw new Error("upload");
+      const { storageId } = (await response.json()) as { storageId: string };
+      const result = await attach({
+        product_id: product._id,
+        storage_id: storageId as Id<"_storage">,
+      });
+      if (!result.ok) setError(result.message ?? "Could not add this photo.");
+    } catch {
+      setError(
+        "Could not add this photo. Use a JPEG, PNG, WebP or GIF up to 5 MB.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Panel title="Photos">
+      <div className="flex flex-wrap gap-4">
+        {product.images.map((image) => (
+          <figure key={image.id} className="w-40">
+            {/* eslint-disable-next-line @next/next/no-img-element -- Convex storage serves un-optimizable signed URLs. */}
+            <img
+              src={image.url}
+              alt={product.name}
+              className="h-40 w-40 rounded-xl border object-cover"
+            />
+            {product.manage && (
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-2 w-full"
+                disabled={busy}
+                onClick={() =>
+                  remove({
+                    product_id: product._id,
+                    storage_id: image.id,
+                  }).catch(() => setError("Could not remove this photo."))
+                }
+              >
+                Remove
+              </Button>
+            )}
+          </figure>
+        ))}
+        {!product.images.length && (
+          <p className="text-sm text-muted-foreground">No photos yet.</p>
+        )}
+      </div>
+      {product.manage && !product.deleted_at && (
+        <div className="mt-4">
+          <label className="inline-flex items-center gap-3 text-sm">
+            {busy ? "Uploading…" : "Add photo (up to 6, max 5 MB)"}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              disabled={busy || product.images.length >= 6}
+              className="text-sm file:mr-3 file:rounded-lg file:border file:bg-card file:px-4 file:py-2"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void upload(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          <div aria-live="polite">
+            {error && (
+              <p
+                role="alert"
+                className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-800"
+              >
+                {error}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+    </Panel>
+  );
+}
 export function ProductEditor({ product }: { product?: Product }) {
   const options = useInventoryOptions(),
     save = useMutation(api.inventory.saveProduct),
@@ -572,6 +678,7 @@ export function ProductDetail({ id }: { id: string }) {
         </StatusBadge>
       </div>
       <p className="mb-6 text-sm text-muted-foreground">{p.description}</p>
+      <ProductPhotos product={p} />
       {p.manage && (
         <div className="mb-6 grid gap-4 sm:grid-cols-3">
           {(

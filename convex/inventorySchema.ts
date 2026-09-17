@@ -56,6 +56,8 @@ export const inventoryTables = {
     dimensions: v.string(),
     weight: v.string(),
     track_mode: v.union(v.literal("serialized"), v.literal("quantity")),
+    // Catalog photos in Convex storage; the first entry is the primary image.
+    image_ids: v.optional(v.array(v.id("_storage"))),
     // Exact CAD cents as strings, matching commercial storage; absent means not set.
     purchase_price_cents: v.optional(v.string()),
     rental_price_cents: v.optional(v.string()),
