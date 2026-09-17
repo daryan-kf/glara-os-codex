@@ -9,6 +9,7 @@ import type { Id } from "../../../convex/_generated/dataModel";
 import { PageTitle, StatusBadge, EmptyState } from "@/components/primitives";
 import { Button } from "@/components/ui/button";
 import { Field, Picker, SalesForm, Panel, Loading, Pager } from "./shared";
+import { AddressFields } from "./address-fields";
 import {
   propertyTypes,
   occupancies,
@@ -154,33 +155,22 @@ export function PropertyEditor({ id }: { id?: string }) {
           }}
         >
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field
-              label="Address line 1"
-              name="address_line_1"
-              value={p?.address_line_1}
-              required
+            <AddressFields
+              initial={
+                p
+                  ? {
+                      address_line_1: p.address_line_1,
+                      city: p.city,
+                      province: p.province,
+                      postal_code: p.postal_code,
+                    }
+                  : undefined
+              }
             />
             <Field
               label="Unit / address line 2"
               name="address_line_2"
               value={p?.address_line_2}
-            />
-            <Field
-              label="City"
-              name="city"
-              value={p?.city ?? "Vancouver"}
-              required
-            />
-            <Field
-              label="Province"
-              name="province"
-              value={p?.province ?? "BC"}
-              required
-            />
-            <Field
-              label="Postal code"
-              name="postal_code"
-              value={p?.postal_code}
             />
             <Field
               label="Property type"

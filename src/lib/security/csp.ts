@@ -26,6 +26,8 @@ export function contentSecurityPolicy(
     // Product and project media are served from Convex storage on the backend origin.
     images.push(url.origin);
   }
+  // Address typeahead suggestions (OpenStreetMap/Photon); only typed address text is sent.
+  connections.push("https://photon.komoot.io");
   if (development) connections.push("ws://localhost:*", "ws://127.0.0.1:*");
   return [
     "default-src 'self'",
