@@ -514,6 +514,7 @@ export function ProductEditor({ product }: { product?: Product }) {
   const options = useInventoryOptions(),
     save = useMutation(api.inventory.saveProduct),
     createCategory = useMutation(api.inventory.saveCategory),
+    receive = useMutation(api.inventory.receive),
     router = useRouter();
   if (!options) return <Loading />;
   if (!options.manage)
@@ -523,7 +524,25 @@ export function ProductEditor({ product }: { product?: Product }) {
       version={product?.version}
       submit={product ? "Save product" : "Create product"}
       onSave={async (d, version) => {
-        const { category, new_category, ...fields } = d;
+        const {
+          category,
+          new_category,
+          initial_quantity,
+          receiving_location,
+          ...fields
+        } = d;
+        const quantity = Math.trunc(Number(initial_quantity || "0"));
+        if (
+          !product &&
+          (!Number.isFinite(quantity) || quantity < 0 || quantity > 100)
+        )
+          throw new Error(
+            "Choose an unambiguous initial quantity between 0 and 100.",
+          );
+        if (!product && quantity > 0 && !receiving_location)
+          throw new Error(
+            "Choose an unambiguous receiving location for the initial quantity, or leave the quantity empty.",
+          );
         let categoryId = category;
         const newName = (new_category ?? "").trim();
         if (newName) {
@@ -553,6 +572,21 @@ export function ProductEditor({ product }: { product?: Product }) {
             retail_eligible: fields.retail_eligible === "yes",
           }),
         });
+        if (!product && quantity > 0) {
+          // Serialized units are received one by one so each gets a GLA number.
+          const serialized = fields.track_mode !== "quantity";
+          const receipt = {
+            product_id: id,
+            location_id: receiving_location as Id<"inventory_locations">,
+            condition: serialized ? ("new" as const) : ("good" as const),
+            acquisition_date: day(),
+            reason: "Initial quantity at product creation",
+          };
+          if (serialized)
+            for (let i = 0; i < quantity; i++)
+              await receive({ ...receipt, quantity: 1 });
+          else await receive({ ...receipt, quantity });
+        }
         if (!product) router.push(`/inventory/products/${id}`);
       }}
     >
@@ -627,6 +661,23 @@ export function ProductEditor({ product }: { product?: Product }) {
           options={["yes", "no"]}
           value={product?.active === false ? "no" : "yes"}
         />
+        {!product && (
+          <>
+            <Field
+              label="Initial quantity (optional, up to 100)"
+              name="initial_quantity"
+              type="number"
+            />
+            <Select
+              label="Receiving location for the initial quantity"
+              name="receiving_location"
+              options={options.locations.map((l) => ({
+                id: l._id,
+                name: l.name,
+              }))}
+            />
+          </>
+        )}
       </div>
       <Field
         label="Description"
