@@ -79,13 +79,17 @@ async function audited<
     created_at: new Date().toISOString(),
   });
 }
-async function activities(ctx: Ctx, id: Id<"realtors">) {
-  return (
-    await ctx.db
-      .query("activities")
-      .withIndex("by_realtor", (q) => q.eq("realtor_id", id))
-      .collect()
-  ).filter((a) => !a.deleted_at);
+async function nextActivity(ctx: Ctx, id: Id<"realtors">) {
+  return ctx.db
+    .query("activities")
+    .withIndex("by_realtor_due", (q) =>
+      q
+        .eq("realtor_id", id)
+        .eq("deleted_at", null)
+        .eq("status", "open")
+        .gt("due_at", null),
+    )
+    .first();
 }
 async function invariant(ctx: MutationCtx, id: Id<"realtors">) {
   const row = await ctx.db.get(id);
@@ -93,7 +97,7 @@ async function invariant(ctx: MutationCtx, id: Id<"realtors">) {
     row &&
     !row.deleted_at &&
     row.relationship_status === "prospect" &&
-    !(await activities(ctx, id)).some((a) => a.status === "open" && a.due_at)
+    !(await nextActivity(ctx, id))
   )
     deny("NEXT_ACTION_REQUIRED", "A prospect needs a next action.");
 }
@@ -113,18 +117,37 @@ async function directory(
     .query("profiles")
     .withIndex("by_user", (q) => q.eq("userId", row.assigned_to))
     .unique();
-  const history = await activities(ctx, row._id);
-  const next = history
-    .filter((a) => a.status === "open" && a.due_at)
-    .sort((a, b) => a.due_at!.localeCompare(b.due_at!))[0];
-  const contacts = history
-    .filter(
-      (a) =>
-        a.status === "completed" &&
-        a.completed_at &&
-        !["note", "task", "follow_up"].includes(a.type),
+  const next = await nextActivity(ctx, row._id);
+  const contacts = (
+    await Promise.all(
+      (
+        [
+          "call",
+          "email",
+          "instagram_dm",
+          "sms",
+          "meeting",
+          "consultation",
+        ] as const
+      ).flatMap((type) =>
+        ["asc", "desc"].map((order) =>
+          ctx.db
+            .query("activities")
+            .withIndex("by_realtor_contact", (q) =>
+              q
+                .eq("realtor_id", row._id)
+                .eq("deleted_at", null)
+                .eq("status", "completed")
+                .eq("type", type)
+                .gt("completed_at", null),
+            )
+            .order(order as "asc" | "desc")
+            .first(),
+        ),
+      ),
     )
-    .map((a) => a.completed_at!)
+  )
+    .flatMap((a) => (a?.completed_at ? [a.completed_at] : []))
     .sort();
   const result = {
     ...safe,
@@ -287,8 +310,18 @@ export const read = query({
           total: matches.length,
         };
       }
+      if (matches.length > 2000)
+        return deny(
+          "LIMIT",
+          "Narrow the relationship filters before sorting by follow-up.",
+        );
       let rows = await Promise.all(
-        matches.map((r) => directory(ctx, r, false, write)),
+        matches.map(async (r) => ({
+          ...clean(r),
+          next_followup_date: r.deleted_at
+            ? null
+            : ((await nextActivity(ctx, r._id))?.due_at ?? null),
+        })),
       );
       const day = (s: string) =>
           new Date(s).toLocaleDateString("en-CA", {
@@ -318,9 +351,20 @@ export const read = query({
                 ),
       );
       return {
-        rows: rows.slice(
-          op === "search" ? 0 : (page - 1) * 25,
-          op === "search" ? 8 : page * 25,
+        rows: await Promise.all(
+          rows
+            .slice(
+              op === "search" ? 0 : (page - 1) * 25,
+              op === "search" ? 8 : page * 25,
+            )
+            .map((r) =>
+              directory(
+                ctx,
+                matches.find((m) => m._id === r.id)!,
+                false,
+                write,
+              ),
+            ),
         ),
         total: rows.length,
       };
@@ -354,25 +398,66 @@ export const read = query({
         r = await ctx.db.get(rid);
       if (!r || !canReadRealtor(profile, r) || (r.deleted_at && !manage))
         return { rows: [] };
-      const rows = (await activities(ctx, rid))
-        .filter((a) => !raw.status || a.status === raw.status)
-        .sort((a, b) =>
-          raw.status === "open"
-            ? (a.due_at ?? "z").localeCompare(b.due_at ?? "z")
-            : (b.completed_at ?? b.created_at).localeCompare(
-                a.completed_at ?? a.created_at,
-              ),
+      const query =
+        raw.status === "open"
+          ? ctx.db
+              .query("activities")
+              .withIndex("by_realtor_due", (q) =>
+                q
+                  .eq("realtor_id", rid)
+                  .eq("deleted_at", null)
+                  .eq("status", "open"),
+              )
+              .order("asc")
+          : ctx.db
+              .query("activities")
+              .withIndex("by_realtor_history", (q) =>
+                q.eq("realtor_id", rid).eq("deleted_at", null),
+              )
+              .order("desc");
+      if (raw.cursor !== undefined) {
+        const cursor = parse(z.string().max(4096).nullable(), raw.cursor);
+        const result = await query.paginate({ cursor, numItems: 30 });
+        return {
+          rows: result.page.map(clean),
+          next_cursor: result.isDone ? null : result.continueCursor,
+        };
+      }
+      if (page > 100)
+        return deny(
+          "INVALID_INPUT",
+          "Use cursor pagination for older history.",
         );
-      return { rows: rows.slice((page - 1) * 30, page * 30).map(clean) };
+      const rows = await query.take(page * 30);
+      return {
+        rows: rows.slice((page - 1) * 30).map(clean),
+        next_cursor: null,
+      };
     }
+
     if (op === "followups") {
-      const rows = [];
-      for (const a of await ctx.db
+      if (raw.cursor === undefined && page !== 1)
+        return deny(
+          "INVALID_INPUT",
+          "Use continuation pagination for follow-ups.",
+        );
+      const query = ctx.db
         .query("activities")
-        .withIndex("by_status", (q) =>
+        .withIndex("by_due", (q) =>
           q.eq("status", "open").eq("deleted_at", null),
         )
-        .collect()) {
+        .filter((q) => q.neq(q.field("realtor_id"), undefined));
+      const cursor =
+        raw.cursor === undefined
+          ? null
+          : parse(z.string().max(4096).nullable(), raw.cursor);
+      const batch = await query.paginate({
+        cursor,
+        numItems: 30,
+        maximumRowsRead: 100,
+      });
+      const rows = [];
+      for (const a of batch.page) {
         if (!a.realtor_id) continue;
         const r = await ctx.db.get(a.realtor_id);
         if (
@@ -387,9 +472,9 @@ export const read = query({
             last_name: r.last_name,
           });
       }
-      rows.sort((a, b) => (a.due_at ?? "z").localeCompare(b.due_at ?? "z"));
-      return { rows: rows.slice((page - 1) * 30, page * 30) };
+      return { rows, next_cursor: batch.isDone ? null : batch.continueCursor };
     }
+
     if (op === "brokerage") {
       const b = await ctx.db.get(
         docId(ctx, "brokerages", String(raw.id ?? "")),
@@ -408,7 +493,7 @@ export const read = query({
       return op === "brokerage_options"
         ? rows.slice(0, 20).map((b) => ({
             id: b._id,
-            name: b.name + (b.office_name ? " Ã‚Â· " + b.office_name : ""),
+            name: b.name + (b.office_name ? " \u00b7 " + b.office_name : ""),
           }))
         : { rows: rows.slice((page - 1) * 25, page * 25).map(clean) };
     }

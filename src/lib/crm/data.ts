@@ -58,16 +58,37 @@ export async function getChoices() {
     choicesSchema,
   );
 }
-export function getActivities(id: string, page = 1, status = "") {
+export function getActivities(
+  id: string,
+  page = 1,
+  status = "",
+  cursor?: string | null,
+) {
   return query(
-    { op: "activities", id, page, status },
-    z.object({ rows: z.array(activityRow) }),
+    {
+      op: "activities",
+      id,
+      page,
+      status,
+      ...(cursor !== undefined ? { cursor } : {}),
+    },
+    z.object({
+      rows: z.array(activityRow),
+      next_cursor: z.string().nullable().optional(),
+    }),
   );
 }
-export function getFollowups(page = 1, assigned_to = "") {
+export function getFollowups(
+  page = 1,
+  assigned_to = "",
+  cursor: string | null = null,
+) {
   return query(
-    { op: "followups", page, assigned_to },
-    z.object({ rows: z.array(activityRow) }),
+    { op: "followups", page, assigned_to, cursor },
+    z.object({
+      rows: z.array(activityRow),
+      next_cursor: z.string().nullable(),
+    }),
   );
 }
 export function getBrokerages(q = "", page = 1) {

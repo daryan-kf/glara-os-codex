@@ -1,3 +1,4 @@
+import { applicationOrigin } from "./origin";
 import { z } from "zod";
 const environment = z.enum(["development", "production"]);
 const feature = z.enum(["email", "calendar", "ai", "automation", "auth_email"]);
@@ -198,4 +199,52 @@ export function productionCapabilityAllowed(
       "true"
     );
   return true;
+}
+
+// Explicit production frontends must never silently reuse a development connection.
+export function frontendConfigurationAllowed(
+  env: Record<string, string | undefined>,
+) {
+  if (!env.NEXT_PUBLIC_CONVEX_URL) return false;
+  if (
+    env.GLARA_ENVIRONMENT &&
+    !["development", "production"].includes(env.GLARA_ENVIRONMENT)
+  )
+    return false;
+  if (env.GLARA_ENVIRONMENT !== "production") return true;
+  if (
+    env.GLARA_PRODUCTION_APPROVED !== "true" ||
+    env.GLARA_ACCEPTANCE_MODE === "true" ||
+    env.GLARA_ACCEPTANCE_PASSWORDS ||
+    env.M9_EMAIL_TEST_ALLOWLIST
+  )
+    return false;
+  const deployment = env.CONVEX_DEPLOYMENT?.match(/^prod:([a-z0-9-]+)$/)?.[1];
+  if (!deployment || deployment === "woozy-jaguar-392") return false;
+  try {
+    applicationOrigin(env.SITE_URL, "production");
+    const backend = new URL(env.NEXT_PUBLIC_CONVEX_URL),
+      site = new URL(env.NEXT_PUBLIC_CONVEX_SITE_URL ?? "");
+    if (
+      [backend, site].some(
+        (u) =>
+          u.protocol !== "https:" ||
+          u.username ||
+          u.password ||
+          u.search ||
+          u.hash ||
+          u.pathname !== "/" ||
+          u.port,
+      )
+    )
+      return false;
+    return (
+      new RegExp(
+        "^" + deployment + "(?:\\.[a-z0-9-]+)?\\.convex\\.cloud$",
+      ).test(backend.hostname) &&
+      site.hostname === backend.hostname.replace(/\.cloud$/, ".site")
+    );
+  } catch {
+    return false;
+  }
 }

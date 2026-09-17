@@ -18,7 +18,9 @@ async function check(name: string, fn: () => Promise<void>) {
     throw e;
   } finally {
     writeFileSync(
-      ".acceptance/m8/resume/m7-native-regression.json",
+      process.env.GLARA_M10_ACCEPTANCE === "yes"
+        ? ".acceptance/m10/m7-native-regression.json"
+        : ".acceptance/m8/resume/m7-native-regression.json",
       JSON.stringify({ timestamp: new Date().toISOString(), results }, null, 2),
     );
   }
@@ -27,7 +29,11 @@ async function main() {
   assert.equal(process.env.GLARA_M7_ACCEPTANCE, "yes");
   const { client: c, url } = await operationsClient(),
     f = JSON.parse(
-      readFileSync("test-results/m7-matrix-fixture.json", "utf8"),
+      readFileSync(
+        process.env.GLARA_M7_BROWSER_FIXTURE ??
+          "test-results/m7-matrix-fixture.json",
+        "utf8",
+      ),
     ) as {
       project: Id<"projects">;
       customer: Id<"commercial_customers">;
@@ -197,11 +203,12 @@ async function main() {
     await check(
       "Native anonymous archived unassigned callers and public scheduler denied",
       async () => {
-        const clients = [
-          new ConvexHttpClient(url, { logger: false }),
-          (await operationsClient("archived")).client,
-          (await operationsClient("unassigned")).client,
-        ];
+        for (const role of ["archived", "unassigned"])
+          await assert.rejects(
+            () => operationsClient(role),
+            /AUTHENTICATION_FAILED/,
+          );
+        const clients = [new ConvexHttpClient(url, { logger: false })];
         for (const x of clients) {
           await assert.rejects(
             x.query(api.automation.actions, {

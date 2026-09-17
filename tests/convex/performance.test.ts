@@ -122,3 +122,62 @@ it("fictional CRM scale preserves paging and search; records a local multi-modul
     ),
   );
 });
+
+it("long Realtor activity histories use stable cursor pages and indexed contact dates", async () => {
+  const f = await commercialFixture();
+  const source = await f.t.run((ctx) => ctx.db.query("activities").first());
+  if (!source) throw Error("fixture missing");
+  const { _id, _creationTime, ...base } = source;
+  void _id;
+  void _creationTime;
+  const rid = f.r
+    .id as import("../../convex/_generated/dataModel").Id<"realtors">;
+  for (let batch = 0; batch < 10; batch++)
+    await f.t.run(async (ctx) => {
+      for (let n = 0; n < 100; n++) {
+        const stamp = new Date(
+          Date.UTC(2025, 0, 1, 0, batch * 100 + n),
+        ).toISOString();
+        await ctx.db.insert("activities", {
+          ...base,
+          realtor_id: rid,
+          type: n === 0 ? "call" : "note",
+          title: "Fictional long history " + (batch * 100 + n),
+          description: "Fictional ".repeat(200),
+          status: "completed",
+          created_at: stamp,
+          completed_at: stamp,
+        });
+      }
+    });
+  const schema = z.object({
+    rows: z.array(z.object({ id: z.string() })),
+    next_cursor: z.string().nullable(),
+  });
+  let cursor: string | null = null;
+  const seen = new Set<string>();
+  let pages = 0;
+  do {
+    const value = schema.parse(
+      await f.owner.query(api.crm.read, {
+        input: JSON.stringify({ op: "activities", id: rid, cursor }),
+      }),
+    );
+    expect(value.rows.length).toBeLessThanOrEqual(30);
+    for (const row of value.rows) {
+      expect(seen.has(row.id)).toBe(false);
+      seen.add(row.id);
+    }
+    cursor = value.next_cursor;
+    pages++;
+  } while (cursor && pages < 40);
+  expect(cursor).toBeNull();
+  expect(seen.size).toBe(1000);
+  const detail = realtorRow.parse(
+    await f.owner.query(api.crm.read, {
+      input: JSON.stringify({ op: "detail", id: rid }),
+    }),
+  );
+  expect(detail.first_contact_date).toBe("2025-01-01T00:00:00.000Z");
+  expect(detail.last_contact_date).toBe("2025-01-01T15:00:00.000Z");
+}, 30000);

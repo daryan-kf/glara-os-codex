@@ -1,4 +1,5 @@
 "use client";
+import { useInventoryOptions } from "./options";
 import { CopilotLink } from "@/components/ai/copilot";
 
 import { useState } from "react";
@@ -62,7 +63,7 @@ export function InventoryAttention() {
   );
 }
 export function InventoryCatalog() {
-  const options = useQuery(api.inventory.options, {});
+  const options = useInventoryOptions();
   const [filter, setFilter] = useState({
     search: "",
     category: "",
@@ -280,7 +281,7 @@ export function InventoryCatalog() {
 }
 type Product = FunctionReturnType<typeof api.inventory.product>;
 export function ProductEditor({ product }: { product?: Product }) {
-  const options = useQuery(api.inventory.options, {}),
+  const options = useInventoryOptions(),
     save = useMutation(api.inventory.saveProduct),
     router = useRouter();
   if (!options) return <Loading />;
@@ -530,7 +531,7 @@ export function InventorySettings() {
 }
 export function ProductDetail({ id }: { id: string }) {
   const p = useQuery(api.inventory.product, { id: id as Id<"products"> }),
-    options = useQuery(api.inventory.options, {}),
+    options = useInventoryOptions(),
     archive = useMutation(api.inventory.archiveProduct);
   if (!p || !options) return <Loading />;
   return (
@@ -1126,7 +1127,7 @@ export function CareHistory({
 }
 export function AssetDetail({ id }: { id: string }) {
   const a = useQuery(api.inventory.asset, { id: id as Id<"inventory_assets"> }),
-    options = useQuery(api.inventory.options, {});
+    options = useInventoryOptions();
   if (!a || !options) return <Loading />;
   return (
     <div className="space-y-6">

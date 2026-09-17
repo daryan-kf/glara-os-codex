@@ -1,3 +1,4 @@
+import type { FunctionReturnType } from "convex/server";
 import { it, expect } from "vitest";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { inventoryFixture } from "../support/inventory-unit-fixture";
@@ -172,3 +173,51 @@ it("bounds inventory queries with 1,000 products, 3,000 assets and 1,000 ledger 
     ),
   );
 }, 30000);
+
+it("reference options paginate beyond 100 without truncation and crew requires an assigned project", async () => {
+  const f = await inventoryFixture("quantity");
+  const template = await f.t.run((ctx) => ctx.db.get(f.location));
+  await f.t.run(async (ctx) => {
+    const { _id, _creationTime, ...base } = template!;
+    void _id;
+    void _creationTime;
+    for (let i = 0; i < 205; i++)
+      await ctx.db.insert("inventory_locations", {
+        ...base,
+        name: "Fictional reference " + i,
+        name_key: "fictional reference " + i,
+      });
+  });
+  let cursor: string | null = null;
+  const ids = new Set<string>();
+  for (let n = 0; n < 10; n++) {
+    const result: FunctionReturnType<typeof api.inventory.locationOptionsPage> =
+      await f.owner.query(api.inventory.locationOptionsPage, {
+        paginationOpts: { cursor, numItems: 100 },
+      });
+    expect(result.page.length).toBeLessThanOrEqual(100);
+    for (const row of result.page) {
+      expect(ids.has(row._id)).toBe(false);
+      ids.add(row._id);
+      expect(Object.keys(row).sort()).toEqual([
+        "_id",
+        "name",
+        "retail_source",
+        "staging_source",
+      ]);
+    }
+    if (result.isDone) break;
+    cursor = result.continueCursor;
+  }
+  expect(ids.size).toBe(206);
+  await expect(
+    f.c("staging_crew").query(api.inventory.locationOptionsPage, {
+      paginationOpts: { cursor: null, numItems: 100 },
+    }),
+  ).rejects.toThrow();
+  await expect(
+    f.c("marketing").query(api.inventory.categoryOptionsPage, {
+      paginationOpts: { cursor: null, numItems: 100 },
+    }),
+  ).rejects.toThrow();
+});

@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import {
   evaluateConfiguration,
+  frontendConfigurationAllowed,
   productionCapabilityAllowed,
   type ConfigurationPlan,
 } from "../../src/lib/security/preflight";
@@ -155,4 +156,38 @@ it("production CSP scopes network to the configured backend and forbids inline s
       false,
     ),
   ).toThrow();
+});
+
+it("production frontend rejects accidental development targets, missing authorization and mismatched public URLs", () => {
+  const env = {
+    GLARA_ENVIRONMENT: "production",
+    GLARA_PRODUCTION_APPROVED: "true",
+    CONVEX_DEPLOYMENT: "prod:fictional-production",
+    SITE_URL: "https://app.example.test",
+    NEXT_PUBLIC_CONVEX_URL:
+      "https://fictional-production.eu-west-1.convex.cloud",
+    NEXT_PUBLIC_CONVEX_SITE_URL:
+      "https://fictional-production.eu-west-1.convex.site",
+  };
+  expect(frontendConfigurationAllowed(env)).toBe(true);
+  for (const patch of [
+    { GLARA_PRODUCTION_APPROVED: "false" },
+    { CONVEX_DEPLOYMENT: "dev:fictional-production" },
+    {
+      CONVEX_DEPLOYMENT: "prod:woozy-jaguar-392",
+      NEXT_PUBLIC_CONVEX_URL: "https://woozy-jaguar-392.eu-west-1.convex.cloud",
+    },
+    { NEXT_PUBLIC_CONVEX_URL: "https://other.convex.cloud" },
+    { NEXT_PUBLIC_CONVEX_SITE_URL: "https://other.convex.site" },
+    { SITE_URL: "http://localhost:3000" },
+    { GLARA_ACCEPTANCE_MODE: "true" },
+    { GLARA_ENVIRONMENT: "invalid" },
+  ])
+    expect(frontendConfigurationAllowed({ ...env, ...patch })).toBe(false);
+  expect(
+    frontendConfigurationAllowed({
+      NEXT_PUBLIC_CONVEX_URL: "http://127.0.0.1:3350",
+      GLARA_ENVIRONMENT: "development",
+    }),
+  ).toBe(true);
 });

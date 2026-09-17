@@ -4,7 +4,31 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { credentials } from "./identities";
+const acceptanceClients = new Map<
+  string,
+  Promise<{
+    client: ConvexHttpClient;
+    user: ReturnType<typeof credentials>;
+    url: string;
+  }>
+>();
 export async function operationsClient(role = "owner") {
+  if (process.env.GLARA_M10_CLIENT_REUSE === "yes") {
+    const key = credentials(role).email;
+    const existing = acceptanceClients.get(key);
+    if (existing) return existing;
+    const pending = signInOperationsClient(role);
+    acceptanceClients.set(key, pending);
+    try {
+      return await pending;
+    } catch (error) {
+      acceptanceClients.delete(key);
+      throw error;
+    }
+  }
+  return signInOperationsClient(role);
+}
+async function signInOperationsClient(role: string) {
   const user = credentials(role),
     url = readFileSync(".env.local", "utf8")
       .match(/^NEXT_PUBLIC_CONVEX_URL=(.+)$/m)![1]

@@ -282,9 +282,12 @@ test.describe("Hosted role boundaries", () => {
         .fill(credentials(role).password);
       await page.getByRole("button", { name: "Sign in to Glara OS" }).click();
       if (["unassigned", "archived"].includes(role)) {
-        await expect(page).toHaveURL(/unauthorized$/);
+        await expect(
+          page.getByRole("alert").filter({ hasText: "Unable to sign in" }),
+        ).toBeVisible();
+        await expect(page).toHaveURL(/login$/);
         await page.goto("/realtors");
-        await expect(page).toHaveURL(/unauthorized$/);
+        await expect(page).toHaveURL(/login/);
         return;
       }
       await expect(page).toHaveURL(/dashboard$/);

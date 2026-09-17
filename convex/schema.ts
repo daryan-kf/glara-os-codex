@@ -26,6 +26,35 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  migration_runs: defineTable({
+    key: v.string(),
+    fingerprint: v.string(),
+    source_sha: v.string(),
+    source_type: v.string(),
+    transform_version: v.number(),
+    operator_id: v.id("users"),
+    started_at: v.number(),
+    completed_at: v.union(v.number(), v.null()),
+    expected: v.number(),
+    applied: v.number(),
+  }).index("by_key", ["key"]),
+  migration_records: defineTable({
+    run_id: v.id("migration_runs"),
+    stable_id: v.string(),
+    operation: v.string(),
+    payload: v.string(),
+    result: v.string(),
+    committed_at: v.number(),
+  }).index("by_run_stable", ["run_id", "stable_id"]),
+
+  auth_attempt_windows: defineTable({
+    key: v.string(),
+    count: v.number(),
+    expires_at: v.number(),
+  })
+    .index("by_key", ["key"])
+    .index("by_expiry", ["expires_at"]),
+
   operational_alerts: defineTable({
     key: v.string(),
     priority: v.union(v.literal("high"), v.literal("medium")),
@@ -168,6 +197,15 @@ export default defineSchema({
     replaces_activity_id: v.union(v.id("activities"), v.null()),
     ...stamps,
   })
+    .index("by_realtor_due", ["realtor_id", "deleted_at", "status", "due_at"])
+    .index("by_realtor_contact", [
+      "realtor_id",
+      "deleted_at",
+      "status",
+      "type",
+      "completed_at",
+    ])
+    .index("by_realtor_history", ["realtor_id", "deleted_at", "created_at"])
     .index("by_realtor_completed", ["realtor_id", "completed_at"])
     .index("by_realtor", ["realtor_id"])
     .index("by_project", ["project_id", "deleted_at"])

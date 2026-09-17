@@ -75,6 +75,49 @@ export const options = query({
     };
   },
 });
+// Small reference records are streamed in bounded pages, never silently truncated.
+export const categoryOptionsPage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    await catalogUser(ctx);
+    const page = await ctx.db
+      .query("inventory_categories")
+      .withIndex("by_active", (q) => q.eq("active", true))
+      .paginate({
+        ...args.paginationOpts,
+        numItems: Math.min(100, args.paginationOpts.numItems),
+      });
+    return { ...page, page: page.page.filter((row) => !row.deleted_at) };
+  },
+});
+export const locationOptionsPage = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+    project_id: v.optional(v.id("projects")),
+  },
+  handler: async (ctx, args) => {
+    if (args.project_id) await projectUser(ctx, args.project_id);
+    else await catalogUser(ctx);
+    const page = await ctx.db
+      .query("inventory_locations")
+      .withIndex("by_active", (q) => q.eq("active", true))
+      .paginate({
+        ...args.paginationOpts,
+        numItems: Math.min(100, args.paginationOpts.numItems),
+      });
+    return {
+      ...page,
+      page: page.page
+        .filter((row) => !row.deleted_at)
+        .map((row) => ({
+          _id: row._id,
+          name: row.name,
+          staging_source: row.staging_source,
+          retail_source: row.retail_source,
+        })),
+    };
+  },
+});
 export const saveCategory = mutation({
   args: {
     id: v.optional(v.id("inventory_categories")),

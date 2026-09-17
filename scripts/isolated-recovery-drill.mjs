@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from "node:child_process";
+import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { randomBytes, createHash } from "node:crypto";
 import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -6,6 +6,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { makeFunctionReference as ref } from "convex/server";
 import { commercialFixture } from "../.acceptance/m10/recovery-source/fixtures/commercial-unit-fixture";
 import { api } from "../convex/_generated/api";
+import { scopeSchema } from "../src/lib/ai/model";
 const root = process.cwd(),
   home = resolve(".acceptance/m10"),
   project = home + "/recovery-source",
@@ -24,9 +25,9 @@ const result = {
   shared_development_modified: false,
   provider_calls: 0,
 };
-function cmd(args, e, label, expected = 0) {
+function cmd(args, e, label, expected = 0, workdir = project) {
   const r = spawnSync(process.execPath, [cli, ...args], {
-    cwd: project,
+    cwd: workdir,
     env: e,
     encoding: "utf8",
     windowsHide: true,
@@ -158,6 +159,92 @@ async function main() {
     const invoice = await f.manual("100");
     await f.issue(invoice);
     await f.payment("25", [{ invoice_id: invoice, amount: "25" }]);
+    phase = "populate-M7-M9";
+    await f.owner.mutation(api.automation.initialize, {});
+    const opportunity = await f.owner.mutation(api.sales.saveOpportunity, {
+      version: 0,
+      input: JSON.stringify({
+        property_id: f.pid,
+        assigned_to: f.who("sales").id,
+        estimated_value: "1000",
+        probability: 20,
+        next_action_title: "Fictional recovery follow-up",
+        next_action_date: "2099-01-01T18:00:00Z",
+      }),
+    });
+    const rule = (await f.owner.query(api.automation.rules, {})).find(
+      (x) => x.key === "new_contact",
+    ).record;
+    await f.owner.mutation(api.automation.saveRule, {
+      id: rule._id,
+      version: rule.version,
+      config: {
+        ...rule.config,
+        enabled: true,
+        delay_days: 0,
+        entity_ids: [opportunity],
+      },
+    });
+    await f.owner.mutation(api.automation.execute, {
+      table: "opportunities",
+      entity_id: opportunity,
+    });
+    await f.owner.mutation(api.automation.execute, {
+      table: "opportunities",
+      entity_id: opportunity,
+    });
+    const aiRequest = await f.c("sales").mutation(api.ai.request, {
+      input: JSON.stringify({
+        request_key: crypto.randomUUID(),
+        scope: scopeSchema.parse({ feature: "navigation" }),
+        question: "Where can I find my opportunities?",
+      }),
+    });
+    await f.c("sales").action(api.aiProvider.generate, { id: aiRequest });
+    if (
+      (await f.c("sales").query(api.ai.result, { id: aiRequest })).status !==
+      "completed"
+    )
+      throw Error("deterministic AI setup failed");
+    const recipient = await f.owner.mutation(api.crm.write, {
+      input: JSON.stringify({
+        op: "realtor_create",
+        data: {
+          first_name: "Fictional",
+          last_name: "Recovery communication",
+          relationship_status: "active_partner",
+          assigned_to: f.who("sales").id,
+          email: "recovery@example.test",
+        },
+      }),
+    });
+    const sourceRef = { type: "realtor", id: recipient.id };
+    await f.owner.mutation(api.communications.saveSettings, {
+      version: 0,
+      signature: "Fictional recovery sender",
+      secondary_approval: true,
+      paused: true,
+    });
+    await f.owner.mutation(api.communications.recordConsent, {
+      source: sourceRef,
+      recipient: sourceRef,
+      category: "sales_relationship",
+      scope: "sales_relationship",
+      basis: "express_consent",
+      evidence: "Fictional isolated restore consent",
+      evidence_source: "Isolated drill",
+      observed_at: Date.now(),
+    });
+    const communication = await f
+      .c("sales")
+      .mutation(api.communications.create, {
+        source: sourceRef,
+        recipient: sourceRef,
+        category: "sales_relationship",
+        subject: "Fictional recovery message",
+        body: "Fictional draft. Never sent.",
+        request_key: crypto.randomUUID(),
+      });
     const storage = await s.action(ref("drill:store"), {});
     const before = await s.query(ref("drill:snapshot"), {});
     const sourceInvoice = await f.invoice(invoice);
@@ -169,7 +256,8 @@ async function main() {
     result.source_tables = Object.keys(before).length;
     result.fixture = {
       users: 6,
-      realtors: 1,
+      realtors: before.realtors.length,
+      opportunities: before.opportunities.length,
       properties: 1,
       projects: 1,
       serialized_assets: 1,
@@ -178,6 +266,15 @@ async function main() {
       invoices: 1,
       payments: 1,
       storage_files: 1,
+      automation_actions: before.automation_actions.length,
+      automation_executions: before.automation_executions.length,
+      ai_requests: before.ai_requests.length,
+      ai_conversations: before.ai_conversations.length,
+      communications: before.communications.length,
+      consent_events:
+        before.communication_consent_events?.length ??
+        before.communication_consents?.length ??
+        0,
     };
     phase = "export";
     console.log(phase);
@@ -239,6 +336,30 @@ async function main() {
       "Fictional restore storage integrity"
     )
       throw Error("storage mismatch");
+    const restoredSales = client(target, {
+      subject: f.who("sales").subject,
+      issuer: "isolated-fictional",
+    });
+    if (
+      (await restoredSales.query(api.ai.result, { id: aiRequest })).status !==
+      "completed"
+    )
+      throw Error("AI history restore failed");
+    if (
+      (await restoredSales.query(api.communications.get, { id: communication }))
+        .row.status !== "draft"
+    )
+      throw Error("Communication restore failed");
+    if (
+      (
+        await owner.query(api.automation.actions, {
+          paginationOpts: { cursor: null, numItems: 25 },
+          status: "active",
+        })
+      ).page.length !== 1
+    )
+      throw Error("Automation duplicate or missing linkage");
+    result.populated_M7_M8_M9_restore = "passed";
     result.storage_integrity = "passed";
     result.financial_and_inventory_projections = "passed";
     let denied = 0;
@@ -254,6 +375,106 @@ async function main() {
     }
     if (denied !== 2) throw Error("role denial failed");
     result.role_denial = "passed";
+    phase = "compatible-rollback";
+    const baseline = execFileSync(
+      "git",
+      [
+        "-c",
+        "safe.directory=" + root.replaceAll("\\", "/"),
+        "rev-parse",
+        "HEAD",
+      ],
+      { encoding: "utf8", windowsHide: true },
+    ).trim();
+    const rollbackProject = home + "/rollback-source-" + Date.now();
+    mkdirSync(rollbackProject, { recursive: true });
+    const paths = execFileSync(
+      "git",
+      [
+        "-c",
+        "safe.directory=" + root.replaceAll("\\", "/"),
+        "ls-tree",
+        "-r",
+        "--name-only",
+        baseline,
+        "--",
+        "convex",
+        "src/lib",
+        "package.json",
+      ],
+      { encoding: "utf8", windowsHide: true },
+    )
+      .trim()
+      .split(/\r?\n/);
+    for (const file of paths) {
+      const destination = resolve(rollbackProject, file);
+      if (!destination.startsWith(resolve(rollbackProject) + "\\"))
+        throw Error("Invalid rollback path");
+      mkdirSync(resolve(destination, ".."), { recursive: true });
+      writeFileSync(
+        destination,
+        execFileSync(
+          "git",
+          [
+            "-c",
+            "safe.directory=" + root.replaceAll("\\", "/"),
+            "show",
+            baseline + ":" + file,
+          ],
+          { windowsHide: true },
+        ),
+      );
+    }
+    writeFileSync(
+      rollbackProject + "/convex/crons.ts",
+      'import {cronJobs} from "convex/server";export default cronJobs();',
+    );
+    cmd(
+      [
+        "dev",
+        "--once",
+        "--typecheck",
+        "disable",
+        "--codegen",
+        "disable",
+        "--tail-logs",
+        "disable",
+      ],
+      target.env,
+      "rollback-code",
+      0,
+      rollbackProject,
+    );
+    if (
+      stable(sourceInvoice) !==
+      stable(await owner.query(api.commercial.invoice, { id: invoice }))
+    )
+      throw Error("baseline financial compatibility failed");
+    if (!(await owner.query(api.emergency.state, {})).every((x) => x.frozen))
+      throw Error("rollback lost recovery fence");
+    cmd(
+      [
+        "dev",
+        "--once",
+        "--typecheck",
+        "disable",
+        "--codegen",
+        "disable",
+        "--tail-logs",
+        "disable",
+      ],
+      target.env,
+      "forward-code",
+    );
+    if (stable(before) !== stable(await t.query(ref("drill:snapshot"), {})))
+      throw Error("rollback/forward changed authoritative records");
+    result.compatible_code_rollback = {
+      baseline,
+      previous_source_reads: "passed",
+      frozen_throughout: true,
+      forward_restore_exact_data: "passed",
+    };
+
     if (!(await owner.query(api.emergency.state, {})).every((x) => x.frozen))
       throw Error("recovery mode failed");
     result.recovery_mode = "all capabilities frozen";

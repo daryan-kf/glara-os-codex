@@ -1,4 +1,5 @@
 "use client";
+import { useInventoryOptions, useInventoryLocations } from "./options";
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery, useMutation } from "convex/react";
@@ -45,11 +46,12 @@ export function ProjectInventoryLink({ id }: { id: string }) {
   );
 }
 export function ProjectInventory({ id }: { id: string }) {
+  const allLocations = useInventoryLocations(id);
   const data = useQuery(api.inventory.projectInventory, {
     project_id: id as Id<"projects">,
   });
   const [view, setView] = useState<"rooms" | "pick" | "return">("rooms");
-  if (!data) return <Loading />;
+  if (!data || !allLocations) return <Loading />;
   const filtered = data.lines.filter(
     (r) =>
       view === "rooms" ||
@@ -151,7 +153,18 @@ export function ProjectInventory({ id }: { id: string }) {
         <Panel key={group} title={group}>
           <div className="space-y-4">
             {rows?.map((r) => (
-              <InventoryLine key={r._id} row={r} data={data} />
+              <InventoryLine
+                key={r._id}
+                row={r}
+                data={{
+                  ...data,
+                  locations: allLocations.map((l) => ({
+                    id: l._id,
+                    name: l.name,
+                  })),
+                  partial: false,
+                }}
+              />
             ))}
           </div>
         </Panel>
@@ -306,7 +319,7 @@ function InventoryLine({
 }
 function ReservationBuilder({ projectId }: { projectId: Id<"projects"> }) {
   const project = useQuery(api.operations.get, { id: projectId }),
-    options = useQuery(api.inventory.options, {});
+    options = useInventoryOptions();
   const [filters, setFilters] = useState({
     search: "",
     category: "",

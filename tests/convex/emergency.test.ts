@@ -266,7 +266,7 @@ it("supported account revocation destroys sessions/refresh tokens and codes; fre
         password,
       },
     }),
-  ).rejects.toThrow("Access denied");
+  ).rejects.toThrow("AUTHENTICATION_FAILED");
 });
 
 it("platform role changes revoke old sessions and pending recovery before restoring access", async () => {

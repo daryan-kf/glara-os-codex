@@ -15,12 +15,7 @@ import {
   EmptyState,
 } from "@/components/primitives";
 import { Button } from "@/components/ui/button";
-import {
-  CrmNav,
-  ActivityList,
-  FollowupBadge,
-  Pager,
-} from "@/components/crm/display";
+import { CrmNav, ActivityList, FollowupBadge } from "@/components/crm/display";
 import { ActivityDialog, ArchiveDialog } from "@/components/crm/forms";
 function Fact({
   title,
@@ -45,7 +40,7 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; after?: string }>;
 }) {
   const user = await requireModule("realtors");
   const { id } = await params;
@@ -53,16 +48,16 @@ export default async function Page({
   const record = await getRealtor(id);
   if (!record) notFound();
   const writable = canWriteCrm(user.roles);
-  const page = z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(800)
-    .catch(1)
-    .parse((await searchParams).page ?? 1);
+  const after = z
+    .string()
+    .max(4096)
+    .catch("")
+    .parse((await searchParams).after ?? "");
   const [choices, timeline, open] = await Promise.all([
     getChoices(),
-    writable ? getActivities(id, page) : Promise.resolve({ rows: [] }),
+    writable
+      ? getActivities(id, 1, "", after || null)
+      : Promise.resolve({ rows: [], next_cursor: null }),
     writable ? getActivities(id, 1, "open") : Promise.resolve({ rows: [] }),
   ]);
   return (
@@ -254,11 +249,29 @@ export default async function Page({
                     Log your first call, message or note to begin the history.
                   </p>
                 )}
-                <Pager
-                  page={page}
-                  hasNext={timeline.rows.length === 30}
-                  href={(p) => "/realtors/" + id + "?page=" + p}
-                />
+                <nav
+                  aria-label="Activity history pages"
+                  className="mt-4 flex gap-4 text-sm"
+                >
+                  {after && (
+                    <Link className="underline" href={"/realtors/" + id}>
+                      Newest activities
+                    </Link>
+                  )}
+                  {timeline.next_cursor && (
+                    <Link
+                      className="underline"
+                      href={
+                        "/realtors/" +
+                        id +
+                        "?after=" +
+                        encodeURIComponent(timeline.next_cursor)
+                      }
+                    >
+                      Older activities
+                    </Link>
+                  )}
+                </nav>
               </section>
               {user.communications_version === 1 && (
                 <CommunicationHistory

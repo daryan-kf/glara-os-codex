@@ -2,25 +2,24 @@ import Link from "next/link";
 import { z } from "zod";
 import { PageTitle, EmptyState } from "@/components/primitives";
 import { Button } from "@/components/ui/button";
-import { CrmNav, ActivityList, Pager } from "@/components/crm/display";
+import { CrmNav, ActivityList } from "@/components/crm/display";
 import { getFollowups, requireCrmWrite } from "@/lib/crm/data";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; mine?: string }>;
+  searchParams: Promise<{ after?: string; mine?: string }>;
 }) {
   const user = await requireCrmWrite();
   const params = await searchParams;
-  const page = z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(800)
-    .catch(1)
-    .parse(params.page ?? 1);
+  const after = z
+    .string()
+    .max(4096)
+    .catch("")
+    .parse(params.after ?? "");
   const result = await getFollowups(
-    page,
+    1,
     params.mine === "true" ? user.id : "",
+    after || null,
   );
   return (
     <>
@@ -48,19 +47,43 @@ export default async function Page({
         </section>
       ) : (
         <EmptyState
-          title="Nothing waiting here"
-          description="Open follow-ups and tasks will appear here in due-date order."
+          title={
+            result.next_cursor
+              ? "No matching follow-ups on this page"
+              : "Nothing waiting here"
+          }
+          description={
+            result.next_cursor
+              ? "Continue to the next page of follow-ups."
+              : "Open follow-ups and tasks will appear here in due-date order."
+          }
         />
       )}
-      <Pager
-        page={page}
-        hasNext={result.rows.length === 30}
-        href={(p) =>
-          "/realtors/followups?page=" +
-          p +
-          (params.mine === "true" ? "&mine=true" : "")
-        }
-      />
+      <nav aria-label="Follow-up pages" className="mt-4 flex gap-4 text-sm">
+        {after && (
+          <Link
+            className="underline"
+            href={
+              "/realtors/followups" +
+              (params.mine === "true" ? "?mine=true" : "")
+            }
+          >
+            First follow-ups
+          </Link>
+        )}
+        {result.next_cursor && (
+          <Link
+            className="underline"
+            href={
+              "/realtors/followups?after=" +
+              encodeURIComponent(result.next_cursor) +
+              (params.mine === "true" ? "&mine=true" : "")
+            }
+          >
+            More follow-ups
+          </Link>
+        )}
+      </nav>
     </>
   );
 }
