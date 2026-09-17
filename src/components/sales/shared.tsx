@@ -163,7 +163,14 @@ export function Picker({
     open ? { kind, q: term } : "skip",
   );
   return (
-    <div className="relative space-y-2">
+    <div
+      className="relative space-y-2"
+      onBlur={(e) => {
+        // Close when focus leaves the picker entirely (click or tab outside).
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null))
+          setOpen(false);
+      }}
+    >
       <label className="grid gap-2 text-sm font-medium">
         {label}
         <input

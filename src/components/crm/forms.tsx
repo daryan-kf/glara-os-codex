@@ -209,6 +209,7 @@ export function Lookup({
   const [query, setQuery] = useState("");
   const [rows, setRows] = useState<Option[]>([]);
   const [error, setError] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const abort = new AbortController();
     const timer = setTimeout(async () => {
@@ -235,7 +236,14 @@ export function Lookup({
     };
   }, [query, kind]);
   return (
-    <div className="space-y-2">
+    <div
+      className="space-y-2"
+      onBlur={(e) => {
+        // Close when focus leaves the lookup entirely (click or tab outside).
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null))
+          setOpen(false);
+      }}
+    >
       <label htmlFor={name + "-search"} className="block text-sm font-medium">
         {title}
       </label>
@@ -246,7 +254,11 @@ export function Lookup({
         aria-describedby={fieldErrors ? name + "-lookup-error" : undefined}
         maxLength={100}
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onFocus={() => setOpen(true)}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setOpen(true);
+        }}
         placeholder="Type at least 2 characters to find…"
         autoComplete="off"
         className={inputClass}
@@ -268,7 +280,7 @@ export function Lookup({
           </Button>
         </div>
       )}
-      {query.length >= 2 && (
+      {open && query.length >= 2 && (
         <div className="max-h-52 overflow-auto rounded-lg border bg-card">
           {rows.map((row) => (
             <button
