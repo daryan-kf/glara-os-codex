@@ -3,6 +3,8 @@ node_modules/
 .npm-cache/
 .env*
 !.env.example
+# Public NEXT_PUBLIC configuration for hosted builds; contains no secrets.
+!.env.production
 *.tsbuildinfo
 playwright-report/
 test-results/
