@@ -15,7 +15,70 @@ import {
   type ProjectStatus,
 } from "@/lib/operations/model";
 import { Loading, Field, Pager, dateTime, label, Select } from "./shared";
+import { ConvertToProject } from "@/components/sales/opportunities";
+import { dollars } from "@/lib/sales/model";
 type Card = FunctionReturnType<typeof api.operations.list>["page"][number];
+function StartProjectPanel({ hasProjects }: { hasProjects: boolean }) {
+  const rows = useQuery(api.sales.listOpportunities, {
+    paginationOpts: { cursor: null, numItems: 25 },
+  });
+  const open = rows?.page.filter((o) => o.stage !== "lost") ?? [];
+  return (
+    <details
+      className="rounded-2xl border bg-card p-5 sm:p-7"
+      open={!hasProjects}
+    >
+      <summary className="cursor-pointer text-lg font-semibold">
+        Start a project from your pipeline
+      </summary>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Pick an opportunity below — converting marks it won and creates the
+        staging project with the default checklist. Every project starts from an
+        opportunity so the property and Realtor stay linked; create the
+        opportunity from a property first if it does not exist yet.
+      </p>
+      <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {!rows ? (
+          <Loading />
+        ) : (
+          open.map((o) => (
+            <div key={o._id} className="rounded-xl border p-4">
+              <Link
+                href={"/opportunities/" + o._id}
+                className="font-semibold hover:underline"
+              >
+                {o.address}
+              </Link>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {o.city} · {o.realtor_name}
+              </p>
+              <p className="mt-2 text-sm">
+                <StatusBadge>{label(o.stage)}</StatusBadge>{" "}
+                <span className="ml-2 font-semibold">
+                  {dollars(o.estimated_value_cents)}
+                </span>
+              </p>
+              <ConvertToProject opportunityId={o._id} stage={o.stage} />
+            </div>
+          ))
+        )}
+      </div>
+      {rows && !open.length && (
+        <p className="mt-4 rounded-xl border p-5 text-sm">
+          No open opportunities yet. Add a{" "}
+          <Link href="/properties/new" className="text-primary underline">
+            property
+          </Link>{" "}
+          and start an{" "}
+          <Link href="/opportunities" className="text-primary underline">
+            opportunity
+          </Link>{" "}
+          for it, then convert it here.
+        </p>
+      )}
+    </details>
+  );
+}
 export function ProjectCard({ p }: { p: Card }) {
   return (
     <Link
@@ -103,9 +166,6 @@ export function Projects({
             description="Plan every space. Keep every handoff clear."
           />
           <div className="flex flex-wrap gap-3">
-            <Button asChild>
-              <Link href="/opportunities">Create from a won opportunity</Link>
-            </Button>
             <Button asChild variant="outline">
               <Link href="/calendar">Operations calendar</Link>
             </Button>
@@ -115,6 +175,9 @@ export function Projects({
               </Button>
             )}
           </div>
+          {admin && (
+            <StartProjectPanel hasProjects={(result?.page.length ?? 0) > 0} />
+          )}
         </>
       )}
       {!compact && (
