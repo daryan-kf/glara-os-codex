@@ -30,11 +30,9 @@ function ConnectedForm({ mode }: Props) {
       password = String(form.get("password") ?? "");
     if (
       mode === "update" &&
-      (password.length < 12 || password !== form.get("confirm"))
+      (password.length < 6 || password !== form.get("confirm"))
     ) {
-      setError(
-        "Use at least 12 characters and make sure both passwords match.",
-      );
+      setError("Use at least 6 characters and make sure both passwords match.");
       setPending(false);
       return;
     }
@@ -102,7 +100,7 @@ function ConnectedForm({ mode }: Props) {
           type="password"
           autoComplete={mode === "update" ? "new-password" : "current-password"}
           required
-          minLength={mode === "update" ? 12 : 1}
+          minLength={mode === "update" ? 6 : 1}
           maxLength={128}
           disabled={pending}
         />

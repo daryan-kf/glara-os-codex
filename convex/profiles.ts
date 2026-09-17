@@ -107,12 +107,12 @@ export const changePassword = action({
         message: "Account maintenance is restricted.",
       });
     if (
-      !z.string().min(12).max(128).safeParse(args.newPassword).success ||
+      !z.string().min(6).max(128).safeParse(args.newPassword).success ||
       args.newPassword === args.currentPassword
     )
       throw new ConvexError({
         code: "INVALID_INPUT",
-        message: "Choose a new password with 12 to 128 characters.",
+        message: "Choose a new password with 6 to 128 characters.",
       });
     const self = await ctx.runQuery(
       internal.profiles.selfCredentialContext,

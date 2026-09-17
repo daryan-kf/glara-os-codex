@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <AuthLayout
       title="Set your password."
-      description="Enter your email verification code and a unique password with at least 12 characters."
+      description="Enter your email verification code and a unique password with at least 6 characters."
     >
       <AuthForm mode="update" disabled={!isConfigured()} />
     </AuthLayout>

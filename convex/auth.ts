@@ -65,7 +65,7 @@ const privatePassword = Password<DataModel>({
     };
   },
   validatePasswordRequirements(password) {
-    z.string().min(12).max(128).parse(password);
+    z.string().min(6).max(128).parse(password);
   },
   reset: resetEmail,
 });

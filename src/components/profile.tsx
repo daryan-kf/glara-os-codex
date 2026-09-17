@@ -83,10 +83,8 @@ function PasswordForm() {
     setError("");
     const currentPassword = String(form.get("current") ?? ""),
       newPassword = String(form.get("password") ?? "");
-    if (newPassword.length < 12 || newPassword !== form.get("confirm")) {
-      setError(
-        "Use at least 12 characters and make sure both passwords match.",
-      );
+    if (newPassword.length < 6 || newPassword !== form.get("confirm")) {
+      setError("Use at least 6 characters and make sure both passwords match.");
       setPending(false);
       return;
     }
@@ -126,7 +124,7 @@ function PasswordForm() {
         type="password"
         autoComplete="new-password"
         required
-        minLength={12}
+        minLength={6}
         maxLength={128}
         disabled={pending}
       />

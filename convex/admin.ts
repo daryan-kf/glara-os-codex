@@ -143,7 +143,7 @@ export const provision = internalAction({
         "Direct password provisioning is restricted to disposable acceptance accounts.",
       );
     const password = args.password ?? crypto.randomUUID() + crypto.randomUUID();
-    z.string().min(12).max(128).parse(password);
+    z.string().min(6).max(128).parse(password);
     const { user } = await createAccount(ctx, {
       provider: "password",
       account: { id: email, secret: password },
