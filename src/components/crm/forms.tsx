@@ -337,7 +337,7 @@ export function RealtorForm({
       kind={record ? "realtor_update" : "realtor_create"}
       id={record?.id}
       version={record?.version}
-      submit={record ? "Save realtor" : "Create realtor"}
+      submit={record ? "Save customer" : "Create customer"}
     >
       <div className="grid gap-5 sm:grid-cols-2">
         <Field
@@ -354,6 +354,15 @@ export function RealtorForm({
           maxLength={100}
           defaultValue={record?.last_name}
         />
+        <Field
+          name="contact_type"
+          title="Customer type"
+          required
+          defaultValue={record?.contact_type ?? "realtor"}
+        >
+          <option value="realtor">Realtor</option>
+          <option value="builder">Builder</option>
+        </Field>
         <Field
           name="email"
           title="Email"

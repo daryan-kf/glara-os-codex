@@ -119,6 +119,10 @@ export default defineSchema({
     sales_search_text: v.optional(v.string()),
     first_name: v.string(),
     last_name: v.string(),
+    // Absent on earlier rows; read as "realtor".
+    contact_type: v.optional(
+      v.union(v.literal("realtor"), v.literal("builder")),
+    ),
     email: nullable,
     phone: nullable,
     phone_key: nullable,

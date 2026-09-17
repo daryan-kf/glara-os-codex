@@ -55,7 +55,7 @@ export default async function RealtorsPage({
         />
         {writable && (
           <Button asChild>
-            <Link href="/realtors/new">New realtor</Link>
+            <Link href="/realtors/new">New customer</Link>
           </Button>
         )}
       </div>
@@ -235,8 +235,17 @@ export default async function RealtorsPage({
                         {r.first_name} {r.last_name}
                       </Link>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {r.brokerage_name ?? "Independent / not recorded"}
+                        {(r.contact_type === "builder" ? "Builder · " : "") +
+                          (r.brokerage_name ?? "Independent / not recorded")}
                       </p>
+                      {writable && (
+                        <Link
+                          href={"/realtors/" + r.id + "/edit"}
+                          className="mt-1 inline-block text-xs text-primary underline-offset-4 hover:underline"
+                        >
+                          Edit
+                        </Link>
+                      )}
                     </td>
                     <td className="px-4 py-5">
                       {[r.primary_city, r.primary_area]

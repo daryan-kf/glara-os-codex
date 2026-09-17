@@ -2,7 +2,7 @@ import { PageTitle } from "@/components/primitives";
 import { CrmNav } from "@/components/crm/display";
 import { RealtorForm } from "@/components/crm/forms";
 import { getChoices, requireCrmWrite } from "@/lib/crm/data";
-export const metadata = { title: "New realtor" };
+export const metadata = { title: "New customer" };
 export default async function Page() {
   const user = await requireCrmWrite();
   const choices = await getChoices();

@@ -137,6 +137,9 @@ export default async function Page({
               <Fact title="Secondary areas">
                 {record.secondary_areas.join(", ")}
               </Fact>
+              <Fact title="Customer type">
+                {record.contact_type === "builder" ? "Builder" : "Realtor"}
+              </Fact>
               <Fact title="Assigned owner">{record.owner_name}</Fact>
               <Fact title="Lead source">{record.lead_source_name}</Fact>
               <Fact title="Relationship status">

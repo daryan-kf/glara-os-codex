@@ -53,6 +53,7 @@ export const realtorInput = z
   .object({
     first_name: z.string().trim().min(1, "First name is required.").max(100),
     last_name: z.string().trim().min(1, "Last name is required.").max(100),
+    contact_type: z.enum(["realtor", "builder"]).default("realtor"),
     email: z.union([z.email().max(254), z.literal("")]).default(""),
     phone: optionalText(40).refine(
       (value) =>
@@ -165,6 +166,7 @@ export const realtorRow = z.object({
   id: recordId,
   first_name: z.string(),
   last_name: z.string(),
+  contact_type: z.enum(["realtor", "builder"]).nullable().optional(),
   email: nullable,
   phone: nullable,
   instagram: nullable,

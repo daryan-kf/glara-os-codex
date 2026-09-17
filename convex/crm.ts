@@ -561,6 +561,7 @@ export const write = mutation({
         ].join(" "),
         first_name: d.first_name,
         last_name: d.last_name,
+        contact_type: d.contact_type,
         email,
         phone: nullable(d.phone),
         phone_key: phone,

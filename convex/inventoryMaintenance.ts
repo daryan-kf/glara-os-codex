@@ -107,6 +107,87 @@ const businessTables = [
   "analytics_reconciliations",
   "analytics_state",
 ] as const;
+// Removes the archived delivery-test recipient and every record that
+// references it: the realtor, its private row and activities, and the test
+// communications with their consent, outbox, decision and delivery evidence.
+export const purgeTestRecipient = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    if (process.env.GLARA_ENVIRONMENT === "production")
+      throw Error("Test purge is a non-production maintenance operation.");
+    const email = "glarahome.staging@gmail.com";
+    let deleted = 0;
+    for (const realtor of await ctx.db.query("realtors").collect())
+      if ((realtor.email ?? "").toLowerCase() === email) {
+        for (const row of await ctx.db
+          .query("realtor_private")
+          .withIndex("by_realtor", (q) => q.eq("realtor_id", realtor._id))
+          .collect()) {
+          await ctx.db.delete(row._id);
+          deleted++;
+        }
+        for (const row of await ctx.db
+          .query("activities")
+          .withIndex("by_realtor_history", (q) =>
+            q.eq("realtor_id", realtor._id),
+          )
+          .collect()) {
+          await ctx.db.delete(row._id);
+          deleted++;
+        }
+        await ctx.db.delete(realtor._id);
+        deleted++;
+      }
+    for (const row of await ctx.db.query("communications").collect())
+      if (row.snapshot?.email === email || row.recipient_key.includes(email)) {
+        for (const job of await ctx.db
+          .query("communication_outbox")
+          .withIndex("by_communication", (q) =>
+            q.eq("communication_id", row._id),
+          )
+          .collect()) {
+          await ctx.db.delete(job._id);
+          deleted++;
+        }
+        for (const event of await ctx.db
+          .query("communication_delivery_events")
+          .collect())
+          if (event.communication_id === row._id) {
+            await ctx.db.delete(event._id);
+            deleted++;
+          }
+        for (const decision of await ctx.db
+          .query("communication_eligibility_decisions")
+          .collect())
+          if (decision.communication_id === row._id) {
+            await ctx.db.delete(decision._id);
+            deleted++;
+          }
+        await ctx.db.delete(row._id);
+        deleted++;
+      }
+    for (const table of [
+      "communication_consents",
+      "communication_preferences",
+    ] as const)
+      for (const row of await ctx.db.query(table).collect())
+        if (row.recipient_key.includes(email)) {
+          await ctx.db.delete(row._id);
+          deleted++;
+        }
+    if (deleted)
+      await ctx.db.insert("audit_logs", {
+        actor_id: null,
+        action: "PLATFORM_TEST_RECIPIENT_PURGED",
+        entity: "realtors",
+        entity_id: "test-recipient-purge",
+        old_value: { deleted },
+        new_value: null,
+        created_at: new Date().toISOString(),
+      });
+    return { deleted };
+  },
+});
 export const purgeBusinessData = internalMutation({
   args: {},
   handler: async (ctx) => {
