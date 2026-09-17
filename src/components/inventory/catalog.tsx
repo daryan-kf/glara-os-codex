@@ -76,21 +76,39 @@ function QuickAddProduct() {
         placeholder name and SKU. Open it later to complete the name, category
         and prices.
       </p>
-      <label className="inline-flex items-center gap-3 text-sm">
-        {busy ? "Adding…" : "Choose photos"}
-        <input
-          type="file"
-          multiple
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          disabled={busy}
-          className="text-sm file:mr-3 file:rounded-lg file:border file:bg-card file:px-4 file:py-2"
-          onChange={(e) => {
-            const files = [...(e.target.files ?? [])];
-            if (files.length) void add(files);
-            e.target.value = "";
-          }}
-        />
-      </label>
+      <div className="flex flex-wrap items-center gap-6">
+        <label className="inline-flex items-center gap-3 text-sm">
+          {busy ? "Adding…" : "Choose photos"}
+          <input
+            type="file"
+            multiple
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            disabled={busy}
+            className="text-sm file:mr-3 file:rounded-lg file:border file:bg-card file:px-4 file:py-2"
+            onChange={(e) => {
+              const files = [...(e.target.files ?? [])];
+              if (files.length) void add(files);
+              e.target.value = "";
+            }}
+          />
+        </label>
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-sm">
+          📷 Take photo
+          {/* capture opens the device camera on phones; desktops fall back to the file picker. */}
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            disabled={busy}
+            className="sr-only"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) void add([file]);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      </div>
       <div aria-live="polite" className="mt-4 space-y-2">
         {created.length > 0 && (
           <div className="flex flex-wrap gap-2">
@@ -445,20 +463,38 @@ function ProductPhotos({ product }: { product: Product }) {
       </div>
       {product.manage && !product.deleted_at && (
         <div className="mt-4">
-          <label className="inline-flex items-center gap-3 text-sm">
-            {busy ? "Uploading…" : "Add photo (up to 6, max 5 MB)"}
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              disabled={busy || product.images.length >= 6}
-              className="text-sm file:mr-3 file:rounded-lg file:border file:bg-card file:px-4 file:py-2"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void upload(file);
-                e.target.value = "";
-              }}
-            />
-          </label>
+          <div className="flex flex-wrap items-center gap-6">
+            <label className="inline-flex items-center gap-3 text-sm">
+              {busy ? "Uploading…" : "Add photo (up to 6, max 5 MB)"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                disabled={busy || product.images.length >= 6}
+                className="text-sm file:mr-3 file:rounded-lg file:border file:bg-card file:px-4 file:py-2"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void upload(file);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-sm">
+              📷 Take photo
+              {/* capture opens the device camera on phones; desktops fall back to the file picker. */}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                disabled={busy || product.images.length >= 6}
+                className="sr-only"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void upload(file);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          </div>
           <div aria-live="polite">
             {error && (
               <p
