@@ -1,26 +1,28 @@
 {
   "schema_version": 1,
-  "candidate_source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
+  "candidate_source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
   "report_commit_resolution": "The final pushed documentation/evidence commit is returned in the task response; it contains this manifest. A commit cannot embed its own SHA.",
   "repository": "daryan-kf/glara-os-codex",
   "branch": "main",
-  "decision": "M10A PRODUCTION READINESS GATE FAILED",
+  "decision": "M10A PRODUCTION READINESS GATE PENDING EXTERNAL ACTION",
   "promotable": false,
   "lockfile_sha256": "8e2feb532a86939ce246fd26522111b5335f6f78d87c1a430b97a3e0a4ee01cb",
   "tested_development_deployment": "woozy-jaguar-392",
   "build": "clean npm ci --offline and optimized Next.js build passed with no environment files",
   "evidence": "docs/M10A-final-results.json",
   "schema_changes": [
-    "Add operational_alerts and by_key index",
-    "Add optional profiles.pending_change_token for fail-closed platform role updates"
+    "Retained operational_alerts and profile containment architecture",
+    "Added auth_attempt_windows with hashed identity/expiry indexes",
+    "Added migration_runs/migration_records with stable run/record indexes; adapter loopback-only",
+    "Added indexed Realtor activity history/contact boundaries"
   ],
-  "compatibility": "Additive data model. Do not downgrade away session, assignment or capability guards. Interrupted profile changes require containment-aware forward fix; old schema cannot assume pending_change_token absent.",
-  "rollback": "Keep providers disabled/freeze affected capability, retain audit/history, select reviewed forward fix; code rollback is not data rollback. No production rollback executed.",
+  "compatibility": "Additive schema; retain current-role, session, emergency and auth-attempt controls. Migration tables must survive replay/forward fixes.",
+  "rollback": "Compatible prior-code rollback and forward restore passed on populated isolated snapshot with recovery freeze. No production rollback authorized; code rollback is not data rollback.",
   "production_mutations": 0,
   "flags": {
     "M9_EMAIL_ENABLED": false,
     "M9_CALENDAR_ENABLED": false
   },
-  "unresolved_gate": "27 internal P1 readiness controls; full migration and acceptance remain incomplete",
+  "unresolved_gate": "Only recorded human/provider dependencies remain; no unresolved internal P0/P1 found in final executed scope.",
   "m10b_authorized": false
 }

@@ -1,5 +1,5 @@
 {
-  "status": "OPEN \u2014 canonical M10A gate FAILED; none of IR-01 through IR-07 waived",
+  "status": "OPEN — technical scoped drills complete; human/provider dependencies remain; no inherited requirement waived",
   "items": [
     {
       "id": "IR-01",
@@ -8,11 +8,11 @@
       "accountable_role": "Security/Technical Lead",
       "assigned_person": null,
       "deadline": "Before compromised-account restoration and M10B",
-      "status": "failed",
+      "status": "pending_external_action",
       "m10b_blocker": true,
-      "evidence": "See M10A-final-results.json; remaining action: Session and role revocation passed; independently verified Owner recovery and complete onboarding/recovery drill remain open.",
+      "evidence": "docs/M10A-final-results.json; Perform identity-proofed independent Owner recovery with the approved supported authentication architecture.",
       "historical_status": "open",
-      "historical_evidence": "M10A Sections 17\u201336; existing archive drill only proves business-access denial",
+      "historical_evidence": "M10A Sections 17–36; existing archive drill only proves business-access denial",
       "canonical_reference": "docs/M10A-readiness-controls.json#IR-01"
     },
     {
@@ -22,9 +22,9 @@
       "accountable_role": "Technical Lead",
       "assigned_person": null,
       "deadline": "Before M10B; before claiming global technical containment",
-      "status": "failed",
+      "status": "passed",
       "m10b_blocker": true,
-      "evidence": "See M10A-final-results.json; remaining action: Seven-capability containment and financial browser freeze passed; full in-flight worker/interruption runbook drill remains open.",
+      "evidence": "docs/M10A-final-results.json; Local incident/emergency drills cover claimed email last-mile containment and automation worker execution, plus hosted seven-capability freezes and browser financial freeze/release. No real provider side effect triggered.",
       "historical_status": "open",
       "historical_evidence": "Current per-rule/settings controls preserve data but cannot stop all in-flight work",
       "canonical_reference": "docs/M10A-readiness-controls.json#IR-02"
@@ -36,9 +36,9 @@
       "accountable_role": "Security/Technical Lead",
       "assigned_person": null,
       "deadline": "Before M10B",
-      "status": "failed",
+      "status": "pending_external_action",
       "m10b_blocker": true,
-      "evidence": "See M10A-final-results.json; remaining action: Application actor/incident is server-derived; platform/internal administrative attribution remains open.",
+      "evidence": "docs/M10A-final-results.json; Review named privileged platform operations and prove incident linkage plus independent recovery.",
       "historical_status": "open",
       "historical_evidence": "Internal profile audit is system/null actor; app settings reasons are externally linked",
       "canonical_reference": "docs/M10A-readiness-controls.json#IR-03"
@@ -52,7 +52,7 @@
       "deadline": "Before M10B",
       "status": "pending_external_action",
       "m10b_blocker": true,
-      "evidence": "See M10A-final-results.json; remaining action: Production and M10B unauthorized; actual human owner unassigned",
+      "evidence": "docs/M10A-final-results.json; Complete CONTACTS-STORE and OBSERVABILITY-LIVE and independently acknowledge responder availability.",
       "historical_status": "open",
       "historical_evidence": "Templates contain no real contact data or staffed on-call claims",
       "canonical_reference": "docs/M10A-readiness-controls.json#IR-04"
@@ -64,9 +64,9 @@
       "accountable_role": "Technical Lead",
       "assigned_person": null,
       "deadline": "Before M10B",
-      "status": "failed",
+      "status": "passed",
       "m10b_blocker": true,
-      "evidence": "See M10A-final-results.json; remaining action: Isolated restore passed; full operational deployment recovery and populated M7-M9 restore remain open.",
+      "evidence": "docs/M10A-final-results.json; Real isolated populated restore, migration checkpoint/replay/rollback and compatible-code rollback drills pass; independent production schedule/custody remains BACKUP-OPERATIONS.",
       "historical_status": "open",
       "historical_evidence": "Tabletop decision and local projection repair are not restore/deployment acceptance",
       "canonical_reference": "docs/M10A-readiness-controls.json#IR-05"
@@ -78,9 +78,9 @@
       "accountable_role": "Security/Technical Lead",
       "assigned_person": null,
       "deadline": "Before M10B under explicit external acceptance authorization",
-      "status": "failed",
+      "status": "pending_external_action",
       "m10b_blocker": true,
-      "evidence": "See M10A-final-results.json; remaining action: Selected hosted/browser checks passed; full prescribed acceptance remains incomplete.",
+      "evidence": "docs/M10A-final-results.json; Schedule and authorize a real account-level credential rotation/recovery exercise with an independent custodian.",
       "historical_status": "open",
       "historical_evidence": "Local mocked drills do not rotate real credentials or prove hosted controls",
       "canonical_reference": "docs/M10A-readiness-controls.json#IR-06"
@@ -92,9 +92,9 @@
       "accountable_role": "Security/Technical Lead",
       "assigned_person": null,
       "deadline": "Before M10B",
-      "status": "failed",
+      "status": "pending_external_action",
       "m10b_blocker": true,
-      "evidence": "See M10A-final-results.json; remaining action: Inherited internal security, migration and performance requirements remain unresolved.",
+      "evidence": "docs/M10A-final-results.json; Complete AUTH-MFA, PRIVACY-POLICY and OBSERVABILITY-LIVE; independently review the aggregate incident-hardening closure.",
       "historical_status": "open",
       "historical_evidence": "Incident procedure does not waive earlier M10A gates",
       "canonical_reference": "docs/M10A-readiness-controls.json#IR-07"

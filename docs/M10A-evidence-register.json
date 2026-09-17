@@ -1255,6 +1255,2304 @@
         ],
         "invalidated_at": null
       }
+    },
+    {
+      "evidence_id": "EV-RESUME-BOUNDARY-CODE-REVIEW",
+      "control_id": "BOUNDARY",
+      "evidence_type": "code_review",
+      "source": "Development and isolated-only execution; no production mutations, external sends, real data import or M10B.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Development and isolated-only execution; no production mutations, external sends, real data import or M10B.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137343+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-ENV-ISOLATION-SECURITY-TEST",
+      "control_id": "ENV-ISOLATION",
+      "evidence_type": "security_test",
+      "source": "Exact frontend/backend deployment/origin fences tested; development flags explicitly false; production inputs require independent approved deployment and HTTPS origin.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Exact frontend/backend deployment/origin fences tested; development flags explicitly false; production inputs require independent approved deployment and HTTPS origin.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137369+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-ENV-ISOLATION-CONFIGURATION-CHECK",
+      "control_id": "ENV-ISOLATION",
+      "evidence_type": "configuration_check",
+      "source": "Exact frontend/backend deployment/origin fences tested; development flags explicitly false; production inputs require independent approved deployment and HTTPS origin.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Exact frontend/backend deployment/origin fences tested; development flags explicitly false; production inputs require independent approved deployment and HTTPS origin.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137377+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-SECRETS-SECRET-SCAN",
+      "control_id": "SECRETS",
+      "evidence_type": "secret_scan",
+      "source": "Current/history/bundle known-value and pattern scans clean; DPAPI ACL/tamper and actual isolated old/new credential rotation pass. Independent hosted custody remains CONTACTS-STORE/IR-06.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Current/history/bundle known-value and pattern scans clean; DPAPI ACL/tamper and actual isolated old/new credential rotation pass. Independent hosted custody remains CONTACTS-STORE/IR-06.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137386+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-SECRETS-RUNBOOK-DRILL",
+      "control_id": "SECRETS",
+      "evidence_type": "runbook_drill",
+      "source": "Current/history/bundle known-value and pattern scans clean; DPAPI ACL/tamper and actual isolated old/new credential rotation pass. Independent hosted custody remains CONTACTS-STORE/IR-06.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Current/history/bundle known-value and pattern scans clean; DPAPI ACL/tamper and actual isolated old/new credential rotation pass. Independent hosted custody remains CONTACTS-STORE/IR-06.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137391+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-AUTH-INVITATION-CODE-REVIEW",
+      "control_id": "AUTH-INVITATION",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Identity proofing, issuer accountability and actual email delivery require a human recipient/provider account."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137404+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-AUTH-RECOVERY-CODE-REVIEW",
+      "control_id": "AUTH-RECOVERY",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "M10A is not authorized to configure production or attest a human mailbox/recovery channel."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137413+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-AUTH-MFA-CODE-REVIEW",
+      "control_id": "AUTH-MFA",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Current Convex Auth Password architecture has no accepted application MFA. Provider selection, account control and human recovery cannot be fabricated."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137422+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-AUTHORIZATION-SECURITY-TEST",
+      "control_id": "AUTHORIZATION",
+      "evidence_type": "security_test",
+      "source": "95 hosted role/containment checks and eight extra nested-record/OCC/assignment cases pass, with desktop/mobile current-role and assignment revocation.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "95 hosted role/containment checks and eight extra nested-record/OCC/assignment cases pass, with desktop/mobile current-role and assignment revocation.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137429+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-AUTHORIZATION-HOSTED-TEST",
+      "control_id": "AUTHORIZATION",
+      "evidence_type": "hosted_test",
+      "source": "95 hosted role/containment checks and eight extra nested-record/OCC/assignment cases pass, with desktop/mobile current-role and assignment revocation.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "95 hosted role/containment checks and eight extra nested-record/OCC/assignment cases pass, with desktop/mobile current-role and assignment revocation.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137433+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-APP-SECURITY-SECURITY-TEST",
+      "control_id": "APP-SECURITY",
+      "evidence_type": "security_test",
+      "source": "Bounded auth/public HTTP, CORS/CSRF, framing, stored CRM XSS, script injection, malformed/nested IDs, prefetch/cache and provider boundary checks pass; no arbitrary fetch/SQL/command endpoint.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Bounded auth/public HTTP, CORS/CSRF, framing, stored CRM XSS, script injection, malformed/nested IDs, prefetch/cache and provider boundary checks pass; no arbitrary fetch/SQL/command endpoint.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137439+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-HEADERS-SECURITY-TEST",
+      "control_id": "HEADERS",
+      "evidence_type": "security_test",
+      "source": "Optimized desktop/mobile nonce CSP, frame denial, no-store, HTTP-only SameSite auth cookies and hostile origin tests pass. Actual production HTTPS/HSTS belongs to production-origin acceptance.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Optimized desktop/mobile nonce CSP, frame denial, no-store, HTTP-only SameSite auth cookies and hostile origin tests pass. Actual production HTTPS/HSTS belongs to production-origin acceptance.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137446+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-HEADERS-BROWSER-TEST",
+      "control_id": "HEADERS",
+      "evidence_type": "browser_test",
+      "source": "Optimized desktop/mobile nonce CSP, frame denial, no-store, HTTP-only SameSite auth cookies and hostile origin tests pass. Actual production HTTPS/HSTS belongs to production-origin acceptance.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Optimized desktop/mobile nonce CSP, frame denial, no-store, HTTP-only SameSite auth cookies and hostile origin tests pass. Actual production HTTPS/HSTS belongs to production-origin acceptance.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137449+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-UPLOADS-CODE-REVIEW",
+      "control_id": "UPLOADS",
+      "evidence_type": "code_review",
+      "source": "No active production upload-URL or file-download endpoint exists in current M0-M9 source. Metadata/storage references remain; activation requires the original private-access/type/size/content/malware/expiry gates. Isolated fictional Blob restore is not file-serving acceptance.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "No active production upload-URL or file-download endpoint exists in current M0-M9 source. Metadata/storage references remain; activation requires the original private-access/type/size/content/malware/expiry gates. Isolated fictional Blob restore is not file-serving acceptance."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137456+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-UPLOADS-SECURITY-TEST",
+      "control_id": "UPLOADS",
+      "evidence_type": "security_test",
+      "source": "No active production upload-URL or file-download endpoint exists in current M0-M9 source. Metadata/storage references remain; activation requires the original private-access/type/size/content/malware/expiry gates. Isolated fictional Blob restore is not file-serving acceptance.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "No active production upload-URL or file-download endpoint exists in current M0-M9 source. Metadata/storage references remain; activation requires the original private-access/type/size/content/malware/expiry gates. Isolated fictional Blob restore is not file-serving acceptance."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137460+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-ABUSE-CODE-REVIEW",
+      "control_id": "ABUSE",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "No production hosting/edge account configuration is authorized in M10A."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137478+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-PRIVACY-MINIMIZATION-SECURITY-TEST",
+      "control_id": "PRIVACY-MINIMIZATION",
+      "evidence_type": "security_test",
+      "source": "Current DTOs, private Marketing/crew projections, logs/errors and server-derived audit actors reviewed and tested. No new bulk export/destructive retention/provider data transfer.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Current DTOs, private Marketing/crew projections, logs/errors and server-derived audit actors reviewed and tested. No new bulk export/destructive retention/provider data transfer.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137485+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-PRIVACY-POLICY-CODE-REVIEW",
+      "control_id": "PRIVACY-POLICY",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Legal/business/accounting decisions and provider contractual settings require accountable humans."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137494+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-INCIDENT-RUNBOOK-CODE-REVIEW",
+      "control_id": "INCIDENT-RUNBOOK",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Codex technical drills do not establish human availability or independently controlled recovery."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137501+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-BACKUP-DESIGN-CODE-REVIEW",
+      "control_id": "BACKUP-DESIGN",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Business loss tolerance, retention and custody require accountable human approval."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137509+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-RESTORE-LOCAL-RESTORE-DRILL",
+      "control_id": "RESTORE-LOCAL",
+      "evidence_type": "restore_drill",
+      "source": "672 rows/103 tables plus storage, populated M7-M9, exact data/views, role denial/recovery freeze, compatible prior-code rollback and forward restore pass.",
+      "environment": "isolated_restore",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "672 rows/103 tables plus storage, populated M7-M9, exact data/views, role denial/recovery freeze, compatible prior-code rollback and forward restore pass.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137515+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-BACKUP-OPERATIONS-CODE-REVIEW",
+      "control_id": "BACKUP-OPERATIONS",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Only isolated local backup/restore/DPAPI drills were authorized; no production store or human alert destination is configured."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137522+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-OBSERVABILITY-LOCAL-AUTOMATED-TEST",
+      "control_id": "OBSERVABILITY-LOCAL",
+      "evidence_type": "automated_test",
+      "source": "Full local suite verifies health roles/redaction, durable alert dedupe/acknowledgement/recovery and unknown monitoring; independent monitor remains external.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Full local suite verifies health roles/redaction, durable alert dedupe/acknowledgement/recovery and unknown monitoring; independent monitor remains external.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137528+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-OBSERVABILITY-LOCAL-SECURITY-TEST",
+      "control_id": "OBSERVABILITY-LOCAL",
+      "evidence_type": "security_test",
+      "source": "Full local suite verifies health roles/redaction, durable alert dedupe/acknowledgement/recovery and unknown monitoring; independent monitor remains external.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Full local suite verifies health roles/redaction, durable alert dedupe/acknowledgement/recovery and unknown monitoring; independent monitor remains external.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137532+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-OBSERVABILITY-LIVE-CODE-REVIEW",
+      "control_id": "OBSERVABILITY-LIVE",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Same-backend health queries cannot detect backend outage; no independent service account/destination/human owner was supplied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137540+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-SUPPLY-LOCAL-DEPENDENCY-AUDIT",
+      "control_id": "SUPPLY-LOCAL",
+      "evidence_type": "dependency_audit",
+      "source": "Lockfile-preserving clean npm ci/build, patch integrity, point-in-time zero-advisory audit and public-bundle scan pass.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Lockfile-preserving clean npm ci/build, patch integrity, point-in-time zero-advisory audit and public-bundle scan pass.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137548+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-SUPPLY-LOCAL-AUTOMATED-TEST",
+      "control_id": "SUPPLY-LOCAL",
+      "evidence_type": "automated_test",
+      "source": "Lockfile-preserving clean npm ci/build, patch integrity, point-in-time zero-advisory audit and public-bundle scan pass.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Lockfile-preserving clean npm ci/build, patch integrity, point-in-time zero-advisory audit and public-bundle scan pass.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137552+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-RELEASE-GOVERNANCE-CODE-REVIEW",
+      "control_id": "RELEASE-GOVERNANCE",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Main was observed unprotected. Human governance/reviewer assignments and account MFA cannot be inferred from a successful CI run."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137558+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-SUPPLY-ACCEPTANCE-CODE-REVIEW",
+      "control_id": "SUPPLY-ACCEPTANCE",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Zero known advisories is not vendor support assurance or human risk approval. No dependency risk waiver was granted."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137564+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-MIGRATION-AUTOMATED-TEST",
+      "control_id": "MIGRATION",
+      "evidence_type": "automated_test",
+      "source": "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137570+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-MIGRATION-RECONCILIATION",
+      "control_id": "MIGRATION",
+      "evidence_type": "reconciliation",
+      "source": "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137575+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-MIGRATION-RUNBOOK-DRILL",
+      "control_id": "MIGRATION",
+      "evidence_type": "runbook_drill",
+      "source": "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137580+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-PERFORMANCE-LOCAL-LOAD-TEST",
+      "control_id": "PERFORMANCE-LOCAL",
+      "evidence_type": "load_test",
+      "source": "Local operation distributions and indexed history/reference tests pass, including 1000 activities, 206 locations and existing 1000-product/3000-asset/1000-ledger coverage.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Local operation distributions and indexed history/reference tests pass, including 1000 activities, 206 locations and existing 1000-product/3000-asset/1000-ledger coverage.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137586+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-PERFORMANCE-ACCEPTANCE-LOAD-TEST",
+      "control_id": "PERFORMANCE-ACCEPTANCE",
+      "evidence_type": "load_test",
+      "source": "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137591+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-PERFORMANCE-ACCEPTANCE-BROWSER-TEST",
+      "control_id": "PERFORMANCE-ACCEPTANCE",
+      "evidence_type": "browser_test",
+      "source": "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137597+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-PERFORMANCE-ACCEPTANCE-SECURITY-TEST",
+      "control_id": "PERFORMANCE-ACCEPTANCE",
+      "evidence_type": "security_test",
+      "source": "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137602+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-SAFE-MODE-LOCAL-SECURITY-TEST",
+      "control_id": "SAFE-MODE-LOCAL",
+      "evidence_type": "security_test",
+      "source": "Capability transactions, pre-dispatch last-mile recheck, queue preservation, Owner authority, recovery freeze and server audit identity pass.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Capability transactions, pre-dispatch last-mile recheck, queue preservation, Owner authority, recovery freeze and server audit identity pass.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137608+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-REVOCATION-LOCAL-SECURITY-TEST",
+      "control_id": "REVOCATION-LOCAL",
+      "evidence_type": "security_test",
+      "source": "Supported session/refresh/code destruction, archived/unassigned fresh-login denial and interrupted/competing profile changes pass.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Supported session/refresh/code destruction, archived/unassigned fresh-login denial and interrupted/competing profile changes pass.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137614+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-PLATFORM-ATTRIBUTION-CODE-REVIEW",
+      "control_id": "PLATFORM-ATTRIBUTION",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Codex execution and CI actor are recorded, but app-null system audits must not be relabeled as a human."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137620+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-CONTACTS-STORE-CODE-REVIEW",
+      "control_id": "CONTACTS-STORE",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "No real people/contact confirmations or independent shared store has been provided."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137627+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-01-CODE-REVIEW",
+      "control_id": "IR-01",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Automated revoke/reset/session tests pass; human identity and independent recovery cannot be simulated as acceptance."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137633+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-02-SECURITY-TEST",
+      "control_id": "IR-02",
+      "evidence_type": "security_test",
+      "source": "Local incident/emergency drills cover claimed email last-mile containment and automation worker execution, plus hosted seven-capability freezes and browser financial freeze/release. No real provider side effect triggered.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Local incident/emergency drills cover claimed email last-mile containment and automation worker execution, plus hosted seven-capability freezes and browser financial freeze/release. No real provider side effect triggered.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137639+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-02-RUNBOOK-DRILL",
+      "control_id": "IR-02",
+      "evidence_type": "runbook_drill",
+      "source": "Local incident/emergency drills cover claimed email last-mile containment and automation worker execution, plus hosted seven-capability freezes and browser financial freeze/release. No real provider side effect triggered.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Local incident/emergency drills cover claimed email last-mile containment and automation worker execution, plus hosted seven-capability freezes and browser financial freeze/release. No real provider side effect triggered.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137643+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-03-CODE-REVIEW",
+      "control_id": "IR-03",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "CI actor and development target are known, but a named human platform audit/MFA review remains absent."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137650+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-04-CODE-REVIEW",
+      "control_id": "IR-04",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Real contact channels, shared evidence custody and monitor recipients are external dependencies."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137656+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-05-SECURITY-TEST",
+      "control_id": "IR-05",
+      "evidence_type": "security_test",
+      "source": "Real isolated populated restore, migration checkpoint/replay/rollback and compatible-code rollback drills pass; independent production schedule/custody remains BACKUP-OPERATIONS.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Real isolated populated restore, migration checkpoint/replay/rollback and compatible-code rollback drills pass; independent production schedule/custody remains BACKUP-OPERATIONS.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137663+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-05-RUNBOOK-DRILL",
+      "control_id": "IR-05",
+      "evidence_type": "runbook_drill",
+      "source": "Real isolated populated restore, migration checkpoint/replay/rollback and compatible-code rollback drills pass; independent production schedule/custody remains BACKUP-OPERATIONS.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Real isolated populated restore, migration checkpoint/replay/rollback and compatible-code rollback drills pass; independent production schedule/custody remains BACKUP-OPERATIONS.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137667+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-06-CODE-REVIEW",
+      "control_id": "IR-06",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Official local Convex old/new credential rotation passed; that does not prove hosted Resend/OpenAI/platform account rotation or independent recovery."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137673+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-IR-07-CODE-REVIEW",
+      "control_id": "IR-07",
+      "evidence_type": "code_review",
+      "source": "All available technical checks completed; remaining action requires the documented human/provider dependency.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Required supported-provider selection and human policy/monitoring decisions remain unavailable."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137679+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-M9-CALENDAR-CONFIGURATION-CHECK",
+      "control_id": "M9-CALENDAR",
+      "evidence_type": "configuration_check",
+      "source": "M9_CALENDAR_ENABLED=false, OAuth unconfigured, no live Calendar acceptance. Original deferred integration gate remains mandatory before enablement.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "M9_CALENDAR_ENABLED=false, OAuth unconfigured, no live Calendar acceptance. Original deferred integration gate remains mandatory before enablement."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137685+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-READINESS-MODEL-AUTOMATED-TEST",
+      "control_id": "READINESS-MODEL",
+      "evidence_type": "automated_test",
+      "source": "Schema/coverage/freshness/reopen/closure/secret rejection tested; all 503 frozen section identifiers remain mapped; original blocker flags/evidence requirements retained.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Schema/coverage/freshness/reopen/closure/secret rejection tested; all 503 frozen section identifiers remain mapped; original blocker flags/evidence requirements retained.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137692+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-READINESS-MODEL-CODE-REVIEW",
+      "control_id": "READINESS-MODEL",
+      "evidence_type": "code_review",
+      "source": "Schema/coverage/freshness/reopen/closure/secret rejection tested; all 503 frozen section identifiers remain mapped; original blocker flags/evidence requirements retained.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Schema/coverage/freshness/reopen/closure/secret rejection tested; all 503 frozen section identifiers remain mapped; original blocker flags/evidence requirements retained.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137695+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-M9-EMAIL-HISTORY-CONFIGURATION-CHECK",
+      "control_id": "M9-EMAIL-HISTORY",
+      "evidence_type": "configuration_check",
+      "source": "Historical accepted provider delivery plus OWNER CONFIRMED INBOX RECEIPT preserved; M9_EMAIL_ENABLED=false; no resend or inferred production-auth acceptance.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Historical accepted provider delivery plus OWNER CONFIRMED INBOX RECEIPT preserved; M9_EMAIL_ENABLED=false; no resend or inferred production-auth acceptance.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137704+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-M9-EMAIL-HISTORY-CODE-REVIEW",
+      "control_id": "M9-EMAIL-HISTORY",
+      "evidence_type": "code_review",
+      "source": "Historical accepted provider delivery plus OWNER CONFIRMED INBOX RECEIPT preserved; M9_EMAIL_ENABLED=false; no resend or inferred production-auth acceptance.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "Historical accepted provider delivery plus OWNER CONFIRMED INBOX RECEIPT preserved; M9_EMAIL_ENABLED=false; no resend or inferred production-auth acceptance.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137708+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-BROWSER-ACCEPTANCE-HOSTED-TEST",
+      "control_id": "BROWSER-ACCEPTANCE",
+      "evidence_type": "hosted_test",
+      "source": "140 unique optimized desktop/mobile cases pass after recorded targeted fixes/reruns; 12 isolated supported recovery cases pass. No active file-serving endpoint to test; production origins and physical UAT remain explicitly external.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "140 unique optimized desktop/mobile cases pass after recorded targeted fixes/reruns; 12 isolated supported recovery cases pass. No active file-serving endpoint to test; production origins and physical UAT remain explicitly external.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137717+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-BROWSER-ACCEPTANCE-BROWSER-TEST",
+      "control_id": "BROWSER-ACCEPTANCE",
+      "evidence_type": "browser_test",
+      "source": "140 unique optimized desktop/mobile cases pass after recorded targeted fixes/reruns; 12 isolated supported recovery cases pass. No active file-serving endpoint to test; production origins and physical UAT remain explicitly external.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "140 unique optimized desktop/mobile cases pass after recorded targeted fixes/reruns; 12 isolated supported recovery cases pass. No active file-serving endpoint to test; production origins and physical UAT remain explicitly external.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137724+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-FULL-REGRESSION-AUTOMATED-TEST",
+      "control_id": "FULL-REGRESSION",
+      "evidence_type": "automated_test",
+      "source": "549 local tests; 144 hosted role/record/commercial/quantity/native automation scenarios; 140 browser business/security scenarios pass. M8 deterministic disabled-provider workflows and M9 disabled integrations preserve historical provider acceptance.",
+      "environment": "local",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "549 local tests; 144 hosted role/record/commercial/quantity/native automation scenarios; 140 browser business/security scenarios pass. M8 deterministic disabled-provider workflows and M9 disabled integrations preserve historical provider acceptance.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137730+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-FULL-REGRESSION-HOSTED-TEST",
+      "control_id": "FULL-REGRESSION",
+      "evidence_type": "hosted_test",
+      "source": "549 local tests; 144 hosted role/record/commercial/quantity/native automation scenarios; 140 browser business/security scenarios pass. M8 deterministic disabled-provider workflows and M9 disabled integrations preserve historical provider acceptance.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "549 local tests; 144 hosted role/record/commercial/quantity/native automation scenarios; 140 browser business/security scenarios pass. M8 deterministic disabled-provider workflows and M9 disabled integrations preserve historical provider acceptance.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137734+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-RESUME-FINAL-RECONCILIATION-RECONCILIATION",
+      "control_id": "FINAL-RECONCILIATION",
+      "evidence_type": "reconciliation",
+      "source": "All pages of financial allocations/invoices, quantity movements/buckets, reservations/serialized overlap and M7 links plus independent M6 and M9 rebuilds verified. Three previously repaired duplicate M7 history records retained and explained; no unexplained findings.",
+      "environment": "development",
+      "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+      "source_paths": [
+        "convex",
+        "src",
+        "tests",
+        "scripts",
+        "package-lock.json",
+        ".github"
+      ],
+      "executed_at": "2026-09-17T01:06:53.961857+00:00",
+      "executed_by": "Codex operating authorized development/local tools",
+      "verified_at": "2026-09-17T01:06:53.961857+00:00",
+      "verified_by": "Codex reviewed separate result artifacts; not independent human sign-off",
+      "result": "passed",
+      "artifact_reference": "docs/M10A-final-results.json",
+      "limitations": [
+        "All pages of financial allocations/invoices, quantity movements/buckets, reservations/serialized overlap and M7 links plus independent M6 and M9 rebuilds verified. Three previously repaired duplicate M7 history records retained and explained; no unexplained findings.",
+        "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
+      ],
+      "expires_at": "2026-09-24T01:06:54.137740+00:00",
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration",
+          "migration",
+          "policy"
+        ],
+        "invalidated_at": null
+      }
     }
   ]
 }

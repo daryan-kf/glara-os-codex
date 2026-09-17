@@ -1,47 +1,29 @@
 # Production readiness and milestone sequencing
 
-## Current owner-approved boundary
+## Current boundary
 
-- **M9 EMAIL GATE PASSED**. Development email remains disabled after acceptance; this does not authorize production delivery or waive production authentication/email requirements.
-- **M9 CALENDAR GATE DEFERRED â€” EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT**. The implementation is retained; live acceptance is incomplete.
-- Calendar is **NON-BLOCKING FOR M10A PRODUCTION HARDENING** only while disabled.
-- M10A hardening/preparation has now started in a separate authorized task. See [M10A-report.md](M10A-report.md); Sections 1â€“130 have been received and the gate is not passed. No M10A implementation was performed in the earlier deferral task.
-- Overall M9 is not newly declared PASS. Historical incomplete final acceptance/review evidence remains incomplete.
+M10A PRODUCTION READINESS GATE PENDING EXTERNAL ACTION. The full frozen specification through Section 474 remains mapped to canonical controls. Technical results and exact external requirements are in [M10A-report.md](M10A-report.md), [M10A-external-actions.md](M10A-external-actions.md) and [M10B-handoff.md](M10B-handoff.md). Production and M10B remain unauthorized.
 
-## Disabled-by-default integration policy
+M9 EMAIL GATE PASSED historically, including OWNER CONFIRMED INBOX RECEIPT. Development sending remains disabled. This does not pass production onboarding/recovery delivery or authorize another send.
 
-Keep `M9_CALENDAR_ENABLED=false` in development and every future production configuration. An absent flag is disabled by the existing strict true check. Missing credentials must not grant access or trigger fallback credentials. Do not enable a connection or run the consent/setup helper as an implicit part of M10A. Existing Calendar implementation, source authority, permissions and tests must be preserved.
+M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT. Implementation/security remain intact; OAuth is unconfigured and live acceptance incomplete. Calendar is non-blocking only while disabled.
 
-The fresh development check confirmed both `M9_CALENDAR_ENABLED=false` and `M9_EMAIL_ENABLED=false`. Two regression tests demonstrate no OAuth/Calendar fetch while Calendar is disabled or unset, even with an enabled database connection. Production has not been inspected, configured or modified by this task; this document defines its required default, not a claim of a production deployment check.
+## Integration defaults and activation
 
-## M10B Go-Live review: mandatory deferred-integration register
+`M9_EMAIL_ENABLED=false` and `M9_CALENDAR_ENABLED=false` were verified on development. Calendar's absent flag also fails closed. No provider call is allowed while disabled; missing credentials cannot activate fallback behavior. No OAuth/setup flow was run. Production defaults must remain disabled; this is a configuration requirement, not a claim that production was inspected.
 
-Review every entry in [deferred-integrations.json](deferred-integrations.json).
+At M10B review, inspect [deferred-integrations.json](deferred-integrations.json). Calendar activation requires its original dedicated non-primary calendar, OAuth/consent, live create/update/cancel, idempotency/concurrency, external edit/delete conflict, DST, authorization, reconciliation and cleanup gates. See [setup](M9-calendar-setup.md) and [actual evidence](M9-calendar-acceptance.json). A future gate pass still does not authorize production enablement automatically.
 
-For Google Calendar:
+## Remaining human/provider requirements
 
-1. If remaining disabled, verify the deployment flag is false/absent, provider calls are blocked and the deferral remains visible. Calendar's incomplete live gate alone does not block hardening or a separately authorized rollout without Calendar.
-2. If enablement is proposed, block it until the **original M9 Calendar Gate** is completed: dedicated non-primary calendar; secure OAuth and owner consent; safe create/update/cancel; duplicate/concurrent/revision protection; external-edit conflict/resolution; delete/repair; Vancouver DST; Consultation semantics; full authorization; source-of-truth preservation; failure/unknown handling; reconciliation; cleanup; no unresolved Calendar P0/P1. See [setup procedure](M9-calendar-setup.md) and [actual acceptance evidence](M9-calendar-acceptance.json).
-3. A future gate pass does not itself authorize production deployment or enablement. Obtain the separate product-owner rollout authorization.
+Production authentication delivery, reused/expired codes/links, exact redirect/origin and secure cookie verification, transactional provider/sender setup and independent Owner recovery remain DEFERRED — REQUIRED BEFORE PRODUCTION. Privileged application MFA needs an approved supported architecture; actual platform/operator enrollment and recovery evidence remain unverified.
 
-## Core assessment and remaining production work
+Named accountable humans, independent responder channels/evidence custody/monitoring, approved retention/provider contracts/CASL/notification policy, protected release governance and independently recoverable backup policy/store/schedule/alerts remain explicit external actions. Technical tests do not manufacture these approvals. Staff UAT was not performed.
 
-The [M9 deferral core check](M9-deferral-core-check.json) records 102 passing local M9 tests and current hosted reconciliation with zero findings. No known unresolved enabled-M9 P0/P1 was identified within that scope. This is not a guarantee about unexecuted final hosted/browser/production acceptance.
+## Canonical review
 
-Production invitation/onboarding delivery, password recovery, reused/expired links, production redirect/origin validation, required transactional provider/sender setup and other inherited security/operational readiness items remain **DEFERRED â€” REQUIRED BEFORE PRODUCTION** where applicable. The accepted development sender/email evidence is preserved without promoting these production obligations to passed.
+[M10A-readiness-controls.json](M10A-readiness-controls.json) and [M10A-evidence-register.json](M10A-evidence-register.json) govern closure; `npm run readiness:summary` derives the summary. All 503 identifiers (1–474 and 224A–AC) remain mapped. Historical failed/stale evidence is retained and cannot close current controls. Original IR-01–IR-07 requirements remain visible. Current tests and isolated recovery are not production operational acceptance.
 
-The current M10A authorization excludes production deployment, customer traffic, production Email/Calendar enablement, real-customer data migration, external customer communication and M10B Go-Live. No production changes are authorized by this sequencing document.
+Review [backup/recovery](M10A-backup-recovery.md), [incident response](incident-response.md), [safe mode](M10A-safe-mode.md), [monitoring](M10A-observability.md), [supply chain](M10A-supply-chain.md), [migration](M10A-migration-plan.md), [performance](M10A-performance.md), [authentication](M10A-auth-decisions.md) and [privacy](M10A-retention-privacy.md). New source/dependency/environment/provider changes require affected evidence to be reopened and rerun.
 
-## Incident response readiness
-
-The [incident runbook](incident-response.md) and [five local drills](M10A-incident-drills.json) cover Sections 79â€“130. Review [IR-01â€“IR-07](M10A-incident-followups.json) during M10B: none is waived by a local test pass. Fill the restricted contact/incident templates outside the public repository; assign real responders, verify trusted Owner recovery, storage ACLs, monitoring, global containment and backup/restore before production readiness. Local drills do not authorize external notification, production rollback, provider enablement or M10B.
-
-## Canonical M10A control and evidence review
-
-Use [M10A-readiness-controls.json](M10A-readiness-controls.json) and [M10A-evidence-register.json](M10A-evidence-register.json); [M10A-readiness-summary.json](M10A-readiness-summary.json) is derived by `npm run readiness:summary`. All received sections through 474, including 224A-224AC, are mapped in the control map. Historical checkpoints do not close current controls automatically. IR-01â€“IR-07 remain visible with original history. Assign actual humans before M10B entry. M10A PRODUCTION READINESS GATE FAILED; no production or M10B implementation is authorized here.
-
-Review [backup/recovery](M10A-backup-recovery.md), [safe mode](M10A-safe-mode.md), [monitoring](M10A-observability.md), [supply chain](M10A-supply-chain.md), [migration](M10A-migration-plan.md), [performance](M10A-performance.md), [authentication decisions](M10A-auth-decisions.md) and [retention/privacy](M10A-retention-privacy.md). Policy approval and production/provider configuration must not be replaced with local test results. Calendar remains canonically deferred and disabled, non-blocking while disabled; Email's historical acceptance remains intact with sending disabled.
-
-## Final M10A decision
-
-M10A PRODUCTION READINESS GATE FAILED. See [final acceptance](M10A-final-acceptance.json), [report](M10A-report.md) and [blocked handoff](M10B-handoff.md). There are 27 internal P1 readiness blockers; this is not a pending-external-only result. Production is untouched, Email/Calendar are disabled, and M10B is unauthorized.
+Production mutations remain zero. No production deployment/configuration/DNS, customer traffic/data migration, real staff/customer communication, provider enablement or M10B was performed or authorized.

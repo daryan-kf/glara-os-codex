@@ -1,37 +1,40 @@
 {
   "schema_version": 1,
-  "source_commit": "75f490a8c5e4a96b8d7ffa8628291d44b261b880",
-  "decision": "M10A PRODUCTION READINESS GATE FAILED",
-  "recorded_at": "2026-09-16T23:00:58.592818+00:00",
+  "source_commit": "755e1c95d99e22a63f474194d63750ed66cf5fa0",
+  "decision": "M10A PRODUCTION READINESS GATE PENDING EXTERNAL ACTION",
+  "recorded_at": "2026-09-17T01:07:34.796341+00:00",
   "repository": "daryan-kf/glara-os-codex",
   "development_deployment": "woozy-jaguar-392",
   "production_mutation_count": 0,
   "numeric_summary": {
-    "local_passed": 531,
+    "local_passed": 549,
     "local_failed": 0,
     "hosted_security_passed": 95,
-    "hosted_security_failed": 0,
+    "hosted_record_security_passed": 8,
     "hosted_commercial_passed": 14,
-    "hosted_commercial_failed": 0,
     "hosted_quantity_passed": 7,
-    "hosted_quantity_failed": 0,
-    "hosted_scenarios_total_passed": 116,
+    "hosted_automation_passed": 20,
+    "hosted_scenarios_total_passed": 144,
     "hosted_scenarios_total_failed": 0,
-    "desktop_passed": 20,
+    "desktop_passed": 70,
     "desktop_failed": 0,
-    "mobile_passed": 20,
+    "mobile_passed": 70,
     "mobile_failed": 0,
-    "security_browser_passed": 16,
+    "security_browser_passed": 36,
     "security_browser_failed": 0,
-    "security_browser_overlap": "Included in the 40 browser checks; not additive",
-    "migration_passed": 0,
+    "security_browser_overlap": "Included in 140 unique browser cases, not additive",
+    "isolated_auth_browser_passed": 12,
+    "isolated_auth_browser_failed": 0,
+    "migration_passed": 6,
     "migration_failed": 0,
-    "migration_not_run": true,
-    "restore_comparisons_passed": 6,
+    "migration_not_run": false,
+    "migration_unit_passed": 10,
+    "migration_unit_overlap": "Included in 549 local tests",
+    "restore_comparisons_passed": 8,
     "restore_comparisons_failed": 0,
-    "restore_scope": "Exact tables, storage, financial/Inventory projections, role denial, recovery freeze and nonempty-target rejection",
+    "restore_scope": "Exact tables, storage, financial/Inventory projections, role denial, recovery freeze, nonempty rejection, populated M7-M9 and compatible rollback",
     "reconciliation": {
-      "executed_at": "2026-09-16T22:52:13.972Z",
+      "executed_at": "2026-09-17T00:59:03.087Z",
       "deployment": "woozy-jaguar-392",
       "production_mutations": 0,
       "provider_calls": 0,
@@ -56,17 +59,59 @@
         "issues": {}
       },
       "serialized_inventory": {
-        "checked": 77,
+        "checked": 87,
         "mismatches": 0
       },
       "analytics": {
         "status": "complete",
-        "scanned": 4221,
+        "scanned": 4768,
         "source_drift": 0,
         "bucket_drift": 0,
-        "revision": 4215
+        "revision": 5170
       },
       "completed": true
+    },
+    "whole_ledger_reconciliation": {
+      "executed_at": "2026-09-17T00:59:02.238Z",
+      "environment": "development",
+      "deployment": "woozy-jaguar-392",
+      "source_mutations": 0,
+      "result": {
+        "payments": {
+          "pages": 6,
+          "entries": 104,
+          "issues": 0
+        },
+        "invoices": {
+          "pages": 7,
+          "entries": 132,
+          "issues": 0
+        },
+        "stock": {
+          "pages": 4,
+          "entries": 584,
+          "issues": 0
+        },
+        "movements": {
+          "pages": 59,
+          "entries": 468,
+          "issues": 0
+        },
+        "reservations": {
+          "pages": 13,
+          "entries": 254,
+          "issues": 0
+        },
+        "automation": {
+          "pages": 13,
+          "entries": 248,
+          "issues": 0
+        }
+      },
+      "stock_bucket_drift": 0,
+      "preserved_resolved_duplicate_history": 3,
+      "issues": 0,
+      "status": "PASSED"
     },
     "dependency_vulnerabilities": {
       "info": 0,
@@ -78,19 +123,20 @@
     },
     "secret_findings": 0,
     "p0_open": 0,
-    "p1_readiness_blockers": 27,
+    "p1_internal_readiness_blockers": 0,
+    "p1_external_controls": 19,
     "confirmed_unresolved_runtime_defects_in_executed_scope": 0,
     "total_controls": 43,
-    "passed": 9,
-    "open": 34,
-    "failed": 27,
-    "pending_external": 6,
+    "passed": 22,
+    "open": 20,
+    "failed": 0,
+    "pending_external": 19,
     "deferred": 1,
-    "m10a_blockers": 27,
-    "m10b_blockers": 33,
+    "m10a_blockers": 13,
+    "m10b_blockers": 19,
     "without_assigned_owner": 43,
-    "without_sufficient_evidence": 34,
-    "stale_evidence": 13
+    "without_sufficient_evidence": 19,
+    "stale_evidence": 28
   },
   "production_boundary": {
     "environment_creation": false,
@@ -105,22 +151,22 @@
     "automation_enablement": false,
     "real_external_customer_communication": false
   },
-  "email_status": "M9 EMAIL GATE PASSED \u2014 accepted development scope; sending disabled",
-  "calendar_status": "M9 CALENDAR GATE DEFERRED \u2014 EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT",
+  "email_status": "M9 EMAIL GATE PASSED — accepted development scope; sending disabled",
+  "calendar_status": "M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT",
   "email_enabled": false,
   "calendar_enabled": false,
   "calendar_nonblocking_while_disabled": true,
   "ai_production_authorized": false,
   "automation_production_authorized": false,
   "mfa": {
-    "application_owner": "NOT IMPLEMENTED \u2014 supported MFA architecture required before production",
-    "application_admin": "NOT IMPLEMENTED \u2014 supported MFA architecture required before production",
-    "github_operator": "UNVERIFIED \u2014 human/provider evidence required",
-    "convex_operator": "UNVERIFIED \u2014 human/provider evidence required",
-    "hosting_operator": "UNVERIFIED \u2014 human/provider evidence required",
-    "resend_operator": "UNVERIFIED \u2014 human/provider evidence required",
-    "openai_operator": "UNVERIFIED \u2014 human/provider evidence required",
-    "dns_domain_operator": "UNVERIFIED \u2014 human/provider evidence required"
+    "application_owner": "NOT IMPLEMENTED — supported MFA architecture required before production",
+    "application_admin": "NOT IMPLEMENTED — supported MFA architecture required before production",
+    "github_operator": "UNVERIFIED — human/provider evidence required",
+    "convex_operator": "UNVERIFIED — human/provider evidence required",
+    "hosting_operator": "UNVERIFIED — human/provider evidence required",
+    "resend_operator": "UNVERIFIED — human/provider evidence required",
+    "openai_operator": "UNVERIFIED — human/provider evidence required",
+    "dns_domain_operator": "UNVERIFIED — human/provider evidence required"
   },
   "privacy_policy": {
     "engineering": "Handling procedures drafted; full minimization acceptance incomplete",
@@ -145,92 +191,6 @@
   "staff_uat": "STAFF UAT NOT PERFORMED IN M10A",
   "blockers": [
     {
-      "control_id": "ENV-ISOLATION",
-      "title": "Environment contract and assertions",
-      "domain": "environment",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Test exact deployment/origin assertions, isolated provider defaults and distinct environment configuration"
-      ],
-      "required_evidence_types": ["security_test", "configuration_check"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Test exact deployment/origin assertions, isolated provider defaults and distinct environment configuration",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Offline plan checks and runtime approval fences passed; complete hosted configuration/cross-contamination verification remains incomplete."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Offline plan checks and runtime approval fences passed; complete hosted configuration/cross-contamination verification remains incomplete."
-        }
-      ]
-    },
-    {
-      "control_id": "SECRETS",
-      "title": "Secret custody and rotation",
-      "domain": "secrets",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Verify restricted stores and least privilege, rotation/recovery drills and current Git/bundle/private-value scans"
-      ],
-      "required_evidence_types": ["secret_scan", "runbook_drill"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-FINAL-PARTIAL-SECRETS-SECRET-SCAN"],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Verify restricted stores and least privilege, rotation/recovery drills and current Git/bundle/private-value scans",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Source/history/bundle scans passed; secret rotation and recovery custody drill remains incomplete."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Source/history/bundle scans passed; secret rotation and recovery custody drill remains incomplete."
-        }
-      ]
-    },
-    {
       "control_id": "AUTH-INVITATION",
       "title": "Invitation and provisioning lifecycle",
       "domain": "authentication",
@@ -238,26 +198,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Implement single-use role-bound expiring invitations or formally approved equivalent; test issuer revocation, mismatch, replay and delivery"
       ],
       "required_evidence_types": ["security_test", "hosted_test"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-AUTH-INVITATION-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Implement single-use role-bound expiring invitations or formally approved equivalent; test issuer revocation, mismatch, replay and delivery",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Section 235 operator provisioning plus recovery selected; secure initial delivery and full hosted onboarding acceptance remain incomplete."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Identity proofing, issuer accountability and actual email delivery require a human recipient/provider account."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "First-access delivery and named onboarding operator",
+        "accountable_owner": "Product Owner / Security Lead",
+        "required_action": "Approve the controlled operator onboarding procedure and execute real first-access delivery with the selected authentication provider after separate environment authorization.",
+        "why_unavailable": "Identity proofing, issuer accountability and actual email delivery require a human recipient/provider account.",
+        "completion_evidence": "Redacted provisioning/delivery receipt, expiry/reuse/mismatch results and named operator review."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -270,6 +236,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Section 235 operator provisioning plus recovery selected; secure initial delivery and full hosted onboarding acceptance remain incomplete."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -281,26 +252,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Complete backend/browser recovery replay, expiry, enumeration, fixation, rate-limit and production redirect/cookie verification"
       ],
       "required_evidence_types": ["security_test", "browser_test"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-FINAL-PARTIAL-AUTH-RECOVERY-SECURITY-TEST"],
+      "evidence_ids": ["EV-RESUME-AUTH-RECOVERY-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Complete backend/browser recovery replay, expiry, enumeration, fixation, rate-limit and production redirect/cookie verification",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Supported revocation and five recovery tests passed; direct-backend issuance privacy/throttling, full browser recovery and independent Owner recovery remain incomplete."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "M10A is not authorized to configure production or attest a human mailbox/recovery channel."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Production recovery origin and independent recipient",
+        "accountable_owner": "Security Lead / Owner",
+        "required_action": "Provide the authorized production origin and a verified recovery recipient; execute supported recovery and cookie/origin checks in that separately approved environment.",
+        "why_unavailable": "M10A is not authorized to configure production or attest a human mailbox/recovery channel.",
+        "completion_evidence": "Actual reset receipt, expiry/reuse/mismatch, old-session rejection and HTTPS redirect/cookie results."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -313,6 +290,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Supported revocation and five recovery tests passed; direct-backend issuance privacy/throttling, full browser recovery and independent Owner recovery remain incomplete."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -329,25 +311,26 @@
       "m10a_blocker": false,
       "m10b_blocker": true,
       "target_date": "Before applicable M10B activation",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Select supported MFA architecture, implement/test and verify named privileged accounts and independent recovery before go-live"
       ],
       "required_evidence_types": ["security_test", "configuration_check"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-AUTH-MFA-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Select supported MFA architecture, implement/test and verify named privileged accounts and independent recovery before go-live",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned"
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Current Convex Auth Password architecture has no accepted application MFA. Provider selection, account control and human recovery cannot be fabricated."
       ],
       "external_action": {
-        "dependency": "Supported identity architecture and independent Owner recovery",
-        "accountable_owner": "Business / Security Owner",
-        "required_action": "Approve MFA provider/design and appoint verified recovery operators",
-        "why_unavailable": "No selected MFA provider/account configuration or independent human recovery proof available",
-        "completion_evidence": "Named accountable human and independently verified restricted configuration/policy evidence"
+        "dependency": "Supported privileged MFA architecture and real account enrollment",
+        "accountable_owner": "Product Owner / Security Lead",
+        "required_action": "Select and approve a supported MFA-capable auth/provider architecture, then enroll real privileged app/platform accounts and verify independent recovery.",
+        "why_unavailable": "Current Convex Auth Password architecture has no accepted application MFA. Provider selection, account control and human recovery cannot be fabricated.",
+        "completion_evidence": "Supported architecture decision, enrollment/recovery evidence for Owner/Admin and GitHub/Convex/hosting/email/AI/DNS operators; Codex will implement/retest the approved integration."
       },
       "deferred": null,
       "canonical_reference": null,
@@ -356,178 +339,11 @@
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "pending_external_action",
           "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        }
-      ]
-    },
-    {
-      "control_id": "AUTHORIZATION",
-      "title": "Cross-module authorization and IDOR matrix",
-      "domain": "authorization",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Fresh direct backend cross-role/record/archived/company and escalation matrix across M0\u00e2\u20ac\u201cM9 on reviewed hosted code"
-      ],
-      "required_evidence_types": ["security_test", "hosted_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-FINAL-PARTIAL-AUTHORIZATION-HOSTED-TEST"],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Fresh direct backend cross-role/record/archived/company and escalation matrix across M0\u00e2\u20ac\u201cM9 on reviewed hosted code",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "M1/M2 assignment isolation corrected and 95 hosted endpoint scenarios passed; full nested-ID and stale-assignment matrix not complete."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
         },
         {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "M1/M2 assignment isolation corrected and 95 hosted endpoint scenarios passed; full nested-ID and stale-assignment matrix not complete."
-        }
-      ]
-    },
-    {
-      "control_id": "APP-SECURITY",
-      "title": "Public endpoint security",
-      "domain": "application_security",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Review endpoints; test SSRF/injection/CSRF/XSS and safe error/content boundaries"
-      ],
-      "required_evidence_types": ["security_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Review endpoints; test SSRF/injection/CSRF/XSS and safe error/content boundaries",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Nonce CSP and bounded same-origin auth tested; full cross-module red-team acceptance incomplete."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Nonce CSP and bounded same-origin auth tested; full cross-module red-team acceptance incomplete."
-        }
-      ]
-    },
-    {
-      "control_id": "HEADERS",
-      "title": "CSP HTTPS HSTS CORS and browser enforcement",
-      "domain": "application_security",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Complete strict CSP and browser/header tests with authorized production origin verification before go-live"
-      ],
-      "required_evidence_types": ["security_test", "browser_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Complete strict CSP and browser/header tests with authorized production origin verification before go-live",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Selected nonce/cache/header checks passed; full frame/redirect/prefetch/browser matrix incomplete."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Selected nonce/cache/header checks passed; full frame/redirect/prefetch/browser matrix incomplete."
-        }
-      ]
-    },
-    {
-      "control_id": "UPLOADS",
-      "title": "Input size and storage access",
-      "domain": "application_security",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Verify bounded inputs, private file access, type/size restrictions and approved malware boundary with direct tests"
-      ],
-      "required_evidence_types": ["security_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Verify bounded inputs, private file access, type/size restrictions and approved malware boundary with direct tests",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "File/media, archived-file, signed access, download and print acceptance not fully evidenced."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "File/media, archived-file, signed access, download and print acceptance not fully evidenced."
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -539,26 +355,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Run public/auth distributed abuse matrix and approve infrastructure ingress protection; verify fail-closed recovery"
       ],
       "required_evidence_types": ["security_test", "configuration_check"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-ABUSE-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Run public/auth distributed abuse matrix and approve infrastructure ingress protection; verify fail-closed recovery",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Bounded public HTTP and local throttling pass; complete hosted auth/search/public-endpoint abuse evidence remains incomplete."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "No production hosting/edge account configuration is authorized in M10A."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Independent ingress protection",
+        "accountable_owner": "Security / Hosting administrator",
+        "required_action": "Configure the chosen hosting/edge ingress controls and independent auth-abuse monitoring in the approved environment; retain the tested application limits.",
+        "why_unavailable": "No production hosting/edge account configuration is authorized in M10A.",
+        "completion_evidence": "Redacted rule configuration and controlled deny/alert/recovery evidence; Codex will rerun the endpoint matrix."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -571,49 +393,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Bounded public HTTP and local throttling pass; complete hosted auth/search/public-endpoint abuse evidence remains incomplete."
-        }
-      ]
-    },
-    {
-      "control_id": "PRIVACY-MINIMIZATION",
-      "title": "Data minimization logging privacy and audit",
-      "domain": "privacy",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Verify data classes, safe logs/errors, append-oriented audit actors/time and private projections under adversarial input"
-      ],
-      "required_evidence_types": ["security_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Verify data classes, safe logs/errors, append-oriented audit actors/time and private projections under adversarial input",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Marketing next-action text removed and DTO tests pass; complete log/export/provider/field minimization review remains incomplete."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
         },
         {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Marketing next-action text removed and DTO tests pass; complete log/export/provider/field minimization review remains incomplete."
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -630,25 +414,26 @@
       "m10a_blocker": false,
       "m10b_blocker": true,
       "target_date": "Before applicable M10B activation",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Approve retention matrix, holds, identity-verified privacy operations and actual provider contracts/settings"
       ],
       "required_evidence_types": ["policy_approval", "configuration_check"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-PRIVACY-POLICY-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Approve retention matrix, holds, identity-verified privacy operations and actual provider contracts/settings",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned"
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Legal/business/accounting decisions and provider contractual settings require accountable humans."
       ],
       "external_action": {
-        "dependency": "Business/privacy/accounting policy and provider agreements",
-        "accountable_owner": "Business / Security Owner",
-        "required_action": "Approve retention periods, deletion authority, holds and actual provider controls",
-        "why_unavailable": "Engineering cannot assert business/legal approval or account-specific contractual guarantees",
-        "completion_evidence": "Named accountable human and independently verified restricted configuration/policy evidence"
+        "dependency": "Approved retention and actual provider contracts",
+        "accountable_owner": "Business Owner / Privacy and accounting reviewers",
+        "required_action": "Approve retention/holds/CASL/incident notification procedures and review actual provider account retention/contracts.",
+        "why_unavailable": "Legal/business/accounting decisions and provider contractual settings require accountable humans.",
+        "completion_evidence": "Dated approval and account-specific review references without private contracts or customer data in Git."
       },
       "deferred": null,
       "canonical_reference": null,
@@ -657,6 +442,11 @@
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "pending_external_action",
           "reason": "Reviewed against supplied specification without assuming inherited acceptance"
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -668,26 +458,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Verify scenarios, technical drills, restricted evidence/timeline and recovery/closure; resolve inherited follow-ups"
       ],
       "required_evidence_types": ["incident_drill", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-INCIDENT-RUNBOOK-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Verify scenarios, technical drills, restricted evidence/timeline and recovery/closure; resolve inherited follow-ups",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Runbook and local drills exist; independent Owner/platform recovery runbook exercise remains incomplete."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Codex technical drills do not establish human availability or independently controlled recovery."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Named responder and independent recovery exercise",
+        "accountable_owner": "Owner / Security Lead",
+        "required_action": "Assign responders and custodians, verify independent contact/recovery routes and execute the human portion of the incident runbook.",
+        "why_unavailable": "Codex technical drills do not establish human availability or independently controlled recovery.",
+        "completion_evidence": "Restricted drill timeline, human acknowledgements, store access proof and review; Codex will reconcile IR-01/03/04/06/07."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -700,6 +496,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Runbook and local drills exist; independent Owner/platform recovery runbook exercise remains incomplete."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -711,12 +512,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Verify source/file/config/provider inventory, manifest, isolated guard and approved protected backup schedule/retention/RPO/RTO"
       ],
@@ -726,15 +527,21 @@
         "policy_approval"
       ],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-BACKUP-DESIGN-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Verify source/file/config/provider inventory, manifest, isolated guard and approved protected backup schedule/retention/RPO/RTO",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Design and isolated restore exist; approved RPO/RTO, protected store/retention evidence remain incomplete."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Business loss tolerance, retention and custody require accountable human approval."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Approved backup policy",
+        "accountable_owner": "Owner / Operations and Security leads",
+        "required_action": "Approve data/file/config inventory, RPO/RTO, retention/holds and independent key-custody policy.",
+        "why_unavailable": "Business loss tolerance, retention and custody require accountable human approval.",
+        "completion_evidence": "Dated policy approval and named accountable owners; Codex will verify the configuration plan against it."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -747,6 +554,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Design and isolated restore exist; approved RPO/RTO, protected store/retention evidence remain incomplete."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -758,12 +570,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Configure protected backup store/schedule, prove failure alert, populated cross-module recovery and compatible rollback"
       ],
@@ -773,15 +585,21 @@
         "runbook_drill"
       ],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-BACKUP-OPERATIONS-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Configure protected backup store/schedule, prove failure alert, populated cross-module recovery and compatible rollback",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Small restore passed; populated M7-M9 recovery and backup monitoring/failure drill incomplete; production schedule belongs to M10B."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Only isolated local backup/restore/DPAPI drills were authorized; no production store or human alert destination is configured."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Independent protected backup store/schedule/alert route",
+        "accountable_owner": "Platform administrator / Operations lead",
+        "required_action": "Provision an approved independent backup store and schedule, assign recovery custodians, and prove scheduled backup failure/recovery alerts.",
+        "why_unavailable": "Only isolated local backup/restore/DPAPI drills were authorized; no production store or human alert destination is configured.",
+        "completion_evidence": "Store encryption/ACL/retention evidence, successful scheduled backup, controlled failure alert and independent restore receipt."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -794,6 +612,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Small restore passed; populated M7-M9 recovery and backup monitoring/failure drill incomplete; production schedule belongs to M10B."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -810,25 +633,26 @@
       "m10a_blocker": false,
       "m10b_blocker": true,
       "target_date": "Before applicable M10B activation",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Configure independent auth/error/uptime/financial/Inventory/backup monitoring; assign humans and prove failure/recovery deduplication"
       ],
       "required_evidence_types": ["configuration_check", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-OBSERVABILITY-LIVE-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Configure independent auth/error/uptime/financial/Inventory/backup monitoring; assign humans and prove failure/recovery deduplication",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned"
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Same-backend health queries cannot detect backend outage; no independent service account/destination/human owner was supplied."
       ],
       "external_action": {
-        "dependency": "Restricted monitoring destination and staffed owner",
-        "accountable_owner": "Business / Security Owner",
-        "required_action": "Choose/configure sink, name responders and verify independent failure/recovery delivery",
-        "why_unavailable": "No approved external destination or human on-call coverage configured",
-        "completion_evidence": "Named accountable human and independently verified restricted configuration/policy evidence"
+        "dependency": "Independent monitoring destination and responder",
+        "accountable_owner": "Platform administrator / Incident lead",
+        "required_action": "Choose/configure independent uptime/auth/error/integrity/backup monitoring and a named alert destination; exercise fail/recover/dedupe.",
+        "why_unavailable": "Same-backend health queries cannot detect backend outage; no independent service account/destination/human owner was supplied.",
+        "completion_evidence": "Redacted monitor config and received alert/recovery acknowledgements; Codex will validate correlation and dedupe."
       },
       "deferred": null,
       "canonical_reference": null,
@@ -837,6 +661,11 @@
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "pending_external_action",
           "reason": "Reviewed against supplied specification without assuming inherited acceptance"
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -848,12 +677,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Verify named release operator, protected branch/reviews/CI secret boundaries, source/lock/build provenance and bundle secrecy"
       ],
@@ -863,15 +692,21 @@
         "code_review"
       ],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-RELEASE-GOVERNANCE-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Verify named release operator, protected branch/reviews/CI secret boundaries, source/lock/build provenance and bundle secrecy",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Candidate manifest/handoff prepared; independent final review and full release-governance verification remain open."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Main was observed unprotected. Human governance/reviewer assignments and account MFA cannot be inferred from a successful CI run."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Repository protection and privileged release owners",
+        "accountable_owner": "Repository administrator / Security Lead",
+        "required_action": "Approve branch review/check rules, configure main protection and protected release identities/environments, and verify platform MFA and named independent reviewer.",
+        "why_unavailable": "Main was observed unprotected. Human governance/reviewer assignments and account MFA cannot be inferred from a successful CI run.",
+        "completion_evidence": "GitHub protection/check configuration and named reviewer/operator MFA evidence; Codex will re-query controls and link final CI."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -884,6 +719,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Candidate manifest/handoff prepared; independent final review and full release-governance verification remain open."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -895,26 +735,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Close technical and external release-governance dependencies with fresh evidence"
       ],
       "required_evidence_types": ["dependency_audit", "configuration_check"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-SUPPLY-ACCEPTANCE-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Close technical and external release-governance dependencies with fresh evidence",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Audit/clean build pass and read-only pinned CI added; remote CI/platform protections and deprecated dependency lifecycle review remain open."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Zero known advisories is not vendor support assurance or human risk approval. No dependency risk waiver was granted."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Authentication support decision and release governance",
+        "accountable_owner": "Security Lead / Product Owner",
+        "required_action": "Review the pinned beta Convex Auth and transitive Lucia/Oslo maintenance posture with the MFA/provider decision; approve supported production architecture and protected release controls.",
+        "why_unavailable": "Zero known advisories is not vendor support assurance or human risk approval. No dependency risk waiver was granted.",
+        "completion_evidence": "Supported auth/provider decision and governance evidence; Codex will apply any approved migration and rerun affected tests."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -927,96 +773,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Audit/clean build pass and read-only pinned CI added; remote CI/platform protections and deprecated dependency lifecycle review remain open."
-        }
-      ]
-    },
-    {
-      "control_id": "MIGRATION",
-      "title": "Migration transform checkpoints and reconciliation",
-      "domain": "migration",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Implement bounded versioned source-to-target transform; rehearse fictional interruption/replay/rejection, reconciliation and per-phase rollback"
-      ],
-      "required_evidence_types": [
-        "automated_test",
-        "reconciliation",
-        "runbook_drill"
-      ],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Implement bounded versioned source-to-target transform; rehearse fictional interruption/replay/rejection, reconciliation and per-phase rollback",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Importer, representative dry-run/import, idempotency/conflict/rejection, checkpoint/resume, reconciliation and rollback rehearsal are NOT IMPLEMENTED. The preparation plan is not acceptance."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
         },
         {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Importer, representative dry-run/import, idempotency/conflict/rejection, checkpoint/resume, reconciliation and rollback rehearsal are NOT IMPLEMENTED. The preparation plan is not acceptance."
-        }
-      ]
-    },
-    {
-      "control_id": "PERFORMANCE-ACCEPTANCE",
-      "title": "Bounded history concurrency and hosted/mobile load",
-      "domain": "performance",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Remove material CRM/history scans; stress realistic datasets and concurrent queues/writes; verify mobile and provider-outage behavior"
-      ],
-      "required_evidence_types": ["load_test", "browser_test", "security_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Remove material CRM/history scans; stress realistic datasets and concurrent queues/writes; verify mobile and provider-outage behavior",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "501-Realtor local baseline and selected M4/M5 hosted concurrency pass; realistic cross-module hosted scale, history, queue and slow/mobile matrix incomplete."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "501-Realtor local baseline and selected M4/M5 hosted concurrency pass; realistic cross-module hosted scale, history, queue and slow/mobile matrix incomplete."
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1028,26 +789,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Named MFA-protected operators, restricted change/incident linkage and independent recovery drill"
       ],
       "required_evidence_types": ["configuration_check", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-PLATFORM-ATTRIBUTION-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Named MFA-protected operators, restricted change/incident linkage and independent recovery drill",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Platform profile changes revoke sessions but audit actor is system/null; named platform operator/incident evidence not independently verified."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Codex execution and CI actor are recorded, but app-null system audits must not be relabeled as a human."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Named MFA-protected platform operators",
+        "accountable_owner": "Security Lead / Platform administrator",
+        "required_action": "Assign real platform operators and independent recovery custodian; link privileged changes to retained platform audit records and incident/release IDs.",
+        "why_unavailable": "Codex execution and CI actor are recorded, but app-null system audits must not be relabeled as a human.",
+        "completion_evidence": "Restricted platform audit and operator/MFA/recovery evidence; Codex will check coverage without publishing identities/secrets."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -1060,6 +827,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Platform profile changes revoke sessions but audit actor is system/null; named platform operator/incident evidence not independently verified."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1076,25 +848,26 @@
       "m10a_blocker": false,
       "m10b_blocker": true,
       "target_date": "Before applicable M10B activation",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Assign contacts/custodians, verify recovery channels and store ACL/holds; keep private evidence outside Git"
       ],
       "required_evidence_types": ["configuration_check", "owner_confirmation"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-CONTACTS-STORE-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Assign contacts/custodians, verify recovery channels and store ACL/holds; keep private evidence outside Git",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned"
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "No real people/contact confirmations or independent shared store has been provided."
       ],
       "external_action": {
-        "dependency": "Named people and independently restricted storage",
-        "accountable_owner": "Business / Security Owner",
-        "required_action": "Complete private contact register and test recovery contacts, storage ACL and holds",
-        "why_unavailable": "Real assignments and custody are human facts not established by templates",
-        "completion_evidence": "Named accountable human and independently verified restricted configuration/policy evidence"
+        "dependency": "Responder contacts and independent evidence custody",
+        "accountable_owner": "Owner / Incident lead",
+        "required_action": "Provide and verify the restricted responder/custodian directory, independent recovery channel and evidence-store ACL/holds.",
+        "why_unavailable": "No real people/contact confirmations or independent shared store has been provided.",
+        "completion_evidence": "Human acknowledgements and redacted ACL/hold evidence; keep contact details outside Git."
       },
       "deferred": null,
       "canonical_reference": null,
@@ -1103,6 +876,11 @@
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "pending_external_action",
           "reason": "Reviewed against supplied specification without assuming inherited acceptance"
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1114,33 +892,39 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Complete account/session/recovery/invitation revocation and trusted Owner recovery; archive alone is not revocation; fresh technical and independent verification evidence required"
       ],
       "required_evidence_types": ["security_test", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-IR-01-SECURITY-TEST"],
+      "evidence_ids": ["EV-RESUME-IR-01-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Complete account/session/recovery/invitation revocation and trusted Owner recovery; archive alone is not revocation; fresh technical and independent verification evidence required",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Session and role revocation passed; independently verified Owner recovery and complete onboarding/recovery drill remain open."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Automated revoke/reset/session tests pass; human identity and independent recovery cannot be simulated as acceptance."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Trusted independent Owner recovery",
+        "accountable_owner": "Owner / Security Lead",
+        "required_action": "Perform identity-proofed independent Owner recovery with the approved supported authentication architecture.",
+        "why_unavailable": "Automated revoke/reset/session tests pass; human identity and independent recovery cannot be simulated as acceptance.",
+        "completion_evidence": "Restricted recovery timeline, actor approval and restored authorized access; Codex will rerun relevant revocation gates."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
         {
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "in_progress",
-          "reason": "Original open follow-up preserved: M10A Sections 17\u00e2\u20ac\u201c36; existing archive drill only proves business-access denial"
+          "reason": "Original open follow-up preserved: M10A Sections 17â€“36; existing archive drill only proves business-access denial"
         },
         {
           "at": "2026-09-16T20:27:38.027279+00:00",
@@ -1151,54 +935,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Session and role revocation passed; independently verified Owner recovery and complete onboarding/recovery drill remain open."
-        }
-      ]
-    },
-    {
-      "control_id": "IR-02",
-      "title": "Atomic and attributable emergency freeze coverage for automation, financial/Inventory mutations and invitation issuance",
-      "domain": "incident_response",
-      "accountable_role": "Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Atomic and attributable emergency freeze coverage for automation, financial/Inventory mutations and invitation issuance; fresh technical and independent verification evidence required"
-      ],
-      "required_evidence_types": ["security_test", "runbook_drill"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-IR-02-SECURITY-TEST"],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Atomic and attributable emergency freeze coverage for automation, financial/Inventory mutations and invitation issuance; fresh technical and independent verification evidence required",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Seven-capability containment and financial browser freeze passed; full in-flight worker/interruption runbook drill remains open."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Original open follow-up preserved: Current per-rule/settings controls preserve data but cannot stop all in-flight work"
         },
         {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Seven-capability containment and financial browser freeze passed; full in-flight worker/interruption runbook drill remains open."
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1210,26 +951,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Attributable platform operator evidence and incident linkage for environment changes/internal administration; fresh technical and independent verification evidence required"
       ],
       "required_evidence_types": ["security_test", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-IR-03-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Attributable platform operator evidence and incident linkage for environment changes/internal administration; fresh technical and independent verification evidence required",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Application actor/incident is server-derived; platform/internal administrative attribution remains open."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "CI actor and development target are known, but a named human platform audit/MFA review remains absent."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Independent platform attribution acceptance",
+        "accountable_owner": "Security Lead / Platform administrator",
+        "required_action": "Review named privileged platform operations and prove incident linkage plus independent recovery.",
+        "why_unavailable": "CI actor and development target are known, but a named human platform audit/MFA review remains absent.",
+        "completion_evidence": "Verified operator/audit/incident references with independent acknowledgement."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -1247,6 +994,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Application actor/incident is server-derived; platform/internal administrative attribution remains open."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1263,25 +1015,26 @@
       "m10a_blocker": false,
       "m10b_blocker": true,
       "target_date": "Before applicable M10B activation",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Assign and verify responder contacts, independent Owner recovery channel, restricted incident store ACLs and incident monitoring; fresh technical and independent verification evidence required"
       ],
       "required_evidence_types": ["security_test", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-IR-04-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Assign and verify responder contacts, independent Owner recovery channel, restricted incident store ACLs and incident monitoring; fresh technical and independent verification evidence required",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned"
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Real contact channels, shared evidence custody and monitor recipients are external dependencies."
       ],
       "external_action": {
-        "dependency": "Human responders and restricted incident store",
-        "accountable_owner": "Business / Security Owner",
-        "required_action": "Assign/test contacts, verify Owner recovery and evidence-store ACLs",
-        "why_unavailable": "No actual staffing or approved independent store supplied",
-        "completion_evidence": "Named accountable human and independently verified restricted configuration/policy evidence"
+        "dependency": "Responder/store/monitor ownership",
+        "accountable_owner": "Owner / Incident lead",
+        "required_action": "Complete CONTACTS-STORE and OBSERVABILITY-LIVE and independently acknowledge responder availability.",
+        "why_unavailable": "Real contact channels, shared evidence custody and monitor recipients are external dependencies.",
+        "completion_evidence": "Private contact acknowledgements, store ACLs and received controlled alerts."
       },
       "deferred": null,
       "canonical_reference": null,
@@ -1295,54 +1048,11 @@
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "pending_external_action",
           "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        }
-      ]
-    },
-    {
-      "control_id": "IR-05",
-      "title": "Execute isolated backup/restore, migration and compatible deployment rollback drills",
-      "domain": "incident_response",
-      "accountable_role": "Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Execute isolated backup/restore, migration and compatible deployment rollback drills; fresh technical and independent verification evidence required"
-      ],
-      "required_evidence_types": ["security_test", "runbook_drill"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-IR-05-RESTORE-DRILL"],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Execute isolated backup/restore, migration and compatible deployment rollback drills; fresh technical and independent verification evidence required",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Isolated restore passed; full operational deployment recovery and populated M7-M9 restore remain open."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Original open follow-up preserved: Tabletop decision and local projection repair are not restore/deployment acceptance"
         },
         {
-          "at": "2026-09-16T20:27:38.027279+00:00",
-          "status": "in_progress",
-          "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Isolated restore passed; full operational deployment recovery and populated M7-M9 restore remain open."
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1354,26 +1064,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Hosted/browser account revocation and safe-mode acceptance, genuine provider credential rotation/recovery where required; fresh technical and independent verification evidence required"
       ],
       "required_evidence_types": ["security_test", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-IR-06-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Hosted/browser account revocation and safe-mode acceptance, genuine provider credential rotation/recovery where required; fresh technical and independent verification evidence required",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Selected hosted/browser checks passed; full prescribed acceptance remains incomplete."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Official local Convex old/new credential rotation passed; that does not prove hosted Resend/OpenAI/platform account rotation or independent recovery."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Independent provider credential rotation/custody",
+        "accountable_owner": "Provider account administrator / Security Lead",
+        "required_action": "Schedule and authorize a real account-level credential rotation/recovery exercise with an independent custodian.",
+        "why_unavailable": "Official local Convex old/new credential rotation passed; that does not prove hosted Resend/OpenAI/platform account rotation or independent recovery.",
+        "completion_evidence": "Redacted old-key rejection/new-key success, dependent-function recovery and independent custody receipt; Codex will execute/reconcile the approved drill."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -1391,6 +1107,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Selected hosted/browser checks passed; full prescribed acceptance remains incomplete."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1402,26 +1123,32 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
+      "status": "pending_external_action",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Complete existing M10A auth/MFA, environment, retention and monitoring hardening requirements; fresh technical and independent verification evidence required"
       ],
       "required_evidence_types": ["security_test", "runbook_drill"],
       "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-IR-07-CODE-REVIEW"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Complete existing M10A auth/MFA, environment, retention and monitoring hardening requirements; fresh technical and independent verification evidence required",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Inherited internal security, migration and performance requirements remain unresolved."
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Required supported-provider selection and human policy/monitoring decisions remain unavailable."
       ],
-      "external_action": null,
+      "external_action": {
+        "dependency": "Outstanding MFA/privacy/monitoring approvals",
+        "accountable_owner": "Owner / Security Lead",
+        "required_action": "Complete AUTH-MFA, PRIVACY-POLICY and OBSERVABILITY-LIVE; independently review the aggregate incident-hardening closure.",
+        "why_unavailable": "Required supported-provider selection and human policy/monitoring decisions remain unavailable.",
+        "completion_evidence": "Linked final approvals and acceptance artifacts; no inherited requirement waived."
+      },
       "deferred": null,
       "canonical_reference": null,
       "history": [
@@ -1439,6 +1166,11 @@
           "at": "2026-09-16T22:58:19.835310+00:00",
           "status": "failed",
           "reason": "Inherited internal security, migration and performance requirements remain unresolved."
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     },
@@ -1455,18 +1187,18 @@
       "m10a_blocker": false,
       "m10b_blocker": false,
       "target_date": "Before any Calendar activation",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Complete original M9 Calendar Gate before activation; verify false flag and no provider calls while deferred"
       ],
       "required_evidence_types": ["configuration_check"],
       "allowed_evidence_environments": ["development", "future_production"],
-      "evidence_ids": [],
+      "evidence_ids": ["EV-RESUME-M9-CALENDAR-CONFIGURATION-CHECK"],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Complete original M9 Calendar Gate before activation; verify false flag and no provider calls while deferred",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned"
+        "M9_CALENDAR_ENABLED=false, OAuth unconfigured, no live Calendar acceptance. Original deferred integration gate remains mandatory before enablement."
       ],
       "external_action": null,
       "deferred": {
@@ -1492,6 +1224,11 @@
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "deferred",
           "reason": "Reviewed against supplied specification without assuming inherited acceptance"
+        },
+        {
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "deferred",
+          "reason": "M9_CALENDAR_ENABLED=false, OAuth unconfigured, no live Calendar acceptance. Original deferred integration gate remains mandatory before enablement."
         }
       ]
     },
@@ -1508,7 +1245,7 @@
       "m10a_blocker": false,
       "m10b_blocker": true,
       "target_date": "Before applicable M10B activation",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
+      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Verify real delivery, link expiry/reuse, production origins, transactional provider and sender/domain before authorized activation"
       ],
@@ -1523,14 +1260,15 @@
       "closure_evidence_ids": [],
       "completion_action": "Verify real delivery, link expiry/reuse, production origins, transactional provider and sender/domain before authorized activation",
       "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned"
+        "Technical scoped results are in M10A-final-results.json; no human/provider approval is asserted.",
+        "Production configuration/customer or staff messaging is prohibited in this task; historical M9 commercial email is not auth-email acceptance."
       ],
       "external_action": {
-        "dependency": "Separately authorized production setup",
-        "accountable_owner": "Business / Security Owner",
-        "required_action": "During M10B verify production auth origins/delivery and provider/sender using authorized test inbox",
-        "why_unavailable": "Production creation, deployment and sends explicitly unauthorized in M10A",
-        "completion_evidence": "Named accountable human and independently verified restricted configuration/policy evidence"
+        "dependency": "Real production auth delivery and origin verification",
+        "accountable_owner": "Owner / Authentication administrator",
+        "required_action": "After separate production authorization, configure sender/domain/provider and verify actual onboarding/recovery delivery, link expiry/reuse and production origins.",
+        "why_unavailable": "Production configuration/customer or staff messaging is prohibited in this task; historical M9 commercial email is not auth-email acceptance.",
+        "completion_evidence": "Real designated-recipient confirmation and provider/browser redirect/recovery evidence; Codex will test only the separately authorized recipients."
       },
       "deferred": null,
       "canonical_reference": null,
@@ -1539,135 +1277,11 @@
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "pending_external_action",
           "reason": "Reviewed against supplied specification without assuming inherited acceptance"
-        }
-      ]
-    },
-    {
-      "control_id": "BROWSER-ACCEPTANCE",
-      "title": "Complete desktop and mobile security acceptance",
-      "domain": "application_security",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Complete Sections 306-380 including stale role/assignment tabs, nested URL IDs, private files, network interruption, double submits, recovery and browser cache/prefetch evidence on final source."
-      ],
-      "required_evidence_types": ["hosted_test", "browser_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-FINAL-PARTIAL-BROWSER-ACCEPTANCE-BROWSER-TEST"],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Complete Sections 306-380 including stale role/assignment tabs, nested URL IDs, private files, network interruption, double submits, recovery and browser cache/prefetch evidence on final source.",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "40 selected tests pass; complete Sections 306-380 stale tab/assignment, recovery, private file, double-submit and network-loss matrix remains."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T22:45:28.025900+00:00",
-          "status": "in_progress",
-          "reason": "Explicit continuation requirement mapped without assuming prior acceptance."
         },
         {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "40 selected tests pass; complete Sections 306-380 stale tab/assignment, recovery, private file, double-submit and network-loss matrix remains."
-        }
-      ]
-    },
-    {
-      "control_id": "FULL-REGRESSION",
-      "title": "Complete fresh M1-M9 hosted business regression",
-      "domain": "release",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Run complete hosted M1-M9 business workflow regression on the final candidate; local suites and endpoint-role checks do not replace it."
-      ],
-      "required_evidence_types": ["automated_test", "hosted_test"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-FINAL-PARTIAL-FULL-REGRESSION-AUTOMATED-TEST"],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Run complete hosted M1-M9 business workflow regression on the final candidate; local suites and endpoint-role checks do not replace it.",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "531 local tests and selected hosted suites pass; complete fresh hosted M1-M9 business workflow matrix unexecuted."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T22:45:28.025900+00:00",
-          "status": "in_progress",
-          "reason": "Explicit continuation requirement mapped without assuming prior acceptance."
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "531 local tests and selected hosted suites pass; complete fresh hosted M1-M9 business workflow matrix unexecuted."
-        }
-      ]
-    },
-    {
-      "control_id": "FINAL-RECONCILIATION",
-      "title": "Independent final M4 M5 M6 M7 M9 reconciliation",
-      "domain": "release",
-      "accountable_role": "Security / Technical Lead",
-      "assigned_owner": null,
-      "implementation_owner": "Engineering operator; human assignment required",
-      "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "failed",
-      "severity_if_open": "P1",
-      "m10a_blocker": true,
-      "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-16T22:58:19.835310+00:00",
-      "required_evidence": [
-        "Complete independent authoritative Inventory, signed financial, analytics fact, automation and Communication reconciliation after the final hosted fixtures, with bounded scope and zero unexplained findings."
-      ],
-      "required_evidence_types": ["reconciliation"],
-      "allowed_evidence_environments": ["local", "development"],
-      "evidence_ids": ["EV-FINAL-PARTIAL-FINAL-RECONCILIATION-RECONCILIATION"],
-      "closed_at": null,
-      "closure_evidence_ids": [],
-      "completion_action": "Complete independent authoritative Inventory, signed financial, analytics fact, automation and Communication reconciliation after the final hosted fixtures, with bounded scope and zero unexplained findings.",
-      "limitations": [
-        "Production and M10B unauthorized; actual human owner unassigned",
-        "Scoped M4/M5 and Communication/serialized-asset checks pass; independent full M7 and database-wide M5 reconciliation remain unproven. M6 result is reported separately."
-      ],
-      "external_action": null,
-      "deferred": null,
-      "canonical_reference": null,
-      "history": [
-        {
-          "at": "2026-09-16T22:45:28.025900+00:00",
-          "status": "in_progress",
-          "reason": "Explicit continuation requirement mapped without assuming prior acceptance."
-        },
-        {
-          "at": "2026-09-16T22:58:19.835310+00:00",
-          "status": "failed",
-          "reason": "Scoped M4/M5 and Communication/serialized-asset checks pass; independent full M7 and database-wide M5 reconciliation remain unproven. M6 result is reported separately."
+          "at": "2026-09-17T01:06:53.961857+00:00",
+          "status": "pending_external_action",
+          "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
         }
       ]
     }
@@ -1685,14 +1299,32 @@
       "Staff UAT and separately approved feature/rule enablement"
     ],
     "external_dependencies": [
-      "Provider/platform account MFA and recovery-channel evidence",
-      "Named incident responders, restricted evidence store and independent monitoring",
-      "Business/privacy/accounting retention, CASL and notification approval"
+      "First-access delivery and named onboarding operator",
+      "Production recovery origin and independent recipient",
+      "Supported privileged MFA architecture and real account enrollment",
+      "Independent ingress protection",
+      "Approved retention and actual provider contracts",
+      "Named responder and independent recovery exercise",
+      "Approved backup policy",
+      "Independent protected backup store/schedule/alert route",
+      "Independent monitoring destination and responder",
+      "Repository protection and privileged release owners",
+      "Authentication support decision and release governance",
+      "Named MFA-protected platform operators",
+      "Responder contacts and independent evidence custody",
+      "Trusted independent Owner recovery",
+      "Independent platform attribution acceptance",
+      "Responder/store/monitor ownership",
+      "Independent provider credential rotation/custody",
+      "Outstanding MFA/privacy/monitoring approvals",
+      "Real production auth delivery and origin verification"
     ],
     "known_p2": [
       "Inline styles remain permitted for Radix; script CSP remains nonce restricted",
       "Browser tests use desktop and mobile emulation, not physical devices",
-      "Framework server logs contain aborted navigation stream diagnostics; browser workflows pass"
+      "Framework server logs contain aborted navigation stream diagnostics; browser workflows pass",
+      "Reference selectors load bounded pages into the browser; very large reference catalogs need searchable selector UX.",
+      "Representative migration supports its native command format; real source/historical mappings require separate approval and validation."
     ]
   },
   "risks_accepted": [],
@@ -1709,12 +1341,12 @@
     {
       "number": 1,
       "field": "Final pushed SHA",
-      "result": "Candidate source 75f490a8c5e4a96b8d7ffa8628291d44b261b880. Final evidence packaging SHA is returned after push; a commit cannot embed its own SHA."
+      "result": "Tested runtime source 755e1c95d99e22a63f474194d63750ed66cf5fa0. Final documentation/evidence packaging SHA is returned after push; a commit cannot embed its own SHA."
     },
     {
       "number": 2,
       "field": "M10A decision",
-      "result": "M10A PRODUCTION READINESS GATE FAILED"
+      "result": "M10A PRODUCTION READINESS GATE PENDING EXTERNAL ACTION"
     },
     {
       "number": 3,
@@ -1729,27 +1361,27 @@
     {
       "number": 5,
       "field": "Local test results",
-      "result": "531 passed (19 Node + 512 Convex), 0 failed; TypeScript, lint and formatting passed."
+      "result": "549 passed (19 Node + 530 Convex), 0 failed; 31 Vitest files. TypeScript, ESLint and formatting passed."
     },
     {
       "number": 6,
       "field": "Hosted test results",
-      "result": "116 selected scenarios passed, 0 failed: 95 security, 14 commercial, 7 Inventory quantity. Reconciliation reported separately."
+      "result": "144 hosted scenarios passed: 95 role/containment, eight extra record/assignment/OCC, 14 commercial, seven quantity and 20 native automation. Zero failed. Eight five-sample performance benchmarks also pass; not counted as 40 independent business cases."
     },
     {
       "number": 7,
       "field": "Desktop browser results",
-      "result": "20 passed, 0 failed; selected subset of Sections 306-380."
+      "result": "70 unique desktop cases passed, zero final failures. Failed attempts preserved; all 21 failures from the 138-case run passed on targeted rerun. Final smoke added one desktop double-submit case."
     },
     {
       "number": 8,
       "field": "Mobile browser results",
-      "result": "20 passed, 0 failed; Pixel 7 emulation on Edge/Chromium, not physical-device UAT."
+      "result": "70 unique mobile cases passed, zero final failures; Pixel 7 emulation on Edge/Chromium. Six additional isolated recovery cases passed per viewport; not physical-device UAT."
     },
     {
       "number": 9,
       "field": "Auth/session-revocation result",
-      "result": "Local/hosted session invalidation, archive and role change pass; old tokens remain denied after restoration. Full browser/multi-tab recovery matrix incomplete."
+      "result": "Local, hosted and already-open desktop/mobile session revocation passed; archived/unassigned fresh sign-in denied. Restored roles do not resurrect old sessions."
     },
     {
       "number": 10,
@@ -1759,27 +1391,27 @@
     {
       "number": 11,
       "field": "Safe Mode result",
-      "result": "Seven capability fences and Owner financial browser freeze/release pass; full in-flight operational drill remains IR-02."
+      "result": "Seven capability fences, in-flight/claimed dispatch checks, recovery freeze and Owner financial browser freeze/release pass. Human incident ownership remains external."
     },
     {
       "number": 12,
       "field": "Authorization/IDOR result",
-      "result": "M1/M2 assignment and Marketing title isolation corrected. Complete nested-ID/stale-assignment matrix incomplete."
+      "result": "95 role/containment and eight direct nested-record/OCC/assignment checks pass, with desktop/mobile malformed IDs, stale assignment, current-role and private DTO tests."
     },
     {
       "number": 13,
       "field": "Security red-team result",
-      "result": "95 hosted security and 16 browser security checks pass; browser subset is included in 40. Full red-team acceptance incomplete."
+      "result": "Hosted security/record cases 103 passed. Browser security/hardening 36 passed (included in 140). Local public/provider/incident negatives pass. No independent third-party penetration test claimed."
     },
     {
       "number": 14,
       "field": "Authentication/onboarding result",
-      "result": "Section 235 controlled operator provisioning plus supported recovery selected; no public signup. Initial credential delivery/complete hosted onboarding acceptance incomplete."
+      "result": "Section 235 controlled operator provisioning plus supported recovery retained; no public signup. Fictional provisioned roles/login and revoked-user denial pass. Real first-access delivery and named operator verification remain pending external action."
     },
     {
       "number": 15,
       "field": "Account recovery result",
-      "result": "Five local framework recovery tests pass: single use/session invalidation, expiry, archive, mismatch, throttle. Real delivery, browser recovery and direct-backend issuance matrix incomplete."
+      "result": "Eight local recovery cases and 12 actual isolated browser cases pass: expired/mismatched/reused code, valid reset, new login/redirect and logout across both viewports. Isolated code injection is not email delivery; production delivery/origin and independent Owner recovery remain pending."
     },
     {
       "number": 16,
@@ -1794,17 +1426,17 @@
     {
       "number": 18,
       "field": "Public endpoint security result",
-      "result": "Auth POST/body/origin guards and local webhook/unsubscribe negatives pass; full hosted public-endpoint acceptance incomplete."
+      "result": "Bounded HTTP body, malformed auth, same-origin/CSRF/CORS, missing/invalid webhook signatures, unsubscribe and direct backend authorization tests pass. Actual production ingress configuration remains external."
     },
     {
       "number": 19,
       "field": "CSRF assessment/result",
-      "result": "Same-origin auth POST required; hostile Origin blocked in both viewports. Full CSRF matrix not complete."
+      "result": "Exact-origin auth POST, hostile/null/cross-origin inputs and state-changing endpoint review pass in local/optimized browser scope. No production-origin proof inferred."
     },
     {
       "number": 20,
       "field": "XSS/sanitization result",
-      "result": "Parser-injected script/event-handler blocked; full stored-data/AI/Communication XSS matrix incomplete."
+      "result": "Stored CRM markup renders inert; parser-injected script/event handlers blocked. React output, bounded server-side AI/Communication context and fixed provider destinations reviewed; local provider/content contracts pass."
     },
     {
       "number": 21,
@@ -1814,7 +1446,7 @@
     {
       "number": 22,
       "field": "Security-header result",
-      "result": "Selected CSP/no-store/frame/nosniff checks pass. HSTS requires explicit verified production HTTPS. Full header/frame/prefetch matrix incomplete."
+      "result": "Nonce CSP, frame denial, no-store, nosniff, HTTP-only SameSite auth cookies and cache/prefetch boundaries pass. Actual production HTTPS/HSTS remains a separately authorized origin gate."
     },
     {
       "number": 23,
@@ -1824,17 +1456,17 @@
     {
       "number": 24,
       "field": "Rate-limit/abuse result",
-      "result": "Streaming budgets and local rate/recovery tests pass; full hosted auth/search/abuse and infrastructure acceptance incomplete."
+      "result": "Durable direct-backend hourly bounds: 500 global, 50 sign-in/verification per identity, five recovery per identity. Existing limits were not raised for tests; fixture throttling was observed and rerun after natural expiry. Hosting ingress/independent abuse monitors require external configuration."
     },
     {
       "number": 25,
       "field": "Frontend secret/network inspection result",
-      "result": "Both 47-file public bundles have 0 known secret values and 0 maps. Selected browser storage/cookie checks pass; complete network/download review incomplete."
+      "result": "Both final public bundles: 47 files, zero maps and private-value matches. Desktop/mobile role-specific response/cache/prefetch/storage checks pass. No active file download endpoint exists."
     },
     {
       "number": 26,
       "field": "Data-classification/privacy result",
-      "result": "Classification/minimization procedures exist; Marketing private title corrected. Full export/log/provider review incomplete."
+      "result": "DTO minimization, safe errors/logs and authenticated audit identity reviewed/tested. No new bulk export, destructive retention process or provider transmission. Actual retention/legal/provider-account approval remains pending."
     },
     {
       "number": 27,
@@ -1849,32 +1481,32 @@
     {
       "number": 29,
       "field": "Incident-response result",
-      "result": "Runbook/local drills exist; independent Owner/platform/operational recovery drills incomplete."
+      "result": "Five local fictional incident drills, emergency dispatch tests, 95 hosted role/containment checks and browser revocation/freeze pass. Named human recovery, monitoring, custody and platform MFA remain unverified."
     },
     {
       "number": 30,
       "field": "IR-01 through IR-07 final status",
-      "result": "IR-01 failed; IR-02 failed; IR-03 failed; IR-04 pending external action; IR-05 failed; IR-06 failed; IR-07 failed. None waived."
+      "result": "IR-01 pending_external_action; IR-02 passed; IR-03 pending_external_action; IR-04 pending_external_action; IR-05 passed; IR-06 pending_external_action; IR-07 pending_external_action. Original requirements retained."
     },
     {
       "number": 31,
       "field": "Incident drill results",
-      "result": "Five local fictional incident drills rerun in full suite; hosted containment/role revocation supplements them. Full operator recovery exercise incomplete."
+      "result": "Technical compromised-account, email-storm/unknown-delivery, AI-key containment and bad-release drift repair drills pass. Actual isolated restore, key rotation and migration recovery also pass; independent human/provider-account exercise remains external."
     },
     {
       "number": 32,
       "field": "Backup strategy result",
-      "result": "Strategy and isolated tooling exist; protected schedule, retention, monitoring and operational readiness incomplete."
+      "result": "Source/file/config inventory and protected isolated backup/restore tools verified. Business RPO/RTO/retention approval, independent production store/schedule/custody and failure alert are still external."
     },
     {
       "number": 33,
       "field": "Isolated restore result",
-      "result": "557 rows, 100 tables, one file; six comparison/containment checks passed. Import 13,881 ms; isolated loopback only."
+      "result": "672 rows across 103 tables and one file restored; populated M7/M8/M9 included. Exact comparisons and containment pass. Import 25,324 ms; isolated loopback only."
     },
     {
       "number": 34,
       "field": "Restore reconciliation result",
-      "result": "Exact tables/IDs/history and storage bytes match; financial/Inventory views match; role denied; recovery fences enforced; nonempty import rejected."
+      "result": "Exact IDs/history/bytes, financial/Inventory views, role denial, frozen recovery and nonempty rejection pass. Compatible prior-code reads and forward restore preserve exact data. DPAPI encryption/ACL roundtrip and tamper rejection also pass."
     },
     {
       "number": 35,
@@ -1909,12 +1541,12 @@
     {
       "number": 41,
       "field": "Supply-chain review",
-      "result": "Lockfile/auth patch verified. Lucia/Oslo/ESLint deprecation/support review remains an open supply-chain gate."
+      "result": "Pinned lockfile/patch, clean install/build and zero-advisory audit verified. Convex Auth beta/Next integration and transitive Lucia/Oslo support posture documented. Supported production auth/MFA choice remains a human/provider prerequisite, not a claimed waiver."
     },
     {
       "number": 42,
       "field": "GitHub Actions/CI security result",
-      "result": "Pinned-action read-only quality workflow added; no secrets/deploy/privileged PR trigger. Remote run and branch protections not verified."
+      "result": "Immutable pinned actions, read-only token, no deploy/secrets/privileged PR workflow reviewed. GitHub quality run 35168973337 on runtime candidate 755e1c95d99e22a63f474194d63750ed66cf5fa0 succeeded; authenticated actor daryan-kf. Main protection endpoint reported unprotected: external governance prerequisite."
     },
     {
       "number": 43,
@@ -1929,137 +1561,137 @@
     {
       "number": 45,
       "field": "Browser-bundle secret scan",
-      "result": "47 public files in each workspace/clean bundle; zero maps and known private-value matches."
+      "result": "47 public files in each final workspace/clean build; zero source maps, credential-pattern or known private-value matches."
     },
     {
       "number": 46,
       "field": "Source/Git secret scan",
-      "result": "Source and reachable history checked. History: 1,332 objects/793 blobs at scan time; zero pattern/known-credential/private-path findings. Unreachable/unfetched objects excluded."
+      "result": "462 tracked/nonignored release files and 1,465 reachable local Git objects / 884 blobs scanned; zero private paths, credential patterns or known local/test/provider secret values found. Unfetched/unreachable objects excluded; values never logged."
     },
     {
       "number": 47,
       "field": "Migration tooling result",
-      "result": "FAILED: required migration importer not implemented; plan only."
+      "result": "Internal localhost-only migration adapter implemented with explicit opt-in, current Owner identity, native validation/audit and versioned fictional command format; production import is prohibited."
     },
     {
       "number": 48,
       "field": "Migration dry-run result",
-      "result": "NOT RUN: migration dry run requires tooling."
+      "result": "Atomic dry-run validates all requested native commands then rolls back the full transaction. Whole authoritative snapshot equality verified; invalid parent/money/date/role input rejected without partial writes."
     },
     {
       "number": 49,
       "field": "Migration rehearsal result",
-      "result": "NOT RUN: representative migration rehearsal incomplete; restore is not migration."
+      "result": "Six real isolated scenarios passed against 13 fictional commands: dry-run, invalid-input rollback, checkpoint/resume, exact replay, changed-source conflict and reconciliation. Ten local/security cases also pass."
     },
     {
       "number": 50,
       "field": "Migration idempotency result",
-      "result": "NOT RUN: migration replay/idempotency/conflict acceptance absent."
+      "result": "Stable IDs, package fingerprint and per-record payload hashes enforce idempotency. Replays preserve completed_at/checkpoint evidence exactly; source changes conflict."
     },
     {
       "number": 51,
       "field": "Migration reconciliation result",
-      "result": "NOT RUN: migration relationship/financial/Inventory reconciliation absent."
+      "result": "13 committed migration records reconciled with CRM/project/catalog/customer and invoice/payment relationships/balances. Native commands generate current audits/projections; arbitrary historical/real-source mapping not claimed."
     },
     {
       "number": 52,
       "field": "Migration rollback/forward-fix readiness",
-      "result": "Rollback/forward-fix plan exists; executable migration recovery rehearsal absent."
+      "result": "Transactional dry-run/error rollback, durable checkpoint resume, immutable replay, and compatible-code restore/forward drill passed in isolated environment. Real irreversible effects require separate reconciliation/authorization."
     },
     {
       "number": 53,
       "field": "Performance dataset/scenario summary",
-      "result": "501 fictional Realtors; one project/asset/invoice smoke fixture; nine local operations with ten measured samples each."
+      "result": "501-Realtor local baseline plus 1000-activity history, 206-reference pagination and 1000-product/3000-asset/1000-ledger tests. Native hosted fixtures and eight query distributions complement local scale."
     },
     {
       "number": 54,
       "field": "Performance baseline/result",
-      "result": "Local timings recorded in final-results; no hosted/production SLA implied. Full scale/history/slow-mobile acceptance incomplete."
+      "result": "Local distributions recorded; eight hosted queries x five samples passed p95 <5s and <1MB, observed max p95 424ms/max payload 18,132 bytes. Development network results are not a production SLA."
     },
     {
       "number": 55,
       "field": "Hosted concurrency result",
-      "result": "Selected M5 numbering/payments/credits/extensions and M4 reservation protections pass; complete concurrency matrix incomplete."
+      "result": "Native M4 overreservation, M5 numbering/payment/credit/extension, M7 duplicate execution and CRM same-version races pass; one-winner/OCC and replay semantics preserved."
     },
     {
       "number": 56,
       "field": "Queue/backpressure result",
-      "result": "Existing M7/M9 local queue tests pass; full hosted queue/outage/backpressure load acceptance incomplete."
+      "result": "Local queue/circuit/unknown-delivery/claimed-dispatch containment and 20 hosted native automation cases pass. No live provider outage induced; original real-email acceptance retained and Calendar disabled."
     },
     {
       "number": 57,
       "field": "M1 regression",
-      "result": "M1 local tests pass; assignment and Marketing regression added. Selected hosted role checks pass; full workflow matrix incomplete."
+      "result": "M1 local plus full desktop/mobile creation, brokerage selection, activities, follow-up, filtering/search and archive workflows pass; direct assignment/Marketing/stale-session boundaries pass."
     },
     {
       "number": 58,
       "field": "M2 regression",
-      "result": "M2 local tests pass; Sales property/opportunity/quote/aggregate boundaries tightened. Full hosted workflow matrix incomplete."
+      "result": "M2 local plus desktop/mobile property→opportunity→consultation→exact quote→won workflow and restricted-role denials pass."
     },
     {
       "number": 59,
       "field": "M3 regression",
-      "result": "M3 local tests and selected scheduling/Inventory handoffs pass; full fresh hosted regression incomplete."
+      "result": "M3 local plus desktop/mobile won handoff, rooms, checklist, scheduling, crew and private-field boundaries pass."
     },
     {
       "number": 60,
       "field": "M4 regression",
-      "result": "M4 local tests and seven hosted quantity/ledger checks pass; full cross-module acceptance open."
+      "result": "M4 local, seven hosted quantity cases, desktop/mobile catalog/reservation/pick/install/return/repair/transfer workflows pass; reference paging past 100 corrected."
     },
     {
       "number": 61,
       "field": "M5 regression",
-      "result": "M5 local tests and 14 hosted integrity/concurrency checks pass; whole-database financial proof incomplete."
+      "result": "M5 local, 14 hosted concurrency/integrity cases and desktop/mobile agreement/deposit/payment/credit/damage-review workflows pass; final all-page financial checks clean."
     },
     {
       "number": 62,
       "field": "M6 regression",
-      "result": "M6 local tests and independent 4,221-source reconciliation pass; zero source/bucket drift."
+      "result": "M6 local and desktop/mobile executive/role dashboards pass; final independent authoritative-source and bucket rebuild clean."
     },
     {
       "number": 63,
       "field": "M7 regression",
-      "result": "M7 local/selected role and containment tests pass; full hosted workflows and independent final reconciliation incomplete."
+      "result": "M7 local, 20 native hosted cases, desktop/mobile actions/notifications and final all-page execution/task/link reconciliation pass. Three previously repaired duplicate history rows preserved."
     },
     {
       "number": 64,
       "field": "M8 regression",
-      "result": "M8 local/selected hosted role and containment tests pass. Accepted development provider evidence preserved; no new provider calls."
+      "result": "M8 local and desktop/mobile deterministic navigation/role-aware disabled-provider controls pass. Accepted live development evidence preserved; no new provider calls or production enablement."
     },
     {
       "number": 65,
       "field": "M9 regression",
-      "result": "M9 local tests, 14 communication browser checks and full paginated Communication reconciliation pass. Calendar live acceptance deferred."
+      "result": "M9 local provider/security contracts, desktop/mobile disabled communication controls and four final all-page reconciliation queries pass. Historical Email PASS preserved; Calendar live gate remains deferred."
     },
     {
       "number": 66,
       "field": "Final M4 Inventory reconciliation",
-      "result": "Quantity buckets reconcile; 77 serialized counters have zero mismatch. Full all-asset/reservation integrity proof remains open."
+      "result": "584 quantity bucket entries, 468 movement entries, 254 reservations and 87 serialized counters checked; zero unexplained drift/parent/overlap findings."
     },
     {
       "number": 67,
       "field": "Final M5 financial integrity",
-      "result": "14 scoped hosted integrity checks and restored views pass; not whole-database signed-ledger certification."
+      "result": "104 payment entries and 132 invoice entries checked across all pages for signed allocations, parent linkage, overpayment/credit/void integrity; zero findings. This is system consistency, not independent accounting certification."
     },
     {
       "number": 68,
       "field": "Final M6 reconciliation",
-      "result": "Completed independent rebuild: 4,221 sources; source drift 0, bucket drift 0."
+      "result": "Independent final rebuild complete: 4768 sources, source drift 0, bucket drift 0."
     },
     {
       "number": 69,
       "field": "Final M7 reconciliation",
-      "result": "NOT COMPLETE: independent final M7 reconciliation not executed."
+      "result": "248 automation entries checked across 13 pages; zero unexplained duplicate-family/link/parent findings. Three previously repaired historical duplicates explicitly retained."
     },
     {
       "number": 70,
       "field": "Final M9 Communication reconciliation",
-      "result": "All pages: six Communications, five outbox jobs, nine delivery events, four provider mappings; zero findings."
+      "result": "All pages: six Communications, five outbox jobs, nine events, four provider mappings; zero findings. No replacement emails sent."
     },
     {
       "number": 71,
       "field": "Calendar deferred-state verification",
-      "result": "M9 CALENDAR GATE DEFERRED \u2014 EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT. M9_CALENDAR_ENABLED=false."
+      "result": "M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT. M9_CALENDAR_ENABLED=false."
     },
     {
       "number": 72,
@@ -2079,12 +1711,12 @@
     {
       "number": 75,
       "field": "Acceptance-helper cleanup result",
-      "result": "No temporary privileged helper deployed to shared development. Isolated helpers stay ignored/private. Existing internal disposable-account helper is production-denied; final lifecycle/fixture inventory review remains open."
+      "result": "Isolated helper code and identities remain private/ignored. No temporary privileged helper deployed; existing internal account helper remains development opt-in and production-denied. Fixture identities/history are fictional; no credential is published."
     },
     {
       "number": 76,
       "field": "Final development safe-state result",
-      "result": "Emergency controls normal; fictional crew role restored; interrupted quantity projects cancelled/archived; Email/Calendar disabled. Auditable fictional history retained."
+      "result": "Read-only final check: all emergency controls normal, crew role restored, zero enabled automation rules, M9 Email/Calendar false, acceptance/auth-email/production approval flags false. Backup monitor truthfully unknown."
     },
     {
       "number": 77,
@@ -2094,37 +1726,37 @@
     {
       "number": 78,
       "field": "Readiness-control register reconciliation",
-      "result": "43 controls; valid=true, M10A pass=false, M10B entry=false. All 503 section identifiers mapped: 1-474 plus 224A-AC."
+      "result": "43 controls; valid=true, pass=false, M10B entry=false. 22 passed, one justified not-applicable upload control, 20 open. All 503 frozen section identifiers mapped."
     },
     {
       "number": 79,
       "field": "Evidence-register reconciliation",
-      "result": "34 evidence records; historical evidence preserved, fresh scoped closures and incomplete aggregate evidence explicit."
+      "result": "93 evidence records; historical records retained and new scoped evidence bound to the tested runtime SHA. No human approval fabricated."
     },
     {
       "number": 80,
       "field": "Readiness evidence freshness result",
-      "result": "13 historical records stale under changed source; none used as current closure. Current closure references validate."
+      "result": "28 historical records stale; none used for current closure. Current source-sensitive references validate. New security/schema/dependency/config changes require affected retests."
     },
     {
       "number": 81,
       "field": "Controls passed",
-      "result": "9"
+      "result": "22"
     },
     {
       "number": 82,
       "field": "Controls open",
-      "result": "34"
+      "result": "20"
     },
     {
       "number": 83,
       "field": "Controls failed",
-      "result": "27"
+      "result": "0"
     },
     {
       "number": 84,
       "field": "Controls pending external action",
-      "result": "6"
+      "result": "19"
     },
     {
       "number": 85,
@@ -2134,22 +1766,22 @@
     {
       "number": 86,
       "field": "Remaining M10A blockers",
-      "result": "27"
+      "result": "13 unresolved external M10A controls; zero internal Codex-completable P0/P1"
     },
     {
       "number": 87,
       "field": "Remaining M10B blockers",
-      "result": "33, including conditional Calendar enablement requirement"
+      "result": "19, including conditional Calendar activation gate"
     },
     {
       "number": 88,
       "field": "Controls lacking assigned human owner",
-      "result": "43; accountable roles exist, actual humans unassigned"
+      "result": "43; accountable roles recorded, actual named human assignments not invented"
     },
     {
       "number": 89,
       "field": "Controls lacking sufficient evidence",
-      "result": "34"
+      "result": "19"
     },
     {
       "number": 90,
@@ -2159,27 +1791,27 @@
     {
       "number": 91,
       "field": "P0 defect count",
-      "result": "0 known open P0 findings in executed scope; unexecuted scenarios not asserted safe."
+      "result": "0 known unresolved P0 defects in executed scope."
     },
     {
       "number": 92,
       "field": "P1 defect count",
-      "result": "27 internal P1 readiness blockers, not 27 newly found exploits. No confirmed unresolved runtime defect within executed checks."
+      "result": "0 unresolved internal M10A P1 defects; 19 external P1 readiness controls remain unclosed, not waived."
     },
     {
       "number": 93,
       "field": "P2/known limitation summary",
-      "result": "Inline style exception; physical-device testing absent; server aborted-navigation diagnostics. Deprecated dependencies remain a supply-chain gate."
+      "result": "Mobile emulation rather than physical UAT; Radix inline-style CSP exception; aborted-navigation server diagnostics; large reference lists need future searchable UX. Auth/provider support decision remains an external gate."
     },
     {
       "number": 94,
       "field": "Defects discovered during M10A",
-      "result": "Assignment/private-data gaps, role-change session persistence and CSP/auth-request gaps; corrective SDK/UI regressions and test setup/type errors."
+      "result": "Earlier assignment/session/CSP/auth-transport gaps, direct-backend auth/recovery abuse gaps, full-history scans, first-100 reference truncation, brokerage label encoding and migration completion-time replay mutation."
     },
     {
       "number": 95,
       "field": "Defects fixed during M10A",
-      "result": "Assignment/Marketing isolation, supported session revocation, nonce CSP, auth body/origin/error guards, emergency arguments, SDK text/plain/sign-out and Purpose labels fixed; affected checks rerun."
+      "result": "Current-profile authorization, session destruction, bounded auth/role eligibility, nonce/body/origin guards, indexed CRM history, complete bounded inventory reference pages, brokerage label and immutable migration checkpoint replay fixed and tested."
     },
     {
       "number": 96,
@@ -2189,17 +1821,17 @@
     {
       "number": 97,
       "field": "External actions still required",
-      "result": "Named owners/trusted recovery; supported application MFA and operator MFA evidence; independent monitoring/store; privacy/retention/CASL approval; production auth delivery/origin verification after separate authorization."
+      "result": "Exact actions, accountable roles, environment/location, missing evidence and follow-up are listed for every external control in M10A-external-actions.md; no generic configuration claim."
     },
     {
       "number": 98,
       "field": "Release-candidate manifest status",
-      "result": "Manifest identifies exact tested source/lockfile; promotable=false. Final evidence packaging commit is reported after push."
+      "result": "Manifest identifies runtime source 755e1c95d99e22a63f474194d63750ed66cf5fa0, lockfile and final clean build. promotable=false; final documentation commit is returned after push."
     },
     {
       "number": 99,
       "field": "M10B handoff status",
-      "result": "M10B-handoff.md prepared; entry BLOCKED. No go-live authorization."
+      "result": "M10B handoff prepared; entry blocked on external gate closure, actual named human ownership and independent review. No go-live authorization."
     },
     {
       "number": 100,
