@@ -12,6 +12,8 @@ const purgeTables = [
   "inventory_assets",
   "inventory_counters",
   "products",
+  "inventory_categories",
+  "inventory_locations",
 ] as const;
 export const purgeCatalog = internalMutation({
   args: {},
