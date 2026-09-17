@@ -36,6 +36,63 @@ import {
   lossReasons,
   type Stage,
 } from "@/lib/sales/model";
+export function ConvertToProject({
+  opportunityId,
+  stage,
+}: {
+  opportunityId: string;
+  stage: string;
+}) {
+  const viewer = useQuery(api.profiles.viewer),
+    convert = useMutation(api.operations.convertOpportunity),
+    router = useRouter();
+  const [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  if (
+    stage === "lost" ||
+    !viewer?.roles.some((r) => r === "owner" || r === "admin")
+  )
+    return null;
+  return (
+    <div className="mt-3 border-t pt-3">
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          setError("");
+          try {
+            const result = await convert({
+              opportunity_id: opportunityId as Id<"opportunities">,
+            });
+            router.push("/projects/" + result.id);
+          } catch {
+            setError("Could not convert. Check the linked property.");
+            setBusy(false);
+          }
+        }}
+      >
+        {busy
+          ? "Converting…"
+          : stage === "won"
+            ? "Create project →"
+            : "Convert to project →"}
+      </Button>
+      {stage !== "won" && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Marks the opportunity won and opens the new project.
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="mt-2 text-xs text-red-700">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
 type Card = FunctionReturnType<
   typeof api.sales.listOpportunities
 >["page"][number];
@@ -117,6 +174,7 @@ function OpportunityCard({ o }: { o: Card }) {
         </summary>
         <StageControl o={o} />
       </details>
+      <ConvertToProject opportunityId={o._id} stage={o.stage} />
     </article>
   );
 }
@@ -593,6 +651,11 @@ export function OpportunityDetail({ id }: { id: string }) {
         </p>
       )}
       {o.stage === "won" && <Handoff id={o._id} />}
+      {o.stage !== "won" && (
+        <div className="mb-6 max-w-sm">
+          <ConvertToProject opportunityId={o._id} stage={o.stage} />
+        </div>
+      )}
       <div className="grid gap-6 xl:grid-cols-2">
         <Panel title="Stage & sales notes">
           <p className="mb-4 whitespace-pre-wrap text-sm">

@@ -5,7 +5,7 @@ import { query, mutation, type MutationCtx } from "./functions";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { z } from "zod";
-import type { Doc } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import { deny } from "./access";
 import {
   projectStatus,
@@ -409,7 +409,34 @@ export const create = mutation({
         "admin",
         "staging_crew",
       ]);
-    const input = core.parse(projectInput, a.input),
+    const input = core.parse(projectInput, a.input);
+    return await provisionProject(ctx, u, o, {
+      source_quote_id: a.source_quote_id,
+      project_manager_id: a.project_manager_id,
+      designer_id: a.designer_id,
+      staging_lead_id: a.staging_lead_id,
+      template_id: a.template_id,
+      input,
+      rooms: a.rooms,
+    });
+  },
+});
+async function provisionProject(
+  ctx: MutationCtx,
+  u: { userId: Id<"users"> },
+  o: Doc<"opportunities">,
+  a: {
+    source_quote_id: Id<"quotes"> | null;
+    project_manager_id: Id<"users">;
+    designer_id: Id<"users"> | null;
+    staging_lead_id: Id<"users"> | null;
+    template_id?: Id<"project_checklist_templates">;
+    input: z.infer<typeof projectInput>;
+    rooms: string[];
+  },
+) {
+  {
+    const input = a.input,
       config = await core.settings(ctx);
     if (!config.package_types.includes(input.package_type))
       deny("INVALID_INPUT", "Select a configured package.");
@@ -505,6 +532,75 @@ export const create = mutation({
       template_version: template.version,
     });
     return { id, existing: false };
+  }
+}
+// One-click conversion: marks an active opportunity won and provisions the
+// project with defaults (converter as project manager, first configured
+// package, default checklist); rooms and dates are completed on the project.
+export const convertOpportunity = mutation({
+  args: { opportunity_id: v.id("opportunities") },
+  handler: async (ctx, a) => {
+    const u = await core.admins(ctx),
+      o = await ctx.db.get(a.opportunity_id);
+    if (!o || o.deleted_at) deny("UNAVAILABLE");
+    if (o.stage === "lost")
+      deny("INVALID_INPUT", "Reopen the lost opportunity before converting.");
+    const [property, realtor] = await Promise.all([
+      ctx.db.get(o.property_id),
+      ctx.db.get(o.realtor_id),
+    ]);
+    if (
+      !property ||
+      property.deleted_at ||
+      !realtor ||
+      realtor.deleted_at ||
+      property.realtor_id !== o.realtor_id
+    )
+      deny("UNAVAILABLE", "The commercial handoff is unavailable.");
+    const existing = await ctx.db
+      .query("projects")
+      .withIndex("by_opportunity", (q) =>
+        q.eq("opportunity_id", o._id).eq("deleted_at", null),
+      )
+      .first();
+    if (existing) return { id: existing._id, existing: true };
+    if (o.stage !== "won") {
+      const now = new Date().toISOString();
+      await ctx.db.patch(o._id, {
+        stage: "won",
+        stage_changed_at: now,
+        probability: 100,
+        won_at: now,
+        lost_at: null,
+        version: o.version + 1,
+        updated_at: now,
+      });
+      await ctx.db.insert("audit_logs", {
+        actor_id: u.userId,
+        action: "OPPORTUNITY_WON",
+        entity: "opportunities",
+        entity_id: o._id,
+        old_value: { stage: o.stage },
+        new_value: { stage: "won", via: "convert_to_project" },
+        created_at: now,
+      });
+    }
+    const config = await core.settings(ctx);
+    if (!config.package_types.length)
+      deny("INVALID_INPUT", "Configure a package type first.");
+    return await provisionProject(ctx, u, (await ctx.db.get(o._id))!, {
+      source_quote_id: null,
+      project_manager_id: u.userId,
+      designer_id: null,
+      staging_lead_id: null,
+      input: {
+        package_type: config.package_types[0],
+        planned_end_date: "",
+        priority: "normal",
+        internal_notes: "",
+      },
+      rooms: [],
+    });
   },
 });
 export const update = mutation({
