@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_CONVEX_URL": "https://woozy-jaguar-392.eu-west-1.convex.cloud",
+      "NEXT_PUBLIC_CONVEX_SITE_URL": "https://woozy-jaguar-392.eu-west-1.convex.site",
+      "GLARA_ENVIRONMENT": "development"
+    }
+  },
+  "env": {
+    "NEXT_PUBLIC_CONVEX_URL": "https://woozy-jaguar-392.eu-west-1.convex.cloud",
+    "NEXT_PUBLIC_CONVEX_SITE_URL": "https://woozy-jaguar-392.eu-west-1.convex.site",
+    "GLARA_ENVIRONMENT": "development"
+  }
+}
