@@ -245,6 +245,47 @@ export function PropertyEditor({ id }: { id?: string }) {
     </>
   );
 }
+export function ConvertPropertyToProject({
+  propertyId,
+}: {
+  propertyId: string;
+}) {
+  const viewer = useQuery(api.profiles.viewer),
+    convert = useMutation(api.operations.convertProperty),
+    router = useRouter();
+  const [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  if (!viewer?.roles.some((r) => r === "owner" || r === "admin")) return null;
+  return (
+    <span className="inline-flex flex-col gap-1">
+      <Button
+        type="button"
+        variant="outline"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          setError("");
+          try {
+            const result = await convert({
+              property_id: propertyId as Id<"properties">,
+            });
+            router.push("/projects/" + result.id);
+          } catch {
+            setError("Could not convert. Check the linked customer.");
+            setBusy(false);
+          }
+        }}
+      >
+        {busy ? "Converting…" : "Convert to project →"}
+      </Button>
+      {error && (
+        <span role="alert" className="text-xs text-red-700">
+          {error}
+        </span>
+      )}
+    </span>
+  );
+}
 export function PropertyDetail({
   id,
   editable,
@@ -282,6 +323,7 @@ export function PropertyDetail({
           <Button variant="outline" asChild>
             <Link href={"/properties/" + id + "/edit"}>Edit property</Link>
           </Button>
+          <ConvertPropertyToProject propertyId={id} />
         </div>
       )}
       <div className="grid gap-6 lg:grid-cols-2">

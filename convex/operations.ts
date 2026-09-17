@@ -1,4 +1,5 @@
 import { assertEndChange } from "./commercialCore";
+import { updateMetrics } from "./sales";
 import { inventoryGate, cancelInventory } from "./inventoryCore";
 import { vancouverUtc } from "../src/lib/operations/time";
 import { query, mutation, type MutationCtx } from "./functions";
@@ -564,43 +565,110 @@ export const convertOpportunity = mutation({
       )
       .first();
     if (existing) return { id: existing._id, existing: true };
-    if (o.stage !== "won") {
-      const now = new Date().toISOString();
-      await ctx.db.patch(o._id, {
-        stage: "won",
-        stage_changed_at: now,
+    return await winAndProvision(ctx, u, o);
+  },
+});
+async function winAndProvision(
+  ctx: MutationCtx,
+  u: { userId: Id<"users"> },
+  o: Doc<"opportunities">,
+) {
+  if (o.stage !== "won") {
+    const now = new Date().toISOString();
+    await ctx.db.patch(o._id, {
+      stage: "won",
+      stage_changed_at: now,
+      probability: 100,
+      won_at: now,
+      lost_at: null,
+      version: o.version + 1,
+      updated_at: now,
+    });
+    await updateMetrics(ctx, o, (await ctx.db.get(o._id))!);
+    await ctx.db.insert("audit_logs", {
+      actor_id: u.userId,
+      action: "OPPORTUNITY_WON",
+      entity: "opportunities",
+      entity_id: o._id,
+      old_value: { stage: o.stage },
+      new_value: { stage: "won", via: "convert_to_project" },
+      created_at: now,
+    });
+  }
+  const config = await core.settings(ctx);
+  if (!config.package_types.length)
+    deny("INVALID_INPUT", "Configure a package type first.");
+  return await provisionProject(ctx, u, (await ctx.db.get(o._id))!, {
+    source_quote_id: null,
+    project_manager_id: u.userId,
+    designer_id: null,
+    staging_lead_id: null,
+    input: {
+      package_type: config.package_types[0],
+      planned_end_date: "",
+      priority: "normal",
+      internal_notes: "",
+    },
+    rooms: [],
+  });
+}
+// Direct property conversion: reuses the property's open opportunity or
+// records a minimal one first, then wins it and provisions the project.
+export const convertProperty = mutation({
+  args: { property_id: v.id("properties") },
+  handler: async (ctx, a) => {
+    const u = await core.admins(ctx),
+      p = await ctx.db.get(a.property_id);
+    if (!p || p.deleted_at) deny("UNAVAILABLE");
+    const realtor = await ctx.db.get(p.realtor_id);
+    if (!realtor || realtor.deleted_at)
+      deny("UNAVAILABLE", "Link an active customer to this property first.");
+    let o = await ctx.db
+      .query("opportunities")
+      .withIndex("by_property", (q) =>
+        q.eq("property_id", p._id).eq("deleted_at", null),
+      )
+      .filter((q) => q.neq(q.field("stage"), "lost"))
+      .first();
+    if (!o) {
+      const oid = await ctx.db.insert("opportunities", {
+        ...core.stamps(),
+        property_id: p._id,
+        realtor_id: p.realtor_id,
+        assigned_to: u.userId,
+        stage: "new",
+        stage_changed_at: new Date().toISOString(),
+        estimated_value_cents: "0",
         probability: 100,
-        won_at: now,
+        expected_close_date: "",
+        lead_source_id: null,
+        notes: "",
+        won_at: null,
         lost_at: null,
-        version: o.version + 1,
-        updated_at: now,
+        lost_reason: "",
+        lost_notes: "",
+        version: 1,
       });
+      await updateMetrics(ctx, null, (await ctx.db.get(oid))!);
+      o = (await ctx.db.get(oid))!;
       await ctx.db.insert("audit_logs", {
         actor_id: u.userId,
-        action: "OPPORTUNITY_WON",
+        action: "INSERT",
         entity: "opportunities",
-        entity_id: o._id,
-        old_value: { stage: o.stage },
-        new_value: { stage: "won", via: "convert_to_project" },
-        created_at: now,
+        entity_id: oid,
+        old_value: null,
+        new_value: { property_id: p._id, via: "convert_property_to_project" },
+        created_at: new Date().toISOString(),
       });
     }
-    const config = await core.settings(ctx);
-    if (!config.package_types.length)
-      deny("INVALID_INPUT", "Configure a package type first.");
-    return await provisionProject(ctx, u, (await ctx.db.get(o._id))!, {
-      source_quote_id: null,
-      project_manager_id: u.userId,
-      designer_id: null,
-      staging_lead_id: null,
-      input: {
-        package_type: config.package_types[0],
-        planned_end_date: "",
-        priority: "normal",
-        internal_notes: "",
-      },
-      rooms: [],
-    });
+    const existing = await ctx.db
+      .query("projects")
+      .withIndex("by_opportunity", (q) =>
+        q.eq("opportunity_id", o!._id).eq("deleted_at", null),
+      )
+      .first();
+    if (existing) return { id: existing._id, existing: true };
+    return await winAndProvision(ctx, u, o);
   },
 });
 export const update = mutation({

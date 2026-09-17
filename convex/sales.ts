@@ -176,7 +176,7 @@ async function realtorCount(
       count: delta,
     });
 }
-async function updateMetrics(
+export async function updateMetrics(
   ctx: MutationCtx,
   old: Doc<"opportunities"> | null,
   next: Doc<"opportunities">,
