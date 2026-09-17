@@ -49,3 +49,94 @@ export const purgeCatalog = internalMutation({
     return { deleted, done: deleted === 0 };
   },
 });
+// Removes fictional acceptance CRM, sales, project, commercial, automation,
+// communication-delivery, calendar and analytics-ledger rows. Configuration
+// (settings, templates, rules, lead sources) and audit history stay.
+const businessTables = [
+  "quote_items",
+  "quotes",
+  "activities",
+  "consultations",
+  "opportunities",
+  "properties",
+  "realtor_private",
+  "realtors",
+  "brokerages",
+  "sales_realtor_counts",
+  "sales_metrics",
+  "sales_counters",
+  "project_checklist_items",
+  "project_rooms",
+  "project_notes",
+  "project_media",
+  "project_access_details",
+  "project_team_assignments",
+  "project_counters",
+  "operations_events",
+  "projects",
+  "payment_reversals",
+  "payment_allocations",
+  "credit_notes",
+  "invoice_items",
+  "invoices",
+  "payments",
+  "package_extensions",
+  "damage_charge_assessments",
+  "agreements",
+  "commercial_customers",
+  "commercial_counters",
+  "automation_queue",
+  "automation_executions",
+  "automation_actions",
+  "automation_escalations",
+  "automation_suppressions",
+  "automation_scan",
+  "notifications",
+  "communications",
+  "communication_outbox",
+  "communication_delivery_events",
+  "communication_provider_messages",
+  "communication_eligibility_decisions",
+  "calendar_projections",
+  "calendar_sync_events",
+  "calendar_conflicts",
+  "analytics_facts",
+  "analytics_changes",
+  "analytics_buckets",
+  "analytics_expected",
+  "analytics_reconciliations",
+  "analytics_state",
+] as const;
+export const purgeBusinessData = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    if (process.env.GLARA_ENVIRONMENT === "production")
+      throw Error("Business purge is a non-production maintenance operation.");
+    let deleted = 0;
+    const counts: Record<string, number> = {};
+    for (const table of businessTables) {
+      if (deleted >= 400) break;
+      const rows = await ctx.db.query(table).take(400 - deleted);
+      for (const row of rows) await ctx.db.delete(row._id);
+      deleted += rows.length;
+      if (rows.length) counts[table] = rows.length;
+    }
+    if (deleted) {
+      await ctx.db.insert("audit_logs", {
+        actor_id: null,
+        action: "PLATFORM_BUSINESS_TEST_DATA_PURGED",
+        entity: "realtors",
+        entity_id: "business-purge",
+        old_value: counts,
+        new_value: null,
+        created_at: new Date().toISOString(),
+      });
+      await ctx.scheduler.runAfter(
+        0,
+        internal.inventoryMaintenance.purgeBusinessData,
+        {},
+      );
+    }
+    return { deleted, done: deleted === 0 };
+  },
+});
