@@ -104,6 +104,41 @@ describe("product photos", () => {
     }
   });
 });
+describe("quick add from a photo", () => {
+  it("creates sequential draft products with the photo attached, under Uncategorized", async () => {
+    const f = await fixture();
+    const first = await f.owner.mutation(api.inventory.quickAddProduct, {
+      storage_id: await store(f, "image/jpeg"),
+    });
+    const second = await f.owner.mutation(api.inventory.quickAddProduct, {
+      storage_id: await store(f, "image/png"),
+    });
+    expect(first.ok && second.ok).toBe(true);
+    expect(first.sku).toBe("DRAFT-0001");
+    expect(second.sku).toBe("DRAFT-0002");
+    const detail = await f.owner.query(api.inventory.product, {
+      id: first.id!,
+    });
+    expect(detail.name).toBe("Untitled product DRAFT-0001");
+    expect(detail.category_name).toBe("Uncategorized");
+    expect(detail.images).toHaveLength(1);
+    expect(detail.active).toBe(true);
+  });
+  it("rejects non-images, cleans up the blob, and denies non-managers", async () => {
+    const f = await fixture();
+    const bad = await store(f, "application/pdf");
+    const rejected = await f.owner.mutation(api.inventory.quickAddProduct, {
+      storage_id: bad,
+    });
+    expect(rejected.ok).toBe(false);
+    expect(await stored(f, bad)).toBe(false);
+    await expect(
+      f.c("designer").mutation(api.inventory.quickAddProduct, {
+        storage_id: await store(f, "image/jpeg"),
+      }),
+    ).rejects.toThrow();
+  });
+});
 describe("photo import from spreadsheet URLs", () => {
   afterEach(() => vi.unstubAllGlobals());
   const respond = (type: string, bytes = 32) =>

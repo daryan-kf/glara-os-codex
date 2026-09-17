@@ -32,6 +32,91 @@ export function Loading() {
     </p>
   );
 }
+function QuickAddProduct() {
+  const uploadUrl = useMutation(api.inventory.imageUploadUrl),
+    quickAdd = useMutation(api.inventory.quickAddProduct);
+  const [busy, setBusy] = useState(false),
+    [error, setError] = useState(""),
+    [created, setCreated] = useState<{ id: string; sku: string }[]>([]);
+  async function add(files: File[]) {
+    setBusy(true);
+    setError("");
+    try {
+      for (const file of files) {
+        const target = await uploadUrl();
+        const response = await fetch(target, {
+          method: "POST",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        if (!response.ok) throw new Error("upload");
+        const { storageId } = (await response.json()) as { storageId: string };
+        const result = await quickAdd({
+          storage_id: storageId as Id<"_storage">,
+        });
+        if (!result.ok || !result.id || !result.sku) {
+          setError(result.message ?? "Could not add this photo.");
+          break;
+        }
+        setCreated((list) => [
+          ...list,
+          { id: result.id as string, sku: result.sku as string },
+        ]);
+      }
+    } catch {
+      setError("Could not add a photo. Use JPEG, PNG, WebP or GIF up to 5 MB.");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Panel title="Quick add from photos">
+      <p className="mb-4 text-sm text-muted-foreground">
+        Drop one or more photos and each becomes a draft product with a
+        placeholder name and SKU. Open it later to complete the name, category
+        and prices.
+      </p>
+      <label className="inline-flex items-center gap-3 text-sm">
+        {busy ? "Adding…" : "Choose photos"}
+        <input
+          type="file"
+          multiple
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          disabled={busy}
+          className="text-sm file:mr-3 file:rounded-lg file:border file:bg-card file:px-4 file:py-2"
+          onChange={(e) => {
+            const files = [...(e.target.files ?? [])];
+            if (files.length) void add(files);
+            e.target.value = "";
+          }}
+        />
+      </label>
+      <div aria-live="polite" className="mt-4 space-y-2">
+        {created.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {created.map((p) => (
+              <Link
+                key={p.id}
+                href={`/inventory/products/${p.id}`}
+                className="rounded-lg border px-3 py-2 text-sm underline"
+              >
+                {p.sku} — complete details
+              </Link>
+            ))}
+          </div>
+        )}
+        {error && (
+          <p
+            role="alert"
+            className="rounded-lg bg-red-50 p-3 text-sm text-red-800"
+          >
+            {error}
+          </p>
+        )}
+      </div>
+    </Panel>
+  );
+}
 export function InventoryAttention() {
   const rows = useQuery(api.inventory.exceptions, {});
   if (!rows?.length) return null;
@@ -123,6 +208,7 @@ export function InventoryCatalog() {
           </Link>
         )}
       </div>
+      {options.manage && <QuickAddProduct />}
       <InventoryAttention />
       <Panel title="Find inventory">
         <Form
@@ -391,6 +477,7 @@ function ProductPhotos({ product }: { product: Product }) {
 export function ProductEditor({ product }: { product?: Product }) {
   const options = useInventoryOptions(),
     save = useMutation(api.inventory.saveProduct),
+    createCategory = useMutation(api.inventory.saveCategory),
     router = useRouter();
   if (!options) return <Loading />;
   if (!options.manage)
@@ -400,11 +487,29 @@ export function ProductEditor({ product }: { product?: Product }) {
       version={product?.version}
       submit={product ? "Save product" : "Create product"}
       onSave={async (d, version) => {
-        const { category, ...fields } = d;
+        const { category, new_category, ...fields } = d;
+        let categoryId = category;
+        const newName = (new_category ?? "").trim();
+        if (newName) {
+          const existing = options.categories.find(
+            (c) => c.name.toLowerCase() === newName.toLowerCase(),
+          );
+          categoryId = existing
+            ? existing._id
+            : await createCategory({
+                version: 0,
+                name: newName,
+                active: true,
+              });
+        }
+        if (!categoryId)
+          throw new Error(
+            "Choose an unambiguous category: select one from the list or enter a new category name.",
+          );
         const id = await save({
           id: product?._id,
           version,
-          category_id: category as Id<"inventory_categories">,
+          category_id: categoryId as Id<"inventory_categories">,
           input: JSON.stringify({
             ...fields,
             active: fields.active === "yes",
@@ -428,7 +533,10 @@ export function ProductEditor({ product }: { product?: Product }) {
           name="category"
           value={product?.category_id}
           options={options.categories.map((c) => ({ id: c._id, name: c.name }))}
-          required
+        />
+        <Field
+          label="New category (created on save; overrides the selection)"
+          name="new_category"
         />
         <Field
           label="Tracking mode"

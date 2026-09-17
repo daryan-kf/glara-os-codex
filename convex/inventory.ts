@@ -445,6 +445,97 @@ export const removeProductImage = mutation({
     return null;
   },
 });
+// One-photo quick capture: creates a draft product under a placeholder SKU and
+// name so details, prices and the real name can be completed later in the form.
+export const quickAddProduct = mutation({
+  args: { storage_id: v.id("_storage") },
+  handler: async (
+    ctx,
+    args,
+  ): Promise<{
+    ok: boolean;
+    message?: string;
+    id?: Id<"products">;
+    sku?: string;
+  }> => {
+    const u = await manager(ctx);
+    const reject = async (message: string) => {
+      await ctx.storage.delete(args.storage_id);
+      return { ok: false, message };
+    };
+    const metadata = await ctx.db.system.get(args.storage_id);
+    if (!metadata || !imageTypes.includes(metadata.contentType ?? ""))
+      return reject("Upload a JPEG, PNG, WebP or GIF image.");
+    if (metadata.size > 5 * 1024 * 1024)
+      return reject("Images must be 5 MB or smaller.");
+    let category = await ctx.db
+      .query("inventory_categories")
+      .withIndex("by_name", (q) => q.eq("name_key", "uncategorized"))
+      .unique();
+    if (!category) {
+      const id = await ctx.db.insert("inventory_categories", {
+        name: "Uncategorized",
+        name_key: "uncategorized",
+        active: true,
+        version: 1,
+        ...stamps(),
+      });
+      await audit(ctx, u.userId, id, "category_saved", null, {
+        name: "Uncategorized",
+        active: true,
+      });
+      category = (await ctx.db.get(id))!;
+    } else if (!category.active)
+      await ctx.db.patch(category._id, {
+        active: true,
+        version: category.version + 1,
+        updated_at: now(),
+      });
+    const counter = await ctx.db
+      .query("inventory_counters")
+      .withIndex("by_key", (q) => q.eq("key", "draft"))
+      .unique();
+    let n = (counter?.value ?? 0) + 1;
+    let sku = "";
+    for (let tries = 0; tries < 20; tries++, n++) {
+      sku = `DRAFT-${String(n).padStart(4, "0")}`;
+      if (
+        !(await ctx.db
+          .query("products")
+          .withIndex("by_sku", (q) => q.eq("sku", sku).eq("deleted_at", null))
+          .unique())
+      )
+        break;
+      sku = "";
+    }
+    if (!sku || !Number.isSafeInteger(n)) return reject("Try again.");
+    if (counter) await ctx.db.patch(counter._id, { value: n });
+    else await ctx.db.insert("inventory_counters", { key: "draft", value: n });
+    const name = "Untitled product " + sku;
+    const id = await ctx.db.insert("products", {
+      sku,
+      name,
+      category_id: category._id,
+      brand: "",
+      collection: "",
+      description: "",
+      color: "",
+      material: "",
+      dimensions: "",
+      weight: "",
+      track_mode: "serialized",
+      image_ids: [args.storage_id],
+      staging_eligible: true,
+      retail_eligible: false,
+      active: true,
+      search_text: sku + " " + name,
+      version: 1,
+      ...stamps(),
+    });
+    await audit(ctx, u.userId, id, "product_quick_added", null, { sku });
+    return { ok: true, id, sku };
+  },
+});
 export const imageImportContext = internalQuery({
   args: { sku: v.string() },
   handler: async (ctx, args) => {
