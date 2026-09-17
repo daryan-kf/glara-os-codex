@@ -766,6 +766,7 @@ export function ProductDetail({ id }: { id: string }) {
   const p = useQuery(api.inventory.product, { id: id as Id<"products"> }),
     options = useInventoryOptions(),
     archive = useMutation(api.inventory.archiveProduct);
+  const [editing, setEditing] = useState(false);
   if (!p || !options) return <Loading />;
   return (
     <div className="space-y-6">
@@ -784,7 +785,26 @@ export function ProductDetail({ id }: { id: string }) {
         <StatusBadge>
           {p.staging_eligible ? "Staging eligible" : "Retail only"}
         </StatusBadge>
+        {p.manage && !p.deleted_at && (
+          <Button
+            type="button"
+            variant={editing ? "outline" : "default"}
+            onClick={() => setEditing((v) => !v)}
+          >
+            {editing ? "Close editor" : "Edit product"}
+          </Button>
+        )}
       </div>
+      {editing && p.manage && !p.deleted_at && (
+        <Panel title="Edit product">
+          <p className="mb-4 text-sm text-muted-foreground">
+            Every catalog field is editable here — name, SKU, category, prices,
+            eligibility and description. Photos are managed in the Photos panel
+            below.
+          </p>
+          <ProductEditor product={p} />
+        </Panel>
+      )}
       <p className="mb-6 text-sm text-muted-foreground">{p.description}</p>
       <ProductPhotos product={p} />
       {p.manage && (
@@ -940,14 +960,6 @@ export function ProductDetail({ id }: { id: string }) {
           <Panel title="Product administration">
             <Disclosure>
               <summary className="cursor-pointer text-sm font-medium">
-                Edit catalog details
-              </summary>
-              <div className="mt-4">
-                <ProductEditor product={p} />
-              </div>
-            </Disclosure>
-            <Disclosure>
-              <summary className="mt-6 cursor-pointer text-sm font-medium">
                 {p.deleted_at ? "Restore product" : "Archive product"}
               </summary>
               <p className="my-3 text-sm text-muted-foreground">
