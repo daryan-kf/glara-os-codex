@@ -2,6 +2,7 @@
 // Uses the uninstrumented mutation base deliberately: this platform-level purge
 // removes fictional development rows wholesale and does not replay analytics.
 import { internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 const purgeTables = [
   "inventory_reservations",
   "inventory_movements",
@@ -26,7 +27,7 @@ export const purgeCatalog = internalMutation({
       deleted += rows.length;
       if (rows.length) counts[table] = rows.length;
     }
-    if (deleted)
+    if (deleted) {
       await ctx.db.insert("audit_logs", {
         actor_id: null,
         action: "PLATFORM_INVENTORY_PURGED",
@@ -36,6 +37,13 @@ export const purgeCatalog = internalMutation({
         new_value: null,
         created_at: new Date().toISOString(),
       });
+      // Continue in a follow-up transaction until every table is empty.
+      await ctx.scheduler.runAfter(
+        0,
+        internal.inventoryMaintenance.purgeCatalog,
+        {},
+      );
+    }
     return { deleted, done: deleted === 0 };
   },
 });
