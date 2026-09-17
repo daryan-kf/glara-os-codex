@@ -225,6 +225,45 @@ export function BillTo({
     </div>
   );
 }
+export function FinalizeAction({
+  label,
+  note,
+  run,
+}: {
+  label: string;
+  note: string;
+  run: () => Promise<unknown>;
+}) {
+  const [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  return (
+    <span className="inline-flex flex-col gap-1">
+      <Button
+        type="button"
+        disabled={busy}
+        title={note}
+        onClick={async () => {
+          setBusy(true);
+          setError("");
+          try {
+            await run();
+          } catch {
+            setError("Could not finalize. Review the document details.");
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        {busy ? "Finalizing…" : label}
+      </Button>
+      {error && (
+        <span role="alert" className="text-xs text-red-700">
+          {error}
+        </span>
+      )}
+    </span>
+  );
+}
 export function Print() {
   return (
     <Button

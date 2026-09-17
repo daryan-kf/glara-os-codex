@@ -58,19 +58,17 @@
 }
 
 @media print {
-  body:has(.commercial-document) * {
-    visibility: hidden;
+  /* Documents stay in normal flow so multi-page content paginates; the app
+     chrome hides itself with print:hidden classes instead. */
+  body {
+    background: #fff;
   }
-  body:has(.commercial-document) .commercial-document,
-  body:has(.commercial-document) .commercial-document * {
-    visibility: visible;
+  main {
+    padding: 0 !important;
   }
   .commercial-document {
-    position: absolute;
-    inset: 0;
-    width: 100%;
     border: 0;
-    padding: 12mm;
+    border-radius: 0;
     color: #000;
     background: #fff;
   }

@@ -301,7 +301,7 @@ export function Shell({
       >
         Skip to content
       </a>
-      <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col border-r bg-card px-5 py-7 lg:flex">
+      <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col border-r bg-card px-5 py-7 print:hidden lg:flex">
         <Link
           href="/dashboard"
           className="mb-9 px-3 text-2xl font-semibold tracking-[.16em]"
@@ -321,8 +321,8 @@ export function Shell({
           </p>
         </div>
       </aside>
-      <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-20 items-center justify-between gap-3 border-b bg-background/95 px-4 backdrop-blur-sm sm:px-8">
+      <div className="print:pl-0 lg:pl-64">
+        <header className="sticky top-0 z-30 flex h-20 items-center justify-between gap-3 border-b bg-background/95 px-4 backdrop-blur-sm print:hidden sm:px-8">
           <div className="flex items-center gap-2">
             <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
               <DialogTrigger asChild>
@@ -386,7 +386,7 @@ export function Shell({
         >
           {children}
         </main>
-        <footer className="mx-8 hidden items-center justify-between border-t py-5 text-xs text-muted-foreground lg:flex">
+        <footer className="mx-8 hidden items-center justify-between border-t py-5 text-xs text-muted-foreground print:hidden lg:flex">
           <span>Glara Home Staging Â· Metro Vancouver</span>
           <span className="flex items-center gap-1.5">
             <Check className="size-3" />
@@ -395,7 +395,7 @@ export function Shell({
         </footer>
         <nav
           aria-label="Mobile quick navigation"
-          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t bg-card pb-[env(safe-area-inset-bottom)] lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t bg-card pb-[env(safe-area-inset-bottom)] print:hidden lg:hidden"
         >
           {(["dashboard", "calendar", "profile"] as const).map((module) => {
             const Icon = icons[module];

@@ -20,6 +20,7 @@ import {
   Amounts,
   BillTo,
   Print,
+  FinalizeAction,
   Document,
   ProjectLink,
   decimal,
@@ -194,9 +195,23 @@ export function AgreementDetail({ id }: { id: string }) {
   if (!a) return <Loading />;
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-3 print:hidden">
+      <div className="flex flex-wrap items-start gap-3 print:hidden">
         <ProjectLink id={a.project_id} />
         <Print />
+        {a.manage && a.status === "draft" && (
+          <FinalizeAction
+            label="Finalize · mark sent"
+            note="Removes the draft status and freezes the document. Nothing is emailed."
+            run={() =>
+              action({
+                id: a._id,
+                version: a.version,
+                action: "send",
+                reason: "Finalized for delivery to the customer",
+              })
+            }
+          />
+        )}
       </div>
       {a.manage && <CommercialHistory id={a._id} />}
       <Document>
