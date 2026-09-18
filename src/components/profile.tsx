@@ -6,7 +6,7 @@ import { api } from "../../convex/_generated/api";
 import { reloadAfterAuth } from "@/lib/auth-navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, FormField, StatusBadge } from "@/components/primitives";
-import type { Role } from "@/lib/permissions";
+import { roleLabel, type Role } from "@/lib/permissions";
 type Identity = { name: string; email: string; roles: readonly Role[] };
 function Notice({ error, success }: { error: string; success: string }) {
   return (
@@ -170,9 +170,7 @@ export function ProfileSettings({ user }: { user: Identity }) {
             </dt>
             <dd className="flex flex-wrap gap-2">
               {user.roles.map((role) => (
-                <StatusBadge key={role}>
-                  {role.replaceAll("_", " ")}
-                </StatusBadge>
+                <StatusBadge key={role}>{roleLabel(role)}</StatusBadge>
               ))}
             </dd>
           </div>

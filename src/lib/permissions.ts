@@ -196,6 +196,10 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
 };
+/** Display label only; permissions still key off the stored role. */
+export function roleLabel(role: string): string {
+  return role === "owner" ? "Admin" : role.replaceAll("_", " ");
+}
 export function isRole(value: string): value is Role {
   return roles.some((role) => role === value);
 }

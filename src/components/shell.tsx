@@ -34,7 +34,13 @@ import {
   LogOut,
   Check,
 } from "lucide-react";
-import { modules, canAccess, type Module, type Role } from "@/lib/permissions";
+import {
+  modules,
+  canAccess,
+  roleLabel,
+  type Module,
+  type Role,
+} from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Avatar } from "@/components/primitives";
@@ -374,7 +380,7 @@ export function Shell({
               <span className="hidden text-sm sm:block">
                 {user.name}
                 <span className="block text-xs capitalize text-muted-foreground">
-                  {user.roles.join(", ").replaceAll("_", " ")}
+                  {user.roles.map(roleLabel).join(", ")}
                 </span>
               </span>
             </Link>
