@@ -1447,6 +1447,90 @@ export const project = query({
     };
   },
 });
+// Bounded project pages keep financial derivation authoritative and pageable.
+export const paymentProjects = query({
+  args: { q: v.string(), paginationOpts: paginationOptsValidator },
+  handler: async (ctx, a) => {
+    await core.manager(ctx);
+    const term = parse(
+      z.string().trim().max(100),
+      JSON.stringify(a.q),
+    ).toLowerCase();
+    const result = await ctx.db
+      .query("projects")
+      .withIndex("by_archived", (q) => q.eq("deleted_at", null))
+      .order("desc")
+      .paginate({
+        ...a.paginationOpts,
+        numItems: Math.min(15, Math.max(1, a.paginationOpts.numItems)),
+      });
+    const settings = await ctx.db
+      .query("operations_settings")
+      .withIndex("by_key", (q) => q.eq("key", "operations"))
+      .unique();
+    const renewalWindow = Math.max(
+      0,
+      ...(settings?.package_alert_days ?? [30, 14, 7]),
+    );
+    const today = day();
+    const rows = await Promise.all(
+      result.page.map(async (p) => {
+        const identity = await core.identity(ctx, p);
+        const name = `${p.project_number} · ${identity.property_address}`;
+        if (
+          term &&
+          !`${name} ${identity.realtor_name}`.toLowerCase().includes(term)
+        )
+          return null;
+        const invoices = core.cap(
+          await ctx.db
+            .query("invoices")
+            .withIndex("by_project", (q) => q.eq("project_id", p._id))
+            .take(101),
+        );
+        const financials = await Promise.all(
+          invoices
+            .filter((i) => i.status === "issued")
+            .map((i) => core.invoiceState(ctx, i)),
+        );
+        const outstanding = financials.reduce(
+          (n, i) => n + BigInt(i.balance_cents),
+          0n,
+        );
+        const partiallyPaid = financials.some(
+          (i) => BigInt(i.balance_cents) > 0n && BigInt(i.paid_cents) > 0n,
+        );
+        const days = p.planned_end_date
+          ? Math.round(
+              (Date.parse(p.planned_end_date) - Date.parse(today)) / 86400000,
+            )
+          : null;
+        const renewalDue =
+          days !== null &&
+          days <= renewalWindow &&
+          ![
+            "completed",
+            "cancelled",
+            "sold",
+            "destaging",
+            "destaging_scheduled",
+          ].includes(p.status);
+        if (outstanding <= 0n && !renewalDue) return null;
+        return {
+          id: p._id,
+          name,
+          realtor_name: identity.realtor_name,
+          outstanding_cents: String(outstanding),
+          partially_paid: partiallyPaid,
+          package_end: p.planned_end_date,
+          renewal_days: renewalDue ? days : null,
+        };
+      }),
+    );
+    return { ...result, page: rows.filter((row) => row !== null) };
+  },
+});
+
 export const receivables = query({
   args: {
     paginationOpts: paginationOptsValidator,

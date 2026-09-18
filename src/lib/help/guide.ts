@@ -279,6 +279,7 @@ export const guideSections: GuideSection[] = [
     summary: "Record a payment only when the money has actually been received.",
     module: "payments",
     steps: [
+      "In Payments, click the Project field to browse projects with outstanding issued invoices or upcoming/expired packages. Type a project number, address, or Realtor name to narrow the list, then select a project. Use Apply receivable filters for invoice results, or Open project to record payment or review renewal for its commercial workspace. Other invoice filters still apply; Clear project removes the selection.",
       "In the project’s Commercial summary, prepare deposit, balance, extension, or approved damage invoices from the corresponding source.",
       "Check the customer, line items, taxes, amount, and due date before issuing. A draft is different from an issued invoice.",
       "Use Record received payment for money already received. Enter the amount, date, method, and reference according to the actual evidence.",

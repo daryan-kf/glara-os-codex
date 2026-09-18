@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { PaymentProjectPicker } from "./payment-project-picker";
 import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -113,12 +114,7 @@ export function Receivables() {
       from: "",
       until: "",
     }),
-    [cursor, setCursor] = useState<string | null>(null),
-    [term, setTerm] = useState("");
-  const projects = useQuery(
-    api.operations.search,
-    term.length >= 2 ? { q: term } : "skip",
-  );
+    [cursor, setCursor] = useState<string | null>(null);
   const result = useQuery(api.commercial.receivables, {
     paginationOpts: { cursor, numItems: 20 },
     status: filter.status,
@@ -185,23 +181,7 @@ export function Receivables() {
               name="realtor_id"
               required={false}
             />
-            <label className="grid gap-2 text-sm">
-              Search project
-              <input
-                className="min-h-11 rounded-lg border px-3"
-                value={term}
-                onChange={(e) => setTerm(e.target.value)}
-                placeholder="Project number, address or realtor"
-              />
-            </label>
-            <Select
-              label="Project filter"
-              name="project_id"
-              options={(projects ?? []).map((p) => ({
-                id: p.id,
-                name: p.name,
-              }))}
-            />
+            <PaymentProjectPicker />
             <Field label="Issued from" name="from" type="date" />
             <Field label="Issued until" name="until" type="date" />
           </div>

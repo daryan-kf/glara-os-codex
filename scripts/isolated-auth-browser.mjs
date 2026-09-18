@@ -7,6 +7,7 @@ import {
 } from "node:crypto";
 import {
   mkdirSync,
+  appendFileSync,
   cpSync,
   writeFileSync,
   createWriteStream,
@@ -44,6 +45,17 @@ writeFileSync(
   home + "/convex/authBrowserDrill.ts",
   String.raw`import {internalMutation} from "./_generated/server";import {v} from "convex/values";export const code=internalMutation({args:{email:v.string(),hash:v.string(),expired:v.boolean()},handler:async(ctx,a)=>{if(!/^http:\/\/127\.0\.0\.1:3351$/.test(process.env.CONVEX_SITE_URL??""))throw Error("ISOLATED_ONLY");const account=await ctx.db.query("authAccounts").withIndex("providerAndAccountId",q=>q.eq("provider","password").eq("providerAccountId",a.email)).unique();if(!account)throw Error("ACCOUNT_REQUIRED");for(const old of await ctx.db.query("authVerificationCodes").withIndex("accountId",q=>q.eq("accountId",account._id)).collect())await ctx.db.delete(old._id);await ctx.db.insert("authVerificationCodes",{accountId:account._id,provider:"glara-email",code:a.hash,expirationTime:Date.now()+(a.expired?-1000:900000),emailVerified:a.email});}});`,
 );
+if (process.env.GLARA_PAYMENT_PROJECTS_REGRESSION === "yes") {
+  // Fixture preparation only: the generated module never leaves this local copy.
+  appendFileSync(
+    home + "/convex/authBrowserDrill.ts",
+    String.raw`
+export const won=internalMutation({args:{id:v.id("opportunities")},handler:async(ctx,a)=>{
+if(process.env.CONVEX_SITE_URL!=="http://127.0.0.1:3351")throw Error("ISOLATED_ONLY");
+await ctx.db.patch(a.id,{stage:"won",won_at:new Date().toISOString()});
+}});`,
+  );
+}
 const env = Object.fromEntries(
   Object.entries(process.env).filter(
     ([k]) => !/(CONVEX|RESEND|OPENAI|GOOGLE|GLARA|M9_|SITE_URL)/.test(k),
@@ -165,13 +177,141 @@ async function main() {
     const email = "onboarding@accounts.example.test",
       initial = randomUUID() + randomUUID(),
       next = randomUUID() + randomUUID();
-    await admin.action(ref("admin:provision"), {
+    const ownerId = await admin.action(ref("admin:provision"), {
       email,
       name: "Fictional isolated onboarding",
       roles:
-        process.env.GLARA_POST_M10_REGRESSION === "yes" ? ["owner"] : ["sales"],
+        process.env.GLARA_POST_M10_REGRESSION === "yes" ||
+        process.env.GLARA_PAYMENT_PROJECTS_REGRESSION === "yes"
+          ? ["owner"]
+          : ["sales"],
       password: initial,
     });
+    const paymentProjects = [];
+    if (process.env.GLARA_PAYMENT_PROJECTS_REGRESSION === "yes") {
+      const signed = await admin.action(ref("auth:signIn"), {
+        provider: "password",
+        params: { email, password: initial, flow: "signIn" },
+      });
+      const actor = new ConvexHttpClient(url, { logger: false });
+      actor.setAuth(signed.tokens.token);
+      const customer = await actor.mutation(ref("commercial:saveCustomer"), {
+        version: 0,
+        input: JSON.stringify({
+          type: "seller",
+          name: "Fictional payment customer",
+          contact: "Fictional",
+          email: "payment@accounts.example.test",
+          phone: "",
+          company: "",
+          address: "Fictional Vancouver",
+        }),
+      });
+      const realtor = await actor.mutation(ref("crm:write"), {
+        input: JSON.stringify({
+          op: "realtor_create",
+          data: {
+            first_name: "Fictional",
+            last_name: "Payments",
+            relationship_status: "active_partner",
+            assigned_to: ownerId,
+          },
+        }),
+      });
+      for (const [address, renewal] of [
+        ["10 Fictional Balance Avenue", false],
+        ["20 Fictional Renewal Avenue", true],
+      ]) {
+        const property = await actor.mutation(ref("sales:saveProperty"), {
+          version: 0,
+          input: JSON.stringify({
+            address_line_1: address,
+            city: "Vancouver",
+            province: "BC",
+            property_type: "detached",
+            occupancy_status: "vacant",
+            realtor_id: realtor.id,
+          }),
+        });
+        const opportunity = await actor.mutation(ref("sales:saveOpportunity"), {
+          version: 0,
+          input: JSON.stringify({
+            property_id: property,
+            assigned_to: ownerId,
+            estimated_value: "1000",
+            probability: 20,
+            next_action_title: "Fictional follow-up",
+            next_action_date: "2099-01-01T18:00:00Z",
+          }),
+        });
+        await admin.mutation(ref("authBrowserDrill:won"), { id: opportunity });
+        const project = await actor.mutation(ref("operations:create"), {
+          opportunity_id: opportunity,
+          source_quote_id: null,
+          project_manager_id: ownerId,
+          designer_id: ownerId,
+          staging_lead_id: ownerId,
+          input: JSON.stringify({
+            package_type: "standard",
+            planned_end_date: renewal
+              ? new Date().toISOString().slice(0, 10)
+              : "2099-01-01",
+            priority: "normal",
+            internal_notes: "Fictional browser fixture",
+          }),
+          rooms: [
+            JSON.stringify({
+              room_type: "living_room",
+              room_name: "Living room",
+              staging_scope: "full",
+              style_direction: "Calm",
+              notes: "",
+              status: "design_ready",
+              sort_order: 0,
+            }),
+          ],
+        });
+        paymentProjects.push(project.id);
+        if (!renewal) {
+          const invoice = await actor.mutation(ref("commercial:saveInvoice"), {
+            project_id: project.id,
+            customer_id: customer,
+            version: 0,
+            input: JSON.stringify({
+              issue_date: "2026-09-01",
+              due_date: "2026-09-01",
+              notes: "Fictional browser invoice",
+              items: [
+                {
+                  description: "Fictional service",
+                  quantity: 1,
+                  unit_amount: "100",
+                  discount: "0",
+                  taxes: [],
+                },
+              ],
+            }),
+          });
+          await actor.mutation(ref("commercial:invoiceAction"), {
+            id: invoice,
+            version: 1,
+            action: "issue",
+            reason: "Fictional test invoice",
+          });
+          await actor.mutation(ref("commercial:recordPayment"), {
+            project_id: project.id,
+            customer_id: customer,
+            amount: "25",
+            method: "e_transfer",
+            received_date: "2026-09-01",
+            external_reference: "Fictional test receipt",
+            notes: "",
+            allocations: [{ invoice_id: invoice, amount: "25" }],
+            request_key: randomUUID(),
+          });
+        }
+      }
+    }
     const code = async (expired = false) => {
       const token = randomUUID();
       await admin.mutation(ref("authBrowserDrill:code"), {
@@ -401,6 +541,98 @@ async function main() {
         await expect(search).toBeHidden();
         await page.emulateMedia({ media: "screen" });
         await search.fill("");
+        result.results.push({ scenario: phase, passed: true });
+      }
+      if (process.env.GLARA_PAYMENT_PROJECTS_REGRESSION === "yes") {
+        phase = name + "-payment-project-dropdown";
+        await page.goto(origin + "/payments");
+        const picker = page.getByRole("combobox", {
+          name: "Project",
+          exact: true,
+        });
+        await picker.click();
+        await expect(
+          page
+            .getByRole("listbox", {
+              name: "Projects needing payment or renewal",
+            })
+            .getByRole("option"),
+        ).toHaveCount(2);
+        await expect(
+          page
+            .getByRole("listbox", {
+              name: "Projects needing payment or renewal",
+            })
+            .getByRole("option", { name: /Balance Avenue/ }),
+        ).toContainText("75.00");
+        await expect(
+          page
+            .getByRole("listbox", {
+              name: "Projects needing payment or renewal",
+            })
+            .getByRole("option", { name: /Renewal Avenue/ }),
+        ).toContainText("Renewal");
+        await page.screenshot({
+          path: home + "/payment-projects-" + name + ".png",
+        });
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-payment-project-search-and-selection";
+        await picker.fill("balance");
+        await expect(
+          page
+            .getByRole("listbox", {
+              name: "Projects needing payment or renewal",
+            })
+            .getByRole("option"),
+        ).toHaveCount(1);
+        await picker.press("ArrowDown");
+        await picker.press("Enter");
+        await expect(picker).toHaveAttribute("aria-expanded", "false");
+        await expect(page.locator('input[name="project_id"]')).toHaveValue(
+          paymentProjects[0],
+        );
+        await page
+          .getByRole("button", { name: "Apply receivable filters" })
+          .click();
+        await expect(
+          page.getByRole("link", { name: /Total.*paid/ }),
+        ).toContainText("75.00");
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-payment-project-clear-and-renewal";
+        await picker.fill("nothing-matches");
+        await expect(page.locator('input[name="project_id"]')).toHaveValue("");
+        await expect(
+          page.getByText(
+            "No projects match this search with outstanding invoices or a renewal due.",
+          ),
+        ).toBeVisible();
+        await page.getByRole("button", { name: "Clear project" }).click();
+        await expect(
+          page
+            .getByRole("listbox", {
+              name: "Projects needing payment or renewal",
+            })
+            .getByRole("option"),
+        ).toHaveCount(2);
+        await page
+          .getByRole("listbox", { name: "Projects needing payment or renewal" })
+          .getByRole("option", { name: /Renewal Avenue/ })
+          .click();
+        const commercial = page.getByRole("link", {
+          name: "Open project to record payment or review renewal →",
+        });
+        await expect(commercial).toHaveAttribute(
+          "href",
+          `/projects/${paymentProjects[1]}/commercial`,
+        );
+        await picker.click();
+        await picker.press("Escape");
+        await expect(picker).toHaveAttribute("aria-expanded", "false");
         result.results.push({ scenario: phase, passed: true });
       }
       phase = name + "-logout";
