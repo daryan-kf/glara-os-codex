@@ -345,16 +345,14 @@ async function main() {
         phase = name + "-guide-navigation";
         if (name === "mobile")
           await page.getByRole("button", { name: "Open navigation" }).click();
-        await page
-          .getByRole("link", { name: "Help · راهنما", exact: true })
-          .click();
+        await page.getByRole("link", { name: "Help", exact: true }).click();
         await expect(page).toHaveURL(origin + "/help");
         await expect(
-          page.getByRole("heading", { name: "راهنمای کاربران", exact: true }),
+          page.getByRole("heading", { name: "User guide", exact: true }),
         ).toBeVisible();
-        await expect(page.locator('main [lang="fa"]')).toHaveAttribute(
+        await expect(page.locator('main [lang="en"]')).toHaveAttribute(
           "dir",
-          "rtl",
+          "ltr",
         );
         expect(
           await page.evaluate(
@@ -367,24 +365,24 @@ async function main() {
         phase = name + "-guide-search";
         const search = page.locator("#guide-search");
         await page
-          .getByRole("button", { name: "موعد تمدید", exact: true })
+          .getByRole("button", { name: "Package extensions", exact: true })
           .click();
         await expect(page.locator("#renewals")).toBeVisible();
         await expect(page.locator("#start")).toBeHidden();
-        await search.fill("پايان پکيج");
+        await search.fill("  PACKAGE   EXPIRY  ");
         await expect(page.locator("#renewals")).toBeVisible();
         await search.fill("STAGED");
         await expect(page.locator("#staged")).toBeVisible();
         await search.fill("no-such-guide-topic");
         await expect(
-          page.getByRole("heading", { name: "موضوعی پیدا نشد" }),
+          page.getByRole("heading", { name: "No matching topics" }),
         ).toBeVisible();
-        await page.getByRole("button", { name: "نمایش همه فصل‌ها" }).click();
+        await page.getByRole("button", { name: "Show all chapters" }).click();
         await expect(page.locator("#start")).toBeVisible();
         result.results.push({ scenario: phase, passed: true });
 
         phase = name + "-guide-contents-and-permissions";
-        await page.getByText("فهرست فصل‌ها", { exact: true }).click();
+        await page.getByText("Chapters", { exact: true }).click();
         await page.locator('a[href="#renewals"]').click();
         await expect(page).toHaveURL(/help#renewals$/);
         if (process.env.GLARA_POST_M10_REGRESSION !== "yes")
@@ -420,7 +418,7 @@ async function main() {
         await page.goto(origin + "/help");
         await expect(page).toHaveURL(/login$/);
         await expect(
-          page.getByRole("heading", { name: "راهنمای کاربران", exact: true }),
+          page.getByRole("heading", { name: "User guide", exact: true }),
         ).toHaveCount(0);
       }
       await ctx.close();

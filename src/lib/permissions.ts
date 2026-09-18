@@ -126,10 +126,11 @@ export const modules = {
       "Company configuration and user administration will be introduced alongside the modules they support.",
   },
   help: {
-    title: "Help · راهنما",
-    description: "راهنمای کاربران Glara OS",
+    title: "Help",
+    description: "Glara OS user guide",
     milestone: "M0",
-    detail: "راهنمای گام‌به‌گام کارهای روزمره و امکانات فعلی برنامه.",
+    detail:
+      "Step-by-step guidance for everyday workflows and current features.",
   },
   profile: {
     title: "Profile",

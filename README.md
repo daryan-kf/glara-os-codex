@@ -12,7 +12,7 @@ M8 adds a shared permission-safe copilot with evidence references, drafts and ex
 
 ## In-app user guide
 
-Signed-in users can open **Help · راهنما** at `/help`. The Persian guide covers current workflows in 28 searchable chapters, including staged projects, package expiry and extensions, inventory, commercial operations, permissions, and troubleshooting. It includes desktop/mobile navigation and full-guide printing. It does not enable external services or change release gates. Content is maintained in `src/lib/help/guide.ts`; see [guide verification](docs/user-guide.md).
+Signed-in users can open **Help** at `/help`. The English guide covers current workflows in 28 searchable chapters, including staged projects, package expiry and extensions, inventory, commercial operations, permissions, and troubleshooting. It includes desktop/mobile navigation and full-guide printing. It does not enable external services or change release gates. Content is maintained in `src/lib/help/guide.ts`; see [guide verification](docs/user-guide.md).
 
 ## Local setup
 

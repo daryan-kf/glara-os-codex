@@ -13,16 +13,12 @@ export function UserGuide({ roles }: { roles: Role[] }) {
   const visibleIds = new Set(matches.map((section) => section.id));
 
   return (
-    <div
-      lang="fa"
-      dir="rtl"
-      className="mx-auto max-w-5xl space-y-7 text-start [font-family:Tahoma,Arial,sans-serif]"
-    >
+    <div lang="en" dir="ltr" className="mx-auto max-w-5xl space-y-7 text-start">
       <header id="guide-top" className="scroll-mt-24 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-2 text-sm font-medium text-primary">
             <BookOpen aria-hidden="true" className="size-4" />
-            مرکز راهنمای Glara OS
+            Glara OS Help Center
           </span>
           <Button
             type="button"
@@ -31,24 +27,24 @@ export function UserGuide({ roles }: { roles: Role[] }) {
             className="print:hidden"
           >
             <Printer aria-hidden="true" />
-            چاپ راهنمای کامل
+            Print full guide
           </Button>
         </div>
         <h1 className="text-3xl font-semibold leading-relaxed sm:text-4xl">
-          راهنمای کاربران
+          User guide
         </h1>
         <p className="max-w-3xl text-base leading-8 text-muted-foreground">
-          از اولین تماس تا جمع‌آوری وسایل و تسویه؛ مراحل کار را با نام دقیق
-          بخش‌ها و دکمه‌های برنامه دنبال کنید. برای شروع، موضوع موردنیازتان را
-          جست‌وجو کنید یا فهرست فصل‌ها را باز کنید.
+          From first contact to destaging and settlement, follow each workflow
+          using the labels you see in the app. Search for a topic or open the
+          chapter list to get started.
         </p>
       </header>
       <section
-        aria-label="جست‌وجوی راهنما"
+        aria-label="Search the guide"
         className="space-y-4 rounded-2xl border bg-card p-5 print:hidden sm:p-6"
       >
         <label htmlFor="guide-search" className="block text-sm font-semibold">
-          جست‌وجو در راهنما؛ فارسی یا نام انگلیسی بخش
+          Search by topic or module name
         </label>
         <div className="flex items-center gap-3 rounded-xl border bg-background px-3 focus-within:ring-2 focus-within:ring-ring">
           <Search
@@ -60,19 +56,17 @@ export function UserGuide({ roles }: { roles: Role[] }) {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="مثلاً تمدید، Staged، فاکتور یا موجودی"
+            placeholder="Try extensions, staged projects, invoices, or inventory"
             className="min-h-12 w-full min-w-0 bg-transparent text-base outline-none"
           />
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-muted-foreground">
-            موضوع‌های پرکاربرد:
-          </span>
+          <span className="text-sm text-muted-foreground">Popular topics:</span>
           {[
-            ["پروژه‌های استیج‌شده", "پروژه‌های استیج‌شده"],
-            ["موعد تمدید", "موعد پایان پکیج"],
-            ["وسایل و انبار", "وسایل"],
-            ["پرداخت‌ها", "دریافت وجه"],
+            ["Staged projects", "Where to find staged projects"],
+            ["Package extensions", "Package expiry and extensions"],
+            ["Inventory", "inventory"],
+            ["Payments", "received payments"],
           ].map(([label, value]) => (
             <Button
               key={value}
@@ -85,7 +79,7 @@ export function UserGuide({ roles }: { roles: Role[] }) {
           ))}
           {query && (
             <Button type="button" variant="ghost" onClick={() => setQuery("")}>
-              پاک کردن جست‌وجو
+              Clear search
             </Button>
           )}
         </div>
@@ -94,17 +88,17 @@ export function UserGuide({ roles }: { roles: Role[] }) {
           aria-live="polite"
           className="text-sm text-muted-foreground"
         >
-          {matches.length.toLocaleString("fa-CA")} فصل از{" "}
-          {guideSections.length.toLocaleString("fa-CA")} فصل
+          {matches.length.toLocaleString("en-CA")} of{" "}
+          {guideSections.length.toLocaleString("en-CA")} chapters
         </p>
       </section>
       {matches.length > 0 && (
         <details className="rounded-2xl border bg-card p-5 print:hidden">
           <summary className="min-h-11 cursor-pointer py-2 font-semibold">
-            فهرست فصل‌ها
+            Chapters
           </summary>
           <nav
-            aria-label="فهرست راهنمای کاربران"
+            aria-label="User guide contents"
             className="mt-3 grid gap-2 sm:grid-cols-2"
           >
             {matches.map((section) => (
@@ -121,13 +115,13 @@ export function UserGuide({ roles }: { roles: Role[] }) {
       )}
       {matches.length === 0 && (
         <div className="rounded-2xl border p-8 text-center print:hidden">
-          <h2 className="text-xl font-semibold">موضوعی پیدا نشد</h2>
+          <h2 className="text-xl font-semibold">No matching topics</h2>
           <p className="my-4 leading-7 text-muted-foreground">
-            واژه کوتاه‌تر یا نام انگلیسی بخش را امتحان کنید؛ مثلاً تمدید یا
-            Extension.
+            Try a shorter phrase or a module name, such as extension or
+            inventory.
           </p>
           <Button type="button" variant="outline" onClick={() => setQuery("")}>
-            نمایش همه فصل‌ها
+            Show all chapters
           </Button>
         </div>
       )}
@@ -144,7 +138,7 @@ export function UserGuide({ roles }: { roles: Role[] }) {
                 className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-semibold text-primary"
                 aria-hidden="true"
               >
-                {(index + 1).toLocaleString("fa-CA")}
+                {(index + 1).toLocaleString("en-CA")}
               </span>
               <div>
                 <h2
@@ -167,7 +161,7 @@ export function UserGuide({ roles }: { roles: Role[] }) {
             </ol>
             {section.note && (
               <p className="mt-5 rounded-xl border-s-4 border-primary bg-muted p-4 text-sm leading-8">
-                <strong className="font-semibold">یادآوری: </strong>
+                <strong className="font-semibold">Remember: </strong>
                 {section.note}
               </p>
             )}
@@ -177,27 +171,27 @@ export function UserGuide({ roles }: { roles: Role[] }) {
                   href={`/${section.module}`}
                   className="rounded-lg px-2 py-3 text-sm font-semibold text-primary hover:underline focus-visible:outline-2"
                 >
-                  رفتن به <bdi>{modules[section.module].title}</bdi>
+                  Go to <bdi>{modules[section.module].title}</bdi>
                 </Link>
               ) : (
                 <span className="text-xs leading-6 text-muted-foreground">
-                  اقدام‌ها تابع نقش و دسترسی شما هستند.
+                  Actions depend on your role and access.
                 </span>
               )}
               <a
                 href="#guide-top"
                 className="rounded-lg px-2 py-3 text-sm text-muted-foreground hover:underline focus-visible:outline-2"
               >
-                بازگشت به بالای راهنما
+                Back to top
               </a>
             </div>
           </section>
         ))}
       </div>
       <p className="text-sm leading-7 text-muted-foreground">
-        این راهنما اطلاعات مشتریان یا وضعیت زنده سرویس‌ها را نمایش نمی‌دهد. برای
-        تصمیم عملیاتی، وضعیت فعلی پرونده و پیام‌های داخل برنامه را ملاک قرار
-        دهید.
+        This guide does not display customer records or live service status. For
+        operational decisions, check the current record and the messages shown
+        in the app.
       </p>
     </div>
   );
