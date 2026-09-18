@@ -168,7 +168,8 @@ async function main() {
     await admin.action(ref("admin:provision"), {
       email,
       name: "Fictional isolated onboarding",
-      roles: ["sales"],
+      roles:
+        process.env.GLARA_POST_M10_REGRESSION === "yes" ? ["owner"] : ["sales"],
       password: initial,
     });
     const code = async (expired = false) => {
@@ -258,6 +259,88 @@ async function main() {
       await expect(page).toHaveURL(origin + "/dashboard");
       await expect(page.locator("main")).toBeVisible();
       result.results.push({ scenario: phase, passed: true });
+      if (process.env.GLARA_POST_M10_REGRESSION === "yes") {
+        phase = name + "-profile-and-settings";
+        await page.goto(origin + "/profile");
+        await expect(
+          page.getByRole("heading", { name: "Change password", exact: true }),
+        ).toBeVisible();
+        await page.goto(origin + "/settings");
+        await expect(
+          page.getByRole("link", { name: /Inventory categories & locations/ }),
+        ).toBeVisible();
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-marketing";
+        await page.goto(origin + "/marketing");
+        await expect(
+          page.getByRole("heading", { name: "Marketing", exact: true }),
+        ).toBeVisible();
+        await expect(
+          page.getByText("Marketing workspace", { exact: true }),
+        ).toBeVisible();
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-address-keyboard";
+        await page.route("https://photon.komoot.io/**", (route) =>
+          route.fulfill({
+            json: {
+              features: [
+                {
+                  properties: {
+                    countrycode: "CA",
+                    housenumber: "123",
+                    street: "Fictional Avenue",
+                    city: "Burnaby",
+                    state: "British Columbia",
+                    postcode: "V5A 1A1",
+                  },
+                },
+              ],
+            },
+          }),
+        );
+        await page.goto(origin + "/properties/new");
+        await page
+          .getByLabel("Address line 1", { exact: true })
+          .fill("123 Fictional");
+        const suggestion = page.getByRole("button", {
+          name: "123 Fictional Avenue, Burnaby, V5A 1A1",
+          exact: true,
+        });
+        await expect(suggestion).toBeVisible();
+        await suggestion.focus();
+        await page.keyboard.press("Enter");
+        await expect(page.getByLabel("City", { exact: true })).toHaveValue(
+          "Burnaby",
+        );
+        await expect(
+          page.getByLabel("Postal code", { exact: true }),
+        ).toHaveValue("V5A 1A1");
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-product-photo";
+        await page.goto(origin + "/inventory");
+        await page.locator('input[type="file"][multiple]').setInputFiles({
+          name: "fictional.png",
+          mimeType: "image/png",
+          buffer: Buffer.from(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aRysAAAAASUVORK5CYII=",
+            "base64",
+          ),
+        });
+        const draft = page.getByRole("link", {
+          name: /DRAFT-.*complete details/,
+        });
+        await expect(draft).toBeVisible();
+        await draft.click();
+        await expect(page.getByText("Photos", { exact: true })).toBeVisible();
+        expect(
+          await page
+            .locator("img")
+            .evaluateAll((images) =>
+              images.some((image) => image.complete && image.naturalWidth > 0),
+            ),
+        ).toBe(true);
+        result.results.push({ scenario: phase, passed: true });
+      }
       phase = name + "-logout";
       if (name === "mobile")
         await page.getByRole("button", { name: "Open navigation" }).click();

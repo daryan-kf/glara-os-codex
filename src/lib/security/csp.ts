@@ -2,6 +2,7 @@ export function contentSecurityPolicy(
   nonce: string,
   backend: string | undefined,
   development: boolean,
+  addressLookup = false,
 ) {
   if (!/^[A-Za-z0-9+/=_-]{20,100}$/.test(nonce)) throw Error("Invalid nonce");
   const connections = ["'self'"];
@@ -27,7 +28,7 @@ export function contentSecurityPolicy(
     images.push(url.origin);
   }
   // Address typeahead suggestions (OpenStreetMap/Photon); only typed address text is sent.
-  connections.push("https://photon.komoot.io");
+  if (addressLookup) connections.push("https://photon.komoot.io");
   if (development) connections.push("ws://localhost:*", "ws://127.0.0.1:*");
   return [
     "default-src 'self'",

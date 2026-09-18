@@ -18,7 +18,7 @@ const purgeTables = [
 export const purgeCatalog = internalMutation({
   args: {},
   handler: async (ctx) => {
-    if (process.env.GLARA_ENVIRONMENT === "production")
+    if (process.env.GLARA_ENVIRONMENT !== "development")
       throw Error("Catalog purge is a non-production maintenance operation.");
     let deleted = 0;
     const counts: Record<string, number> = {};
@@ -113,7 +113,7 @@ const businessTables = [
 export const purgeTestRecipient = internalMutation({
   args: {},
   handler: async (ctx) => {
-    if (process.env.GLARA_ENVIRONMENT === "production")
+    if (process.env.GLARA_ENVIRONMENT !== "development")
       throw Error("Test purge is a non-production maintenance operation.");
     const email = "glarahome.staging@gmail.com";
     let deleted = 0;
@@ -191,7 +191,7 @@ export const purgeTestRecipient = internalMutation({
 export const purgeBusinessData = internalMutation({
   args: {},
   handler: async (ctx) => {
-    if (process.env.GLARA_ENVIRONMENT === "production")
+    if (process.env.GLARA_ENVIRONMENT !== "development")
       throw Error("Business purge is a non-production maintenance operation.");
     let deleted = 0;
     const counts: Record<string, number> = {};

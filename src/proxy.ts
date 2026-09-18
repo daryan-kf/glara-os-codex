@@ -1,5 +1,6 @@
 import { convexAuthNextjsMiddleware } from "@convex-dev/auth/nextjs/server";
 import { NextResponse, NextRequest, type NextFetchEvent } from "next/server";
+import { productionCapabilityAllowed } from "@/lib/security/preflight";
 import { isConfigured } from "@/lib/env";
 import { readLimitedBody, RequestBodyError } from "@/lib/security/http";
 import { contentSecurityPolicy } from "@/lib/security/csp";
@@ -8,6 +9,20 @@ const authProxy = convexAuthNextjsMiddleware(undefined, {
   shouldHandleCode: false,
 });
 export async function proxy(request: NextRequest, event: NextFetchEvent) {
+  if (
+    process.env.GLARA_ENVIRONMENT === "production" &&
+    (process.env.GLARA_PRODUCTION_APPROVED !== "true" ||
+      process.env.GLARA_RECOVERY_MODE === "true")
+  )
+    return new NextResponse("Glara OS is not open for access yet.", {
+      status: 503,
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+        "X-Robots-Tag": "noindex, nofollow",
+      },
+    });
   if (request.nextUrl.pathname.replace(/\/$/, "") === "/api/auth") {
     const failure = (status: number) =>
       NextResponse.json(
@@ -54,6 +69,8 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
     nonce,
     process.env.NEXT_PUBLIC_CONVEX_URL,
     process.env.NODE_ENV === "development",
+    process.env.GLARA_RECOVERY_MODE !== "true" &&
+      productionCapabilityAllowed(process.env, "address_lookup"),
   );
   // Replace untrusted client headers before Next extracts the request nonce.
   request.headers.set("x-nonce", nonce);

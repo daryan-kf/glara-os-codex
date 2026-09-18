@@ -192,6 +192,8 @@ export function productionCapabilityAllowed(
       "automation",
       "auth_email",
       "onboarding",
+      "external_assets",
+      "address_lookup",
     ].includes(capability)
   )
     return (

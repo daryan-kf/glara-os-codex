@@ -20,7 +20,7 @@ const stored = (
   id: Awaited<ReturnType<typeof store>>,
 ) => f.t.run(async (ctx) => Boolean(await ctx.storage.get(id)));
 describe("product photos", () => {
-  it("attaches validated images, serves URLs by role, and removes the blob on delete", async () => {
+  it("attaches validated images, serves URLs by role, and detaches without destroying a potentially shared blob", async () => {
     const f = await fixture();
     const image = await store(f, "image/jpeg");
     await f.owner.mutation(api.inventory.attachProductImage, {
@@ -51,7 +51,7 @@ describe("product photos", () => {
     expect(
       (await f.owner.query(api.inventory.product, { id: f.product })).images,
     ).toHaveLength(0);
-    expect(await stored(f, image)).toBe(false);
+    expect(await stored(f, image)).toBe(true);
   });
   it("rejects non-image uploads, oversized files, the photo limit and non-managers", async () => {
     const f = await fixture();
@@ -61,7 +61,7 @@ describe("product photos", () => {
       storage_id: text,
     });
     expect(rejected.ok).toBe(false);
-    expect(await stored(f, text)).toBe(false);
+    expect(await stored(f, text)).toBe(true);
     const huge = await store(f, "image/png", 5 * 1024 * 1024 + 1);
     expect(
       (
@@ -71,7 +71,7 @@ describe("product photos", () => {
         })
       ).ok,
     ).toBe(false);
-    expect(await stored(f, huge)).toBe(false);
+    expect(await stored(f, huge)).toBe(true);
     for (let i = 0; i < 6; i++)
       expect(
         (
@@ -90,7 +90,7 @@ describe("product photos", () => {
         })
       ).ok,
     ).toBe(false);
-    expect(await stored(f, overflow)).toBe(false);
+    expect(await stored(f, overflow)).toBe(true);
     for (const role of ["designer", "staging_crew", "sales"] as const) {
       await expect(
         f.c(role).mutation(api.inventory.imageUploadUrl, {}),
@@ -124,14 +124,14 @@ describe("quick add from a photo", () => {
     expect(detail.images).toHaveLength(1);
     expect(detail.active).toBe(true);
   });
-  it("rejects non-images, cleans up the blob, and denies non-managers", async () => {
+  it("rejects non-images, retains an untrusted blob reference, and denies non-managers", async () => {
     const f = await fixture();
     const bad = await store(f, "application/pdf");
     const rejected = await f.owner.mutation(api.inventory.quickAddProduct, {
       storage_id: bad,
     });
     expect(rejected.ok).toBe(false);
-    expect(await stored(f, bad)).toBe(false);
+    expect(await stored(f, bad)).toBe(true);
     await expect(
       f.c("designer").mutation(api.inventory.quickAddProduct, {
         storage_id: await store(f, "image/jpeg"),
@@ -204,4 +204,28 @@ describe("photo import from spreadsheet URLs", () => {
     ).rejects.toThrow();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
+});
+
+it("rejected attachment cannot delete another product's photo", async () => {
+  const f = await fixture();
+  const id = await store(f, "image/png");
+  await f.owner.mutation(api.inventory.attachProductImage, {
+    product_id: f.product,
+    storage_id: id,
+  });
+  const other = await f.owner.mutation(api.inventory.quickAddProduct, {
+    storage_id: await store(f, "image/jpeg"),
+  });
+  await f.t.run((ctx) =>
+    ctx.db.patch(other.id!, { deleted_at: new Date().toISOString() }),
+  );
+  const refused = await f.owner.mutation(api.inventory.attachProductImage, {
+    product_id: other.id!,
+    storage_id: id,
+  });
+  expect(refused.ok).toBe(false);
+  expect(await stored(f, id)).toBe(true);
+  expect(
+    (await f.owner.query(api.inventory.product, { id: f.product })).images,
+  ).toHaveLength(1);
 });

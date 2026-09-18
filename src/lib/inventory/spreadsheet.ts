@@ -91,7 +91,8 @@ function zipStore(entries: [string, string][]) {
       ...u32(offset),
       ...nameBytes,
     );
-    chunks.push(...header, ...nameBytes, ...data);
+    chunks.push(...header, ...nameBytes);
+    for (const byte of data) chunks.push(byte);
     offset += header.length + nameBytes.length + data.length;
     count++;
   }

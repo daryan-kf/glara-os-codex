@@ -1,3 +1,4 @@
+import { productionCapabilityAllowed } from "../src/lib/security/preflight";
 import { query } from "./_generated/server";
 import { mutation, internalMutation, action, internalQuery } from "./functions";
 import { currentProfile, requireRoles, deny } from "./access";
@@ -16,6 +17,9 @@ export const viewer = query({
     if (!profile) return null;
     const user = await ctx.db.get(profile.userId);
     return {
+      address_lookup_enabled:
+        process.env.GLARA_RECOVERY_MODE !== "true" &&
+        productionCapabilityAllowed(process.env, "address_lookup"),
       communications_version: 1,
       ai_version: 1,
       analytics_version: 1,

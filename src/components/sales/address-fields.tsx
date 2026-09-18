@@ -1,5 +1,7 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { inputClass } from "./shared";
 // Free OpenStreetMap-based typeahead geocoder; results are biased to Metro
 // Vancouver and filtered to Canada. Only the typed address text is sent.
@@ -50,6 +52,8 @@ export function AddressFields({
     postal_code?: string | null;
   };
 }) {
+  const viewer = useQuery(api.profiles.viewer);
+  const lookupEnabled = viewer?.address_lookup_enabled === true;
   const [address, setAddress] = useState(initial?.address_line_1 ?? ""),
     [city, setCity] = useState(initial?.city ?? "Vancouver"),
     [province, setProvince] = useState(initial?.province ?? "BC"),
@@ -58,10 +62,17 @@ export function AddressFields({
     [open, setOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined),
     controller = useRef<AbortController>(undefined);
+  useEffect(
+    () => () => {
+      clearTimeout(timer.current);
+      controller.current?.abort();
+    },
+    [],
+  );
   function search(term: string) {
     clearTimeout(timer.current);
     controller.current?.abort();
-    if (term.trim().length < 3) {
+    if (!lookupEnabled || term.trim().length < 3) {
       setSuggestions([]);
       setOpen(false);
       return;
@@ -114,8 +125,8 @@ export function AddressFields({
                 <button
                   type="button"
                   className="w-full px-3 py-2 text-left text-sm hover:bg-muted"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
                     setAddress(s.address);
                     if (s.city) setCity(s.city);
                     if (s.province) setProvince(s.province);

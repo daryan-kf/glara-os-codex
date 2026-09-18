@@ -1,3 +1,5 @@
+import { requireCapability } from "./emergencyCore";
+import { productionCapabilityAllowed } from "../src/lib/security/preflight";
 import { damageTransitions } from "../src/lib/inventory/model";
 import { cents } from "../src/lib/sales/model";
 import {
@@ -390,6 +392,7 @@ export const imageUploadUrl = mutation({
   args: {},
   handler: async (ctx) => {
     await manager(ctx);
+    await requireCapability(ctx, "inventory");
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -398,10 +401,9 @@ export const attachProductImage = mutation({
   handler: async (ctx, args): Promise<{ ok: boolean; message?: string }> => {
     const u = await manager(ctx);
     const p = await ctx.db.get(args.product_id);
-    // Throwing would roll back the blob cleanup, so refusals are returned
-    // as values and the rejected upload is deleted in the same transaction.
+    // Client-supplied storage IDs may already be referenced elsewhere.
+    // Rejection and detachment must not destroy a shared or unrelated blob.
     const reject = async (message: string) => {
-      await ctx.storage.delete(args.storage_id);
       return { ok: false, message };
     };
     if (!p || p.deleted_at) return reject("Product unavailable.");
@@ -437,7 +439,7 @@ export const removeProductImage = mutation({
       image_ids: images.filter((id) => id !== args.storage_id),
       updated_at: now(),
     });
-    await ctx.storage.delete(args.storage_id);
+    // Physical cleanup requires a reference-aware retention job; retain the blob.
     await audit(ctx, u.userId, p._id, "product_image_removed", null, {
       sku: p.sku,
       images: images.length - 1,
@@ -460,7 +462,6 @@ export const quickAddProduct = mutation({
   }> => {
     const u = await manager(ctx);
     const reject = async (message: string) => {
-      await ctx.storage.delete(args.storage_id);
       return { ok: false, message };
     };
     const metadata = await ctx.db.system.get(args.storage_id);
@@ -559,7 +560,6 @@ export const finishImageImport = internalMutation({
     const u = await manager(ctx);
     const p = await ctx.db.get(args.product_id);
     const reject = async (message: string) => {
-      await ctx.storage.delete(args.storage_id);
       return { ok: false, message };
     };
     if (!p || p.deleted_at) return reject("Product unavailable.");
@@ -594,6 +594,14 @@ export const importProductImages = action({
   ): Promise<
     Array<{ sku: string; added: number; skipped: number; errors: string[] }>
   > => {
+    // Gate the action before any outbound request or storage side effect.
+    if (
+      !productionCapabilityAllowed(process.env, "external_assets") ||
+      (await ctx.runQuery(internal.emergency.blocked, {
+        capability: "inventory",
+      }))
+    )
+      deny("CAPABILITY_FROZEN", "Photo import is temporarily restricted.");
     const items = parse(imageImportRows, args.input);
     const results = [];
     for (const item of items) {
@@ -690,7 +698,7 @@ export const importProducts = mutation({
         });
         categoryRow = (await ctx.db.get(id))!;
       }
-      if (!categoryRow.active)
+      if (!categoryRow.active || categoryRow.deleted_at)
         deny("INVALID_INPUT", `Category "${category}" is inactive.`);
       const existing = await ctx.db
         .query("products")
@@ -709,6 +717,15 @@ export const importProducts = mutation({
         deny(
           "DEPENDENCY",
           `${data.sku}: tracking mode cannot change after inventory history exists.`,
+        );
+      if (
+        existing &&
+        (!data.active || !data.staging_eligible) &&
+        (await productLines(ctx, existing._id)).length
+      )
+        deny(
+          "DEPENDENCY",
+          "Resolve reservations before disabling this product.",
         );
       const fields = {
         ...data,
