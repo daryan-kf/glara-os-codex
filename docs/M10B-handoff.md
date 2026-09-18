@@ -1,5 +1,7 @@
 # M10B handoff — ENTRY BLOCKED
 
+> Current follow-up: see [production preparation](production-preparation.md) and [post-M10A review](post-M10A-review.md). Isolated production infrastructure is now authorized and its empty shell is configured OFF; production code deployment was rejected by automatic approval review. The evidence below describes the historical M10A execution and is not current-HEAD recertification. No go-live is authorized.
+
 M10A PRODUCTION READINESS GATE PENDING EXTERNAL ACTION
 
 Runtime candidate `755e1c95d99e22a63f474194d63750ed66cf5fa0`; lockfile/build/schema/rollback provenance is in M10A-release-candidate.json. Final packaging SHA is returned after push. Production mutations remain zero; no authority for M10B, production resources, DNS, credentials, customer traffic/data or staff communication.

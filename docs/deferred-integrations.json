@@ -1,18 +1,18 @@
 {
-  "updated_at": "2026-09-16T18:33:48.520567+00:00",
+  "updated_at": "2026-09-18T05:05:38.934431+00:00",
   "review_gate": "M10B Go-Live review must inspect this register; M10A does not waive integration gates",
   "integrations": [
     {
       "id": "m9-google-calendar",
       "integration": "Google Calendar",
       "milestone": "M9",
-      "status": "M9 CALENDAR GATE DEFERRED — EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT",
+      "status": "M9 CALENDAR GATE DEFERRED â€” EXTERNAL OAUTH CONFIGURATION REQUIRED BEFORE ENABLEMENT",
       "implementation": "complete",
       "implementation_note": "Existing implementation retained; complete implementation does not imply live provider validation",
       "live_acceptance": "incomplete",
       "reason": "OAuth/account setup deferred by product owner",
       "production_enabled": false,
-      "production_state_evidence": "Required rollout state; production was not accessed or modified",
+      "production_state_evidence": "Verified false on the authorized empty terrific-seahorse-419 shell; see docs/production-preparation.json. No OAuth or live Calendar calls.",
       "development_enabled": false,
       "production_blocker": "Only if Calendar is intended to be enabled",
       "non_blocking_for": "M10A PRODUCTION HARDENING while Calendar remains disabled",

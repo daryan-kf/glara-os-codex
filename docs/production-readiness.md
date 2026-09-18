@@ -1,5 +1,7 @@
 # Production readiness and milestone sequencing
 
+> Current follow-up: see [production preparation](production-preparation.md) and [post-M10A review](post-M10A-review.md). Isolated production infrastructure is now authorized and its empty shell is configured OFF; production code deployment was rejected by automatic approval review. The evidence below describes the historical M10A execution and is not current-HEAD recertification. No go-live is authorized.
+
 ## Current boundary
 
 M10A PRODUCTION READINESS GATE PENDING EXTERNAL ACTION. The full frozen specification through Section 474 remains mapped to canonical controls. Technical results and exact external requirements are in [M10A-report.md](M10A-report.md), [M10A-external-actions.md](M10A-external-actions.md) and [M10B-handoff.md](M10B-handoff.md). Production and M10B remain unauthorized.

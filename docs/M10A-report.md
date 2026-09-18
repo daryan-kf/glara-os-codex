@@ -1,5 +1,7 @@
 # M10A final acceptance — not approved for go-live
 
+> Current follow-up: see [production preparation](production-preparation.md) and [post-M10A review](post-M10A-review.md). Isolated production infrastructure is now authorized and its empty shell is configured OFF; production code deployment was rejected by automatic approval review. The evidence below describes the historical M10A execution and is not current-HEAD recertification. No go-live is authorized.
+
 M10A PRODUCTION READINESS GATE PENDING EXTERNAL ACTION
 
 Tested runtime source: `755e1c95d99e22a63f474194d63750ed66cf5fa0`. All Codex-completable checks in the documented scope are complete. Human/provider dependencies remain explicit; no production configuration or M10B is authorized.

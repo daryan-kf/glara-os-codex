@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-09-18T05:05:38.934431+00:00",
+  "baseline_commit": "9930136bcd3d849fff98c0769bca36ba9ac57a68",
+  "reviewed_head": "94609c7",
+  "post_baseline_commits_reviewed": 31,
+  "runtime_commit": "30ae2de5a74a4e009ef539504009bc926a456afe",
+  "decision": "PRODUCTION PREPARATION PENDING EXTERNAL ACTION",
+  "targeted_regression": "PASSED",
+  "m10a_current_head": "PENDING VERIFICATION — historical acceptance retained; targeted tests do not recertify the frozen full gate",
+  "confirmed_regressions_remaining": 0,
+  "tests": {
+    "node": {
+      "passed": 20,
+      "failed": 0
+    },
+    "vitest": {
+      "passed": 563,
+      "failed": 0,
+      "files": 38
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed — isolated production build, webpack",
+    "browser": {
+      "executed_at": "2026-09-18T04:51:11.725Z",
+      "environment": "isolated_restore",
+      "production_modified": false,
+      "shared_development_modified": false,
+      "provider_calls": 0,
+      "results": [
+        {
+          "scenario": "desktop-expired",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-valid",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-reused",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-profile-and-settings",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-marketing",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-address-keyboard",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-product-photo",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-logout",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-expired",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-valid",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-reused",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-profile-and-settings",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-marketing",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-address-keyboard",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-product-photo",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-logout",
+          "passed": true
+        }
+      ],
+      "status": "PASSED"
+    },
+    "hosted_development": {
+      "executed_at": "2026-09-18T05:02:50.149Z",
+      "deployment": "woozy-jaguar-392",
+      "scenarios": [
+        {
+          "name": "anonymous profile",
+          "passed": true
+        },
+        {
+          "name": "inventory:options",
+          "passed": true
+        },
+        {
+          "name": "inventory:exportCatalog",
+          "passed": true
+        },
+        {
+          "name": "sales:quoteProducts",
+          "passed": true
+        },
+        {
+          "name": "crm:read",
+          "passed": true
+        },
+        {
+          "name": "profiles:audit",
+          "passed": true
+        },
+        {
+          "name": "analytics:summary",
+          "passed": true
+        },
+        {
+          "name": "profiles:updateName",
+          "passed": true
+        }
+      ],
+      "production_modified": false,
+      "provider_sends": 0,
+      "data_created": 0
+    },
+    "closed_frontend": {
+      "tested_at": "2026-09-18T04:56:36.482Z",
+      "production_build": true,
+      "local_only": true,
+      "external_provider_calls": 0,
+      "checks": [
+        {
+          "path": "/login",
+          "status": 503,
+          "cache": "no-store",
+          "closed": true
+        },
+        {
+          "path": "/dashboard",
+          "status": 503,
+          "cache": "no-store",
+          "closed": true
+        },
+        {
+          "path": "/inventory",
+          "status": 503,
+          "cache": "no-store",
+          "closed": true
+        },
+        {
+          "path": "/api/auth",
+          "status": 503,
+          "cache": "no-store",
+          "closed": true
+        }
+      ]
+    },
+    "initial_reproduction": {
+      "failed": 6,
+      "passed_after_fix": 6
+    },
+    "secret_scan": "passed — no credential-pattern or private environment files in release candidates"
+  },
+  "production": {
+    "checked_at": "2026-09-18T04:54:03.411Z",
+    "deployment": "terrific-seahorse-419",
+    "project_id": 2991851,
+    "type": "prod",
+    "reference": "production-preparation",
+    "region": "aws-us-east-1",
+    "url": "https://terrific-seahorse-419.convex.cloud",
+    "flags": {
+      "GLARA_ENVIRONMENT": "production",
+      "GLARA_PRODUCTION_APPROVED": "false",
+      "GLARA_RECOVERY_MODE": "true",
+      "GLARA_ACCEPTANCE_MODE": "false",
+      "GLARA_PRODUCTION_EMAIL_APPROVED": "false",
+      "GLARA_PRODUCTION_CALENDAR_APPROVED": "false",
+      "GLARA_PRODUCTION_AI_APPROVED": "false",
+      "GLARA_PRODUCTION_AUTOMATION_APPROVED": "false",
+      "GLARA_PRODUCTION_AUTH_EMAIL_APPROVED": "false",
+      "GLARA_PRODUCTION_ONBOARDING_APPROVED": "false",
+      "GLARA_PRODUCTION_EXTERNAL_ASSETS_APPROVED": "false",
+      "GLARA_PRODUCTION_ADDRESS_LOOKUP_APPROVED": "false",
+      "M9_EMAIL_ENABLED": "false",
+      "M9_CALENDAR_ENABLED": "false",
+      "AUTH_EMAIL_ENABLED": "false",
+      "GLARA_AI_SECURITY_APPROVED": "false",
+      "GLARA_AUTOMATION_ENABLED": "false",
+      "GLARA_HTTPS_READY": "false"
+    },
+    "empty_tables_verified": ["users", "profiles", "_storage"],
+    "code_deployed_this_run": false,
+    "owner_created": false,
+    "secrets_copied": false,
+    "provider_credentials_configured": false,
+    "production_traffic_authorized": false
+  },
+  "production_code_deployment": {
+    "status": "NOT DEPLOYED",
+    "reason": "Automatic approval review rejected production code deployment, citing the prior M10A production restriction; no bypass attempted."
+  },
+  "development": {
+    "deployment": "woozy-jaguar-392",
+    "corrected_backend_deployed": true,
+    "M9_EMAIL_ENABLED": false,
+    "email_state_on_initial_inspection": true,
+    "email_disabled_reason": "Restore previously required disabled state after acceptance; no send was performed.",
+    "M9_CALENDAR_ENABLED": false
+  },
+  "limitations": [
+    "31 post-M10A commits retained; no redesign or feature removal.",
+    "Photos detached/rejected through untrusted IDs retain storage bytes to prevent shared-file loss. Reference-aware cleanup requires the approved retention procedure.",
+    "Native Convex storage URLs are bearer-accessible and not an expiring private-file gateway. Production file-serving acceptance remains open; the closed production shell has no users, files or deployed code.",
+    "Production Owner/Admin MFA and owner recovery are not configured. The intentional six-character development password policy was not silently reverted; it is not production MFA acceptance.",
+    "Hosted checks were eight anonymous security scenarios, not a fresh full hosted M1–M9 acceptance run.",
+    "Browser cases used fictional isolated accounts and mock address responses; no live provider acceptance or physical-device UAT claimed.",
+    "Production frontend, hostname, TLS/HSTS, production backups and alert destinations remain unconfigured.",
+    "No production secrets, provider credentials, customers, users or business rows created."
+  ],
+  "owner_actions": [
+    "Confirm exact production hostname.",
+    "Confirm production Owner full name/email and independent recovery contact; never provide a password or secret in chat.",
+    "Select/connect supported privileged MFA architecture and confirm MFA on GitHub, Convex, hosting, Resend, OpenAI and DNS.",
+    "Connect the frontend hosting account for a separate production project with all-deployment access protection.",
+    "Explicitly confirm deployment of reviewed code to terrific-seahorse-419 with all capabilities disabled, to resolve the automatic approval block.",
+    "Name backup/security alert recipients and policy/privacy/CASL reviewer before real-data operations."
+  ],
+  "readiness_register": {
+    "valid": true,
+    "m10a_pass": false,
+    "m10b_entry": false,
+    "summary": {
+      "total_controls": 43,
+      "passed": 0,
+      "open": 43,
+      "failed": 0,
+      "pending_external": 19,
+      "deferred": 1,
+      "m10a_blockers": 22,
+      "m10b_blockers": 42,
+      "without_assigned_owner": 43,
+      "without_sufficient_evidence": 42,
+      "stale_evidence": 87
+    },
+    "open_P0_controls": 0,
+    "open_P1_controls": 43,
+    "interpretation": "These are unclosed readiness/verification requirements, not 43 demonstrated software defects. Historical full acceptance remains recorded; current targeted regression does not claim to close comprehensive production gates."
+  }
+}

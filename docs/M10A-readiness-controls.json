@@ -9,20 +9,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Verify no production changes, no real customer migration or communication, preserved architecture and release scope"
       ],
       "required_evidence_types": ["code_review"],
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": ["EV-RESUME-BOUNDARY-CODE-REVIEW"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-BOUNDARY-CODE-REVIEW"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Verify no production changes, no real customer migration or communication, preserved architecture and release scope",
       "limitations": [
         "Development and isolated-only execution; no production mutations, external sends, real data import or M10B.",
@@ -46,6 +46,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Development and isolated-only execution; no production mutations, external sends, real data import or M10B."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -57,12 +62,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Test exact deployment/origin assertions, isolated provider defaults and distinct environment configuration"
       ],
@@ -70,13 +75,11 @@
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": [
         "EV-RESUME-ENV-ISOLATION-SECURITY-TEST",
-        "EV-RESUME-ENV-ISOLATION-CONFIGURATION-CHECK"
+        "EV-RESUME-ENV-ISOLATION-CONFIGURATION-CHECK",
+        "EV-POST-M10A-ENV-ISOLATION-CONFIGURATION-CHECK"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-ENV-ISOLATION-SECURITY-TEST",
-        "EV-RESUME-ENV-ISOLATION-CONFIGURATION-CHECK"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Test exact deployment/origin assertions, isolated provider defaults and distinct environment configuration",
       "limitations": [
         "Exact frontend/backend deployment/origin fences tested; development flags explicitly false; production inputs require independent approved deployment and HTTPS origin.",
@@ -100,6 +103,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Exact frontend/backend deployment/origin fences tested; development flags explicitly false; production inputs require independent approved deployment and HTTPS origin."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -111,12 +119,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Verify restricted stores and least privilege, rotation/recovery drills and current Git/bundle/private-value scans"
       ],
@@ -126,11 +134,8 @@
         "EV-RESUME-SECRETS-SECRET-SCAN",
         "EV-RESUME-SECRETS-RUNBOOK-DRILL"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-SECRETS-SECRET-SCAN",
-        "EV-RESUME-SECRETS-RUNBOOK-DRILL"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Verify restricted stores and least privilege, rotation/recovery drills and current Git/bundle/private-value scans",
       "limitations": [
         "Current/history/bundle known-value and pattern scans clean; DPAPI ACL/tamper and actual isolated old/new credential rotation pass. Independent hosted custody remains CONTACTS-STORE/IR-06.",
@@ -154,6 +159,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Current/history/bundle known-value and pattern scans clean; DPAPI ACL/tamper and actual isolated old/new credential rotation pass. Independent hosted custody remains CONTACTS-STORE/IR-06."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -167,9 +177,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Implement single-use role-bound expiring invitations or formally approved equivalent; test issuer revocation, mismatch, replay and delivery"
@@ -208,6 +218,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -221,9 +236,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Complete backend/browser recovery replay, expiry, enumeration, fixation, rate-limit and production redirect/cookie verification"
@@ -262,6 +277,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -322,27 +342,25 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
-        "Fresh direct backend cross-role/record/archived/company and escalation matrix across M0â€“M9 on reviewed hosted code"
+        "Fresh direct backend cross-role/record/archived/company and escalation matrix across M0Ã¢â‚¬â€œM9 on reviewed hosted code"
       ],
       "required_evidence_types": ["security_test", "hosted_test"],
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": [
         "EV-RESUME-AUTHORIZATION-SECURITY-TEST",
-        "EV-RESUME-AUTHORIZATION-HOSTED-TEST"
+        "EV-RESUME-AUTHORIZATION-HOSTED-TEST",
+        "EV-POST-M10A-AUTHORIZATION-HOSTED-TEST"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-AUTHORIZATION-SECURITY-TEST",
-        "EV-RESUME-AUTHORIZATION-HOSTED-TEST"
-      ],
-      "completion_action": "Fresh direct backend cross-role/record/archived/company and escalation matrix across M0â€“M9 on reviewed hosted code",
+      "closed_at": null,
+      "closure_evidence_ids": [],
+      "completion_action": "Fresh direct backend cross-role/record/archived/company and escalation matrix across M0Ã¢â‚¬â€œM9 on reviewed hosted code",
       "limitations": [
         "95 hosted role/containment checks and eight extra nested-record/OCC/assignment cases pass, with desktop/mobile current-role and assignment revocation.",
         "Scoped M10A technical evidence only; production authorization and independent human sign-off not implied."
@@ -365,6 +383,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "95 hosted role/containment checks and eight extra nested-record/OCC/assignment cases pass, with desktop/mobile current-role and assignment revocation."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -376,20 +399,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Review endpoints; test SSRF/injection/CSRF/XSS and safe error/content boundaries"
       ],
       "required_evidence_types": ["security_test"],
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": ["EV-RESUME-APP-SECURITY-SECURITY-TEST"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-APP-SECURITY-SECURITY-TEST"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Review endpoints; test SSRF/injection/CSRF/XSS and safe error/content boundaries",
       "limitations": [
         "Bounded auth/public HTTP, CORS/CSRF, framing, stored CRM XSS, script injection, malformed/nested IDs, prefetch/cache and provider boundary checks pass; no arbitrary fetch/SQL/command endpoint.",
@@ -413,6 +436,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Bounded auth/public HTTP, CORS/CSRF, framing, stored CRM XSS, script injection, malformed/nested IDs, prefetch/cache and provider boundary checks pass; no arbitrary fetch/SQL/command endpoint."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -424,12 +452,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Complete strict CSP and browser/header tests with authorized production origin verification before go-live"
       ],
@@ -437,13 +465,11 @@
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": [
         "EV-RESUME-HEADERS-SECURITY-TEST",
-        "EV-RESUME-HEADERS-BROWSER-TEST"
+        "EV-RESUME-HEADERS-BROWSER-TEST",
+        "EV-POST-M10A-HEADERS-SECURITY-TEST"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-HEADERS-SECURITY-TEST",
-        "EV-RESUME-HEADERS-BROWSER-TEST"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Complete strict CSP and browser/header tests with authorized production origin verification before go-live",
       "limitations": [
         "Optimized desktop/mobile nonce CSP, frame denial, no-store, HTTP-only SameSite auth cookies and hostile origin tests pass. Actual production HTTPS/HSTS belongs to production-origin acceptance.",
@@ -467,6 +493,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Optimized desktop/mobile nonce CSP, frame denial, no-store, HTTP-only SameSite auth cookies and hostile origin tests pass. Actual production HTTPS/HSTS belongs to production-origin acceptance."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -478,12 +509,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "not_applicable",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Verify bounded inputs, private file access, type/size restrictions and approved malware boundary with direct tests"
       ],
@@ -491,13 +522,14 @@
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": [
         "EV-RESUME-UPLOADS-CODE-REVIEW",
-        "EV-RESUME-UPLOADS-SECURITY-TEST"
+        "EV-RESUME-UPLOADS-SECURITY-TEST",
+        "EV-POST-M10A-UPLOADS-SECURITY-TEST"
       ],
       "closed_at": null,
       "closure_evidence_ids": [],
       "completion_action": "Verify bounded inputs, private file access, type/size restrictions and approved malware boundary with direct tests",
       "limitations": [
-        "No active production upload-URL or file-download endpoint exists in current M0-M9 source. Metadata/storage references remain; activation requires the original private-access/type/size/content/malware/expiry gates. Isolated fictional Blob restore is not file-serving acceptance."
+        "Product photo upload/serving is now active in development. Role/type/size/refusal/freeze and browser paths tested; bearer storage URLs and physical retention remain boundaries requiring original file-access/expiry/content acceptance before production enablement. Empty production shell remains closed."
       ],
       "external_action": null,
       "deferred": null,
@@ -517,6 +549,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "not_applicable",
           "reason": "No active production upload-URL or file-download endpoint exists in current M0-M9 source. Metadata/storage references remain; activation requires the original private-access/type/size/content/malware/expiry gates. Isolated fictional Blob restore is not file-serving acceptance."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -530,9 +567,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Run public/auth distributed abuse matrix and approve infrastructure ingress protection; verify fail-closed recovery"
@@ -571,6 +608,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -582,20 +624,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Verify data classes, safe logs/errors, append-oriented audit actors/time and private projections under adversarial input"
       ],
       "required_evidence_types": ["security_test"],
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": ["EV-RESUME-PRIVACY-MINIMIZATION-SECURITY-TEST"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-PRIVACY-MINIMIZATION-SECURITY-TEST"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Verify data classes, safe logs/errors, append-oriented audit actors/time and private projections under adversarial input",
       "limitations": [
         "Current DTOs, private Marketing/crew projections, logs/errors and server-derived audit actors reviewed and tested. No new bulk export/destructive retention/provider data transfer.",
@@ -619,6 +661,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Current DTOs, private Marketing/crew projections, logs/errors and server-derived audit actors reviewed and tested. No new bulk export/destructive retention/provider data transfer."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -681,9 +728,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Verify scenarios, technical drills, restricted evidence/timeline and recovery/closure; resolve inherited follow-ups"
@@ -722,6 +769,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -735,9 +787,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Verify source/file/config/provider inventory, manifest, isolated guard and approved protected backup schedule/retention/RPO/RTO"
@@ -780,6 +832,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -791,20 +848,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Real export/import into fresh isolated target; compare tables, IDs, money/Inventory views, stored bytes, role denials and freezes"
       ],
       "required_evidence_types": ["restore_drill"],
       "allowed_evidence_environments": ["isolated_restore"],
       "evidence_ids": ["EV-RESUME-RESTORE-LOCAL-RESTORE-DRILL"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-RESTORE-LOCAL-RESTORE-DRILL"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Real export/import into fresh isolated target; compare tables, IDs, money/Inventory views, stored bytes, role denials and freezes",
       "limitations": [
         "672 rows/103 tables plus storage, populated M7-M9, exact data/views, role denial/recovery freeze, compatible prior-code rollback and forward restore pass.",
@@ -833,6 +890,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "672 rows/103 tables plus storage, populated M7-M9, exact data/views, role denial/recovery freeze, compatible prior-code rollback and forward restore pass."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -846,9 +908,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Configure protected backup store/schedule, prove failure alert, populated cross-module recovery and compatible rollback"
@@ -891,6 +953,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -902,12 +969,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Test direct role denial, redaction, unknown monitoring and queue/provider/AI/automation/drift/backup signal decisions"
       ],
@@ -917,11 +984,8 @@
         "EV-RESUME-OBSERVABILITY-LOCAL-AUTOMATED-TEST",
         "EV-RESUME-OBSERVABILITY-LOCAL-SECURITY-TEST"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-OBSERVABILITY-LOCAL-AUTOMATED-TEST",
-        "EV-RESUME-OBSERVABILITY-LOCAL-SECURITY-TEST"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Test direct role denial, redaction, unknown monitoring and queue/provider/AI/automation/drift/backup signal decisions",
       "limitations": [
         "Full local suite verifies health roles/redaction, durable alert dedupe/acknowledgement/recovery and unknown monitoring; independent monitor remains external.",
@@ -950,6 +1014,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Full local suite verifies health roles/redaction, durable alert dedupe/acknowledgement/recovery and unknown monitoring; independent monitor remains external."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1010,12 +1079,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Lockfile-preserving clean install/build, dependency audit and deterministic install patch review"
       ],
@@ -1025,11 +1094,8 @@
         "EV-RESUME-SUPPLY-LOCAL-DEPENDENCY-AUDIT",
         "EV-RESUME-SUPPLY-LOCAL-AUTOMATED-TEST"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-SUPPLY-LOCAL-DEPENDENCY-AUDIT",
-        "EV-RESUME-SUPPLY-LOCAL-AUTOMATED-TEST"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Lockfile-preserving clean install/build, dependency audit and deterministic install patch review",
       "limitations": [
         "Lockfile-preserving clean npm ci/build, patch integrity, point-in-time zero-advisory audit and public-bundle scan pass.",
@@ -1058,6 +1124,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Lockfile-preserving clean npm ci/build, patch integrity, point-in-time zero-advisory audit and public-bundle scan pass."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1071,9 +1142,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Verify named release operator, protected branch/reviews/CI secret boundaries, source/lock/build provenance and bundle secrecy"
@@ -1116,6 +1187,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -1129,9 +1205,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Close technical and external release-governance dependencies with fresh evidence"
@@ -1170,6 +1246,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -1181,12 +1262,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Implement bounded versioned source-to-target transform; rehearse fictional interruption/replay/rejection, reconciliation and per-phase rollback"
       ],
@@ -1201,12 +1282,8 @@
         "EV-RESUME-MIGRATION-RECONCILIATION",
         "EV-RESUME-MIGRATION-RUNBOOK-DRILL"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-MIGRATION-AUTOMATED-TEST",
-        "EV-RESUME-MIGRATION-RECONCILIATION",
-        "EV-RESUME-MIGRATION-RUNBOOK-DRILL"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Implement bounded versioned source-to-target transform; rehearse fictional interruption/replay/rejection, reconciliation and per-phase rollback",
       "limitations": [
         "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites.",
@@ -1230,6 +1307,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Ten local cases and six real isolated scenarios pass for 13 native commands: rollback, rejection, checkpoint/resume, immutable replay, source conflict and reconciliation. Real source adapters/approval remain future prerequisites."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1241,20 +1323,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Record in-process scale, paging/search integrity and nine operation distributions with explicit limitations"
       ],
       "required_evidence_types": ["load_test"],
       "allowed_evidence_environments": ["local"],
       "evidence_ids": ["EV-RESUME-PERFORMANCE-LOCAL-LOAD-TEST"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-PERFORMANCE-LOCAL-LOAD-TEST"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Record in-process scale, paging/search integrity and nine operation distributions with explicit limitations",
       "limitations": [
         "Local operation distributions and indexed history/reference tests pass, including 1000 activities, 206 locations and existing 1000-product/3000-asset/1000-ledger coverage.",
@@ -1283,6 +1365,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Local operation distributions and indexed history/reference tests pass, including 1000 activities, 206 locations and existing 1000-product/3000-asset/1000-ledger coverage."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1294,12 +1381,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Remove material CRM/history scans; stress realistic datasets and concurrent queues/writes; verify mobile and provider-outage behavior"
       ],
@@ -1310,12 +1397,8 @@
         "EV-RESUME-PERFORMANCE-ACCEPTANCE-BROWSER-TEST",
         "EV-RESUME-PERFORMANCE-ACCEPTANCE-SECURITY-TEST"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-PERFORMANCE-ACCEPTANCE-LOAD-TEST",
-        "EV-RESUME-PERFORMANCE-ACCEPTANCE-BROWSER-TEST",
-        "EV-RESUME-PERFORMANCE-ACCEPTANCE-SECURITY-TEST"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Remove material CRM/history scans; stress realistic datasets and concurrent queues/writes; verify mobile and provider-outage behavior",
       "limitations": [
         "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification.",
@@ -1339,6 +1422,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Eight hosted queries x five samples meet 5s/1MB bounds; 140 desktop/mobile cases and M4/M5/M7/CRM OCC/retry checks pass. Development measurements are not production capacity certification."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1350,20 +1438,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Test capability freezes, Owner-only authority, conflict rollback, audit actor, preserved reads and dispatch protections"
       ],
       "required_evidence_types": ["security_test"],
       "allowed_evidence_environments": ["local"],
       "evidence_ids": ["EV-RESUME-SAFE-MODE-LOCAL-SECURITY-TEST"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-SAFE-MODE-LOCAL-SECURITY-TEST"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Test capability freezes, Owner-only authority, conflict rollback, audit actor, preserved reads and dispatch protections",
       "limitations": [
         "Capability transactions, pre-dispatch last-mile recheck, queue preservation, Owner authority, recovery freeze and server audit identity pass.",
@@ -1392,6 +1480,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Capability transactions, pre-dispatch last-mile recheck, queue preservation, Owner authority, recovery freeze and server audit identity pass."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1403,20 +1496,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Verify sessions/refresh/codes removed, archived profile rejects old access and fresh password login, unauthorized actors denied"
       ],
       "required_evidence_types": ["security_test"],
       "allowed_evidence_environments": ["local"],
       "evidence_ids": ["EV-RESUME-REVOCATION-LOCAL-SECURITY-TEST"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-REVOCATION-LOCAL-SECURITY-TEST"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Verify sessions/refresh/codes removed, archived profile rejects old access and fresh password login, unauthorized actors denied",
       "limitations": [
         "Supported session/refresh/code destruction, archived/unassigned fresh-login denial and interrupted/competing profile changes pass.",
@@ -1445,6 +1538,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Supported session/refresh/code destruction, archived/unassigned fresh-login denial and interrupted/competing profile changes pass."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1458,9 +1556,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Named MFA-protected operators, restricted change/incident linkage and independent recovery drill"
@@ -1499,6 +1597,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -1561,9 +1664,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Complete account/session/recovery/invitation revocation and trusted Owner recovery; archive alone is not revocation; fresh technical and independent verification evidence required"
@@ -1591,7 +1694,7 @@
         {
           "at": "2026-09-16T20:27:38.027279+00:00",
           "status": "in_progress",
-          "reason": "Original open follow-up preserved: M10A Sections 17â€“36; existing archive drill only proves business-access denial"
+          "reason": "Original open follow-up preserved: M10A Sections 17Ã¢â‚¬â€œ36; existing archive drill only proves business-access denial"
         },
         {
           "at": "2026-09-16T20:27:38.027279+00:00",
@@ -1607,6 +1710,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -1618,12 +1726,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Atomic and attributable emergency freeze coverage for automation, financial/Inventory mutations and invitation issuance; fresh technical and independent verification evidence required"
       ],
@@ -1633,11 +1741,8 @@
         "EV-RESUME-IR-02-SECURITY-TEST",
         "EV-RESUME-IR-02-RUNBOOK-DRILL"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-IR-02-SECURITY-TEST",
-        "EV-RESUME-IR-02-RUNBOOK-DRILL"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Atomic and attributable emergency freeze coverage for automation, financial/Inventory mutations and invitation issuance; fresh technical and independent verification evidence required",
       "limitations": [
         "Local incident/emergency drills cover claimed email last-mile containment and automation worker execution, plus hosted seven-capability freezes and browser financial freeze/release. No real provider side effect triggered.",
@@ -1666,6 +1771,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Local incident/emergency drills cover claimed email last-mile containment and automation worker execution, plus hosted seven-capability freezes and browser financial freeze/release. No real provider side effect triggered."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1679,9 +1789,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Attributable platform operator evidence and incident linkage for environment changes/internal administration; fresh technical and independent verification evidence required"
@@ -1725,6 +1835,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -1790,12 +1905,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Execute isolated backup/restore, migration and compatible deployment rollback drills; fresh technical and independent verification evidence required"
       ],
@@ -1805,11 +1920,8 @@
         "EV-RESUME-IR-05-SECURITY-TEST",
         "EV-RESUME-IR-05-RUNBOOK-DRILL"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-IR-05-SECURITY-TEST",
-        "EV-RESUME-IR-05-RUNBOOK-DRILL"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Execute isolated backup/restore, migration and compatible deployment rollback drills; fresh technical and independent verification evidence required",
       "limitations": [
         "Real isolated populated restore, migration checkpoint/replay/rollback and compatible-code rollback drills pass; independent production schedule/custody remains BACKUP-OPERATIONS.",
@@ -1838,6 +1950,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Real isolated populated restore, migration checkpoint/replay/rollback and compatible-code rollback drills pass; independent production schedule/custody remains BACKUP-OPERATIONS."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -1851,9 +1968,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Hosted/browser account revocation and safe-mode acceptance, genuine provider credential rotation/recovery where required; fresh technical and independent verification evidence required"
@@ -1897,6 +2014,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -1910,9 +2032,9 @@
       "verification_owner": "Independent security/technical reviewer; assignment required",
       "status": "pending_external_action",
       "severity_if_open": "P1",
-      "m10a_blocker": true,
+      "m10a_blocker": false,
       "m10b_blocker": true,
-      "target_date": "Before M10A PASS",
+      "target_date": "Before the relevant M10B production access or capability is enabled",
       "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
       "required_evidence": [
         "Complete existing M10A auth/MFA, environment, retention and monitoring hardening requirements; fresh technical and independent verification evidence required"
@@ -1956,6 +2078,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "pending_external_action",
           "reason": "All available technical checks completed; remaining action requires the documented human/provider dependency."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_external_action",
+          "reason": "Owner explicitly moved inherent production/human prerequisites to M10B; requirement remains open, not passed or waived."
         }
       ]
     },
@@ -2025,12 +2152,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Verify schemas, complete coverage, inherited IR/Calendar migration, evidence/closure/freshness/reopening/secret rejection and generated totals"
       ],
@@ -2040,11 +2167,8 @@
         "EV-RESUME-READINESS-MODEL-AUTOMATED-TEST",
         "EV-RESUME-READINESS-MODEL-CODE-REVIEW"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-READINESS-MODEL-AUTOMATED-TEST",
-        "EV-RESUME-READINESS-MODEL-CODE-REVIEW"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Verify schemas, complete coverage, inherited IR/Calendar migration, evidence/closure/freshness/reopening/secret rejection and generated totals",
       "limitations": [
         "Schema/coverage/freshness/reopen/closure/secret rejection tested; all 503 frozen section identifiers remain mapped; original blocker flags/evidence requirements retained.",
@@ -2073,6 +2197,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Schema/coverage/freshness/reopen/closure/secret rejection tested; all 503 frozen section identifiers remain mapped; original blocker flags/evidence requirements retained."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -2084,12 +2213,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": false,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Keep accepted evidence and Owner-confirmed inbox receipt; read-only false development flag; do not infer production auth delivery"
       ],
@@ -2099,11 +2228,8 @@
         "EV-RESUME-M9-EMAIL-HISTORY-CONFIGURATION-CHECK",
         "EV-RESUME-M9-EMAIL-HISTORY-CODE-REVIEW"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-M9-EMAIL-HISTORY-CONFIGURATION-CHECK",
-        "EV-RESUME-M9-EMAIL-HISTORY-CODE-REVIEW"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Keep accepted evidence and Owner-confirmed inbox receipt; read-only false development flag; do not infer production auth delivery",
       "limitations": [
         "Historical accepted provider delivery plus OWNER CONFIRMED INBOX RECEIPT preserved; M9_EMAIL_ENABLED=false; no resend or inferred production-auth acceptance.",
@@ -2132,6 +2258,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "Historical accepted provider delivery plus OWNER CONFIRMED INBOX RECEIPT preserved; M9_EMAIL_ENABLED=false; no resend or inferred production-auth acceptance."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -2196,12 +2327,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Complete Sections 306-380 including stale role/assignment tabs, nested URL IDs, private files, network interruption, double submits, recovery and browser cache/prefetch evidence on final source."
       ],
@@ -2209,13 +2340,11 @@
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": [
         "EV-RESUME-BROWSER-ACCEPTANCE-HOSTED-TEST",
-        "EV-RESUME-BROWSER-ACCEPTANCE-BROWSER-TEST"
+        "EV-RESUME-BROWSER-ACCEPTANCE-BROWSER-TEST",
+        "EV-POST-M10A-BROWSER-ACCEPTANCE-BROWSER-TEST"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-BROWSER-ACCEPTANCE-HOSTED-TEST",
-        "EV-RESUME-BROWSER-ACCEPTANCE-BROWSER-TEST"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Complete Sections 306-380 including stale role/assignment tabs, nested URL IDs, private files, network interruption, double submits, recovery and browser cache/prefetch evidence on final source.",
       "limitations": [
         "140 unique optimized desktop/mobile cases pass after recorded targeted fixes/reruns; 12 isolated supported recovery cases pass. No active file-serving endpoint to test; production origins and physical UAT remain explicitly external.",
@@ -2239,6 +2368,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "140 unique optimized desktop/mobile cases pass after recorded targeted fixes/reruns; 12 isolated supported recovery cases pass. No active file-serving endpoint to test; production origins and physical UAT remain explicitly external."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -2250,12 +2384,12 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Run complete hosted M1-M9 business workflow regression on the final candidate; local suites and endpoint-role checks do not replace it."
       ],
@@ -2263,13 +2397,11 @@
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": [
         "EV-RESUME-FULL-REGRESSION-AUTOMATED-TEST",
-        "EV-RESUME-FULL-REGRESSION-HOSTED-TEST"
+        "EV-RESUME-FULL-REGRESSION-HOSTED-TEST",
+        "EV-POST-M10A-FULL-REGRESSION-AUTOMATED-TEST"
       ],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": [
-        "EV-RESUME-FULL-REGRESSION-AUTOMATED-TEST",
-        "EV-RESUME-FULL-REGRESSION-HOSTED-TEST"
-      ],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Run complete hosted M1-M9 business workflow regression on the final candidate; local suites and endpoint-role checks do not replace it.",
       "limitations": [
         "549 local tests; 144 hosted role/record/commercial/quantity/native automation scenarios; 140 browser business/security scenarios pass. M8 deterministic disabled-provider workflows and M9 disabled integrations preserve historical provider acceptance.",
@@ -2293,6 +2425,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "549 local tests; 144 hosted role/record/commercial/quantity/native automation scenarios; 140 browser business/security scenarios pass. M8 deterministic disabled-provider workflows and M9 disabled integrations preserve historical provider acceptance."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     },
@@ -2304,20 +2441,20 @@
       "assigned_owner": null,
       "implementation_owner": "Engineering operator; human assignment required",
       "verification_owner": "Independent security/technical reviewer; assignment required",
-      "status": "passed",
+      "status": "pending_verification",
       "severity_if_open": "P1",
       "m10a_blocker": true,
       "m10b_blocker": true,
       "target_date": "Before M10A PASS",
-      "last_reviewed_at": "2026-09-17T01:06:53.961857+00:00",
+      "last_reviewed_at": "2026-09-18T05:05:38.934431+00:00",
       "required_evidence": [
         "Complete independent authoritative Inventory, signed financial, analytics fact, automation and Communication reconciliation after the final hosted fixtures, with bounded scope and zero unexplained findings."
       ],
       "required_evidence_types": ["reconciliation"],
       "allowed_evidence_environments": ["local", "development"],
       "evidence_ids": ["EV-RESUME-FINAL-RECONCILIATION-RECONCILIATION"],
-      "closed_at": "2026-09-17T01:06:53.961857+00:00",
-      "closure_evidence_ids": ["EV-RESUME-FINAL-RECONCILIATION-RECONCILIATION"],
+      "closed_at": null,
+      "closure_evidence_ids": [],
       "completion_action": "Complete independent authoritative Inventory, signed financial, analytics fact, automation and Communication reconciliation after the final hosted fixtures, with bounded scope and zero unexplained findings.",
       "limitations": [
         "All pages of financial allocations/invoices, quantity movements/buckets, reservations/serialized overlap and M7 links plus independent M6 and M9 rebuilds verified. Three previously repaired duplicate M7 history records retained and explained; no unexplained findings.",
@@ -2341,6 +2478,11 @@
           "at": "2026-09-17T01:06:53.961857+00:00",
           "status": "passed",
           "reason": "All pages of financial allocations/invoices, quantity movements/buckets, reservations/serialized overlap and M7 links plus independent M6 and M9 rebuilds verified. Three previously repaired duplicate M7 history records retained and explained; no unexplained findings."
+        },
+        {
+          "at": "2026-09-18T05:05:38.934431+00:00",
+          "status": "pending_verification",
+          "reason": "Post-M10A source changes invalidate broad prior evidence. Targeted regression passed; historical results retained without claiming full current-HEAD recertification. See docs/production-preparation.json."
         }
       ]
     }

@@ -3553,6 +3553,228 @@
         ],
         "invalidated_at": null
       }
+    },
+    {
+      "evidence_id": "EV-POST-M10A-FULL-REGRESSION-AUTOMATED-TEST",
+      "control_id": "FULL-REGRESSION",
+      "evidence_type": "automated_test",
+      "source": "Targeted post-M10A tests and deployment metadata inspection",
+      "environment": "local",
+      "source_commit": "30ae2de5a74a4e009ef539504009bc926a456afe",
+      "source_paths": [
+        "convex",
+        "src",
+        "scripts/isolated-auth-browser.mjs",
+        "scripts/prepare-production.mjs",
+        "tests",
+        "vercel.production.json",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-18T05:05:38.934431+00:00",
+      "executed_by": "Codex using local tools and the authorized development deployment",
+      "verified_at": "2026-09-18T05:05:38.934431+00:00",
+      "verified_by": "Codex reviewed test and configuration results; no independent human sign-off implied",
+      "result": "passed",
+      "artifact_reference": "docs/production-preparation.json",
+      "limitations": [
+        "Targeted scope only; does not close the comprehensive frozen M10A gate or certify production access, file privacy, provider delivery, backups or staff UAT."
+      ],
+      "expires_at": null,
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-POST-M10A-BROWSER-ACCEPTANCE-BROWSER-TEST",
+      "control_id": "BROWSER-ACCEPTANCE",
+      "evidence_type": "browser_test",
+      "source": "Targeted post-M10A tests and deployment metadata inspection",
+      "environment": "isolated_restore",
+      "source_commit": "30ae2de5a74a4e009ef539504009bc926a456afe",
+      "source_paths": [
+        "convex",
+        "src",
+        "scripts/isolated-auth-browser.mjs",
+        "scripts/prepare-production.mjs",
+        "tests",
+        "vercel.production.json",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-18T05:05:38.934431+00:00",
+      "executed_by": "Codex using local tools and the authorized development deployment",
+      "verified_at": "2026-09-18T05:05:38.934431+00:00",
+      "verified_by": "Codex reviewed test and configuration results; no independent human sign-off implied",
+      "result": "passed",
+      "artifact_reference": "docs/production-preparation.json",
+      "limitations": [
+        "Targeted scope only; does not close the comprehensive frozen M10A gate or certify production access, file privacy, provider delivery, backups or staff UAT."
+      ],
+      "expires_at": null,
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-POST-M10A-AUTHORIZATION-HOSTED-TEST",
+      "control_id": "AUTHORIZATION",
+      "evidence_type": "hosted_test",
+      "source": "Targeted post-M10A tests and deployment metadata inspection",
+      "environment": "development",
+      "source_commit": "30ae2de5a74a4e009ef539504009bc926a456afe",
+      "source_paths": [
+        "convex",
+        "src",
+        "scripts/isolated-auth-browser.mjs",
+        "scripts/prepare-production.mjs",
+        "tests",
+        "vercel.production.json",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-18T05:05:38.934431+00:00",
+      "executed_by": "Codex using local tools and the authorized development deployment",
+      "verified_at": "2026-09-18T05:05:38.934431+00:00",
+      "verified_by": "Codex reviewed test and configuration results; no independent human sign-off implied",
+      "result": "passed",
+      "artifact_reference": "docs/production-preparation.json",
+      "limitations": [
+        "Targeted scope only; does not close the comprehensive frozen M10A gate or certify production access, file privacy, provider delivery, backups or staff UAT."
+      ],
+      "expires_at": null,
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-POST-M10A-UPLOADS-SECURITY-TEST",
+      "control_id": "UPLOADS",
+      "evidence_type": "security_test",
+      "source": "Targeted post-M10A tests and deployment metadata inspection",
+      "environment": "local",
+      "source_commit": "30ae2de5a74a4e009ef539504009bc926a456afe",
+      "source_paths": [
+        "convex",
+        "src",
+        "scripts/isolated-auth-browser.mjs",
+        "scripts/prepare-production.mjs",
+        "tests",
+        "vercel.production.json",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-18T05:05:38.934431+00:00",
+      "executed_by": "Codex using local tools and the authorized development deployment",
+      "verified_at": "2026-09-18T05:05:38.934431+00:00",
+      "verified_by": "Codex reviewed test and configuration results; no independent human sign-off implied",
+      "result": "passed",
+      "artifact_reference": "docs/production-preparation.json",
+      "limitations": [
+        "Targeted scope only; does not close the comprehensive frozen M10A gate or certify production access, file privacy, provider delivery, backups or staff UAT."
+      ],
+      "expires_at": null,
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-POST-M10A-HEADERS-SECURITY-TEST",
+      "control_id": "HEADERS",
+      "evidence_type": "security_test",
+      "source": "Targeted post-M10A tests and deployment metadata inspection",
+      "environment": "local",
+      "source_commit": "30ae2de5a74a4e009ef539504009bc926a456afe",
+      "source_paths": [
+        "convex",
+        "src",
+        "scripts/isolated-auth-browser.mjs",
+        "scripts/prepare-production.mjs",
+        "tests",
+        "vercel.production.json",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-18T05:05:38.934431+00:00",
+      "executed_by": "Codex using local tools and the authorized development deployment",
+      "verified_at": "2026-09-18T05:05:38.934431+00:00",
+      "verified_by": "Codex reviewed test and configuration results; no independent human sign-off implied",
+      "result": "passed",
+      "artifact_reference": "docs/production-preparation.json",
+      "limitations": [
+        "Targeted scope only; does not close the comprehensive frozen M10A gate or certify production access, file privacy, provider delivery, backups or staff UAT."
+      ],
+      "expires_at": null,
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration"
+        ],
+        "invalidated_at": null
+      }
+    },
+    {
+      "evidence_id": "EV-POST-M10A-ENV-ISOLATION-CONFIGURATION-CHECK",
+      "control_id": "ENV-ISOLATION",
+      "evidence_type": "configuration_check",
+      "source": "Targeted post-M10A tests and deployment metadata inspection",
+      "environment": "future_production",
+      "source_commit": "30ae2de5a74a4e009ef539504009bc926a456afe",
+      "source_paths": [
+        "convex",
+        "src",
+        "scripts/isolated-auth-browser.mjs",
+        "scripts/prepare-production.mjs",
+        "tests",
+        "vercel.production.json",
+        "package-lock.json"
+      ],
+      "executed_at": "2026-09-18T05:05:38.934431+00:00",
+      "executed_by": "Codex using local tools and the authorized development deployment",
+      "verified_at": "2026-09-18T05:05:38.934431+00:00",
+      "verified_by": "Codex reviewed test and configuration results; no independent human sign-off implied",
+      "result": "passed",
+      "artifact_reference": "docs/production-preparation.json",
+      "limitations": [
+        "Targeted scope only; does not close the comprehensive frozen M10A gate or certify production access, file privacy, provider delivery, backups or staff UAT."
+      ],
+      "expires_at": null,
+      "freshness": {
+        "source_sensitive": true,
+        "invalidated_by": [
+          "security_code",
+          "dependencies",
+          "environment",
+          "provider_configuration"
+        ],
+        "invalidated_at": null
+      }
     }
   ]
 }
