@@ -341,6 +341,70 @@ async function main() {
         ).toBe(true);
         result.results.push({ scenario: phase, passed: true });
       }
+      if (process.env.GLARA_HELP_REGRESSION === "yes") {
+        phase = name + "-guide-navigation";
+        if (name === "mobile")
+          await page.getByRole("button", { name: "Open navigation" }).click();
+        await page
+          .getByRole("link", { name: "Help · راهنما", exact: true })
+          .click();
+        await expect(page).toHaveURL(origin + "/help");
+        await expect(
+          page.getByRole("heading", { name: "راهنمای کاربران", exact: true }),
+        ).toBeVisible();
+        await expect(page.locator('main [lang="fa"]')).toHaveAttribute(
+          "dir",
+          "rtl",
+        );
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+        await page.screenshot({ path: home + "/guide-" + name + ".png" });
+        result.results.push({ scenario: phase, passed: true });
+
+        phase = name + "-guide-search";
+        const search = page.locator("#guide-search");
+        await page
+          .getByRole("button", { name: "موعد تمدید", exact: true })
+          .click();
+        await expect(page.locator("#renewals")).toBeVisible();
+        await expect(page.locator("#start")).toBeHidden();
+        await search.fill("پايان پکيج");
+        await expect(page.locator("#renewals")).toBeVisible();
+        await search.fill("STAGED");
+        await expect(page.locator("#staged")).toBeVisible();
+        await search.fill("no-such-guide-topic");
+        await expect(
+          page.getByRole("heading", { name: "موضوعی پیدا نشد" }),
+        ).toBeVisible();
+        await page.getByRole("button", { name: "نمایش همه فصل‌ها" }).click();
+        await expect(page.locator("#start")).toBeVisible();
+        result.results.push({ scenario: phase, passed: true });
+
+        phase = name + "-guide-contents-and-permissions";
+        await page.getByText("فهرست فصل‌ها", { exact: true }).click();
+        await page.locator('a[href="#renewals"]').click();
+        await expect(page).toHaveURL(/help#renewals$/);
+        if (process.env.GLARA_POST_M10_REGRESSION !== "yes")
+          await expect(
+            page.locator('#payments a[href="/payments"]'),
+          ).toHaveCount(0);
+        await expect(page.locator('#staged a[href="/projects"]')).toBeVisible();
+        result.results.push({ scenario: phase, passed: true });
+
+        phase = name + "-guide-print-all";
+        await search.fill("no-such-guide-topic");
+        await page.emulateMedia({ media: "print" });
+        await expect(page.locator("#start")).toBeVisible();
+        await expect(page.locator("#renewals")).toBeVisible();
+        await expect(page.locator("#glossary")).toBeVisible();
+        await expect(search).toBeHidden();
+        await page.emulateMedia({ media: "screen" });
+        await search.fill("");
+        result.results.push({ scenario: phase, passed: true });
+      }
       phase = name + "-logout";
       if (name === "mobile")
         await page.getByRole("button", { name: "Open navigation" }).click();
@@ -350,6 +414,15 @@ async function main() {
         .getByRole("button", { name: "Sign out", exact: true })
         .click();
       await expect(page).toHaveURL(/login$/);
+      if (process.env.GLARA_HELP_REGRESSION === "yes") {
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-guide-unauthenticated";
+        await page.goto(origin + "/help");
+        await expect(page).toHaveURL(/login$/);
+        await expect(
+          page.getByRole("heading", { name: "راهنمای کاربران", exact: true }),
+        ).toHaveCount(0);
+      }
       await ctx.close();
       result.results.push({ scenario: phase, passed: true });
     }

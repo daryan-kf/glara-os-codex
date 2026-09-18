@@ -125,6 +125,12 @@ export const modules = {
     detail:
       "Company configuration and user administration will be introduced alongside the modules they support.",
   },
+  help: {
+    title: "Help · راهنما",
+    description: "راهنمای کاربران Glara OS",
+    milestone: "M0",
+    detail: "راهنمای گام‌به‌گام کارهای روزمره و امکانات فعلی برنامه.",
+  },
   profile: {
     title: "Profile",
     description: "Your place in Glara OS.",
@@ -136,6 +142,7 @@ export const modules = {
 export type Module = keyof typeof modules;
 const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
   sales: [
+    "help",
     "communications",
     "projects",
     "copilot",
@@ -149,6 +156,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   designer: [
+    "help",
     "copilot",
     "dashboard",
     "properties",
@@ -159,6 +167,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   staging_crew: [
+    "help",
     "copilot",
     "dashboard",
     "projects",
@@ -168,6 +177,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   admin: [
+    "help",
     "security",
     "communications",
     "automation",
@@ -185,6 +195,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   marketing: [
+    "help",
     "communications",
     "projects",
     "properties",

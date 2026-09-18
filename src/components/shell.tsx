@@ -33,6 +33,7 @@ import {
   ArrowUpRight,
   LogOut,
   Check,
+  BookOpen,
 } from "lucide-react";
 import {
   modules,
@@ -54,6 +55,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 const icons = {
+  help: BookOpen,
   security: Settings,
   communications: Megaphone,
   copilot: Search,

@@ -8,6 +8,10 @@ import {
   type Module,
 } from "../src/lib/permissions";
 describe("central authorization", () => {
+  it("allows help for every assigned role without granting anonymous access", () => {
+    for (const role of roles) assert.equal(canAccess([role], "help"), true);
+    assert.equal(canAccess([], "help"), false);
+  });
   it("gives the owner every module and defaults unassigned users to denied", () => {
     for (const moduleKey of Object.keys(modules) as Module[]) {
       assert.equal(canAccess(["owner"], moduleKey), true);

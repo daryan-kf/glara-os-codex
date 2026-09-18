@@ -10,6 +10,10 @@ M6 analytics is deployed to the explicitly authorized development deployment, ba
 
 M8 adds a shared permission-safe copilot with evidence references, drafts and explicitly approved task proposals. M8 is deployed to development with AI and proposals disabled. Provider configuration is present, but live smoke requests are blocked by OpenAI quota/billing (HTTP 429). The implementation through section 230 includes private thread lifecycle, bounded retention, role rollout, asset context and explicit numerical/security evaluation gates. **M8 DEVELOPMENT GATE PENDING EXTERNAL ACTION**: 49 disabled-provider hosted checks pass; full live-provider acceptance is not passed. See [the M8 report](docs/M8-report.md) for boundaries, setup, local tests and remaining gates. M9 has not started.
 
+## In-app user guide
+
+Signed-in users can open **Help · راهنما** at `/help`. The Persian guide covers current workflows in 28 searchable chapters, including staged projects, package expiry and extensions, inventory, commercial operations, permissions, and troubleshooting. It includes desktop/mobile navigation and full-guide printing. It does not enable external services or change release gates. Content is maintained in `src/lib/help/guide.ts`; see [guide verification](docs/user-guide.md).
+
 ## Local setup
 
 Requires Node.js 22.9+, npm and access to the Daryan Convex team.
