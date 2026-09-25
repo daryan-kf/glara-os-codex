@@ -178,6 +178,7 @@ const grants: Record<Exclude<Role, "owner">, readonly Module[]> = {
     "profile",
   ],
   admin: [
+    "marketing",
     "help",
     "security",
     "communications",

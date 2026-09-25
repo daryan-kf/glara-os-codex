@@ -1,3 +1,6 @@
+import { createServer as createHttpsServer } from "node:https";
+import { request as httpRequest } from "node:http";
+import { connect as tcpConnect } from "node:net";
 import { spawn, spawnSync } from "node:child_process";
 import {
   randomBytes,
@@ -12,11 +15,13 @@ import {
   writeFileSync,
   createWriteStream,
   existsSync,
+  readFileSync,
 } from "node:fs";
 import { resolve } from "node:path";
 import { ConvexHttpClient } from "convex/browser";
 import { makeFunctionReference as ref } from "convex/server";
-import { chromium, expect } from "@playwright/test";
+import { chromium, expect as playwrightExpect } from "@playwright/test";
+const expect = playwrightExpect.configure({ timeout: 15000 });
 const root = process.cwd(),
   home = resolve(".acceptance/m10/auth-browser-" + Date.now()),
   url = "http://127.0.0.1:3350",
@@ -61,7 +66,10 @@ const env = Object.fromEntries(
     ([k]) => !/(CONVEX|RESEND|OPENAI|GOOGLE|GLARA|M9_|SITE_URL)/.test(k),
   ),
 );
-let backend, frontend, browser;
+const expo = process.env.GLARA_EXPO_REGRESSION === "yes",
+  expoSecret = randomBytes(32).toString("hex");
+let backend, frontend, browser, tlsProxy;
+const tlsSockets = new Set();
 const streams = [];
 const result = {
   executed_at: new Date().toISOString(),
@@ -74,6 +82,10 @@ const result = {
 let phase = "start";
 async function ready(endpoint) {
   for (let i = 0; i < 120; i++) {
+    if (backend && backend.exitCode !== null)
+      throw Error("Isolated backend exited; inspect backend.log");
+    if (frontend && frontend.exitCode !== null)
+      throw Error("Isolated frontend exited; inspect frontend.log");
     await new Promise((r) => setTimeout(r, 500));
     try {
       if ((await fetch(endpoint)).ok) return;
@@ -83,6 +95,34 @@ async function ready(endpoint) {
 }
 async function main() {
   try {
+    if (expo) {
+      const openssl =
+        process.env.GLARA_TEST_OPENSSL ??
+        "C:/Program Files/Git/usr/bin/openssl.exe";
+      const generated = spawnSync(
+        openssl,
+        [
+          "req",
+          "-x509",
+          "-newkey",
+          "rsa:2048",
+          "-nodes",
+          "-keyout",
+          home + "/localhost.key",
+          "-out",
+          home + "/localhost.crt",
+          "-days",
+          "1",
+          "-subj",
+          "/CN=localhost",
+          "-addext",
+          "subjectAltName=DNS:localhost,IP:127.0.0.1",
+        ],
+        { encoding: "utf8", windowsHide: true },
+      );
+      if (generated.status !== 0)
+        throw Error("Local TLS certificate generation failed");
+    }
     const secret = randomBytes(32).toString("hex"),
       binary = root + "/.acceptance/m10/backend/convex-local-backend.exe",
       name = "glara-isolated-auth";
@@ -100,6 +140,8 @@ async function main() {
     );
     if (kr.status !== 0) throw Error("keygen failed");
     const key = kr.stdout.trim();
+    const backendLog = createWriteStream(home + "/backend.log");
+    streams.push(backendLog);
     backend = spawn(
       binary,
       [
@@ -109,6 +151,14 @@ async function main() {
         "3350",
         "--site-proxy-port",
         "3351",
+        ...(expo
+          ? [
+              "--convex-origin",
+              "https://127.0.0.1:3353",
+              "--convex-site",
+              "http://127.0.0.1:3351",
+            ]
+          : []),
         "--instance-name",
         name,
         "--instance-secret",
@@ -118,8 +168,18 @@ async function main() {
         home + "/storage",
         home + "/db.sqlite3",
       ],
-      { cwd: home, env, stdio: "ignore", windowsHide: true },
+      {
+        cwd: home,
+        env: {
+          ...env,
+          ...(expo ? { NODE_EXTRA_CA_CERTS: home + "/localhost.crt" } : {}),
+        },
+        stdio: ["ignore", "pipe", "pipe"],
+        windowsHide: true,
+      },
     );
+    backend.stdout.pipe(backendLog);
+    backend.stderr.pipe(backendLog);
     await ready(url + "/version");
     const cmd = (args) => {
       const r = spawnSync(
@@ -150,6 +210,9 @@ async function main() {
     const jwk = keys.publicKey.export({ format: "jwk" });
     for (const [k, v] of Object.entries({
       GLARA_ENVIRONMENT: "development",
+      ...(expo
+        ? { GLARA_EXPO_ENABLED: "true", GLARA_EXPO_INGRESS_SECRET: expoSecret }
+        : {}),
       GLARA_ACCEPTANCE_MODE: "true",
       SITE_URL: origin,
       M9_EMAIL_ENABLED: "false",
@@ -182,7 +245,8 @@ async function main() {
       name: "Fictional isolated onboarding",
       roles:
         process.env.GLARA_POST_M10_REGRESSION === "yes" ||
-        process.env.GLARA_PAYMENT_PROJECTS_REGRESSION === "yes"
+        process.env.GLARA_PAYMENT_PROJECTS_REGRESSION === "yes" ||
+        expo
           ? ["owner"]
           : ["sales"],
       password: initial,
@@ -312,6 +376,52 @@ async function main() {
         }
       }
     }
+    if (expo) {
+      const signed = await admin.action(ref("auth:signIn"), {
+        provider: "password",
+        params: { email, password: initial, flow: "signIn" },
+      });
+      const actor = new ConvexHttpClient(url, { logger: false });
+      actor.setAuth(signed.tokens.token);
+      for (const viewport of ["desktop", "mobile"]) {
+        const id = await actor.mutation(ref("campaigns:save"), {
+          version: 0,
+          input: JSON.stringify({
+            name: "Fictional Expo " + viewport,
+            slug: "fictional-expo-" + viewport,
+            public_title: "WIN A $2,000 GLARA STAGING CREDIT",
+            public_description:
+              "Meet the Glara team and enter our fictional acceptance giveaway.",
+            prize_name: "Glara Staging Credit",
+            prize_value_cents: 200000,
+            starts_at: Date.now() - 3600000,
+            closes_at: Date.now() + 86400000,
+            eligibility_summary:
+              "Licensed Realtors in Vancouver. One eligible entry per Realtor.",
+            eligible_cities: ["Vancouver"],
+            official_rules:
+              "Fictional acceptance rules only. No purchase necessary. One CAD $2,000 service-credit prize. One eligible Realtor will be selected randomly; all entrants must be licensed and work in Vancouver. Verification and a skill-testing question are required. Do not use these fictional rules for a real campaign.",
+            rules_version: "test-1",
+            privacy_notice:
+              "Fictional acceptance data only. Information is used to record and administer this isolated test entry.",
+            consent_text:
+              "I would like optional staging news from the fictional test sponsor. I may withdraw at any time.",
+            prize_terms:
+              "Fictional acceptance credit only; no cash payment or invoice adjustment. Confirm real prize terms before a public launch.",
+            prize_terms_version: "test-1",
+            prize_expires_at: Date.now() + 86400000 * 100,
+            skill_question_required: true,
+            assigned_to: ownerId,
+            legal_approved: true,
+          }),
+        });
+        await actor.mutation(ref("campaigns:transition"), {
+          id,
+          version: 1,
+          to: "open",
+        });
+      }
+    }
     const code = async (expired = false) => {
       const token = randomUUID();
       await admin.mutation(ref("authBrowserDrill:code"), {
@@ -324,12 +434,117 @@ async function main() {
     phase = "frontend";
     const log = createWriteStream(home + "/frontend.log");
     streams.push(log);
+    let browserBackend = url;
+    if (expo) {
+      phase = "isolated-tls-proxy";
+      tlsProxy = createHttpsServer(
+        {
+          key: readFileSync(home + "/localhost.key"),
+          cert: readFileSync(home + "/localhost.crt"),
+        },
+        (request, response) => {
+          const upstream = httpRequest(
+            {
+              host: "127.0.0.1",
+              port: 3350,
+              path: request.url,
+              method: request.method,
+              headers: { ...request.headers, host: "127.0.0.1:3350" },
+            },
+            (remote) => {
+              response.writeHead(remote.statusCode ?? 502, remote.headers);
+              remote.pipe(response);
+            },
+          );
+          upstream.on("error", () => {
+            response.writeHead(502);
+            response.end();
+          });
+          request.pipe(upstream);
+        },
+      );
+      tlsProxy.on("upgrade", (request, socket, head) => {
+        const upstream = tcpConnect(3350, "127.0.0.1", () => {
+          const headers = request.rawHeaders.reduce(
+            (list, value, index, all) =>
+              index % 2
+                ? list
+                : [
+                    ...list,
+                    value +
+                      ": " +
+                      (value.toLowerCase() === "host"
+                        ? "127.0.0.1:3350"
+                        : all[index + 1]),
+                  ],
+            [],
+          );
+          upstream.write(
+            request.method +
+              " " +
+              request.url +
+              " HTTP/" +
+              request.httpVersion +
+              "\r\n" +
+              headers.join("\r\n") +
+              "\r\n\r\n",
+          );
+          if (head.length) upstream.write(head);
+          socket.pipe(upstream).pipe(socket);
+        });
+        for (const stream of [socket, upstream]) {
+          tlsSockets.add(stream);
+          stream.on("close", () => tlsSockets.delete(stream));
+        }
+        upstream.on("error", () => socket.destroy());
+        socket.on("error", () => upstream.destroy());
+        socket.on("close", () => upstream.destroy());
+      });
+      await new Promise((resolve, reject) => {
+        tlsProxy.once("error", reject);
+        tlsProxy.listen(3353, "127.0.0.1", resolve);
+      });
+      browserBackend = "https://127.0.0.1:3353";
+    }
+    const frontendEnv = {
+      ...env,
+      NEXT_PUBLIC_CONVEX_URL: browserBackend,
+      NEXT_PUBLIC_CONVEX_SITE_URL: "http://127.0.0.1:3351",
+      GLARA_ENVIRONMENT: "development",
+      SITE_URL: origin,
+      ...(expo
+        ? {
+            GLARA_EXPO_ENABLED: "true",
+            GLARA_EXPO_INGRESS_SECRET: expoSecret,
+            NODE_EXTRA_CA_CERTS: home + "/localhost.crt",
+          }
+        : {}),
+    };
+    if (expo) {
+      phase = "isolated-production-build";
+      const build = spawnSync(
+        process.execPath,
+        [root + "/node_modules/next/dist/bin/next", "build", "--webpack"],
+        {
+          cwd: home,
+          env: frontendEnv,
+          encoding: "utf8",
+          windowsHide: true,
+          maxBuffer: 20 * 1024 * 1024,
+        },
+      );
+      writeFileSync(
+        home + "/build.log",
+        (build.stdout ?? "") + (build.stderr ?? ""),
+      );
+      if (build.status !== 0)
+        throw Error("Isolated production build failed; inspect build.log");
+    }
     frontend = spawn(
       process.execPath,
       [
         root + "/node_modules/next/dist/bin/next",
-        "dev",
-        "--webpack",
+        ...(expo ? ["start"] : ["dev", "--webpack"]),
         "--port",
         "3352",
         "--hostname",
@@ -337,12 +552,7 @@ async function main() {
       ],
       {
         cwd: home,
-        env: {
-          ...env,
-          NEXT_PUBLIC_CONVEX_URL: url,
-          NEXT_PUBLIC_CONVEX_SITE_URL: "http://127.0.0.1:3351",
-          GLARA_ENVIRONMENT: "development",
-        },
+        env: frontendEnv,
         windowsHide: true,
         stdio: ["ignore", "pipe", "pipe"],
       },
@@ -355,7 +565,10 @@ async function main() {
       ["desktop", { width: 1280, height: 900 }],
       ["mobile", { width: 393, height: 851 }],
     ]) {
-      const ctx = await browser.newContext({ viewport }),
+      const ctx = await browser.newContext({
+          viewport,
+          ignoreHTTPSErrors: expo,
+        }),
         page = await ctx.newPage();
       page.setDefaultTimeout(30000);
       const redeem = async (token, address = email) => {
@@ -635,6 +848,181 @@ async function main() {
         await expect(picker).toHaveAttribute("aria-expanded", "false");
         result.results.push({ scenario: phase, passed: true });
       }
+      if (expo) {
+        phase = name + "-giveaway-anonymous-form";
+        await page.goto("about:blank");
+        const publicContext = await browser.newContext({
+          viewport,
+          ignoreHTTPSErrors: expo,
+        });
+        await publicContext.route("**/*", (route) => {
+          const u = new URL(route.request().url());
+          if (!["localhost", "127.0.0.1"].includes(u.hostname))
+            return route.abort();
+          return route.continue();
+        });
+        const publicPage = await publicContext.newPage();
+        publicPage.setDefaultTimeout(30000);
+        await publicPage.goto(
+          origin + "/giveaway/fictional-expo-" + name + "?source=booth",
+        );
+        await expect(
+          publicPage.getByRole("heading", {
+            name: "WIN A $2,000 GLARA STAGING CREDIT",
+          }),
+        ).toBeVisible();
+        await expect(
+          publicPage.locator('[name="marketing_consent"]'),
+        ).not.toBeChecked();
+        await expect(
+          publicPage.getByRole("button", {
+            name: "Enter the giveaway",
+            exact: true,
+          }),
+        ).toBeEnabled();
+        // The live anti-bot guard intentionally rejects submissions younger than 1.5 seconds.
+        await publicPage.waitForTimeout(1600);
+        await publicPage.getByText("Official rules", { exact: true }).click();
+        await expect(
+          publicPage.getByText("Fictional acceptance rules only.", {
+            exact: false,
+          }),
+        ).toBeVisible();
+        expect(
+          await publicPage.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+        await publicPage.screenshot({
+          path: home + "/giveaway-" + name + ".png",
+          fullPage: true,
+        });
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-giveaway-entry-success";
+        for (const [label, value] of [
+          ["First name", "Fictional"],
+          ["Last name", name],
+          ["Brokerage", "Fictional Expo Brokerage"],
+          ["Email address", name + "@accounts.example.test"],
+          ["Mobile phone", name === "desktop" ? "6045550121" : "6045550122"],
+          ["City / primary market", "Vancouver"],
+        ])
+          await publicPage.getByLabel(label, { exact: true }).fill(value);
+        await publicPage
+          .getByLabel("Are you a licensed Realtor?")
+          .selectOption("yes");
+        await publicPage
+          .getByLabel("Approximate listings per year")
+          .selectOption("21+");
+        await publicPage.locator('[name="rules_accepted"]').check();
+        const submission = publicPage.waitForResponse(
+          (response) =>
+            response.url() === origin + "/api/giveaway" &&
+            response.request().method() === "POST",
+        );
+        await publicPage
+          .getByRole("button", { name: "Enter the giveaway", exact: true })
+          .click();
+        const submitted = await submission;
+        const submissionResult = await submitted.json();
+        if (submitted.status() !== 200)
+          throw Error(
+            "Giveaway returned HTTP " +
+              submitted.status() +
+              " (" +
+              String(submissionResult.status) +
+              ")",
+          );
+
+        await expect(
+          publicPage.getByRole("heading", { name: "You're entered!" }),
+        ).toBeVisible({ timeout: 20000 });
+        await publicPage.screenshot({
+          path: home + "/giveaway-success-" + name + ".png",
+          fullPage: true,
+        });
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-giveaway-origin-protection";
+        const denied = await publicPage.request.post(origin + "/api/giveaway", {
+          headers: { origin: "https://unapproved.example.test" },
+          data: {},
+        });
+        expect(denied.status()).toBe(403);
+        const oversized = await publicPage.request.post(
+          origin + "/api/giveaway",
+          {
+            headers: { origin, "content-type": "application/json" },
+            data: "x".repeat(6001),
+          },
+        );
+        expect(oversized.status()).toBe(413);
+        const malformed = await publicPage.request.post(
+          origin + "/api/giveaway",
+          { headers: { origin }, data: { role: "owner" } },
+        );
+        expect(malformed.status()).toBe(400);
+        await expect(publicPage).not.toHaveURL(/email=/);
+
+        result.results.push({ scenario: phase, passed: true });
+        await publicContext.close();
+        phase = name + "-campaign-admin-filter-and-close";
+        await page.goto(origin + "/marketing/campaigns");
+        await page
+          .getByRole("button", { name: new RegExp("Fictional Expo " + name) })
+          .click();
+        await expect(
+          page.getByRole("heading", { name: "Registrations & follow-up" }),
+        ).toBeVisible();
+        await page
+          .getByLabel("Search registrations")
+          .fill(name + "@accounts.example.test");
+        await expect(
+          page.getByRole("heading", { name: "Fictional " + name, exact: true }),
+        ).toBeVisible();
+        await page
+          .getByRole("button", { name: "Close campaign", exact: true })
+          .click();
+        await page
+          .getByRole("button", { name: "Confirm action", exact: true })
+          .click();
+        await expect(
+          page.getByRole("button", { name: "Run audited draw" }),
+        ).toBeVisible();
+        const closedHtml = await (
+          await fetch(origin + "/giveaway/fictional-expo-" + name)
+        ).text();
+        expect(closedHtml).toContain("Registration is closed");
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-campaign-draw-and-verification-gate";
+        await page.getByRole("button", { name: "Run audited draw" }).click();
+        await page
+          .getByRole("button", { name: "Confirm action", exact: true })
+          .click();
+        await page
+          .getByText("Verify selected entrant", { exact: true })
+          .click();
+        await expect(
+          page.getByLabel("Required skill-testing question passed"),
+        ).not.toBeChecked();
+        await page.locator('select[name="decision"]').selectOption("confirm");
+        await page
+          .getByLabel("Review reason / verification reference")
+          .fill("Fictional acceptance reference");
+        await page
+          .getByRole("button", { name: "Record reviewed decision" })
+          .click();
+        await expect(page.getByRole("alert")).toBeVisible();
+        await page.screenshot({
+          path: home + "/campaign-review-" + name + ".png",
+          fullPage: true,
+        });
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+        result.results.push({ scenario: phase, passed: true });
+      }
       phase = name + "-logout";
       if (name === "mobile")
         await page.getByRole("button", { name: "Open navigation" }).click();
@@ -665,13 +1053,25 @@ async function main() {
       .slice(0, 600);
     process.exitCode = 1;
   } finally {
+    // Persist the result before cleanup so a Windows child-process shutdown cannot hide a failure.
+    writeFileSync(
+      root + "/.acceptance/m10/auth-browser.json",
+      JSON.stringify(result, null, 2),
+    );
     await browser?.close();
     for (const p of [frontend, backend])
-      if (p)
+      if (p && p.exitCode === null && p.signalCode === null)
         await new Promise((r) => {
-          p.once("exit", r);
+          const timeout = setTimeout(r, 5000);
+          p.once("exit", () => {
+            clearTimeout(timeout);
+            r();
+          });
           p.kill();
         });
+    for (const socket of tlsSockets) socket.destroy();
+    tlsProxy?.closeAllConnections();
+    tlsProxy?.close();
     for (const s of streams) s.end();
     writeFileSync(
       root + "/.acceptance/m10/auth-browser.json",
@@ -680,4 +1080,5 @@ async function main() {
     console.log(JSON.stringify(result));
   }
 }
-main();
+// Local executor descendants can retain inherited Windows pipe handles after services stop.
+main().then(() => process.exit(process.exitCode ?? 0));

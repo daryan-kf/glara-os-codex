@@ -1,3 +1,4 @@
+import { CampaignHistory } from "@/components/campaigns/center";
 import { CommunicationHistory } from "@/components/communications/history";
 import type { Id } from "../../../../../convex/_generated/dataModel";
 import { CopilotLink } from "@/components/ai/copilot";
@@ -62,6 +63,9 @@ export default async function Page({
   ]);
   return (
     <>
+      {user.campaigns_version === 1 && (
+        <CampaignHistory id={id as Id<"realtors">} />
+      )}
       <Link
         href="/realtors"
         className="mb-5 inline-block py-2 text-sm underline"

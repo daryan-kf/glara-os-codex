@@ -20,6 +20,7 @@ export const viewer = query({
       address_lookup_enabled:
         process.env.GLARA_RECOVERY_MODE !== "true" &&
         productionCapabilityAllowed(process.env, "address_lookup"),
+      campaigns_version: 1,
       communications_version: 1,
       ai_version: 1,
       analytics_version: 1,

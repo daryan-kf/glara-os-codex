@@ -1,3 +1,4 @@
+import { campaignTables } from "./campaignSchema";
 import { capabilityValue } from "./emergencyModel";
 import { calendarTables } from "./calendarSchema";
 import { communicationTables } from "./communicationSchema";
@@ -26,6 +27,7 @@ export const roleValue = v.union(
 );
 export default defineSchema({
   ...authTables,
+  ...campaignTables,
   migration_runs: defineTable({
     key: v.string(),
     fingerprint: v.string(),

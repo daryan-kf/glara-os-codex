@@ -1,0 +1,299 @@
+{
+  "recorded_at": "2026-09-25T01:16:03.509057+00:00",
+  "feature": "Realtor expo registration and CAD 2,000 staging-credit giveaway",
+  "base_commit": "8ad01555a2e88add2647e4c113880c7dc9500171",
+  "decision": "RECEIVED-SCOPE DEVELOPMENT ACCEPTANCE PASSED; PUBLIC LAUNCH NOT ENABLED",
+  "specification_scope": "Received attachment through Section 63. Any unavailable continuation requires reconciliation before claiming the full original specification is complete.",
+  "checks": {
+    "automated": {
+      "command": "npm run test",
+      "status": "PASSED",
+      "node_tests": 21,
+      "vitest_tests": 594,
+      "vitest_files": 40,
+      "total_tests": 615,
+      "included_campaign_tests": 21
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "status": "PASSED"
+    },
+    "lint": {
+      "command": "npm run lint",
+      "status": "PASSED"
+    },
+    "build": {
+      "command": "npm run build",
+      "status": "PASSED",
+      "engine": "Next.js 16.3.5 Turbopack"
+    },
+    "format": {
+      "command": "npm run format:check",
+      "status": "PASSED"
+    },
+    "secrets": {
+      "command": "npm run security:secrets",
+      "status": "PASSED",
+      "private_environment_files": [],
+      "credential_pattern_files": []
+    },
+    "browser": {
+      "executed_at": "2026-09-25T01:14:10.180Z",
+      "environment": "isolated_restore",
+      "production_modified": false,
+      "shared_development_modified": false,
+      "provider_calls": 0,
+      "results": [
+        {
+          "scenario": "desktop-expired",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-valid",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-reused",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-profile-and-settings",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-marketing",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-address-keyboard",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-product-photo",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-guide-navigation",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-guide-search",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-guide-contents-and-permissions",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-guide-print-all",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-payment-project-dropdown",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-payment-project-search-and-selection",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-payment-project-clear-and-renewal",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-logout",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-guide-unauthenticated",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-expired",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-valid",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-reused",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-profile-and-settings",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-marketing",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-address-keyboard",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-product-photo",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-guide-navigation",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-guide-search",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-guide-contents-and-permissions",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-guide-print-all",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-payment-project-dropdown",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-payment-project-search-and-selection",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-payment-project-clear-and-renewal",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-logout",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-guide-unauthenticated",
+          "passed": true
+        }
+      ],
+      "status": "PASSED"
+    },
+    "hosted": {
+      "executed_at": "2026-09-25T01:14:49.499Z",
+      "deployment": "woozy-jaguar-392",
+      "production_modified": false,
+      "customer_writes": 0,
+      "provider_calls": 0,
+      "checks": [
+        {
+          "check": "disabled_public_intake_returns_null",
+          "passed": true
+        },
+        {
+          "check": "anonymous_campaign_admin_denied",
+          "passed": true
+        },
+        {
+          "check": "disabled_unsigned_ingress_rejected",
+          "passed": true
+        }
+      ]
+    },
+    "visual_review": {
+      "status": "PASSED",
+      "surfaces": [
+        "desktop public registration",
+        "mobile public registration",
+        "mobile staff campaign review"
+      ],
+      "artifacts": "Ignored local .acceptance/m10 fixtures; no screenshots or fixture credentials published"
+    }
+  },
+  "development_deployment": {
+    "deployment": "woozy-jaguar-392",
+    "deployed": true,
+    "convex_typecheck": "PASSED",
+    "GLARA_EXPO_ENABLED": "UNSET (false, fail closed)",
+    "M9_EMAIL_ENABLED": "false",
+    "M9_CALENDAR_ENABLED": "false",
+    "real_campaign_created": false,
+    "real_customer_writes": 0
+  },
+  "resolved_during_acceptance": [
+    "Prevented pre-hydration native form fallback from putting registration fields into a GET URL; form uses POST and submit waits for hydration.",
+    "Used a one-day localhost TLS fixture with scoped CA trust for production-CSP browser checks; no production security policy weakened.",
+    "Bounded Windows test shutdown and retained result evidence before cleanup; final runner exited 0.",
+    "Aligned hosted anonymous-denial assertion with existing FORBIDDEN error contract; backend correctly denied the request."
+  ],
+  "known_unresolved_implementation_blockers": [],
+  "remaining_launch_dependencies": [
+    "Owner-approved actual event dates, eligible markets, sponsor/contact details, official rules, privacy and optional consent wording.",
+    "Owner-approved prize terms, expiry, transferability/redemption policy and private verification procedure.",
+    "Approved production hostname, deployment approval and separate production intake approval.",
+    "Distinct secure frontend/backend ingress secret, trusted host-edge configuration and real-host abuse/load acceptance.",
+    "Printed QR and real-host mobile acceptance; hosted enabled-intake acceptance has not been performed.",
+    "Any continuation beyond the received Section 63 must be reviewed."
+  ],
+  "boundaries": {
+    "production_modified": false,
+    "public_launch_enabled": false,
+    "external_communications_sent": false,
+    "calendar_gate": "DEFERRED; DISABLED",
+    "production_auth_email_requirements": "DEFERRED — REQUIRED BEFORE PRODUCTION; not reclassified as passed",
+    "prize_credit": "Issued/unapplied record only; no payment/invoice posting or redemption implemented",
+    "historical_provider_enabled_suites": "Not reactivated; current browser/regression run uses isolated fictional fixtures and zero provider calls"
+  }
+}

@@ -175,3 +175,7 @@ See [the M7 release report](docs/M7-report.md) for scope, security, scheduling, 
 ## M9 communications
 
 M9 adds reviewed communications, consent/preference history, an outbox, provider evidence and external calendar projections. External delivery defaults to disabled; configure private provider values only in the Convex development environment. See [M9 report](docs/M9-report.md) for scope, setup, security boundaries and pending external acceptance. Production email/auth requirements remain deferred and required before production. M10 is not implemented.
+
+## Realtor expo campaigns
+
+[Expo registration and staging-credit giveaway](docs/expo-giveaway.md) documents staff workflows, CRM integration, the audited draw, disabled-by-default configuration and public launch prerequisites. Owner/Admin manages campaigns under Marketing → Campaigns & giveaways. No email, Calendar or production capability is enabled by this feature.

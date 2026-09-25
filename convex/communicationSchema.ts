@@ -119,7 +119,8 @@ export const communicationTables = {
     observed_at: v.number(),
     expires_at: v.optional(v.number()),
     revoked_at: v.optional(v.number()),
-    recorded_by: v.id("users"),
+    recorded_by: v.optional(v.id("users")),
+    actor_kind: v.optional(v.literal("public_registration")),
     created_at: v.number(),
   }).index("by_recipient", ["recipient_key", "created_at"]),
   communication_eligibility_decisions: defineTable({
