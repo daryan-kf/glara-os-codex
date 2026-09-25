@@ -187,8 +187,11 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
             </a>
           ))}
         </nav>
-        <a className={styles.consultation} href="https://glarahome.com/contact">
-          Book a Consultation
+        <a
+          className={styles.consultation}
+          href="https://www.glarahome.com/consultation"
+        >
+          Book a Free Consultation
         </a>
         <details className={styles.mobileMenu}>
           <summary aria-label="Open site navigation">
@@ -504,6 +507,9 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
           </a>
           <a href="#privacy-notice" onClick={() => openTerms("privacy-notice")}>
             Privacy Notice
+          </a>
+          <a href="https://www.glarahome.com/consultation">
+            Book a Free Consultation
           </a>
           <a href="mailto:Support@glarahome.com">Contact</a>
         </nav>
