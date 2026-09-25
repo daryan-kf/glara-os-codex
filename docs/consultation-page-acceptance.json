@@ -1,0 +1,118 @@
+{
+  "preview": {
+    "checked_at": "2026-09-25T08:00:29.905Z",
+    "base": "https://glara-design-dlv9u29uo-daryan-kamalifars-projects.vercel.app",
+    "results": [
+      {
+        "name": "desktop",
+        "homeLinks": 2,
+        "footerLink": 1,
+        "overflow": false,
+        "imageLoaded": true,
+        "invalidEmptyForm": true,
+        "honestNotice": true,
+        "posts": [],
+        "errors": [],
+        "failed": []
+      },
+      {
+        "name": "mobile",
+        "homeLinks": 2,
+        "footerLink": 1,
+        "overflow": false,
+        "imageLoaded": true,
+        "invalidEmptyForm": true,
+        "honestNotice": true,
+        "posts": [],
+        "errors": [],
+        "failed": []
+      }
+    ]
+  },
+  "production": {
+    "checked_at": "2026-09-25T08:02:34.166Z",
+    "base": "https://www.glarahome.com",
+    "results": [
+      {
+        "name": "desktop",
+        "homeLinks": 2,
+        "footerLink": 1,
+        "overflow": false,
+        "imageLoaded": true,
+        "invalidEmptyForm": true,
+        "honestNotice": true,
+        "posts": [],
+        "errors": [],
+        "failed": []
+      },
+      {
+        "name": "mobile",
+        "homeLinks": 2,
+        "footerLink": 1,
+        "overflow": false,
+        "imageLoaded": true,
+        "invalidEmptyForm": true,
+        "honestNotice": true,
+        "posts": [],
+        "errors": [],
+        "failed": []
+      }
+    ]
+  },
+  "giveaway_links": {
+    "count": 2,
+    "hrefs": [
+      "https://www.glarahome.com/consultation",
+      "https://www.glarahome.com/consultation"
+    ],
+    "destination": "https://www.glarahome.com/consultation"
+  },
+  "giveaway_browser": {
+    "checked_at": "2026-09-25T08:03:01.767Z",
+    "results": [
+      {
+        "name": "desktop",
+        "status": 200,
+        "url": "https://glarahome.com/win",
+        "canonical": "https://glarahome.com/win",
+        "h1": "Win a $2,000 Glara Staging Credit",
+        "disabled": true,
+        "overflow": false,
+        "images": [
+          {
+            "complete": true,
+            "width": 1600
+          }
+        ],
+        "errors": [],
+        "failed": [],
+        "rulesVisible": true,
+        "contact": true
+      },
+      {
+        "name": "mobile",
+        "status": 200,
+        "url": "https://glarahome.com/win",
+        "canonical": "https://glarahome.com/win",
+        "h1": "Win a $2,000 Glara Staging Credit",
+        "disabled": true,
+        "overflow": false,
+        "images": [
+          {
+            "complete": true,
+            "width": 1600
+          }
+        ],
+        "errors": [],
+        "failed": [],
+        "rulesVisible": true,
+        "contact": true
+      }
+    ]
+  },
+  "email_delivery": "NOT PERFORMED; visitor sends their own draft",
+  "backend_changes": false,
+  "configuration_changes": false,
+  "new_page_reduced_motion": "PASSED",
+  "preexisting_homepage_reduced_motion_warning": "Reproduced before release; outside consultation-page scope"
+}
