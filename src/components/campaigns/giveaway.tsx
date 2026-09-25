@@ -2,7 +2,7 @@
 import { useState, useSyncExternalStore } from "react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
-import { listingRanges } from "@/lib/campaigns/model";
+import { listingRanges, campaignPacificZone } from "@/lib/campaigns/model";
 import { Button } from "@/components/ui/button";
 const subscribe = () => () => {};
 type Campaign = NonNullable<
@@ -45,6 +45,9 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
           phone: f.get("phone"),
           city: f.get("city"),
           licensed_realtor: f.get("licensed_realtor") === "yes",
+          ...(c.eligible_province === "BC"
+            ? { licensed_in_bc: f.get("licensed_realtor") === "yes" }
+            : {}),
           annual_listings: f.get("annual_listings"),
           rules_version: c.rules_version,
           rules_accepted: f.get("rules_accepted") === "on",
@@ -120,7 +123,7 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
     new Intl.DateTimeFormat("en-CA", {
       dateStyle: "medium",
       timeStyle: "short",
-      timeZone: c.timezone,
+      timeZone: campaignPacificZone(ms),
     }).format(ms);
   const prizeValue = new Intl.NumberFormat("en-CA", {
     maximumFractionDigits: 2,
@@ -219,7 +222,10 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
           {[
             {
               name: "licensed_realtor",
-              legend: "Are you a licensed Realtor?",
+              legend:
+                c.eligible_province === "BC"
+                  ? "Are you a licensed Realtor in British Columbia?"
+                  : "Are you a licensed Realtor?",
               choices: [
                 ["yes", "Yes"],
                 ["no", "No"],

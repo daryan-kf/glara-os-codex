@@ -7,10 +7,16 @@ import {
   eventDay,
   intakeEnabled,
   phoneIdentity,
+  sixMonthExpiry,
+  campaignPacificZone,
+  campaignInput,
 } from "../../src/lib/campaigns/model";
 const modules = import.meta.glob("../../convex/**/*.ts");
-afterEach(() => vi.unstubAllEnvs());
-async function fixture() {
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.useRealTimers();
+});
+async function fixture(overrides: Record<string, unknown> = {}) {
   vi.stubEnv("GLARA_ENVIRONMENT", "development");
   vi.stubEnv("GLARA_EXPO_ENABLED", "true");
   vi.stubEnv("GLARA_RECOVERY_MODE", "false");
@@ -73,6 +79,7 @@ async function fixture() {
     skill_question_required: true,
     assigned_to: users[0].id,
     legal_approved: true,
+    ...overrides,
   };
   const id = await owner.mutation(api.campaigns.save, {
     version: 0,
@@ -681,5 +688,202 @@ describe("expo registration and draw security", () => {
     );
     expect(audit!.actor_id).toBe(f.users.find((u) => u.role === "admin")!.id);
     expect(pool.operator_id).toBe(f.users[0].id);
+  });
+});
+
+describe("PacificWest configuration acceptance", () => {
+  const starts = Date.parse("2026-09-28T08:00:00-07:00");
+  const closes = Date.parse("2026-09-29T17:00:00-07:00");
+  const terms =
+    "One CAD $2,000 Glara Staging Credit. Non-transferable. No cash redemption. Expires six calendar months after official winner confirmation. Any unused portion remains available to that confirmed winner until expiry.";
+  const settings = {
+    starts_at: starts,
+    closes_at: closes,
+    eligible_province: "BC",
+    eligible_cities: [],
+    expiry_months_after_confirmation: 6,
+    prize_expires_at: undefined,
+    prize_terms: terms,
+  };
+  async function pacific() {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(starts - 10000);
+    const f = await fixture(settings);
+    await f.t.run(async (ctx) => {
+      for (const session of await ctx.db.query("authSessions").collect())
+        await ctx.db.patch(session._id, {
+          expirationTime: closes + 86400000 * 365,
+        });
+    });
+    await f.transition("open");
+    return f;
+  }
+  it("opens exactly September 28 at 08:00 PT, attributes both days, and closes exclusively September 29 at 17:00 PT", async () => {
+    const f = await pacific();
+    vi.setSystemTime(starts - 1);
+    expect((await f.enter(1, { licensed_in_bc: true })).status).toBe("closed");
+    vi.setSystemTime(starts);
+    expect((await f.enter(1, { licensed_in_bc: true })).status).toBe(
+      "received",
+    );
+    vi.setSystemTime(Date.parse("2026-09-29T00:00:00-07:00"));
+    expect((await f.enter(2, { licensed_in_bc: true })).status).toBe(
+      "received",
+    );
+    vi.setSystemTime(closes - 1);
+    expect((await f.enter(3, { licensed_in_bc: true })).status).toBe(
+      "received",
+    );
+    vi.setSystemTime(closes);
+    expect((await f.enter(4, { licensed_in_bc: true })).status).toBe("closed");
+    expect((await f.rows()).map((x) => x.event_day)).toEqual([
+      "day_1",
+      "day_2",
+      "day_2",
+    ]);
+    expect(
+      await f.t.query(api.campaigns.publicCampaign, { slug: f.input.slug }),
+    ).toMatchObject({ state: "closed", eligible_province: "BC" });
+  });
+  it("accepts BC licence declarations across BC markets and rejects missing, outside-BC and unlicensed declarations", async () => {
+    const f = await pacific();
+    vi.setSystemTime(starts);
+    expect(
+      (await f.enter(1, { city: "Prince George", licensed_in_bc: true }))
+        .status,
+    ).toBe("received");
+    expect(
+      (await f.enter(2, { city: "Victoria", licensed_in_bc: true })).status,
+    ).toBe("received");
+    expect(
+      (await f.enter(3, { city: "Vancouver", licensed_in_bc: false })).status,
+    ).toBe("ineligible");
+    expect((await f.enter(4, { city: "Vancouver" })).status).toBe("ineligible");
+    expect(
+      (
+        await f.enter(5, {
+          city: "Vancouver",
+          licensed_in_bc: true,
+          licensed_realtor: false,
+        })
+      ).status,
+    ).toBe("ineligible");
+    expect(
+      (await f.rows()).filter((x) => x.eligibility_status === "eligible"),
+    ).toHaveLength(2);
+  });
+  it("computes six Vancouver calendar months using permanent Pacific time, historical DST and month-end clamping", () => {
+    expect(
+      new Date(
+        sixMonthExpiry(Date.parse("2026-10-01T10:15:30.123-07:00")),
+      ).toISOString(),
+    ).toBe("2027-04-01T17:15:30.123Z");
+    expect(
+      new Date(
+        sixMonthExpiry(Date.parse("2026-09-29T17:00:00-07:00")),
+      ).toISOString(),
+    ).toBe("2027-03-30T00:00:00.000Z");
+    const winterExpiry = sixMonthExpiry(
+      Date.parse("2026-08-31T10:00:00-07:00"),
+    );
+    expect(
+      new Intl.DateTimeFormat("en-GB", {
+        timeZone: campaignPacificZone(winterExpiry),
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      }).format(winterExpiry),
+    ).toBe("10:00");
+    expect(
+      new Date(
+        sixMonthExpiry(Date.parse("2026-08-31T10:00:00-07:00")),
+      ).toISOString(),
+    ).toBe("2027-02-28T17:00:00.000Z");
+    expect(
+      new Date(
+        sixMonthExpiry(Date.parse("2023-08-31T10:00:00-07:00")),
+      ).toISOString(),
+    ).toBe("2024-02-29T18:00:00.000Z");
+    expect(
+      new Date(
+        sixMonthExpiry(Date.parse("2026-09-14T02:30:00-07:00")),
+      ).toISOString(),
+    ).toBe("2027-03-14T09:30:00.000Z");
+  });
+  it("freezes an unweighted pool, requires skill verification, and issues the winner-bound unapplied credit with full remaining balance and relative expiry", async () => {
+    const f = await pacific();
+    vi.setSystemTime(starts);
+    await f.enter(1, { licensed_in_bc: true, annual_listings: "1\u20135" });
+    await f.enter(2, { licensed_in_bc: true, marketing_consent: true });
+    vi.setSystemTime(closes);
+    await f.transition("closed");
+    const selected = await f.owner.action(api.campaignActions.draw, {
+      id: f.id,
+      redraw: false,
+      reason: "",
+    });
+    const entry = (await f.rows()).find((e) => e._id === selected)!;
+    const review = {
+      id: selected,
+      version: entry.version,
+      decision: "confirm" as const,
+      identity_verified: true,
+      license_verified: true,
+      rules_verified: true,
+      skill_question_passed: false,
+      note: "Isolated BC licence and identity verification reference",
+    };
+    await expect(
+      f.owner.mutation(api.campaigns.verifyWinner, review),
+    ).rejects.toThrow();
+    vi.setSystemTime(Date.parse("2026-10-01T10:15:30-07:00"));
+    await f.owner.mutation(api.campaigns.verifyWinner, {
+      ...review,
+      skill_question_passed: true,
+    });
+    const data = await f.t.run(async (ctx) => ({
+      awards: await ctx.db.query("campaign_awards").collect(),
+      payments: await ctx.db.query("payments").collect(),
+      draws: await ctx.db.query("campaign_draws").collect(),
+    }));
+    expect(data.awards).toHaveLength(1);
+    expect(data.payments).toHaveLength(0);
+    expect(data.awards[0]).toMatchObject({
+      entry_id: selected,
+      original_cents: 200000,
+      remaining_cents: 200000,
+      issued_at: Date.now(),
+      expires_at: Date.parse("2027-04-01T10:15:30-07:00"),
+      terms,
+      status: "issued_unapplied",
+    });
+    expect(data.draws[0].eligible_count).toBe(2);
+    expect(new Set(data.draws[0].entry_ids).size).toBe(2);
+    expect(data.draws[0].algorithm).toBe("node-crypto-randomInt-v1");
+    await expect(
+      f.owner.mutation(api.campaigns.verifyWinner, {
+        ...review,
+        skill_question_passed: true,
+      }),
+    ).rejects.toThrow();
+  });
+  it("rejects contradictory fixed/relative expiry and region configuration and preserves the legal approval gate", async () => {
+    const f = await fixture({
+      ...settings,
+      legal_approved: false,
+      official_rules: "PENDING final approved PacificWest rules",
+      privacy_notice: "PENDING final PacificWest Privacy Notice",
+    });
+    expect(
+      campaignInput.safeParse({
+        ...f.input,
+        prize_expires_at: closes + 86400000,
+      }).success,
+    ).toBe(false);
+    expect(
+      campaignInput.safeParse({ ...f.input, eligible_cities: ["Vancouver"] })
+        .success,
+    ).toBe(false);
+    await expect(f.transition("open")).rejects.toThrow();
   });
 });

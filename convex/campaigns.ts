@@ -18,6 +18,8 @@ import {
   intakeEnabled,
   phoneIdentity,
   eventDay,
+  campaignEligible,
+  sixMonthExpiry,
   priority,
 } from "../src/lib/campaigns/model";
 import { z } from "zod";
@@ -88,6 +90,7 @@ function publicFields(c: Doc<"marketing_campaigns">) {
     closes_at: c.closes_at,
     timezone: c.timezone,
     eligibility_summary: c.eligibility_summary,
+    eligible_province: c.eligible_province,
     official_rules: c.official_rules,
     rules_version: c.rules_version,
     privacy_notice: c.privacy_notice,
@@ -304,11 +307,7 @@ export const register = internalMutation({
       now - d.started_at > 86400000
     )
       return { status: "retry" as const };
-    const eligible =
-      d.licensed_realtor &&
-      c.eligible_cities.some(
-        (city) => city.toLowerCase() === d.city.toLowerCase(),
-      );
+    const eligible = campaignEligible(c, d);
     const dupEmail = await ctx.db
       .query("campaign_entries")
       .withIndex("by_email", (q) =>
@@ -466,6 +465,9 @@ export const register = internalMutation({
       ...(d.marketing_consent ? { marketing_consent_at: now } : {}),
       annual_listings: d.annual_listings,
       licensed_realtor: d.licensed_realtor,
+      ...(d.licensed_in_bc !== undefined
+        ? { licensed_in_bc: d.licensed_in_bc }
+        : {}),
       city_at_entry: d.city,
       crm_origin: conflict ? "review" : existing ? "existing" : "new",
       eligibility_status: conflict
@@ -755,10 +757,7 @@ export const reviewEligibility = mutation({
       a.reason.length > 1000 ||
       (a.eligible &&
         (!e.realtor_id ||
-          !e.licensed_realtor ||
-          !c.eligible_cities.some(
-            (x) => x.toLowerCase() === e.city_at_entry.toLowerCase(),
-          )))
+          !campaignEligible(c, { ...e, city: e.city_at_entry })))
     )
       deny(
         "INVALID_INPUT",
@@ -919,14 +918,21 @@ export const verifyWinner = mutation({
         (c.skill_question_required && !a.skill_question_passed)
       )
         deny("VERIFICATION_REQUIRED");
+      const confirmedAt = Date.now();
+      const expiresAt =
+        c.expiry_months_after_confirmation === 6
+          ? sixMonthExpiry(confirmedAt)
+          : c.prize_expires_at;
+      if (!expiresAt || expiresAt <= confirmedAt)
+        deny("INVALID_INPUT", "Prize expiry must be after confirmation.");
       await ctx.db.insert("campaign_awards", {
         campaign_id: c._id,
         entry_id: e._id,
         original_cents: c.prize_value_cents,
         remaining_cents: c.prize_value_cents,
         currency: "CAD",
-        issued_at: Date.now(),
-        expires_at: c.prize_expires_at,
+        issued_at: confirmedAt,
+        expires_at: expiresAt,
         terms_version: c.prize_terms_version,
         terms: c.prize_terms,
         status: "issued_unapplied",
@@ -935,7 +941,7 @@ export const verifyWinner = mutation({
       await ctx.db.patch(e._id, {
         eligibility_status: "confirmed_winner",
         draw_status: "confirmed",
-        confirmed_at: Date.now(),
+        confirmed_at: confirmedAt,
         confirmed_by: p.userId,
         verification_note: a.note,
         updated_at: Date.now(),
@@ -1044,11 +1050,7 @@ export const resolveIdentity = mutation({
         "DUPLICATE",
         "This Realtor already has a campaign entry. Mark the pending duplicate ineligible instead.",
       );
-    const eligible =
-      e.licensed_realtor &&
-      c.eligible_cities.some(
-        (city) => city.toLowerCase() === e.city_at_entry.toLowerCase(),
-      );
+    const eligible = campaignEligible(c, { ...e, city: e.city_at_entry });
     await ctx.db.patch(e._id, {
       realtor_id: r._id,
       pending_contact: undefined,

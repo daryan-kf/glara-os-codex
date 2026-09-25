@@ -1,0 +1,212 @@
+{
+  "recorded_at": "2026-09-25T01:50:56.633554+00:00",
+  "decision": "DEVELOPMENT DRAFT CONFIGURED AND TESTED; PRODUCTION ACTIVATION BLOCKED BY OWNER INPUT",
+  "base_commit": "1f0a7bfa890c0729226534df02fdd09886d93558",
+  "setup": {
+    "recorded_at": "2026-09-25T01:55:00.230Z",
+    "deployment": "woozy-jaguar-392",
+    "campaign_id": "zh7ff069fkks1vz221ws40vdzx8f26fr",
+    "slug": "pacificwest-2026",
+    "status": "draft",
+    "legal_approved": false,
+    "starts_at": "2026-09-28T15:00:00.000Z",
+    "closes_at": "2026-09-30T00:00:00.000Z",
+    "assignment": "Known active Glara Owner account",
+    "audit_actor": "Existing authenticated development acceptance Owner operator; no impersonation",
+    "flags": {
+      "GLARA_ENVIRONMENT": "development",
+      "M9_EMAIL_ENABLED": "false",
+      "M9_CALENDAR_ENABLED": "false",
+      "GLARA_EXPO_ENABLED": "false"
+    },
+    "public_intake_result": "null: disabled and draft",
+    "development_origin": "https://glaraos.glarahome.com",
+    "production_modified": false,
+    "emails_sent": 0,
+    "realtor_contacts": 0
+  },
+  "configured_canonical_url": "https://glaraos.glarahome.com/giveaway/pacificwest-2026?source=booth",
+  "qr_publication_approved": false,
+  "legal": {
+    "source_thread": "6aa50c26-2854-83ea-bb50-d1175b707165",
+    "source_title": "طرح کسب و کار Glara",
+    "source_message": "db340d6e-cd64-43c2-b3ff-3514e70f6d07",
+    "official_rules": "Prepared 20-section rules and short-form disclosure recovered, loaded, and populated with confirmed dates/BC/credit terms; approval pending",
+    "privacy_notice": "Prepared notice recovered and loaded; actual privacy contact name/title and email pending",
+    "short_form_disclosure": "Prepared short-form disclosure populated in Official Rules; page summary uses configured dates/amount",
+    "marketing_consent": "Owner-supplied optional wording saved; contact details and final approval pending",
+    "legal_approved": false,
+    "remaining_placeholders": [
+      "actual contest contact email",
+      "actual privacy contact/title and email",
+      "selected-entrant response period",
+      "combining credit with promotions/discounts"
+    ],
+    "sponsor_confirmation": "Prepared text says Glara Import Ltd., operating as Glara Home / Glara Staging; owner to verify as part of legal approval"
+  },
+  "corrections": [
+    "BC-wide eligibility uses an explicit BC-licensed declaration and final licence/identity verification, rather than a finite city whitelist. City remains a CRM field, not proof of BC licensing.",
+    "Six calendar months are calculated from official confirmation using Vancouver’s enacted permanent UTC-7 rule from March 8, 2026, independent of stale runtime ICU data. Month-end dates clamp; historical dates preserve historical DST. No expiry date is invented before confirmation. Campaign date/expiry display and day attribution use the same enacted Pacific-time rule.",
+    "Existing draft editing preserves BC and relative-expiry settings; fixed-expiry/city-based legacy campaigns remain supported."
+  ],
+  "checks": {
+    "automated": {
+      "status": "PASSED",
+      "node": 21,
+      "vitest": 599,
+      "vitest_files": 40,
+      "total": 620,
+      "campaign_cases_included": 26
+    },
+    "typescript": "PASSED",
+    "lint": "PASSED",
+    "formatting": "PASSED",
+    "secrets": "PASSED",
+    "build": "PASSED: final isolated production Next.js --webpack build, exit 0",
+    "isolated_browser": {
+      "executed_at": "2026-09-25T01:47:36.086Z",
+      "environment": "isolated_restore",
+      "production_modified": false,
+      "shared_development_modified": false,
+      "provider_calls": 0,
+      "results": [
+        {
+          "scenario": "desktop-expired",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-valid",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-reused",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-logout",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-expired",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-valid",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-reused",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-logout",
+          "passed": true
+        }
+      ],
+      "status": "PASSED"
+    },
+    "actual_development_browser": {
+      "executed_at": "2026-09-25T01:55:51.968Z",
+      "deployment": "woozy-jaguar-392",
+      "results": [
+        {
+          "scenario": "desktop-actual-PacificWest-draft-render",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-actual-intake-disabled",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-actual-PacificWest-draft-render",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-actual-intake-disabled",
+          "passed": true
+        }
+      ],
+      "status": "PASSED",
+      "campaign_id": "zh7ff069fkks1vz221ws40vdzx8f26fr",
+      "customer_writes": 0,
+      "provider_calls": 0
+    },
+    "hosted_readback": "Exact persisted input compared field by field; actual draft public query returned null"
+  },
+  "coverage": {
+    "opening_closing_day_attribution": "PASS: 2026-09-28T15:00:00Z inclusive; 2026-09-30T00:00:00Z exclusive; Vancouver Day 1/Day 2",
+    "bc_licensed_requirement": "PASS: BC licence declaration mandatory for this campaign, all BC cities allowed; false/missing declaration rejected for eligibility; final verification required",
+    "dedup_crm_consent_suppression_abuse_permissions": "PASS: existing campaign regression suite covers concurrent identity dedup, linkage/new prospect invariant, optional consent and withdrawal/suppression preservation, signed ingress, rates, role denial and archived operators",
+    "freeze_secure_draw_equal_odds": "PASS: one unique entry per frozen pool slot and node:crypto.randomInt uniform index; listing range and marketing consent never weight the pool; not a claim of statistical proof from sampled draws",
+    "verification_skill_disqualification_redraw": "PASS: confirmation guards and retained disqualification/redraw chain",
+    "award": "PASS: CAD 200000 cents original and remaining, bound to selected entrant, exact confirmation-relative expiry and snapshotted non-transfer/no-cash terms; no Payment created",
+    "unused_balance_limit": "Full unapplied balance is preserved. Partial-use/redemption and transfer operations do not exist in this implementation; no claim of tested invoice redemption. A reviewed existing commercial process must record any later use without fabricating Payments.",
+    "production_and_integrations": "PASS: production unchanged; no Email, Calendar, AI or consequential Automation enablement or calls; no customer contact or real-data migration"
+  },
+  "remaining_actions": [
+    "Resolve the prepared legal text’s remaining contact, response-period and discount-combination placeholders, verify sponsor legal entity, and record explicit legal approval.",
+    "Confirm the production hostname: glaraos.glarahome.com is currently the development SITE_URL, not evidence of production authorization.",
+    "Obtain explicit production deployment/public-campaign authorization and satisfy the existing production/auth readiness controls; this task did not waive them.",
+    "After authorization, configure the campaign and distinct secure ingress secret in the approved production frontend/backend with matching canonical SITE_URL and trusted edge protections.",
+    "Validate real-host HTTPS/origin, mobile and printed-QR flow under controlled acceptance; keep Email/Calendar and unrelated capabilities disabled.",
+    "Open the legally approved campaign only after these gates; server enforces the specified opening and closing times."
+  ],
+  "qr_ready_url": "PENDING APPROVED PRODUCTION HOSTNAME; reserve /giveaway/pacificwest-2026?source=booth. Do not print the development URL.",
+  "timezone_source": "https://news.gov.bc.ca/releases/2026CITZ0009-001073"
+}

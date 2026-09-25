@@ -12,6 +12,7 @@ import type { Id, Doc } from "../../../convex/_generated/dataModel";
 import { api } from "../../../convex/_generated/api";
 import { PageTitle, LoadingState } from "@/components/primitives";
 import { Button } from "@/components/ui/button";
+import { campaignPacificZone } from "@/lib/campaigns/model";
 import { vancouverLocal, vancouverUtc } from "@/lib/operations/time";
 const field =
   "mt-1 min-h-11 w-full rounded-lg border bg-background px-3 py-2 text-base";
@@ -22,7 +23,7 @@ const money = (cents: number) =>
   );
 const date = (time: number) =>
   new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Vancouver",
+    timeZone: campaignPacificZone(time),
     dateStyle: "medium",
     timeStyle: "short",
   }).format(time);
@@ -72,6 +73,9 @@ function CampaignForm({
           starts_at: Date.parse(vancouverUtc(str("starts_at"))),
           closes_at: Date.parse(vancouverUtc(str("closes_at"))),
           eligibility_summary: str("eligibility_summary"),
+          ...(existing?.eligible_province
+            ? { eligible_province: existing.eligible_province }
+            : {}),
           eligible_cities: str("eligible_cities")
             .split(",")
             .map((x) => x.trim())
@@ -82,7 +86,13 @@ function CampaignForm({
           consent_text: str("consent_text"),
           prize_terms: str("prize_terms"),
           prize_terms_version: str("prize_terms_version"),
-          prize_expires_at: Date.parse(vancouverUtc(str("prize_expires_at"))),
+          ...(existing?.expiry_months_after_confirmation === 6
+            ? { expiry_months_after_confirmation: 6 }
+            : {
+                prize_expires_at: Date.parse(
+                  vancouverUtc(str("prize_expires_at")),
+                ),
+              }),
           skill_question_required: f.get("skill_question_required") === "on",
           assigned_to: existing?.assigned_to ?? owner,
           legal_approved: f.get("legal_approved") === "on",
@@ -125,6 +135,12 @@ function CampaignForm({
         and legal terms before publishing; no policy has been assumed for prize
         use, expiry or transfer.
       </p>
+      {existing?.eligible_province === "BC" && (
+        <p className="text-sm">
+          Eligibility: licensed Realtors in British Columbia; all BC primary
+          markets.
+        </p>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         {[
           ["name", "Internal campaign name"],
@@ -140,7 +156,14 @@ function CampaignForm({
             {label}
             <input
               name={name}
-              required
+              required={
+                name !== "eligible_cities" ||
+                existing?.eligible_province !== "BC"
+              }
+              disabled={
+                name === "eligible_cities" &&
+                existing?.eligible_province === "BC"
+              }
               maxLength={name === "eligible_cities" ? 3000 : 160}
               type={name === "prize_value" ? "number" : "text"}
               min={name === "prize_value" ? 1 : undefined}
@@ -151,28 +174,35 @@ function CampaignForm({
           </label>
         ))}
         {(["starts_at", "closes_at", "prize_expires_at"] as const).map(
-          (name) => (
-            <label key={name} className="text-sm font-medium">
-              {
+          (name) =>
+            name === "prize_expires_at" &&
+            existing?.expiry_months_after_confirmation === 6 ? (
+              <p key={name} className="text-sm">
+                Prize expiry: six calendar months after winner confirmation
+                (Vancouver time).
+              </p>
+            ) : (
+              <label key={name} className="text-sm font-medium">
                 {
-                  starts_at: "Entry window opens",
-                  closes_at: "Entry window closes",
-                  prize_expires_at: "Prize expires",
-                }[name]
-              }
-              <input
-                type="datetime-local"
-                required
-                name={name}
-                defaultValue={
-                  existing
-                    ? vancouverLocal(new Date(existing[name]).toISOString())
-                    : ""
+                  {
+                    starts_at: "Entry window opens",
+                    closes_at: "Entry window closes",
+                    prize_expires_at: "Prize expires",
+                  }[name]
                 }
-                className={field}
-              />
-            </label>
-          ),
+                <input
+                  type="datetime-local"
+                  required
+                  name={name}
+                  defaultValue={
+                    existing?.[name]
+                      ? vancouverLocal(new Date(existing[name]!).toISOString())
+                      : ""
+                  }
+                  className={field}
+                />
+              </label>
+            ),
         )}
       </div>
       {(
@@ -235,7 +265,7 @@ function CampaignForm({
         privacy, consent wording and prize terms for publication.
       </label>
       <p className="text-sm text-muted-foreground">
-        New prospects are assigned to the campaign creator. Change staff
+        New prospects use the campaign’s assigned CRM owner. Change staff
         assignment through the existing CRM workflow when needed.
       </p>
       {error && <p role="alert">{error}</p>}

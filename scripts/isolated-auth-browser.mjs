@@ -397,10 +397,11 @@ async function main() {
             starts_at: Date.now() - 3600000,
             closes_at: Date.now() + 86400000,
             eligibility_summary:
-              "Licensed Realtors in Vancouver. One eligible entry per Realtor.",
-            eligible_cities: ["Vancouver"],
+              "Licensed Realtors in British Columbia. One eligible entry per Realtor.",
+            eligible_cities: [],
+            eligible_province: "BC",
             official_rules:
-              "Fictional acceptance rules only. No purchase necessary. One CAD $2,000 service-credit prize. One eligible Realtor will be selected randomly; all entrants must be licensed and work in Vancouver. Verification and a skill-testing question are required. Do not use these fictional rules for a real campaign.",
+              "Fictional acceptance rules only. No purchase necessary. One CAD $2,000 service-credit prize. One eligible Realtor will be selected randomly; all entrants must be licensed Realtors in British Columbia. Verification and a skill-testing question are required. Do not use these fictional rules for a real campaign.",
             rules_version: "test-1",
             privacy_notice:
               "Fictional acceptance data only. Information is used to record and administer this isolated test entry.",
@@ -409,7 +410,7 @@ async function main() {
             prize_terms:
               "Fictional acceptance credit only; no cash payment or invoice adjustment. Confirm real prize terms before a public launch.",
             prize_terms_version: "test-1",
-            prize_expires_at: Date.now() + 86400000 * 100,
+            expiry_months_after_confirmation: 6,
             skill_question_required: true,
             assigned_to: ownerId,
             legal_approved: true,
