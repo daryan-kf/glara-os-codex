@@ -81,3 +81,22 @@ The local `.env.local` explicitly identifies `GLARA_ENVIRONMENT=development` and
 The owner-supplied visual reference is implemented as a two-column desktop layout with a Glara wordmark/navigation, serif headline, staging photograph and six campaign facts on the left, and a white registration card on the right. Mobile stacks these regions with a compact native navigation menu. The campaign form remains visible before opening; its fieldset and submit button are disabled, and the exact opening/closing notice is displayed. The submit handler also refuses non-open states; existing backend gates are unchanged.
 
 The photograph is reused from Glara's public portfolio: `https://www.glarahome.com/images/portfolio/glara-living-kitchen-slatwall.jpg`. It is bundled locally as an imported static asset, including the existing optional `/glara-win-assets` prefix. No external image fetch, new tracking integration, new campaign or provider activation is introduced. Full rules, contact details, optional consent wording and prize terms remain unchanged.
+
+## Current publication request — September 25, 2026
+
+The owner explicitly requested public publication now with registration opening and closing at the approved times, after declining MFA enablement. Record this as a requested campaign-scoped exception, **not MFA passed** and not general Glara OS production readiness. Owner identity was supplied privately; no Owner name, email or recovery phone is published in this repository. Recovery-contact independence remains unverified.
+
+Vercel sign-in is now working. The verified website project is `glara-design` (`prj_TTN1Zym3zC9Mernqway3nPvuBEfW`) connected to `daryan-kf/Glara-Design`; `glara-staging` instead serves `crm.glarahome.com`. The apex currently has a project-level 308 redirect to `www.glarahome.com`. No route or DNS setting was changed.
+
+An empty, separate frontend project `glara-giveaway-production` (`prj_tUOWlEfdbt0lD33FTJ3PpUPJyjtk`) was created. No code or environment settings have been deployed to it. The reviewed backend target remains `terrific-seahorse-419`.
+
+Prepared controls:
+
+- `GLARA_PUBLIC_CAMPAIGN_ONLY=true` allows only `/win`, the existing PacificWest page, its registration API and namespaced static assets on this deployment. It does not bypass the existing production/recovery gates.
+- The same backend flag denies authenticated staff profiles and password/recovery authentication. Public signed ingress keeps its existing authorization, validation and server-side date checks. Existing development and staff deployments are unchanged when the flag is absent.
+- `campaignLaunch:preparePacificWest` is an internal deployment-administrator mutation. It requires a closed production campaign environment and a temporary explicit provisioning flag. It validates the approved input, provisions one non-login Owner assignment and one production instance of the existing campaign slug, audits the action as a platform operation, and refuses conflicting reruns. It creates no password, account, session or invitation; it does not import development CRM data. Remove/disable its provisioning flag immediately after use.
+- `vercel.giveaway.json` is a fail-closed configuration for the separate public frontend. It must never replace the development project's configuration or relax the marketing site's other routes.
+
+**Deployment blocked by automatic approval review.** The attempted `node scripts/prepare-production.mjs --deploy` was rejected before execution. The review cited the historical M10A prohibition against production code deployment and unresolved Owner/MFA authorization despite the current campaign publication request. No alternative deployment path was used. Backend code, production data, domain routing and intake remain unchanged.
+
+The next explicit approval must identify this reviewed production backend and isolated public frontend, the requested MFA exception for this campaign only, approved Owner assignment provisioning, `/win` routing, and scheduled intake. This does not authorize Email, Calendar, AI, consequential Automation, staff access or a general M10B pass. After approval, complete the prepared deployment, real-edge origin/IP acceptance and backup/operational readiness checks before arming intake. Do not claim the current request alone has completed those checks.

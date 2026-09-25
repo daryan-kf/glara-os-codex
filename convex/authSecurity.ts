@@ -3,6 +3,7 @@ import { v } from "convex/values";
 export const attempt = internalMutation({
   args: { key: v.string(), recovery: v.boolean() },
   handler: async (ctx, args) => {
+    if (process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true") return false;
     if (!/^[a-f0-9]{64}$/.test(args.key)) return false;
     const now = Date.now();
     const expired = await ctx.db
@@ -37,6 +38,7 @@ export const attempt = internalMutation({
 export const eligible = internalQuery({
   args: { email: v.string() },
   handler: async (ctx, { email }) => {
+    if (process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true") return false;
     const account = await ctx.db
       .query("authAccounts")
       .withIndex("providerAndAccountId", (q) =>

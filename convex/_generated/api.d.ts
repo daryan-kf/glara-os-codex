@@ -32,6 +32,7 @@ import type * as calendarProvider from "../calendarProvider.js";
 import type * as calendarSchema from "../calendarSchema.js";
 import type * as calendarSync from "../calendarSync.js";
 import type * as campaignActions from "../campaignActions.js";
+import type * as campaignLaunch from "../campaignLaunch.js";
 import type * as campaignSchema from "../campaignSchema.js";
 import type * as campaigns from "../campaigns.js";
 import type * as commercial from "../commercial.js";
@@ -95,6 +96,7 @@ declare const fullApi: ApiFromModules<{
   calendarSchema: typeof calendarSchema;
   calendarSync: typeof calendarSync;
   campaignActions: typeof campaignActions;
+  campaignLaunch: typeof campaignLaunch;
   campaignSchema: typeof campaignSchema;
   campaigns: typeof campaigns;
   commercial: typeof commercial;

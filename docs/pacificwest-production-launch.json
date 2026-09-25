@@ -1,0 +1,214 @@
+{
+  "recorded_at": "2026-09-25T05:29:36.203430+00:00",
+  "base_commit": "b32aeea668c1dcbad0f9cc0bf3ccd716d0700a6f",
+  "decision": "PREPARED; PRODUCTION DEPLOYMENT BLOCKED BY AUTOMATIC APPROVAL REVIEW",
+  "authorization": {
+    "publication_and_scheduled_intake_requested": true,
+    "mfa_enablement_declined": true,
+    "mfa_status": "NOT VERIFIED; NOT PASSED",
+    "scope": "PacificWest public campaign only; no staff rollout or overall M10B pass"
+  },
+  "canonical_url": "https://glarahome.com/win",
+  "frontend_project": {
+    "name": "glara-giveaway-production",
+    "id": "prj_tUOWlEfdbt0lD33FTJ3PpUPJyjtk",
+    "created": true,
+    "deployed": false,
+    "environment_configured": false
+  },
+  "website_project": {
+    "name": "glara-design",
+    "id": "prj_TTN1Zym3zC9Mernqway3nPvuBEfW",
+    "repository": "daryan-kf/Glara-Design",
+    "changed": false
+  },
+  "backend": {
+    "name": "terrific-seahorse-419",
+    "deployment_attempt": "Rejected before execution",
+    "code_deployed": false,
+    "owner_provisioned": false,
+    "campaign_provisioned": false,
+    "intake_enabled": false
+  },
+  "tests": {
+    "node_passed": 21,
+    "vitest_passed": 605,
+    "vitest_files": 41,
+    "focused_passed": 38,
+    "typescript": "PASSED",
+    "lint": "PASSED",
+    "build": "PASSED: isolated production webpack build",
+    "browser": {
+      "executed_at": "2026-09-25T05:26:00.431Z",
+      "environment": "isolated_restore",
+      "production_modified": false,
+      "shared_development_modified": false,
+      "provider_calls": 0,
+      "results": [
+        {
+          "scenario": "desktop-win-alias-final-copy-and-disabled-gate",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-win-alias-final-copy-and-disabled-gate",
+          "passed": true
+        },
+        {
+          "scenario": "scheduled-browser-boundaries",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-expired",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-valid",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-reused",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-duplicate-and-CRM",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-verified-winner-credit-and-zero-provider-effects",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-logout",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-expired",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-valid",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-reused",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-duplicate-and-CRM",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-verified-winner-credit-and-zero-provider-effects",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-logout",
+          "passed": true
+        }
+      ],
+      "status": "PASSED"
+    },
+    "public_only_routes": {
+      "checked_at": "2026-09-25T05:29:17.053Z",
+      "environment": "isolated_local_production_build",
+      "status": "PASSED",
+      "results": [
+        {
+          "path": "/login",
+          "status": 404
+        },
+        {
+          "path": "/dashboard",
+          "status": 404
+        },
+        {
+          "path": "/api/auth",
+          "status": 404
+        },
+        {
+          "path": "/giveaway/other",
+          "status": 404
+        },
+        {
+          "path": "/api/giveaway/extra",
+          "status": 404
+        },
+        {
+          "path": "/api/giveaway",
+          "status": 503
+        }
+      ],
+      "production_modified": false
+    }
+  },
+  "provider_calls": 0,
+  "dns_changed": false,
+  "production_routing_changed": false,
+  "production_data_created": false,
+  "real_registrations_created": 0,
+  "blocker": "Automatic approval review cited the historical M10A prohibition on production code deployment and unresolved Owner/MFA authorization. No alternate deployment path used.",
+  "remaining": [
+    "Explicit approval of reviewed campaign-scoped production deployment and MFA exception, naming terrific-seahorse-419 and glara-giveaway-production.",
+    "Provision approved campaign and non-login Owner assignment; preserve existing development campaign.",
+    "Configure independent ingress secret and approved production origins; keep all external integrations disabled.",
+    "Deploy exact frontend and limited website path mount; verify real-edge origin and trusted client-IP behavior, HTTPS/assets/mobile/desktop, and operational backup readiness.",
+    "Only after acceptance, arm the matched intake gates; server time must enforce September 28 08:00 through September 29 17:00 Pacific.",
+    "Campaign management/staff access and production MFA remain separate unresolved scope; no authentication recovery or platform-MFA success claimed."
+  ]
+}

@@ -4,11 +4,18 @@ import { productionCapabilityAllowed } from "@/lib/security/preflight";
 import { isConfigured } from "@/lib/env";
 import { readLimitedBody, RequestBodyError } from "@/lib/security/http";
 import { contentSecurityPolicy } from "@/lib/security/csp";
+import { campaignPathAllowed } from "@/lib/campaigns/public-deployment";
 const authProxy = convexAuthNextjsMiddleware(undefined, {
   cookieConfig: { maxAge: 7 * 24 * 60 * 60 },
   shouldHandleCode: false,
 });
 export async function proxy(request: NextRequest, event: NextFetchEvent) {
+  const campaignOnly = process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true";
+  if (campaignOnly && !campaignPathAllowed(request.nextUrl.pathname))
+    return new NextResponse("Not found", {
+      status: 404,
+      headers: { "Cache-Control": "no-store" },
+    });
   if (
     process.env.GLARA_ENVIRONMENT === "production" &&
     (process.env.GLARA_PRODUCTION_APPROVED !== "true" ||
@@ -75,9 +82,10 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
   // Replace untrusted client headers before Next extracts the request nonce.
   request.headers.set("x-nonce", nonce);
   request.headers.set("Content-Security-Policy", csp);
-  let response = isConfigured()
-    ? await authProxy(request, event)
-    : NextResponse.next({ request: { headers: request.headers } });
+  let response =
+    isConfigured() && !campaignOnly
+      ? await authProxy(request, event)
+      : NextResponse.next({ request: { headers: request.headers } });
   if (
     response &&
     request.nextUrl.pathname.replace(/\/$/, "") === "/api/auth" &&

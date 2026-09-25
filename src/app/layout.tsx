@@ -18,7 +18,7 @@ export default async function RootLayout({
   return (
     <html lang="en-CA">
       <body>
-        {isConfigured() ? (
+        {isConfigured() && process.env.GLARA_PUBLIC_CAMPAIGN_ONLY !== "true" ? (
           <ConvexAuthNextjsServerProvider
             storage="inMemory"
             shouldHandleCode={false}

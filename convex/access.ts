@@ -8,6 +8,7 @@ export function deny(code = "FORBIDDEN", message = "Access denied"): never {
   throw new ConvexError({ code, message });
 }
 export async function currentProfile(ctx: QueryCtx | MutationCtx) {
+  if (process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true") return null;
   const userId = await getAuthUserId(ctx);
   if (!userId) return null;
   const sessionId = await getAuthSessionId(ctx);
