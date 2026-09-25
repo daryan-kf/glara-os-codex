@@ -5,12 +5,43 @@ import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 import { listingRanges, campaignPacificZone } from "@/lib/campaigns/model";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import {
+  ArrowRight,
+  CalendarDays,
+  FileText,
+  Gift,
+  Menu,
+  ShieldCheck,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
+import stagingRoom from "./staging-living-room.jpg";
+import styles from "./giveaway.module.css";
 const subscribe = () => () => {};
 type Campaign = NonNullable<
   FunctionReturnType<typeof api.campaigns.publicCampaign>
 >;
-const inputClass =
-  "mt-2 min-h-12 w-full rounded-lg border bg-background px-3 text-base";
+const navigation = [
+  ["Home", "https://glarahome.com/"],
+  ["Staging Services", "https://glarahome.com/services"],
+  ["Our Work", "https://glarahome.com/portfolio"],
+  ["For Realtors", "#eligibility"],
+  ["About", "https://glarahome.com/about"],
+  ["Contact", "https://glarahome.com/contact"],
+];
+function Wordmark() {
+  return (
+    <span className={styles.wordmark}>
+      <span>GLARA</span>
+      <small>STAGING</small>
+    </span>
+  );
+}
+function openTerms(id: string) {
+  const details = document.getElementById(id);
+  if (details instanceof HTMLDetailsElement) details.open = true;
+}
 export function Giveaway({ campaign: c }: { campaign: Campaign }) {
   const router = useRouter();
   useEffect(() => {
@@ -33,7 +64,7 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
     [error, setError] = useState("");
   async function submit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy) return;
+    if (busy || c.state !== "open") return;
     setBusy(true);
     setError("");
     const f = new FormData(event.currentTarget),
@@ -95,41 +126,6 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
       setBusy(false);
     }
   }
-  if (done === "ineligible")
-    return (
-      <section role="status" className="rounded-2xl border bg-card p-8">
-        <h1 className="text-3xl font-semibold">Registration received</h1>
-        <p className="mt-4">
-          The professional details you supplied do not meet this giveaway’s
-          published licence or market requirements. This registration is not
-          eligible for the draw. If you made a mistake, please speak with our
-          booth team before registration closes.
-        </p>
-      </section>
-    );
-  if (done)
-    return (
-      <section className="rounded-2xl border bg-card p-8" role="status">
-        <h1 className="text-4xl font-semibold">You&apos;re entered!</h1>
-        <p className="mt-5 text-lg">
-          You&apos;re now entered for a chance to win a{" "}
-          {new Intl.NumberFormat("en-CA", {
-            style: "currency",
-            currency: "CAD",
-            maximumFractionDigits: 0,
-          }).format(c.value_cents / 100)}{" "}
-          {c.prize}.
-        </p>
-        <p className="mt-4 text-sm text-muted-foreground">
-          One entry per Realtor. Entries remain subject to the official rules
-          and eligibility verification. Marketing consent does not affect your
-          chances.
-        </p>
-        <a href="https://glarahome.com" className="mt-6 inline-block underline">
-          Learn about Glara Staging
-        </a>
-      </section>
-    );
   const date = (ms: number) =>
     new Intl.DateTimeFormat("en-CA", {
       dateStyle: "medium",
@@ -139,225 +135,379 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
   const prizeValue = new Intl.NumberFormat("en-CA", {
     maximumFractionDigits: 2,
   }).format(c.value_cents / 100);
+  const canEnter = c.state === "open";
+  const facts = [
+    {
+      icon: Gift,
+      title: "Prize",
+      text: `One (1) $${prizeValue} CAD ${c.prize}`,
+    },
+    {
+      icon: CalendarDays,
+      title: "When",
+      text: `Opens ${date(c.starts_at)} PT. Closes ${date(c.closes_at)} PT.`,
+    },
+    {
+      icon: UsersRound,
+      title: "Who Can Enter",
+      text:
+        c.eligible_province === "BC"
+          ? "Licensed Realtors in British Columbia"
+          : c.eligibility_summary,
+    },
+    {
+      icon: FileText,
+      title: "Purchase Required",
+      text: "No purchase necessary",
+    },
+    {
+      icon: UserRound,
+      title: "Entry Limit",
+      text: "One eligible entry per Realtor",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Winner Selection",
+      text: "Random draw, subject to verification",
+    },
+  ];
   return (
-    <>
-      <header className="mb-8">
-        <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
-          {c.title}
-        </h1>
-        <p className="mt-3 font-semibold text-primary">
-          Exclusively for Realtors
-        </p>
-        <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
-          {c.description}
-        </p>
-        <dl className="mt-6 space-y-3 rounded-2xl border bg-card p-5 text-sm leading-relaxed">
-          {[
-            ["Prize", `One (1) $${prizeValue} CAD ${c.prize}`],
-            ["Number of Prizes", "One (1)"],
-            ["Purchase Required", "No"],
-            ["Entry Limit", "One eligible entry per Realtor"],
-            ["Registration Opens", `${date(c.starts_at)} Pacific Time`],
-            ["Contest Closes", `${date(c.closes_at)} Pacific Time`],
-            [
-              "Winner Selection",
-              "Random draw from all eligible entries, subject to verification and the Official Rules.",
-            ],
-          ].map(([label, value]) => (
-            <div key={label}>
-              <dt className="inline font-semibold">{label}: </dt>
-              <dd className="inline">{value}</dd>
-            </div>
+    <div className={styles.site}>
+      <a href="#registration" className={styles.skipLink}>
+        Skip to registration
+      </a>
+      <header className={styles.topbar}>
+        <a href="https://glarahome.com/" aria-label="Glara Staging home">
+          <Wordmark />
+        </a>
+        <nav className={styles.desktopNav} aria-label="Main navigation">
+          {navigation.map(([label, href]) => (
+            <a href={href} key={label}>
+              {label}
+            </a>
           ))}
-        </dl>
-        <p className="mt-3 text-sm">{c.eligibility_summary}</p>
+        </nav>
+        <a className={styles.consultation} href="https://glarahome.com/contact">
+          Book a Consultation
+        </a>
+        <details className={styles.mobileMenu}>
+          <summary aria-label="Open site navigation">
+            <Menu size={24} aria-hidden="true" />
+          </summary>
+          <nav aria-label="Mobile site navigation">
+            {navigation.map(([label, href]) => (
+              <a href={href} key={label}>
+                {label}
+              </a>
+            ))}
+          </nav>
+        </details>
       </header>
-      <section className="mb-6 space-y-3 rounded-2xl border bg-card p-5">
+      <div className={styles.layout}>
+        <section className={styles.story} aria-labelledby="giveaway-title">
+          <p className={styles.eyebrow}>
+            {c.slug === "pacificwest-2026"
+              ? "PacificWest Conference"
+              : "Glara Staging Giveaway"}
+          </p>
+          <h1 id="giveaway-title" className={styles.title}>
+            {c.title}
+          </h1>
+          <div className={styles.goldRule} aria-hidden="true" />
+          <h2 className={styles.subtitle}>Exclusively for Realtors</h2>
+          <p className={styles.description}>{c.description}</p>
+          <figure className={styles.photograph}>
+            <Image
+              src={stagingRoom}
+              alt="A bright living and dining space styled by Glara Home Staging"
+              unoptimized
+              sizes="(max-width: 800px) 100vw, 50vw"
+            />
+            <figcaption>
+              <span>Staging Sells</span>
+              <p>
+                Beautiful spaces.
+                <br />
+                Stronger results.
+              </p>
+            </figcaption>
+          </figure>
+          <dl className={styles.facts} id="eligibility">
+            {facts.map(({ icon: Icon, title, text }) => (
+              <div key={title}>
+                <Icon size={30} strokeWidth={1.5} aria-hidden="true" />
+                <dt>{title}</dt>
+                <dd>{text}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+        <section
+          className={styles.panel}
+          id="registration"
+          aria-labelledby="registration-title"
+        >
+          {done ? (
+            <div role="status" className={styles.success}>
+              <h2 id="registration-title">
+                {done === "ineligible"
+                  ? "Registration received"
+                  : "You're entered!"}
+              </h2>
+              <p>
+                {done === "ineligible"
+                  ? "The professional details you supplied do not meet this giveaway’s published licence or market requirements. This registration is not eligible for the draw. If you made a mistake, please speak with our booth team before registration closes."
+                  : `You're now entered for a chance to win a $${prizeValue} CAD ${c.prize}.`}
+              </p>
+              <p>
+                One entry per Realtor. Entries remain subject to the Official
+                Rules and eligibility verification. Marketing consent does not
+                affect your chances.
+              </p>
+              <a href="https://glarahome.com/">
+                Learn about Glara Staging{" "}
+                <ArrowRight size={16} aria-hidden="true" />
+              </a>
+            </div>
+          ) : (
+            <>
+              <h2 id="registration-title" className={styles.formTitle}>
+                Enter the Giveaway
+              </h2>
+              <p className={styles.formIntro}>
+                Complete your Realtor profile below to enter.
+              </p>
+              {!canEnter && (
+                <div
+                  className={styles.schedule}
+                  role="status"
+                  id="registration-schedule"
+                >
+                  <CalendarDays size={20} aria-hidden="true" />
+                  <div>
+                    <h3>
+                      {c.state === "scheduled"
+                        ? "Registration opens soon"
+                        : c.state === "paused"
+                          ? "Registration is temporarily unavailable"
+                          : "Registration is closed"}
+                    </h3>
+                    <p>
+                      {c.state === "scheduled"
+                        ? `Entries open ${date(c.starts_at)} Pacific Time and close ${date(c.closes_at)} Pacific Time.`
+                        : "Thank you for your interest in Glara Staging."}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <form
+                method="post"
+                action="/api/giveaway"
+                onSubmit={submit}
+                aria-describedby={
+                  !canEnter ? "registration-schedule" : undefined
+                }
+              >
+                <fieldset
+                  disabled={!canEnter || busy}
+                  className={styles.fields}
+                >
+                  <legend className="sr-only">Realtor Information</legend>
+                  {[
+                    [
+                      "first_name",
+                      "First Name",
+                      "text",
+                      "given-name",
+                      "First Name",
+                    ],
+                    [
+                      "last_name",
+                      "Last Name",
+                      "text",
+                      "family-name",
+                      "Last Name",
+                    ],
+                    [
+                      "brokerage",
+                      "Brokerage",
+                      "text",
+                      "organization",
+                      "Your Brokerage",
+                    ],
+                    [
+                      "email",
+                      "Email Address",
+                      "email",
+                      "email",
+                      "you@brokerage.com",
+                    ],
+                    ["phone", "Mobile Phone", "tel", "tel", "(604) 123–4567"],
+                    [
+                      "city",
+                      "City / Primary Market",
+                      "text",
+                      "address-level2",
+                      "e.g. Vancouver, Burnaby, Surrey",
+                    ],
+                  ].map(([name, label, type, auto, placeholder]) => (
+                    <label key={name} className={styles.textField}>
+                      {label}{" "}
+                      <span className={styles.required} aria-hidden="true">
+                        *
+                      </span>
+                      <input
+                        name={name}
+                        type={type}
+                        autoComplete={auto}
+                        placeholder={placeholder}
+                        required
+                        maxLength={
+                          name === "email" ? 254 : name === "phone" ? 30 : 160
+                        }
+                      />
+                    </label>
+                  ))}
+                  {[
+                    {
+                      name: "licensed_realtor",
+                      legend:
+                        c.eligible_province === "BC"
+                          ? "Are you a licensed Realtor in British Columbia?"
+                          : "Are you a licensed Realtor?",
+                      choices: [
+                        ["yes", "Yes"],
+                        ["no", "No"],
+                      ],
+                    },
+                    {
+                      name: "annual_listings",
+                      legend:
+                        "Approximately how many listings do you handle in a typical year?",
+                      choices: listingRanges.map((range) => [range, range]),
+                    },
+                  ].map(({ name, legend, choices }) => (
+                    <fieldset key={name} className={styles.choices}>
+                      <legend>
+                        {legend}{" "}
+                        <span className={styles.required} aria-hidden="true">
+                          *
+                        </span>
+                      </legend>
+                      <div>
+                        {choices.map(([value, label]) => (
+                          <label key={value}>
+                            <input
+                              type="radio"
+                              name={name}
+                              value={value}
+                              required
+                            />
+                            {label}
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                  ))}
+                  <div aria-hidden="true" className="absolute -left-[10000px]">
+                    <label>
+                      Leave this field empty
+                      <input name="website" tabIndex={-1} autoComplete="off" />
+                    </label>
+                  </div>
+                  <label className={styles.consent}>
+                    <input type="checkbox" name="rules_accepted" required />
+                    <span>
+                      I have read and agree to the{" "}
+                      <a
+                        href="#official-rules"
+                        onClick={() => openTerms("official-rules")}
+                      >
+                        Official Giveaway Rules
+                      </a>{" "}
+                      and acknowledge the{" "}
+                      <a
+                        href="#privacy-notice"
+                        onClick={() => openTerms("privacy-notice")}
+                      >
+                        Privacy Notice
+                      </a>
+                      .{" "}
+                      <span className={styles.required} aria-hidden="true">
+                        *
+                      </span>
+                    </span>
+                  </label>
+                  <label className={styles.consent}>
+                    <input type="checkbox" name="marketing_consent" />
+                    <span>
+                      {c.consent_text}
+                      <small>
+                        Optional. You can enter without subscribing.
+                      </small>
+                    </span>
+                  </label>
+                </fieldset>
+                {error && (
+                  <p role="alert" className={styles.error}>
+                    {error}
+                  </p>
+                )}
+                <Button
+                  type="submit"
+                  disabled={!canEnter || busy || !hydrated}
+                  className={styles.submit}
+                >
+                  {busy ? "Submitting..." : "ENTER TO WIN"}
+                  <ArrowRight size={21} aria-hidden="true" />
+                </Button>
+              </form>
+              <p className={styles.disclosure}>
+                No purchase necessary. One prize with an approximate retail
+                value of CAD ${prizeValue}. One eligible entry per Realtor. Odds
+                of winning depend on the number of eligible entries received.
+                Selected entrant must satisfy the eligibility requirements,
+                comply with the Official Rules
+                {c.skill_question_required
+                  ? " and correctly answer a skill-testing question"
+                  : ""}{" "}
+                before being confirmed as the winner.
+              </p>
+            </>
+          )}
+        </section>
+      </div>
+      <section className={styles.terms} aria-label="Giveaway terms">
         {[
           ["Official Rules", c.official_rules, "official-rules"],
           ["Prize terms", c.prize_terms, "prize-terms"],
           ["Privacy Notice", c.privacy_notice, "privacy-notice"],
         ].map(([title, body, id]) => (
-          <details key={id} id={id} className="scroll-mt-6">
-            <summary className="cursor-pointer py-2 font-medium">
-              {title}
-            </summary>
-            <p className="whitespace-pre-wrap pb-4 text-sm leading-7">{body}</p>
+          <details key={id} id={id}>
+            <summary>{title}</summary>
+            <p>{body}</p>
           </details>
         ))}
       </section>
-      {c.state !== "open" ? (
-        <section className="rounded-2xl border p-6" role="status">
-          <h2 className="text-xl font-semibold">
-            {c.state === "scheduled"
-              ? "Registration opens soon"
-              : c.state === "paused"
-                ? "Registration is temporarily unavailable"
-                : "Registration is closed"}
-          </h2>
-          <p className="mt-2">
-            {c.state === "scheduled"
-              ? `Entries open ${date(c.starts_at)} Pacific Time and close ${date(c.closes_at)} Pacific Time.`
-              : "Thank you for your interest in Glara Staging."}
-          </p>
-        </section>
-      ) : (
-        <form
-          method="post"
-          action="/api/giveaway"
-          onSubmit={submit}
-          className="space-y-5 rounded-2xl border bg-card p-5 sm:p-8"
-        >
-          <h2 className="text-2xl font-semibold">Enter the Giveaway</h2>
-          <p className="text-sm text-muted-foreground">
-            Complete your Realtor profile below to enter.
-          </p>
-          <h3 className="font-semibold">Realtor Information</h3>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {[
-              ["first_name", "First Name", "text", "given-name"],
-              ["last_name", "Last Name", "text", "family-name"],
-              ["brokerage", "Brokerage", "text", "organization"],
-              ["email", "Email Address", "email", "email"],
-              ["phone", "Mobile Phone", "tel", "tel"],
-              ["city", "City / Primary Market", "text", "address-level2"],
-            ].map(([name, label, type, auto]) => (
-              <label key={name} className="text-sm font-medium">
-                {label} <span aria-hidden="true">*</span>
-                <input
-                  name={name}
-                  type={type}
-                  autoComplete={auto}
-                  required
-                  maxLength={
-                    name === "email" ? 254 : name === "phone" ? 30 : 160
-                  }
-                  className={inputClass}
-                />
-              </label>
-            ))}
-          </div>
-          {[
-            {
-              name: "licensed_realtor",
-              legend:
-                c.eligible_province === "BC"
-                  ? "Are you a licensed Realtor in British Columbia?"
-                  : "Are you a licensed Realtor?",
-              choices: [
-                ["yes", "Yes"],
-                ["no", "No"],
-              ],
-            },
-            {
-              name: "annual_listings",
-              legend:
-                "Approximately how many listings do you handle in a typical year?",
-              choices: listingRanges.map((range) => [range, range]),
-            },
-          ].map(({ name, legend, choices }) => (
-            <fieldset key={name}>
-              <legend className="text-sm font-medium">
-                {legend} <span aria-hidden="true">*</span>
-              </legend>
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                {choices.map(([value, label]) => (
-                  <label
-                    key={value}
-                    className="flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 text-sm"
-                  >
-                    <input
-                      type="radio"
-                      name={name}
-                      value={value}
-                      required
-                      className="size-5 accent-primary"
-                    />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-          ))}
-          <div aria-hidden="true" className="absolute -left-[10000px]">
-            <label>
-              Leave this field empty
-              <input name="website" tabIndex={-1} autoComplete="off" />
-            </label>
-          </div>
-          <p className="font-semibold">Required</p>
-          <label className="flex items-start gap-3 rounded-lg border p-4 text-sm">
-            <input
-              type="checkbox"
-              name="rules_accepted"
-              required
-              className="mt-1 size-5 shrink-0"
-            />
-            I have read and agree to the Official Giveaway Rules and acknowledge
-            the Privacy Notice.
-          </label>
-          <p className="font-semibold">Optional</p>
-          <label className="flex items-start gap-3 rounded-lg border p-4 text-sm">
-            <input
-              type="checkbox"
-              name="marketing_consent"
-              className="mt-1 size-5 shrink-0"
-            />
-            <span>
-              {c.consent_text}
-              <span className="mt-2 block text-muted-foreground">
-                Optional. You can enter without subscribing.
-              </span>
-            </span>
-          </label>
-          {error && (
-            <p role="alert" className="rounded-lg border p-3 text-sm">
-              {error}
-            </p>
-          )}
-          <Button
-            type="submit"
-            disabled={busy || !hydrated}
-            className="min-h-12 w-full"
-          >
-            {busy ? "Submitting..." : "ENTER TO WIN"}
-          </Button>
-        </form>
-      )}
-      <footer className="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground">
+      <footer className={styles.footer}>
+        <a href="https://glarahome.com/" aria-label="Glara Staging home">
+          <Wordmark />
+        </a>
         <p>
-          No purchase necessary. One prize with an approximate retail value of
-          CAD ${prizeValue}. One eligible entry per Realtor. Odds of winning
-          depend on the number of eligible entries received. Selected entrant
-          must satisfy the eligibility requirements, comply with the Official
-          Rules
-          {c.skill_question_required
-            ? " and correctly answer a skill-testing question"
-            : ""}{" "}
-          before being confirmed as the winner.
+          Beautiful Spaces.
+          <br />
+          Stronger Results.
         </p>
-        <nav
-          aria-label="Giveaway terms"
-          className="flex flex-wrap gap-x-3 gap-y-2"
-        >
-          {[
-            ["official-rules", "View Official Rules"],
-            ["privacy-notice", "Privacy Notice"],
-          ].map(([id, label]) => (
-            <a
-              key={id}
-              href={`#${id}`}
-              className="underline underline-offset-4"
-              onClick={() => {
-                const details = document.getElementById(id);
-                if (details instanceof HTMLDetailsElement) details.open = true;
-              }}
-            >
-              {label}
-            </a>
-          ))}
+        <nav aria-label="Giveaway footer">
+          <a href="#official-rules" onClick={() => openTerms("official-rules")}>
+            View Official Rules
+          </a>
+          <a href="#privacy-notice" onClick={() => openTerms("privacy-notice")}>
+            Privacy Notice
+          </a>
+          <a href="mailto:Support@glarahome.com">Contact</a>
         </nav>
       </footer>
-    </>
+    </div>
   );
 }

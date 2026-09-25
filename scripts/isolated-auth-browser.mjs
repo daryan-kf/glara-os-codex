@@ -592,6 +592,7 @@ async function main() {
         ["desktop", { width: 1280, height: 900 }],
         ["mobile", { width: 393, height: 851 }],
       ]) {
+        phase = name + "-win-alias-final-copy-and-disabled-gate";
         const context = await browser.newContext({
           viewport,
           ignoreHTTPSErrors: true,
@@ -622,7 +623,7 @@ async function main() {
         ).toBeVisible();
         await expect(
           page.getByRole("button", { name: "ENTER TO WIN", exact: true }),
-        ).toHaveCount(0);
+        ).toBeDisabled();
         await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
           "href",
           "https://glarahome.com/win",
@@ -639,7 +640,20 @@ async function main() {
         await expect(page.locator("#privacy-notice")).toContainText(
           "Support@glarahome.com",
         );
-        await expect(page.locator('[name="marketing_consent"]')).toHaveCount(0);
+        await expect(page.locator('[name="marketing_consent"]')).toBeDisabled();
+        await expect(
+          page.locator('[name="marketing_consent"]'),
+        ).not.toBeChecked();
+        await expect(page.locator('[name="first_name"]')).toBeDisabled();
+        expect(
+          await page
+            .locator(
+              'img[alt="A bright living and dining space styled by Glara Home Staging"]',
+            )
+            .evaluate((image) => image.complete && image.naturalWidth > 0),
+        ).toBe(true);
+        await page.locator("#official-rules summary").click();
+        await page.locator("#privacy-notice summary").click();
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -690,7 +704,7 @@ async function main() {
       ).toBeVisible({ timeout: 15000 });
       await expect(
         page.getByRole("button", { name: "ENTER TO WIN", exact: true }),
-      ).toHaveCount(0);
+      ).toBeDisabled();
       result.results.push({ scenario: phase, passed: true });
       await context.close();
       await admin.mutation(ref("authBrowserDrill:expoWindow"), {

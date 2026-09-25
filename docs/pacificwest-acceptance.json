@@ -1,7 +1,7 @@
 {
-  "recorded_at": "2026-09-25T04:50:02.067756+00:00",
+  "recorded_at": "2026-09-25T05:06:21.673898+00:00",
   "decision": "SCHEDULED DEVELOPMENT PAGE VISIBLE; TIME-GATED REHEARSAL PASSED; PRODUCTION ROUTING AND INTAKE AUTHORIZATION PENDING",
-  "base_commit": "ff4fd709be0a3787de8b4e421a97599bc0052437",
+  "base_commit": "3b0839e7177e86d5e1b1c7354b8c6ed61ad52ef8",
   "setup": {
     "recorded_at": "2026-09-25T04:42:51.898Z",
     "deployment": "woozy-jaguar-392",
@@ -54,7 +54,8 @@
       "vitest": 600,
       "vitest_files": 40,
       "total": 621,
-      "campaign_cases_included": 27
+      "campaign_cases_included": 27,
+      "evidence_scope": "Historical complete suite from the prior scheduled-publication commit; this presentation change reran the 27 campaign cases and the complete isolated 29-scenario browser rehearsal."
     },
     "typescript": "PASSED",
     "lint": "PASSED",
@@ -62,7 +63,7 @@
     "secrets": "PASSED",
     "build": "PASSED: isolated Next production --webpack build with GLARA_PUBLIC_CAMPAIGN_ROUTING=true; namespaced assets hydrated successfully in desktop/mobile rehearsal.",
     "isolated_browser": {
-      "executed_at": "2026-09-25T04:48:17.394Z",
+      "executed_at": "2026-09-25T05:04:14.583Z",
       "environment": "isolated_restore",
       "production_modified": false,
       "shared_development_modified": false,
@@ -188,7 +189,7 @@
       "status": "PASSED"
     },
     "actual_development_browser": {
-      "checked_at": "2026-09-25T04:46:05.937Z",
+      "checked_at": "2026-09-25T05:05:03.470Z",
       "results": [
         {
           "scenario": "desktop-scheduled-public-page-with-intake-blocked",
@@ -206,7 +207,9 @@
     },
     "hosted_readback": "Exact persisted input compared field by field; actual draft public query returned null",
     "focused_final_config": "PASSED: 27 campaign cases, including disabled intake with approved scheduled details, recovery/production/approval read denial, forged display time not opening registration, and exact September registration boundaries for scheduled campaigns.",
-    "rehearsal_correction": "Scheduled-browser test exposed stale time-dependent query state; the server page now passes a bounded second bucket to refresh the Convex display cache, while the backend exclusively uses its own clock. Local preview additionally required explicit development environment designation. Both fixes were retested successfully. Historical launch selector correction remains in Git history."
+    "rehearsal_correction": "Scheduled-browser test exposed stale time-dependent query state; the server page now passes a bounded second bucket to refresh the Convex display cache, while the backend exclusively uses its own clock. Local preview additionally required explicit development environment designation. Both fixes were retested successfully. Historical launch selector correction remains in Git history.",
+    "presentation": "PASS: reference-led desktop and mobile layout visually inspected; full form visible but disabled before opening; optional consent unchecked; staging image loaded; mobile navigation works; no horizontal overflow.",
+    "presentation_rehearsal": "An obsolete hidden-checkbox assertion was updated to require the owner-requested visible, disabled, unchecked field. Final 29-scenario rehearsal passed after adding a fresh form session when campaign state changes at opening, preventing an advance-preview timestamp from expiring before entry."
   },
   "coverage": {
     "opening_closing_day_attribution": "PASS: 2026-09-28T15:00:00Z inclusive; 2026-09-30T00:00:00Z exclusive; Vancouver Day 1/Day 2",
@@ -217,8 +220,8 @@
     "award": "PASS: isolated desktop/mobile verified confirmations issue winner-bound CAD 200000 original/remaining issued_unapplied awards with exact approved terms; Payment/outbox/provider-message/calendar-sync tables remain empty. Exact six calendar months additionally asserted in Convex tests.",
     "unused_balance_limit": "Full unapplied balance is preserved. Partial-use/redemption and transfer operations do not exist in this implementation; no claim of tested invoice redemption. A reviewed existing commercial process must record any later use without fabricating Payments.",
     "production_and_integrations": "PASS: production unchanged; no Email, Calendar, AI or consequential Automation enablement or calls; no customer contact or real-data migration",
-    "routing": "PASS: /win displays approved campaign information and exact opening/closing times on desktop/mobile while intake is disabled. No entry form before opening; API remains 503 while disabled. Production routing not installed.",
-    "scheduled_registration": "PASS: an approved scheduled campaign accepts entry only inside the server [starts_at, closes_at) window once intake is independently armed. Browser automatically refreshes at both boundaries. Draft/cancelled/unapproved/recovery and unapproved production remain hidden. No cron activation or staff action at the opening instant is required."
+    "routing": "PASS: /win displays approved campaign information, exact opening/closing times and the complete disabled form on desktop/mobile before opening. API remains 503 while intake is disabled. Production routing not installed.",
+    "scheduled_registration": "PASS: an approved scheduled campaign accepts entry only inside the server [starts_at, closes_at) window once intake is independently armed. Browser automatically refreshes at both boundaries. Draft/cancelled/unapproved/recovery and unapproved production remain hidden. No cron activation or staff action at the opening instant is required. The visible form and button enable at opening and disable at closing. A state change starts a fresh form session so an advance preview does not retain an expired anti-abuse timestamp."
   },
   "remaining_actions": [
     "Existing glarahome.com Vercel website administrator must mount the approved production frontend at /win and route /api/giveaway plus /glara-win-assets/*; exempt these paths from the current apex-to-www redirect. Preserve exact request origin and trusted client-IP enforcement. See pacificwest-launch.md.",

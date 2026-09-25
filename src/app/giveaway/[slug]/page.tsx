@@ -37,13 +37,12 @@ export default async function Page({
   const { slug } = await params;
   const campaign = await loadPublicCampaign(slug);
   return (
-    <main className="min-h-screen bg-background px-4 py-10 sm:py-16">
-      <div className="mx-auto max-w-2xl">
-        <p className="mb-8 text-xs font-semibold tracking-[0.24em] text-primary">
-          GLARA HOME STAGING
-        </p>
+    <main className="min-h-screen bg-[#f6f5f2]">
+      <div>
         {campaign ? (
           <Giveaway
+            // Start a fresh form session when an advance preview opens for entry.
+            key={`${campaign.slug}:${campaign.state}`}
             campaign={{
               ...campaign,
               state:
@@ -53,7 +52,7 @@ export default async function Page({
             }}
           />
         ) : (
-          <section className="rounded-2xl border bg-card p-8">
+          <section className="mx-auto max-w-2xl rounded-2xl border bg-card p-8">
             <h1 className="text-3xl font-semibold">
               Registration is not available yet
             </h1>
