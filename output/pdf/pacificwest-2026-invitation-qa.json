@@ -1,0 +1,27 @@
+{
+  "trim_inches": [6, 2.75],
+  "trim_mm": [152.4, 69.85],
+  "pages_per_pdf": 2,
+  "letter_copies": 3,
+  "duplex": "Portrait; flip on long edge; print 100% / Actual Size",
+  "card_qr_tests": [
+    {
+      "width": 1800,
+      "decoded": "https://glarahome.com/win"
+    },
+    {
+      "width": 900,
+      "decoded": "https://glarahome.com/win"
+    },
+    {
+      "width": 600,
+      "decoded": "https://glarahome.com/win"
+    }
+  ],
+  "letter_sheet_qr_count": 3,
+  "pdf_link_annotations": [3, 3],
+  "text_bounds": "PASS",
+  "approved_terms": "PASS",
+  "design": "Original promotional invitation; not currency or an awarded gift card",
+  "dimension_reference": "https://www.bankofcanada.ca/banknotes/using-bank-note-images/"
+}
