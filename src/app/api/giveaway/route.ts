@@ -6,6 +6,7 @@ import { api } from "../../../../convex/_generated/api";
 import { registrationInput, intakeEnabled } from "@/lib/campaigns/model";
 import { readLimitedBody, RequestBodyError } from "@/lib/security/http";
 import { applicationOrigin } from "@/lib/security/origin";
+import { campaignRequestOriginAllowed } from "@/lib/campaigns/request-origin";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
   const response = (status: string, code: number) =>
@@ -28,10 +29,7 @@ export async function POST(request: Request) {
         ? "production"
         : "development",
     );
-    if (
-      request.headers.get("origin") !== origin ||
-      new URL(request.url).origin !== origin
-    )
+    if (!campaignRequestOriginAllowed(request, process.env))
       return response("unavailable", 403);
     if (!request.headers.get("content-type")?.startsWith("application/json"))
       return response("invalid", 415);
