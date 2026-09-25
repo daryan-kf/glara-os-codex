@@ -132,9 +132,10 @@ export function eventDay(starts: number, entered: number) {
 export function priority(range: string) {
   return range === "21+" ? "High" : range === "11–20" ? "Medium" : "Standard";
 }
-export function intakeEnabled(env: Record<string, string | undefined>) {
+export function campaignPublicationAllowed(
+  env: Record<string, string | undefined>,
+) {
   if (
-    env.GLARA_EXPO_ENABLED !== "true" ||
     env.GLARA_RECOVERY_MODE === "true" ||
     !["development", "production"].includes(env.GLARA_ENVIRONMENT ?? "") ||
     !productionCapabilityAllowed(env, "expo")
@@ -144,6 +145,10 @@ export function intakeEnabled(env: Record<string, string | undefined>) {
     env.GLARA_ENVIRONMENT === "development" ||
     env.GLARA_PRODUCTION_EXPO_APPROVED === "true"
   );
+}
+
+export function intakeEnabled(env: Record<string, string | undefined>) {
+  return env.GLARA_EXPO_ENABLED === "true" && campaignPublicationAllowed(env);
 }
 
 // Eligibility declarations are entry-time facts; final BC licence verification remains mandatory.

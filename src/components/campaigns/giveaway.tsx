@@ -1,5 +1,6 @@
 "use client";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 import { listingRanges, campaignPacificZone } from "@/lib/campaigns/model";
@@ -11,6 +12,16 @@ type Campaign = NonNullable<
 const inputClass =
   "mt-2 min-h-12 w-full rounded-lg border bg-background px-3 text-base";
 export function Giveaway({ campaign: c }: { campaign: Campaign }) {
+  const router = useRouter();
+  useEffect(() => {
+    if (c.state !== "scheduled" && c.state !== "open") return;
+    const boundary = c.state === "scheduled" ? c.starts_at : c.closes_at;
+    const timer = setTimeout(
+      () => router.refresh(),
+      Math.min(2147483647, Math.max(1000, boundary - Date.now() + 250)),
+    );
+    return () => clearTimeout(timer);
+  }, [c, router]);
   const hydrated = useSyncExternalStore(
     subscribe,
     () => true,
@@ -146,6 +157,7 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
             ["Number of Prizes", "One (1)"],
             ["Purchase Required", "No"],
             ["Entry Limit", "One eligible entry per Realtor"],
+            ["Registration Opens", `${date(c.starts_at)} Pacific Time`],
             ["Contest Closes", `${date(c.closes_at)} Pacific Time`],
             [
               "Winner Selection",
@@ -179,9 +191,15 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
           <h2 className="text-xl font-semibold">
             {c.state === "scheduled"
               ? "Registration opens soon"
-              : "Registration is closed"}
+              : c.state === "paused"
+                ? "Registration is temporarily unavailable"
+                : "Registration is closed"}
           </h2>
-          <p className="mt-2">Thank you for your interest in Glara Staging.</p>
+          <p className="mt-2">
+            {c.state === "scheduled"
+              ? `Entries open ${date(c.starts_at)} Pacific Time and close ${date(c.closes_at)} Pacific Time.`
+              : "Thank you for your interest in Glara Staging."}
+          </p>
         </section>
       ) : (
         <form

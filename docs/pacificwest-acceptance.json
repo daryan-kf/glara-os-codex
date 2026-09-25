@@ -1,13 +1,13 @@
 {
-  "recorded_at": "2026-09-25T04:34:16.243331+00:00",
-  "decision": "LAUNCH REHEARSAL PASSED; PRODUCTION ROUTING AND ACTIVATION AUTHORIZATION PENDING",
-  "base_commit": "2eff0d7afaca3a7b86c98892358accab9734b1eb",
+  "recorded_at": "2026-09-25T04:50:02.067756+00:00",
+  "decision": "SCHEDULED DEVELOPMENT PAGE VISIBLE; TIME-GATED REHEARSAL PASSED; PRODUCTION ROUTING AND INTAKE AUTHORIZATION PENDING",
+  "base_commit": "ff4fd709be0a3787de8b4e421a97599bc0052437",
   "setup": {
-    "recorded_at": "2026-09-25T04:30:29.250Z",
+    "recorded_at": "2026-09-25T04:42:51.898Z",
     "deployment": "woozy-jaguar-392",
     "campaign_id": "zh7ff069fkks1vz221ws40vdzx8f26fr",
     "slug": "pacificwest-2026",
-    "status": "draft",
+    "status": "scheduled",
     "legal_approved": true,
     "starts_at": "2026-09-28T15:00:00.000Z",
     "closes_at": "2026-09-30T00:00:00.000Z",
@@ -19,7 +19,7 @@
       "M9_CALENDAR_ENABLED": "false",
       "GLARA_EXPO_ENABLED": "false"
     },
-    "public_intake_result": "null: disabled and draft",
+    "public_intake_result": "Approved information visible; scheduled state; intake flag false and API returns 503.",
     "development_origin": "https://glaraos.glarahome.com",
     "production_modified": false,
     "emails_sent": 0,
@@ -51,10 +51,10 @@
     "automated": {
       "status": "PASSED",
       "node": 21,
-      "vitest": 599,
+      "vitest": 600,
       "vitest_files": 40,
-      "total": 620,
-      "campaign_cases_included": 26
+      "total": 621,
+      "campaign_cases_included": 27
     },
     "typescript": "PASSED",
     "lint": "PASSED",
@@ -62,7 +62,7 @@
     "secrets": "PASSED",
     "build": "PASSED: isolated Next production --webpack build with GLARA_PUBLIC_CAMPAIGN_ROUTING=true; namespaced assets hydrated successfully in desktop/mobile rehearsal.",
     "isolated_browser": {
-      "executed_at": "2026-09-25T04:31:24.238Z",
+      "executed_at": "2026-09-25T04:48:17.394Z",
       "environment": "isolated_restore",
       "production_modified": false,
       "shared_development_modified": false,
@@ -74,6 +74,10 @@
         },
         {
           "scenario": "mobile-win-alias-final-copy-and-disabled-gate",
+          "passed": true
+        },
+        {
+          "scenario": "scheduled-browser-boundaries",
           "passed": true
         },
         {
@@ -184,34 +188,25 @@
       "status": "PASSED"
     },
     "actual_development_browser": {
-      "executed_at": "2026-09-25T04:31:42.686Z",
-      "deployment": "woozy-jaguar-392",
+      "checked_at": "2026-09-25T04:46:05.937Z",
       "results": [
         {
-          "scenario": "desktop-actual-PacificWest-draft-render",
+          "scenario": "desktop-scheduled-public-page-with-intake-blocked",
           "passed": true
         },
         {
-          "scenario": "desktop-actual-win-intake-disabled",
-          "passed": true
-        },
-        {
-          "scenario": "mobile-actual-PacificWest-draft-render",
-          "passed": true
-        },
-        {
-          "scenario": "mobile-actual-win-intake-disabled",
+          "scenario": "mobile-scheduled-public-page-with-intake-blocked",
           "passed": true
         }
       ],
       "status": "PASSED",
-      "campaign_id": "zh7ff069fkks1vz221ws40vdzx8f26fr",
-      "customer_writes": 0,
-      "provider_calls": 0
+      "provider_calls": 0,
+      "entries_created": 0,
+      "campaign_id": "zh7ff069fkks1vz221ws40vdzx8f26fr"
     },
     "hosted_readback": "Exact persisted input compared field by field; actual draft public query returned null",
-    "focused_final_config": "PASSED: all 26 campaign cases; PacificWest tests use committed final configuration, with exact September boundaries and six-month expiry.",
-    "rehearsal_correction": "Initial expanded browser attempt failed on an ambiguous rules text selector; selector narrowed to the rules paragraph, then all 28 scenarios passed. No application defect was concealed."
+    "focused_final_config": "PASSED: 27 campaign cases, including disabled intake with approved scheduled details, recovery/production/approval read denial, forged display time not opening registration, and exact September registration boundaries for scheduled campaigns.",
+    "rehearsal_correction": "Scheduled-browser test exposed stale time-dependent query state; the server page now passes a bounded second bucket to refresh the Convex display cache, while the backend exclusively uses its own clock. Local preview additionally required explicit development environment designation. Both fixes were retested successfully. Historical launch selector correction remains in Git history."
   },
   "coverage": {
     "opening_closing_day_attribution": "PASS: 2026-09-28T15:00:00Z inclusive; 2026-09-30T00:00:00Z exclusive; Vancouver Day 1/Day 2",
@@ -222,13 +217,14 @@
     "award": "PASS: isolated desktop/mobile verified confirmations issue winner-bound CAD 200000 original/remaining issued_unapplied awards with exact approved terms; Payment/outbox/provider-message/calendar-sync tables remain empty. Exact six calendar months additionally asserted in Convex tests.",
     "unused_balance_limit": "Full unapplied balance is preserved. Partial-use/redemption and transfer operations do not exist in this implementation; no claim of tested invoice redemption. A reviewed existing commercial process must record any later use without fabricating Payments.",
     "production_and_integrations": "PASS: production unchanged; no Email, Calendar, AI or consequential Automation enablement or calls; no customer contact or real-data migration",
-    "routing": "PASS locally: /win retains its visible path, resolves the existing PacificWest slug and carries canonical https://glarahome.com/win metadata. Disabled backend prevents public form. Hosted production routing not installed/tested."
+    "routing": "PASS: /win displays approved campaign information and exact opening/closing times on desktop/mobile while intake is disabled. No entry form before opening; API remains 503 while disabled. Production routing not installed.",
+    "scheduled_registration": "PASS: an approved scheduled campaign accepts entry only inside the server [starts_at, closes_at) window once intake is independently armed. Browser automatically refreshes at both boundaries. Draft/cancelled/unapproved/recovery and unapproved production remain hidden. No cron activation or staff action at the opening instant is required."
   },
   "remaining_actions": [
     "Existing glarahome.com Vercel website administrator must mount the approved production frontend at /win and route /api/giveaway plus /glara-win-assets/*; exempt these paths from the current apex-to-www redirect. Preserve exact request origin and trusted client-IP enforcement. See pacificwest-launch.md.",
     "Obtain production deployment/public-intake authorization, identify the reviewed production frontend target, and close applicable pre-existing Owner/MFA/recovery/readiness prerequisites; this campaign task does not waive them.",
     "Configure matched production origins and an independent server-only ingress secret, keeping Expo/Email/Calendar/AI/Automation disabled during preparation. No development target may receive production traffic.",
-    "Run authorized real-host HTTPS, origin/IP, assets, mobile/desktop and physical-QR acceptance. Only then open the legally approved campaign and enable the existing Expo gates; preserve exact opening/closing boundaries and leave external capabilities off."
+    "Run authorized real-host HTTPS, origin/IP, assets, mobile/desktop and physical-QR acceptance. The approved scheduled campaign may show information before opening; only after activation authorization arm the matched Expo intake gates. Server timestamps then automatically permit entries inside the exact window; keep external capabilities off."
   ],
   "qr_ready_url": "https://glarahome.com/win",
   "timezone_source": "https://news.gov.bc.ca/releases/2026CITZ0009-001073",
@@ -238,7 +234,7 @@
     "actual_campaign_awards": 0,
     "isolated_fixture_only": true,
     "fixture_dates": "Shifted solely for live browser submission; actual September dates exercised with controlled clock in Convex tests.",
-    "win_mobile": "Canonical /win rendering, final copy, assets and disabled gate tested on mobile; full mobile entry-to-award uses the same page/API through its legacy fixture alias. Desktop full flow uses /win.",
+    "win_mobile": "Scheduled /win rendering, final copy and disabled intake checked on mobile; complete mobile entry-to-award uses the same page/API through its isolated alias. Desktop entry-to-award and automatic opening/closing run at /win.",
     "shared_development_intake_enabled": false,
     "production_modified": false,
     "dns_changed": false,

@@ -3,7 +3,10 @@ import { isConfigured } from "@/lib/env";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { Giveaway } from "@/components/campaigns/giveaway";
-import { intakeEnabled } from "@/lib/campaigns/model";
+import {
+  intakeEnabled,
+  campaignPublicationAllowed,
+} from "@/lib/campaigns/model";
 export async function generateMetadata({
   params,
 }: {
@@ -19,18 +22,20 @@ export async function generateMetadata({
       }
     : { title: "Glara Staging Giveaway" };
 }
+async function loadPublicCampaign(slug: string) {
+  if (!isConfigured() || !campaignPublicationAllowed(process.env)) return null;
+  return fetchQuery(api.campaigns.publicCampaign, {
+    slug,
+    time_bucket: Math.floor(Date.now() / 1000),
+  }).catch(() => null);
+}
 export default async function Page({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const campaign =
-    isConfigured() && intakeEnabled(process.env)
-      ? await fetchQuery(api.campaigns.publicCampaign, { slug }).catch(
-          () => null,
-        )
-      : null;
+  const campaign = await loadPublicCampaign(slug);
   return (
     <main className="min-h-screen bg-background px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-2xl">
@@ -38,7 +43,15 @@ export default async function Page({
           GLARA HOME STAGING
         </p>
         {campaign ? (
-          <Giveaway campaign={campaign} />
+          <Giveaway
+            campaign={{
+              ...campaign,
+              state:
+                campaign.state === "open" && !intakeEnabled(process.env)
+                  ? "paused"
+                  : campaign.state,
+            }}
+          />
         ) : (
           <section className="rounded-2xl border bg-card p-8">
             <h1 className="text-3xl font-semibold">

@@ -16,6 +16,7 @@ import {
   managerRoles,
   campaignRoles,
   intakeEnabled,
+  campaignPublicationAllowed,
   phoneIdentity,
   eventDay,
   campaignEligible,
@@ -98,26 +99,31 @@ function publicFields(c: Doc<"marketing_campaigns">) {
     prize_terms: c.prize_terms,
     skill_question_required: c.skill_question_required,
     state:
-      c.status === "open" &&
-      Date.now() >= c.starts_at &&
-      Date.now() < c.closes_at
-        ? "open"
-        : Date.now() < c.closes_at &&
-            (c.status === "scheduled" ||
-              (c.status === "open" && Date.now() < c.starts_at))
-          ? "scheduled"
+      ["scheduled", "open"].includes(c.status) && Date.now() < c.starts_at
+        ? "scheduled"
+        : ["scheduled", "open"].includes(c.status) && Date.now() < c.closes_at
+          ? intakeEnabled(process.env)
+            ? "open"
+            : "paused"
           : "closed",
   };
 }
 export const publicCampaign = query({
-  args: { slug: v.string() },
+  // Time bucket changes the query cache key; it never supplies the authorization clock.
+  args: { slug: v.string(), time_bucket: v.optional(v.number()) },
   handler: async (ctx, a) => {
-    if (!intakeEnabled(process.env) || a.slug.length > 80) return null;
+    if (
+      a.time_bucket !== undefined &&
+      (!Number.isSafeInteger(a.time_bucket) || a.time_bucket < 0)
+    )
+      return null;
+    if (!campaignPublicationAllowed(process.env) || a.slug.length > 80)
+      return null;
     const c = await ctx.db
       .query("marketing_campaigns")
       .withIndex("by_slug", (q) => q.eq("slug", a.slug))
       .unique();
-    return c && !["draft", "cancelled"].includes(c.status)
+    return c && c.legal_approved && !["draft", "cancelled"].includes(c.status)
       ? publicFields(c)
       : null;
   },
@@ -198,10 +204,12 @@ export const transition = mutation({
     } as Record<string, string[]>;
     if (!allowed[c.status].includes(a.to)) deny("INVALID_STATE");
     if (a.to === "open" || a.to === "scheduled") {
+      if (!campaignPublicationAllowed(process.env)) deny("CONFIGURATION");
       if (
-        !intakeEnabled(process.env) ||
-        !process.env.GLARA_EXPO_INGRESS_SECRET ||
-        process.env.GLARA_EXPO_INGRESS_SECRET.length < 32
+        a.to === "open" &&
+        (!intakeEnabled(process.env) ||
+          !process.env.GLARA_EXPO_INGRESS_SECRET ||
+          process.env.GLARA_EXPO_INGRESS_SECRET.length < 32)
       )
         deny(
           "CONFIGURATION",
@@ -282,7 +290,8 @@ export const register = internalMutation({
       .unique();
     if (
       !c ||
-      c.status !== "open" ||
+      !["scheduled", "open"].includes(c.status) ||
+      !c.legal_approved ||
       now < c.starts_at ||
       now >= c.closes_at ||
       d.rules_version !== c.rules_version
@@ -1019,7 +1028,7 @@ export const resolveIdentity = mutation({
       e.version !== a.version ||
       !e.pending_contact ||
       e.eligibility_status !== "pending" ||
-      c.status !== "open" ||
+      !["scheduled", "open"].includes(c.status) ||
       Date.now() >= c.closes_at
     )
       deny("CONFLICT");

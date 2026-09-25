@@ -77,6 +77,10 @@ if (expo)
   appendFileSync(
     home + "/convex/authBrowserDrill.ts",
     String.raw`
+export const expoWindow=internalMutation({args:{starts:v.number(),closes:v.number()},handler:async(ctx,a)=>{
+if(process.env.CONVEX_SITE_URL!=="http://127.0.0.1:3351")throw Error("ISOLATED_ONLY");
+for(const c of await ctx.db.query("marketing_campaigns").collect())await ctx.db.patch(c._id,{starts_at:a.starts,closes_at:a.closes});
+}});
 export const expoEvidence=internalMutation({args:{},handler:async(ctx)=>{
 if(process.env.CONVEX_SITE_URL!=="http://127.0.0.1:3351")throw Error("ISOLATED_ONLY");
 return {
@@ -416,7 +420,7 @@ async function main() {
               "Meet the Glara team and enter our fictional acceptance giveaway.",
             prize_name: "Glara Staging Credit",
             prize_value_cents: 200000,
-            starts_at: Date.now() - 3600000,
+            starts_at: Date.now() + 3600000,
             closes_at: Date.now() + 86400000,
             eligibility_summary:
               "Licensed Realtors in British Columbia. One eligible entry per Realtor.",
@@ -438,7 +442,7 @@ async function main() {
         await actor.mutation(ref("campaigns:transition"), {
           id,
           version: 1,
-          to: "open",
+          to: "scheduled",
         });
       }
     }
@@ -603,13 +607,22 @@ async function main() {
         cmd(["env", "set", "GLARA_EXPO_ENABLED", "false"]);
         await page.goto(origin + "/win");
         await expect(
-          page.getByText("Registration is not available yet", { exact: true }),
+          page.getByRole("heading", {
+            name: "Registration opens soon",
+            exact: true,
+          }),
         ).toBeVisible();
         cmd(["env", "set", "GLARA_EXPO_ENABLED", "true"]);
         await page.reload();
         await expect(
+          page.getByRole("heading", {
+            name: "Registration opens soon",
+            exact: true,
+          }),
+        ).toBeVisible();
+        await expect(
           page.getByRole("button", { name: "ENTER TO WIN", exact: true }),
-        ).toBeEnabled();
+        ).toHaveCount(0);
         await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
           "href",
           "https://glarahome.com/win",
@@ -626,9 +639,7 @@ async function main() {
         await expect(page.locator("#privacy-notice")).toContainText(
           "Support@glarahome.com",
         );
-        await expect(
-          page.locator('[name="marketing_consent"]'),
-        ).not.toBeChecked();
+        await expect(page.locator('[name="marketing_consent"]')).toHaveCount(0);
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -646,6 +657,47 @@ async function main() {
       }
     }
 
+    if (expo) {
+      phase = "scheduled-browser-boundaries";
+      await admin.mutation(ref("authBrowserDrill:expoWindow"), {
+        starts: Date.now() + 5000,
+        closes: Date.now() + 12000,
+      });
+      const context = await browser.newContext({ ignoreHTTPSErrors: true });
+      await context.route("**/*", (route) =>
+        ["localhost", "127.0.0.1"].includes(
+          new URL(route.request().url()).hostname,
+        )
+          ? route.continue()
+          : route.abort(),
+      );
+      const page = await context.newPage();
+      await page.goto(origin + "/win");
+      await expect(
+        page.getByRole("heading", {
+          name: "Registration opens soon",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "ENTER TO WIN", exact: true }),
+      ).toBeEnabled({ timeout: 15000 });
+      await expect(
+        page.getByRole("heading", {
+          name: "Registration is closed",
+          exact: true,
+        }),
+      ).toBeVisible({ timeout: 15000 });
+      await expect(
+        page.getByRole("button", { name: "ENTER TO WIN", exact: true }),
+      ).toHaveCount(0);
+      result.results.push({ scenario: phase, passed: true });
+      await context.close();
+      await admin.mutation(ref("authBrowserDrill:expoWindow"), {
+        starts: Date.now() - 60000,
+        closes: Date.now() + 86400000,
+      });
+    }
     for (const [name, viewport] of [
       ["desktop", { width: 1280, height: 900 }],
       ["mobile", { width: 393, height: 851 }],

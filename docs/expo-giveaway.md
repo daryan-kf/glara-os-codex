@@ -91,3 +91,7 @@ Sources used for the preparation checklist: [Competition Bureau promotional cont
 ## Owner-supplied page copy
 
 The public form uses the supplied English labels, prize summary, optional consent presentation, radio choices, ENTER TO WIN button and rules/privacy links. New drafts prefill the supplied introduction and marketing-consent wording and default to requiring a skill-testing question. Saved campaign copy and approved terms are preserved. The closing date and prize amount come from campaign configuration; the page never publishes the [DATE]/[TIME] placeholders. Actual dates, final rules/privacy details and launch configuration remain required. The footer reflects the saved skill-testing requirement.
+
+## Scheduled public information
+
+Owner/Admin may publish an approved campaign as scheduled with intake disabled. Scheduled public details require an explicit supported environment, legal approval, no recovery mode, and the existing production approvals where applicable. Drafts and cancelled campaigns remain hidden. `GLARA_EXPO_ENABLED=false` blocks entries, not approved scheduled information. When both server environments are deliberately armed, a scheduled campaign accepts entries only within the backend-authoritative opening/closing window; the browser refreshes at each boundary. Public query display cache refresh keys cannot override the server clock. See the current PacificWest launch handoff.

@@ -7,6 +7,7 @@ import { api, internal } from "../../convex/_generated/api";
 import {
   eventDay,
   intakeEnabled,
+  campaignPublicationAllowed,
   phoneIdentity,
   sixMonthExpiry,
   campaignPacificZone,
@@ -87,7 +88,9 @@ async function fixture(overrides: Record<string, unknown> = {}) {
     input: JSON.stringify(input),
   });
   const get = () => t.run((ctx) => ctx.db.get(id));
-  const transition = async (to: "open" | "closed" | "cancelled") => {
+  const transition = async (
+    to: "scheduled" | "open" | "closed" | "cancelled",
+  ) => {
     const c = await get();
     return owner.mutation(api.campaigns.transition, {
       id,
@@ -152,7 +155,7 @@ describe("expo registration and draw security", () => {
       ),
     ).toBe("day_2");
   });
-  it("does not expose drafts; refuses disabled, scheduled, early, expired or cancelled submissions", async () => {
+  it("does not expose drafts; refuses disabled, early and expired submissions", async () => {
     const f = await fixture();
     expect(
       await f.t.query(api.campaigns.publicCampaign, { slug: f.input.slug }),
@@ -173,6 +176,36 @@ describe("expo registration and draw security", () => {
       }),
     );
     expect((await f.enter()).status).toBe("closed");
+    expect(await f.rows()).toHaveLength(0);
+  });
+  it("publishes only approved scheduled details while intake is disabled, preserving production and recovery gates", async () => {
+    const f = await fixture({ starts_at: Date.now() + 60000 });
+    vi.stubEnv("GLARA_EXPO_ENABLED", "false");
+    vi.stubEnv("GLARA_EXPO_INGRESS_SECRET", "");
+    await f.transition("scheduled");
+    const publicRead = () =>
+      f.t.query(api.campaigns.publicCampaign, { slug: f.input.slug });
+    expect(await publicRead()).toMatchObject({
+      state: "scheduled",
+      slug: f.input.slug,
+    });
+    expect((await f.enter()).status).toBe("unavailable");
+    await expect(f.transition("open")).rejects.toThrow();
+    vi.stubEnv("GLARA_RECOVERY_MODE", "true");
+    expect(await publicRead()).toBeNull();
+    vi.stubEnv("GLARA_RECOVERY_MODE", "false");
+    vi.stubEnv("GLARA_ENVIRONMENT", "production");
+    expect(await publicRead()).toBeNull();
+    expect(campaignPublicationAllowed({})).toBe(false);
+    expect(
+      campaignPublicationAllowed({
+        GLARA_ENVIRONMENT: "production",
+        GLARA_PRODUCTION_APPROVED: "true",
+      }),
+    ).toBe(false);
+    vi.stubEnv("GLARA_ENVIRONMENT", "development");
+    await f.t.run((ctx) => ctx.db.patch(f.id, { legal_approved: false }));
+    expect(await publicRead()).toBeNull();
     expect(await f.rows()).toHaveLength(0);
   });
   it("creates one CRM prospect, next action, attributed activity and null-actor audit", async () => {
@@ -707,12 +740,18 @@ describe("PacificWest configuration acceptance", () => {
           expirationTime: closes + 86400000 * 365,
         });
     });
-    await f.transition("open");
+    await f.transition("scheduled");
     return f;
   }
   it("opens exactly September 28 at 08:00 PT, attributes both days, and closes exclusively September 29 at 17:00 PT", async () => {
     const f = await pacific();
     vi.setSystemTime(starts - 1);
+    expect(
+      await f.t.query(api.campaigns.publicCampaign, {
+        slug: f.input.slug,
+        time_bucket: Math.floor(closes / 1000) + 1,
+      }),
+    ).toMatchObject({ state: "scheduled" });
     expect((await f.enter(1, { licensed_in_bc: true })).status).toBe("closed");
     vi.setSystemTime(starts);
     expect((await f.enter(1, { licensed_in_bc: true })).status).toBe(
