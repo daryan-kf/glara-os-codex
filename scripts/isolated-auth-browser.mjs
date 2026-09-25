@@ -68,6 +68,28 @@ const env = Object.fromEntries(
 );
 const expo = process.env.GLARA_EXPO_REGRESSION === "yes",
   expoSecret = randomBytes(32).toString("hex");
+const pacificwest = expo
+  ? JSON.parse(readFileSync(resolve("docs/pacificwest-campaign.json"), "utf8"))
+  : null;
+const expoSlug = (viewport) =>
+  viewport === "desktop" ? "pacificwest-2026" : "fictional-expo-mobile";
+if (expo)
+  appendFileSync(
+    home + "/convex/authBrowserDrill.ts",
+    String.raw`
+export const expoEvidence=internalMutation({args:{},handler:async(ctx)=>{
+if(process.env.CONVEX_SITE_URL!=="http://127.0.0.1:3351")throw Error("ISOLATED_ONLY");
+return {
+entries:await ctx.db.query("campaign_entries").collect(),
+awards:await ctx.db.query("campaign_awards").collect(),
+realtors:await ctx.db.query("realtors").collect(),
+payments:(await ctx.db.query("payments").collect()).length,
+outbox:(await ctx.db.query("communication_outbox").collect()).length,
+providerMessages:(await ctx.db.query("communication_provider_messages").collect()).length,
+calendarEvents:(await ctx.db.query("calendar_sync_events").collect()).length,
+};}});`,
+  );
+
 let backend, frontend, browser, tlsProxy;
 const tlsSockets = new Set();
 const streams = [];
@@ -388,7 +410,7 @@ async function main() {
           version: 0,
           input: JSON.stringify({
             name: "Fictional Expo " + viewport,
-            slug: "fictional-expo-" + viewport,
+            slug: expoSlug(viewport),
             public_title: "WIN A $2,000 GLARA STAGING CREDIT",
             public_description:
               "Meet the Glara team and enter our fictional acceptance giveaway.",
@@ -400,18 +422,15 @@ async function main() {
               "Licensed Realtors in British Columbia. One eligible entry per Realtor.",
             eligible_cities: [],
             eligible_province: "BC",
-            official_rules:
-              "Fictional acceptance rules only. No purchase necessary. One CAD $2,000 service-credit prize. One eligible Realtor will be selected randomly; all entrants must be licensed Realtors in British Columbia. Verification and a skill-testing question are required. Do not use these fictional rules for a real campaign.",
             rules_version: "test-1",
-            privacy_notice:
-              "Fictional acceptance data only. Information is used to record and administer this isolated test entry.",
-            consent_text:
-              "I would like optional staging news from the fictional test sponsor. I may withdraw at any time.",
-            prize_terms:
-              "Fictional acceptance credit only; no cash payment or invoice adjustment. Confirm real prize terms before a public launch.",
             prize_terms_version: "test-1",
             expiry_months_after_confirmation: 6,
             skill_question_required: true,
+            // Use the approved PacificWest copy; only fixture dates/identities differ.
+            official_rules: pacificwest.official_rules,
+            privacy_notice: pacificwest.privacy_notice,
+            consent_text: pacificwest.consent_text,
+            prize_terms: pacificwest.prize_terms,
             assigned_to: ownerId,
             legal_approved: true,
           }),
@@ -517,6 +536,7 @@ async function main() {
         ? {
             GLARA_EXPO_ENABLED: "true",
             GLARA_EXPO_INGRESS_SECRET: expoSecret,
+            GLARA_PUBLIC_CAMPAIGN_ROUTING: "true",
             NODE_EXTRA_CA_CERTS: home + "/localhost.crt",
           }
         : {}),
@@ -562,6 +582,70 @@ async function main() {
     frontend.stderr.pipe(log);
     await ready(origin + "/login");
     browser = await chromium.launch({ channel: "msedge", headless: true });
+    if (expo) {
+      // Shared development remains disabled. This disposable localhost backend alone opens for rehearsal.
+      for (const [name, viewport] of [
+        ["desktop", { width: 1280, height: 900 }],
+        ["mobile", { width: 393, height: 851 }],
+      ]) {
+        const context = await browser.newContext({
+          viewport,
+          ignoreHTTPSErrors: true,
+        });
+        await context.route("**/*", (route) =>
+          ["localhost", "127.0.0.1"].includes(
+            new URL(route.request().url()).hostname,
+          )
+            ? route.continue()
+            : route.abort(),
+        );
+        const page = await context.newPage();
+        cmd(["env", "set", "GLARA_EXPO_ENABLED", "false"]);
+        await page.goto(origin + "/win");
+        await expect(
+          page.getByText("Registration is not available yet", { exact: true }),
+        ).toBeVisible();
+        cmd(["env", "set", "GLARA_EXPO_ENABLED", "true"]);
+        await page.reload();
+        await expect(
+          page.getByRole("button", { name: "ENTER TO WIN", exact: true }),
+        ).toBeEnabled();
+        await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+          "href",
+          "https://glarahome.com/win",
+        );
+        await expect(page).toHaveURL(origin + "/win");
+        await page.getByText("Official Rules", { exact: true }).click();
+        await expect(page.getByText(/three \(3\) business days/)).toBeVisible();
+        await expect(
+          page
+            .getByText(/may not be combined with any other promotion/)
+            .first(),
+        ).toBeVisible();
+        await page.getByText("Privacy Notice", { exact: true }).first().click();
+        await expect(page.locator("#privacy-notice")).toContainText(
+          "Support@glarahome.com",
+        );
+        await expect(
+          page.locator('[name="marketing_consent"]'),
+        ).not.toBeChecked();
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+        await page.screenshot({
+          path: home + "/win-" + name + ".png",
+          fullPage: true,
+        });
+        result.results.push({
+          scenario: name + "-win-alias-final-copy-and-disabled-gate",
+          passed: true,
+        });
+        await context.close();
+      }
+    }
+
     for (const [name, viewport] of [
       ["desktop", { width: 1280, height: 900 }],
       ["mobile", { width: 393, height: 851 }],
@@ -865,7 +949,9 @@ async function main() {
         const publicPage = await publicContext.newPage();
         publicPage.setDefaultTimeout(30000);
         await publicPage.goto(
-          origin + "/giveaway/fictional-expo-" + name + "?source=booth",
+          origin +
+            (name === "desktop" ? "/win" : "/giveaway/" + expoSlug(name)) +
+            "?source=booth",
         );
         await expect(
           publicPage.getByRole("heading", {
@@ -884,11 +970,7 @@ async function main() {
         // The live anti-bot guard intentionally rejects submissions younger than 1.5 seconds.
         await publicPage.waitForTimeout(1600);
         await publicPage.getByText("Official Rules", { exact: true }).click();
-        await expect(
-          publicPage.getByText("Fictional acceptance rules only.", {
-            exact: false,
-          }),
-        ).toBeVisible();
+        await expect(publicPage.locator("#official-rules p")).toBeVisible();
         expect(
           await publicPage.evaluate(
             () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -945,6 +1027,30 @@ async function main() {
           fullPage: true,
         });
         result.results.push({ scenario: phase, passed: true });
+        phase = name + "-giveaway-duplicate-and-CRM";
+        const duplicate = await publicPage.request.post(
+          origin + "/api/giveaway",
+          {
+            headers: { origin },
+            data: submitted.request().postDataJSON(),
+          },
+        );
+        expect(duplicate.status()).toBe(200);
+        const evidence = await admin.mutation(
+          ref("authBrowserDrill:expoEvidence"),
+          {},
+        );
+        const entries = evidence.entries.filter(
+          (e) => e.normalized_email === name + "@accounts.example.test",
+        );
+        expect(entries).toHaveLength(1);
+        expect(entries[0].marketing_consent).toBe(false);
+        expect(entries[0].licensed_in_bc).toBe(true);
+        expect(entries[0].crm_origin).toBe("new");
+        expect(
+          evidence.realtors.filter((r) => r._id === entries[0].realtor_id),
+        ).toHaveLength(1);
+        result.results.push({ scenario: phase, passed: true });
         phase = name + "-giveaway-origin-protection";
         const denied = await publicPage.request.post(origin + "/api/giveaway", {
           headers: { origin: "https://unapproved.example.test" },
@@ -992,7 +1098,10 @@ async function main() {
           page.getByRole("button", { name: "Run audited draw" }),
         ).toBeVisible();
         const closedHtml = await (
-          await fetch(origin + "/giveaway/fictional-expo-" + name)
+          await fetch(
+            origin +
+              (name === "desktop" ? "/win" : "/giveaway/" + expoSlug(name)),
+          )
         ).text();
         expect(closedHtml).toContain("Registration is closed");
         result.results.push({ scenario: phase, passed: true });
@@ -1024,6 +1133,46 @@ async function main() {
             () => document.documentElement.scrollWidth <= window.innerWidth,
           ),
         ).toBe(true);
+        result.results.push({ scenario: phase, passed: true });
+        phase = name + "-verified-winner-credit-and-zero-provider-effects";
+        for (const label of [
+          "Identity verified",
+          "Realtor licence verified",
+          "Official rules and prize terms verified",
+          "Required skill-testing question passed",
+        ])
+          await page.getByLabel(label, { exact: true }).check();
+        await page
+          .getByRole("button", { name: "Record reviewed decision" })
+          .click();
+        await expect(
+          page.getByText("Verify selected entrant", { exact: true }),
+        ).toHaveCount(0);
+        const final = await admin.mutation(
+          ref("authBrowserDrill:expoEvidence"),
+          {},
+        );
+        const winner = final.entries.find(
+          (e) => e.normalized_email === name + "@accounts.example.test",
+        );
+        expect(winner.eligibility_status).toBe("confirmed_winner");
+        const award = final.awards.find((a) => a.entry_id === winner._id);
+        expect(award.original_cents).toBe(200000);
+        expect(award.remaining_cents).toBe(200000);
+        expect(award.currency).toBe("CAD");
+        expect(award.status).toBe("issued_unapplied");
+        expect(award.terms).toBe(pacificwest.prize_terms);
+        expect(award.expires_at).toBeGreaterThan(
+          award.issued_at + 180 * 86400000,
+        );
+        expect(award.expires_at).toBeLessThan(award.issued_at + 185 * 86400000);
+        for (const field of [
+          "payments",
+          "outbox",
+          "providerMessages",
+          "calendarEvents",
+        ])
+          expect(final[field]).toBe(0);
         result.results.push({ scenario: phase, passed: true });
       }
       phase = name + "-logout";

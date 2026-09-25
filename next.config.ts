@@ -2,7 +2,14 @@ import { hstsHeader } from "./src/lib/security/origin";
 import type { NextConfig } from "next";
 const config: NextConfig = {
   poweredByHeader: false,
+  assetPrefix:
+    process.env.GLARA_PUBLIC_CAMPAIGN_ROUTING === "true"
+      ? "/glara-win-assets"
+      : undefined,
   turbopack: { root: process.cwd() },
+  async rewrites() {
+    return [{ source: "/win", destination: "/giveaway/pacificwest-2026" }];
+  },
   async headers() {
     return [
       {

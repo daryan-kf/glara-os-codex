@@ -1,9 +1,24 @@
+import type { Metadata } from "next";
 import { isConfigured } from "@/lib/env";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { Giveaway } from "@/components/campaigns/giveaway";
 import { intakeEnabled } from "@/lib/campaigns/model";
-export const metadata = { title: "Glara Staging Giveaway" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  return slug === "pacificwest-2026"
+    ? {
+        title: { absolute: "Win a $2,000 Glara Staging Credit" },
+        description:
+          "PacificWest 2026 giveaway for licensed Realtors in British Columbia.",
+        alternates: { canonical: "https://glarahome.com/win" },
+      }
+    : { title: "Glara Staging Giveaway" };
+}
 export default async function Page({
   params,
 }: {

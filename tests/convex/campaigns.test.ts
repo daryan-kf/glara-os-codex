@@ -1,3 +1,4 @@
+import pacificwest from "../../docs/pacificwest-campaign.json";
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { convexTest } from "convex-test";
 import { randomBytes, createHmac } from "node:crypto";
@@ -104,7 +105,7 @@ async function fixture(overrides: Record<string, unknown> = {}) {
     city: "Vancouver",
     licensed_realtor: true,
     annual_listings: "21+",
-    rules_version: "1",
+    rules_version: input.rules_version,
     rules_accepted: true,
     marketing_consent: false,
     source: "booth",
@@ -694,17 +695,8 @@ describe("expo registration and draw security", () => {
 describe("PacificWest configuration acceptance", () => {
   const starts = Date.parse("2026-09-28T08:00:00-07:00");
   const closes = Date.parse("2026-09-29T17:00:00-07:00");
-  const terms =
-    "One CAD $2,000 Glara Staging Credit. Non-transferable. No cash redemption. Expires six calendar months after official winner confirmation. Any unused portion remains available to that confirmed winner until expiry.";
-  const settings = {
-    starts_at: starts,
-    closes_at: closes,
-    eligible_province: "BC",
-    eligible_cities: [],
-    expiry_months_after_confirmation: 6,
-    prize_expires_at: undefined,
-    prize_terms: terms,
-  };
+  const terms = pacificwest.prize_terms;
+  const settings = { ...pacificwest, prize_expires_at: undefined };
   async function pacific() {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(starts - 10000);
