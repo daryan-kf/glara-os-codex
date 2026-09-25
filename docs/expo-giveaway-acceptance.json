@@ -295,5 +295,114 @@
     "production_auth_email_requirements": "DEFERRED — REQUIRED BEFORE PRODUCTION; not reclassified as passed",
     "prize_credit": "Issued/unapplied record only; no payment/invoice posting or redemption implemented",
     "historical_provider_enabled_suites": "Not reactivated; current browser/regression run uses isolated fictional fixtures and zero provider calls"
+  },
+  "copy_update": {
+    "description": "Applied owner-supplied English giveaway copy, radio options, terms links and draft consent/introduction defaults. Existing campaign terms preserved; new drafts default to requiring skill-test verification.",
+    "campaign_tests_passed": 21,
+    "typecheck": "PASSED",
+    "lint": "PASSED",
+    "format": "PASSED",
+    "secret_scan": "PASSED",
+    "isolated_production_build": "PASSED",
+    "browser": {
+      "executed_at": "2026-09-25T01:29:03.881Z",
+      "environment": "isolated_restore",
+      "production_modified": false,
+      "shared_development_modified": false,
+      "provider_calls": 0,
+      "results": [
+        {
+          "scenario": "desktop-expired",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-valid",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-reused",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "desktop-logout",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-expired",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-mismatch",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-valid",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-reused",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-new-login",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-anonymous-form",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-entry-success",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-giveaway-origin-protection",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-admin-filter-and-close",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-campaign-draw-and-verification-gate",
+          "passed": true
+        },
+        {
+          "scenario": "mobile-logout",
+          "passed": true
+        }
+      ],
+      "status": "PASSED"
+    },
+    "development_deployment": "woozy-jaguar-392 updated; intake remains unset/disabled",
+    "production_modified": false
   }
 }

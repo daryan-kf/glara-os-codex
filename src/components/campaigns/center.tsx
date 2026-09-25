@@ -103,6 +103,12 @@ function CampaignForm({
     name: existing?.name ?? "Realtor Expo — $2,000 Glara Staging Giveaway",
     slug: existing?.slug ?? "realtor-expo",
     public_title: existing?.public_title ?? "WIN A $2,000 GLARA STAGING CREDIT",
+    public_description:
+      existing?.public_description ??
+      "Visit Glara Staging at the show and enter for your chance to win a $2,000 CAD Glara Staging Credit toward an eligible home staging project.\n\nWhether you're preparing your next listing or planning ahead, we'd love to introduce you to Glara Staging and show you how professional staging can help transform a property for market.",
+    consent_text:
+      existing?.consent_text ??
+      "Yes, I'd like to receive staging tips, special offers, event updates and other marketing communications from Glara Staging. I understand that I can unsubscribe at any time.",
     prize_name: existing?.prize_name ?? "Glara Staging Credit",
     prize_value: String((existing?.prize_value_cents ?? 200000) / 100),
     rules_version: existing?.rules_version ?? "1",
@@ -194,7 +200,7 @@ function CampaignForm({
           <textarea
             name={name}
             rows={name === "official_rules" ? 10 : 3}
-            defaultValue={existing?.[name] ?? ""}
+            defaultValue={existing?.[name] ?? defaults[name] ?? ""}
             maxLength={
               name === "official_rules"
                 ? 20000
@@ -212,7 +218,7 @@ function CampaignForm({
         <input
           type="checkbox"
           name="skill_question_required"
-          defaultChecked={existing?.skill_question_required ?? false}
+          defaultChecked={existing?.skill_question_required ?? true}
           className="size-5"
         />
         Approved rules require a skill-testing question before winner

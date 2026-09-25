@@ -876,13 +876,13 @@ async function main() {
         ).not.toBeChecked();
         await expect(
           publicPage.getByRole("button", {
-            name: "Enter the giveaway",
+            name: "ENTER TO WIN",
             exact: true,
           }),
         ).toBeEnabled();
         // The live anti-bot guard intentionally rejects submissions younger than 1.5 seconds.
         await publicPage.waitForTimeout(1600);
-        await publicPage.getByText("Official rules", { exact: true }).click();
+        await publicPage.getByText("Official Rules", { exact: true }).click();
         await expect(
           publicPage.getByText("Fictional acceptance rules only.", {
             exact: false,
@@ -900,20 +900,22 @@ async function main() {
         result.results.push({ scenario: phase, passed: true });
         phase = name + "-giveaway-entry-success";
         for (const [label, value] of [
-          ["First name", "Fictional"],
-          ["Last name", name],
+          ["First Name", "Fictional"],
+          ["Last Name", name],
           ["Brokerage", "Fictional Expo Brokerage"],
-          ["Email address", name + "@accounts.example.test"],
-          ["Mobile phone", name === "desktop" ? "6045550121" : "6045550122"],
-          ["City / primary market", "Vancouver"],
+          ["Email Address", name + "@accounts.example.test"],
+          ["Mobile Phone", name === "desktop" ? "6045550121" : "6045550122"],
+          ["City / Primary Market", "Vancouver"],
         ])
-          await publicPage.getByLabel(label, { exact: true }).fill(value);
+          await publicPage
+            .getByRole("textbox", { name: label, exact: true })
+            .fill(value);
         await publicPage
-          .getByLabel("Are you a licensed Realtor?")
-          .selectOption("yes");
+          .getByRole("radio", { name: "Yes", exact: true })
+          .check();
         await publicPage
-          .getByLabel("Approximate listings per year")
-          .selectOption("21+");
+          .getByRole("radio", { name: "21+", exact: true })
+          .check();
         await publicPage.locator('[name="rules_accepted"]').check();
         const submission = publicPage.waitForResponse(
           (response) =>
@@ -921,7 +923,7 @@ async function main() {
             response.request().method() === "POST",
         );
         await publicPage
-          .getByRole("button", { name: "Enter the giveaway", exact: true })
+          .getByRole("button", { name: "ENTER TO WIN", exact: true })
           .click();
         const submitted = await submission;
         const submissionResult = await submitted.json();

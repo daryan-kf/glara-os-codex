@@ -1,10 +1,10 @@
 "use client";
 import { useState, useSyncExternalStore } from "react";
-const subscribe = () => () => {};
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 import { listingRanges } from "@/lib/campaigns/model";
 import { Button } from "@/components/ui/button";
+const subscribe = () => () => {};
 type Campaign = NonNullable<
   FunctionReturnType<typeof api.campaigns.publicCampaign>
 >;
@@ -122,31 +122,48 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
       timeStyle: "short",
       timeZone: c.timezone,
     }).format(ms);
+  const prizeValue = new Intl.NumberFormat("en-CA", {
+    maximumFractionDigits: 2,
+  }).format(c.value_cents / 100);
   return (
     <>
       <header className="mb-8">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-primary">
-          Realtor giveaway · One service-credit prize
-        </p>
         <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
           {c.title}
         </h1>
-        <p className="mt-5 text-lg text-muted-foreground">{c.description}</p>
-        <p className="mt-4 font-medium">
-          No purchase necessary. Marketing opt-in is optional.
+        <p className="mt-3 font-semibold text-primary">
+          Exclusively for Realtors
         </p>
-        <p className="mt-2 text-sm">
-          Entries: {date(c.starts_at)} – {date(c.closes_at)} (Vancouver time).
+        <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
+          {c.description}
         </p>
+        <dl className="mt-6 space-y-3 rounded-2xl border bg-card p-5 text-sm leading-relaxed">
+          {[
+            ["Prize", `One (1) $${prizeValue} CAD ${c.prize}`],
+            ["Number of Prizes", "One (1)"],
+            ["Purchase Required", "No"],
+            ["Entry Limit", "One eligible entry per Realtor"],
+            ["Contest Closes", `${date(c.closes_at)} Pacific Time`],
+            [
+              "Winner Selection",
+              "Random draw from all eligible entries, subject to verification and the Official Rules.",
+            ],
+          ].map(([label, value]) => (
+            <div key={label}>
+              <dt className="inline font-semibold">{label}: </dt>
+              <dd className="inline">{value}</dd>
+            </div>
+          ))}
+        </dl>
         <p className="mt-3 text-sm">{c.eligibility_summary}</p>
       </header>
       <section className="mb-6 space-y-3 rounded-2xl border bg-card p-5">
         {[
-          ["Official rules", c.official_rules],
-          ["Prize terms", c.prize_terms],
-          ["Privacy notice", c.privacy_notice],
-        ].map(([title, body]) => (
-          <details key={title}>
+          ["Official Rules", c.official_rules, "official-rules"],
+          ["Prize terms", c.prize_terms, "prize-terms"],
+          ["Privacy Notice", c.privacy_notice, "privacy-notice"],
+        ].map(([title, body, id]) => (
+          <details key={id} id={id} className="scroll-mt-6">
             <summary className="cursor-pointer py-2 font-medium">
               {title}
             </summary>
@@ -170,21 +187,22 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
           onSubmit={submit}
           className="space-y-5 rounded-2xl border bg-card p-5 sm:p-8"
         >
-          <h2 className="text-2xl font-semibold">Enter the giveaway</h2>
+          <h2 className="text-2xl font-semibold">Enter the Giveaway</h2>
           <p className="text-sm text-muted-foreground">
-            All professional information below is required.
+            Complete your Realtor profile below to enter.
           </p>
+          <h3 className="font-semibold">Realtor Information</h3>
           <div className="grid gap-5 sm:grid-cols-2">
             {[
-              ["first_name", "First name", "text", "given-name"],
-              ["last_name", "Last name", "text", "family-name"],
+              ["first_name", "First Name", "text", "given-name"],
+              ["last_name", "Last Name", "text", "family-name"],
               ["brokerage", "Brokerage", "text", "organization"],
-              ["email", "Email address", "email", "email"],
-              ["phone", "Mobile phone", "tel", "tel"],
-              ["city", "City / primary market", "text", "address-level2"],
+              ["email", "Email Address", "email", "email"],
+              ["phone", "Mobile Phone", "tel", "tel"],
+              ["city", "City / Primary Market", "text", "address-level2"],
             ].map(([name, label, type, auto]) => (
               <label key={name} className="text-sm font-medium">
-                {label}
+                {label} <span aria-hidden="true">*</span>
                 <input
                   name={name}
                   type={type}
@@ -198,43 +216,52 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
               </label>
             ))}
           </div>
-          <label className="block text-sm font-medium">
-            Are you a licensed Realtor?
-            <select
-              required
-              name="licensed_realtor"
-              defaultValue=""
-              className={inputClass}
-            >
-              <option value="" disabled>
-                Select an answer
-              </option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </label>
-          <label className="block text-sm font-medium">
-            Approximate listings per year
-            <select
-              required
-              name="annual_listings"
-              defaultValue=""
-              className={inputClass}
-            >
-              <option value="" disabled>
-                Select a range
-              </option>
-              {listingRanges.map((x) => (
-                <option key={x}>{x}</option>
-              ))}
-            </select>
-          </label>
+          {[
+            {
+              name: "licensed_realtor",
+              legend: "Are you a licensed Realtor?",
+              choices: [
+                ["yes", "Yes"],
+                ["no", "No"],
+              ],
+            },
+            {
+              name: "annual_listings",
+              legend:
+                "Approximately how many listings do you handle in a typical year?",
+              choices: listingRanges.map((range) => [range, range]),
+            },
+          ].map(({ name, legend, choices }) => (
+            <fieldset key={name}>
+              <legend className="text-sm font-medium">
+                {legend} <span aria-hidden="true">*</span>
+              </legend>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {choices.map(([value, label]) => (
+                  <label
+                    key={value}
+                    className="flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 text-sm"
+                  >
+                    <input
+                      type="radio"
+                      name={name}
+                      value={value}
+                      required
+                      className="size-5 accent-primary"
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
           <div aria-hidden="true" className="absolute -left-[10000px]">
             <label>
               Leave this field empty
               <input name="website" tabIndex={-1} autoComplete="off" />
             </label>
           </div>
+          <p className="font-semibold">Required</p>
           <label className="flex items-start gap-3 rounded-lg border p-4 text-sm">
             <input
               type="checkbox"
@@ -242,9 +269,10 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
               required
               className="mt-1 size-5 shrink-0"
             />
-            I agree to the official giveaway rules ({c.rules_version}) and
-            acknowledge the privacy notice.
+            I have read and agree to the Official Giveaway Rules and acknowledge
+            the Privacy Notice.
           </label>
+          <p className="font-semibold">Optional</p>
           <label className="flex items-start gap-3 rounded-lg border p-4 text-sm">
             <input
               type="checkbox"
@@ -268,10 +296,44 @@ export function Giveaway({ campaign: c }: { campaign: Campaign }) {
             disabled={busy || !hydrated}
             className="min-h-12 w-full"
           >
-            {busy ? "Submitting…" : "Enter the giveaway"}
+            {busy ? "Submitting..." : "ENTER TO WIN"}
           </Button>
         </form>
       )}
+      <footer className="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground">
+        <p>
+          No purchase necessary. One prize with an approximate retail value of
+          CAD ${prizeValue}. One eligible entry per Realtor. Odds of winning
+          depend on the number of eligible entries received. Selected entrant
+          must satisfy the eligibility requirements, comply with the Official
+          Rules
+          {c.skill_question_required
+            ? " and correctly answer a skill-testing question"
+            : ""}{" "}
+          before being confirmed as the winner.
+        </p>
+        <nav
+          aria-label="Giveaway terms"
+          className="flex flex-wrap gap-x-3 gap-y-2"
+        >
+          {[
+            ["official-rules", "View Official Rules"],
+            ["privacy-notice", "Privacy Notice"],
+          ].map(([id, label]) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              className="underline underline-offset-4"
+              onClick={() => {
+                const details = document.getElementById(id);
+                if (details instanceof HTMLDetailsElement) details.open = true;
+              }}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+      </footer>
     </>
   );
 }

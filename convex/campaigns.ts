@@ -93,6 +93,7 @@ function publicFields(c: Doc<"marketing_campaigns">) {
     privacy_notice: c.privacy_notice,
     consent_text: c.consent_text,
     prize_terms: c.prize_terms,
+    skill_question_required: c.skill_question_required,
     state:
       c.status === "open" &&
       Date.now() >= c.starts_at &&
