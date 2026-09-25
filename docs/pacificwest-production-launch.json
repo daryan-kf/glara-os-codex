@@ -1,44 +1,98 @@
 {
-  "recorded_at": "2026-09-25T05:29:36.203430+00:00",
-  "base_commit": "b32aeea668c1dcbad0f9cc0bf3ccd716d0700a6f",
-  "decision": "PREPARED; PRODUCTION DEPLOYMENT BLOCKED BY AUTOMATIC APPROVAL REVIEW",
+  "recorded_at": "2026-09-25T06:28:53.308542+00:00",
+  "decision": "CAMPAIGN PAGE LIVE; SCHEDULED INTAKE ARMED; NOT GENERAL M10B APPROVAL",
+  "canonical_url": "https://glarahome.com/win",
+  "qr_ready_url": "https://glarahome.com/win",
   "authorization": {
-    "publication_and_scheduled_intake_requested": true,
+    "explicit_campaign_deployment_approval": true,
+    "explicit_both_production_intake_flags_approval": true,
     "mfa_enablement_declined": true,
     "mfa_status": "NOT VERIFIED; NOT PASSED",
     "scope": "PacificWest public campaign only; no staff rollout or overall M10B pass"
   },
-  "canonical_url": "https://glarahome.com/win",
-  "frontend_project": {
-    "name": "glara-giveaway-production",
-    "id": "prj_tUOWlEfdbt0lD33FTJ3PpUPJyjtk",
-    "created": true,
-    "deployed": false,
-    "environment_configured": false
+  "source": {
+    "frontend_commit": "c23d5fbfdb4929ae9e0dc733b31187e404e96893",
+    "backend_commit": "8923c5b5e5c0af4ad250c6fd8852ea29831b10e7",
+    "website_commit": "8a616082eb96de3176ea4b8eea1b9b81b9d64d0c",
+    "website_repository": "daryan-kf/Glara-Design"
   },
-  "website_project": {
-    "name": "glara-design",
-    "id": "prj_TTN1Zym3zC9Mernqway3nPvuBEfW",
-    "repository": "daryan-kf/Glara-Design",
-    "changed": false
+  "campaign": {
+    "id": "v5760jp40rejwf5zvh8m30qcen8f2wzr",
+    "slug": "pacificwest-2026",
+    "status": "scheduled",
+    "rules_version": "pacificwest-2026-final-1",
+    "legal_approved": true,
+    "approval_basis": "Owner-approved final content; no independent legal-review claim",
+    "timezone": "America/Vancouver",
+    "starts_at": "2026-09-28T15:00:00Z",
+    "closes_at_exclusive": "2026-09-30T00:00:00Z",
+    "prize_value_cents": 200000,
+    "expiry_months_after_confirmation": 6,
+    "development_campaign_unchanged": true
+  },
+  "frontend": {
+    "checked_at": "2026-09-25T06:27:23.172Z",
+    "project": "glara-giveaway-production",
+    "id": "prj_tUOWlEfdbt0lD33FTJ3PpUPJyjtk",
+    "deployment": "dpl_azQ4qXvTZtsW5ocKMGijE7L3yvJK",
+    "url": "glara-giveaway-production-c4l4ihthm-daryan-kamalifars-projects.vercel.app",
+    "state": "READY",
+    "flags": {
+      "GLARA_EXPO_ENABLED": "true",
+      "GLARA_EXPO_UPSTREAM_ORIGIN": "https://glara-giveaway-production.vercel.app",
+      "GLARA_ENVIRONMENT": "production",
+      "GLARA_PUBLIC_CAMPAIGN_ONLY": "true",
+      "M9_EMAIL_ENABLED": "false",
+      "M9_CALENDAR_ENABLED": "false",
+      "GLARA_AI_SECURITY_APPROVED": "false",
+      "GLARA_AUTOMATION_ENABLED": "false"
+    }
   },
   "backend": {
-    "name": "terrific-seahorse-419",
-    "deployment_attempt": "Rejected before execution",
-    "code_deployed": false,
-    "owner_provisioned": false,
-    "campaign_provisioned": false,
-    "intake_enabled": false
+    "checked_at": "2026-09-25T06:27:17.264Z",
+    "backend": "terrific-seahorse-419",
+    "flags": {
+      "GLARA_EXPO_ENABLED": "true",
+      "GLARA_PUBLIC_CAMPAIGN_ONLY": "true",
+      "GLARA_PACIFICWEST_PROVISIONING_APPROVED": "false",
+      "M9_EMAIL_ENABLED": "false",
+      "M9_CALENDAR_ENABLED": "false",
+      "AUTH_EMAIL_ENABLED": "false",
+      "GLARA_AI_SECURITY_APPROVED": "false",
+      "GLARA_AUTOMATION_ENABLED": "false"
+    },
+    "empty_table_checks": {
+      "campaign_entries": 0,
+      "realtors": 0,
+      "realtor_private": 0,
+      "payments": 0,
+      "authAccounts": 0,
+      "authSessions": 0,
+      "communications": 0,
+      "communication_outbox": 0,
+      "communication_provider_messages": 0,
+      "calendar_sync_events": 0,
+      "ai_requests": 0,
+      "automation_executions": 0
+    }
+  },
+  "website": {
+    "project": "glara-design",
+    "deployment": "dpl_8zghtwCTKQJGRzNwM63VjRqYwjRM",
+    "routing": "Only /win, /api/giveaway and namespaced assets mount isolated campaign frontend; other apex paths retain www redirects",
+    "dns_changed": false
   },
   "tests": {
     "node_passed": 21,
-    "vitest_passed": 605,
-    "vitest_files": 41,
-    "focused_passed": 38,
+    "vitest_passed": 618,
+    "vitest_files": 42,
+    "origin_security_cases": 13,
     "typescript": "PASSED",
     "lint": "PASSED",
-    "build": "PASSED: isolated production webpack build",
-    "browser": {
+    "format": "PASSED",
+    "secret_scan": "PASSED",
+    "build": "PASSED: final Vercel production webpack build and marketing website production build",
+    "isolated_browser": {
       "executed_at": "2026-09-25T05:26:00.431Z",
       "environment": "isolated_restore",
       "production_modified": false,
@@ -164,11 +218,78 @@
       ],
       "status": "PASSED"
     },
-    "public_only_routes": {
-      "checked_at": "2026-09-25T05:29:17.053Z",
-      "environment": "isolated_local_production_build",
-      "status": "PASSED",
+    "production_browser": {
+      "checked_at": "2026-09-25T06:25:55.473Z",
       "results": [
+        {
+          "name": "desktop",
+          "status": 200,
+          "url": "https://glarahome.com/win",
+          "canonical": "https://glarahome.com/win",
+          "h1": "Win a $2,000 Glara Staging Credit",
+          "disabled": true,
+          "overflow": false,
+          "images": [
+            {
+              "complete": true,
+              "width": 1600
+            }
+          ],
+          "errors": [],
+          "failed": [],
+          "rulesVisible": true,
+          "contact": true
+        },
+        {
+          "name": "mobile",
+          "status": 200,
+          "url": "https://glarahome.com/win",
+          "canonical": "https://glarahome.com/win",
+          "h1": "Win a $2,000 Glara Staging Credit",
+          "disabled": true,
+          "overflow": false,
+          "images": [
+            {
+              "complete": true,
+              "width": 1600
+            }
+          ],
+          "errors": [],
+          "failed": [],
+          "rulesVisible": true,
+          "contact": true
+        }
+      ]
+    },
+    "production_ingress": {
+      "checked_at": "2026-09-25T06:25:37.250Z",
+      "results": [
+        {
+          "name": "preopening-valid",
+          "status": 409,
+          "result": {
+            "status": "closed"
+          }
+        },
+        {
+          "name": "foreign-origin",
+          "status": 403,
+          "result": {
+            "status": "unavailable"
+          }
+        },
+        {
+          "name": "invalid-payload",
+          "status": 400,
+          "result": {
+            "status": "invalid"
+          }
+        }
+      ]
+    },
+    "production_routes": {
+      "checked_at": "2026-09-25T06:28:11.763Z",
+      "routes": [
         {
           "path": "/login",
           "status": 404
@@ -188,27 +309,49 @@
         {
           "path": "/api/giveaway/extra",
           "status": 404
-        },
-        {
-          "path": "/api/giveaway",
-          "status": 503
         }
       ],
-      "production_modified": false
+      "redirects": [
+        {
+          "host": "glarahome.com",
+          "path": "/",
+          "status": 308,
+          "location": "https://www.glarahome.com/"
+        },
+        {
+          "host": "glarahome.com",
+          "path": "/about",
+          "status": 308,
+          "location": "https://www.glarahome.com/about"
+        },
+        {
+          "host": "www.glarahome.com",
+          "path": "/win",
+          "status": 308,
+          "location": "https://glarahome.com/win"
+        }
+      ],
+      "canonical_status": 200,
+      "production_backend_only": true,
+      "dns_changed": false
     }
   },
-  "provider_calls": 0,
-  "dns_changed": false,
-  "production_routing_changed": false,
-  "production_data_created": false,
-  "real_registrations_created": 0,
-  "blocker": "Automatic approval review cited the historical M10A prohibition on production code deployment and unresolved Owner/MFA authorization. No alternate deployment path used.",
-  "remaining": [
-    "Explicit approval of reviewed campaign-scoped production deployment and MFA exception, naming terrific-seahorse-419 and glara-giveaway-production.",
-    "Provision approved campaign and non-login Owner assignment; preserve existing development campaign.",
-    "Configure independent ingress secret and approved production origins; keep all external integrations disabled.",
-    "Deploy exact frontend and limited website path mount; verify real-edge origin and trusted client-IP behavior, HTTPS/assets/mobile/desktop, and operational backup readiness.",
-    "Only after acceptance, arm the matched intake gates; server time must enforce September 28 08:00 through September 29 17:00 Pacific.",
-    "Campaign management/staff access and production MFA remain separate unresolved scope; no authentication recovery or platform-MFA success claimed."
-  ]
+  "production_entries_created": 0,
+  "real_customer_data_imported": false,
+  "external_communications_sent": 0,
+  "deployment_corrections": [
+    "Initial isolated frontend artifact inherited development build configuration from CLI invocation cwd. It was paused/protected, never mounted on the public website, and replaced with an exact tracked-source artifact deployed from its own working directory with explicit local config. Final CSP confirms only the isolated production backend.",
+    "Canonical-origin ingress initially rejected external rewrites. A tested exact upstream-origin allowlist now supports the configured zone while requiring the canonical browser Origin; forwarding headers cannot authorize requests."
+  ],
+  "historical_review_blocks": {
+    "previous_decision": "PREPARED; PRODUCTION DEPLOYMENT BLOCKED BY AUTOMATIC APPROVAL REVIEW",
+    "resolution": "Owner explicitly approved exact campaign deployment and both scheduled intake flags. Read-only verification established existing website identity and preservation of all non-campaign redirects before routing correction."
+  },
+  "remaining_operational_items": [
+    "Private production backup export was rejected by automatic approval review; separate explicit Owner approval remains unanswered. No export, backup verification or restore success is claimed.",
+    "Production staff login/campaign management and MFA remain outside this public-only deployment. Arrange separately before operational administration or winner draw; no staff login was provisioned.",
+    "General production email/auth requirements remain deferred and are not marked passed. Email, Calendar, AI and Automation remain disabled."
+  ],
+  "backup_status": "NOT EXPORTED; EXPLICIT APPROVAL PENDING",
+  "page_activation_remaining_actions": []
 }

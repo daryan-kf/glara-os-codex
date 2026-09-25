@@ -2,7 +2,31 @@
 
 Canonical public and QR URL: **https://glarahome.com/win** (no query string required).
 
-Prepared, not published. No QR pointing at development is approved. The existing development campaign is `zh7ff069fkks1vz221ws40vdzx8f26fr`, slug `pacificwest-2026`, on `woozy-jaguar-392`. `/win` internally rewrites to `/giveaway/pacificwest-2026`, preserving the visible URL and query attribution. It does not create another campaign. Canonical metadata on either path identifies `/win`.
+Historical preparation state (superseded by the production result below): prepared, not published. No QR pointing at development is approved. The existing development campaign is `zh7ff069fkks1vz221ws40vdzx8f26fr`, slug `pacificwest-2026`, on `woozy-jaguar-392`. `/win` internally rewrites to `/giveaway/pacificwest-2026`, preserving the visible URL and query attribution. It does not create another campaign. Canonical metadata on either path identifies `/win`.
+
+## Production result — September 25, 2026
+
+**LIVE: https://glarahome.com/win. Scheduled registration is armed in both production environments.** Registration remains server-blocked before September 28, 2026 at 08:00 America/Vancouver and at/after September 29 at 17:00. The full page/form is visible now with a disabled button; it refreshes at the opening/closing boundary. No manual activation is needed at opening. The permanent QR payload is `https://glarahome.com/win`.
+
+The Owner explicitly approved the exact isolated production campaign deployment and, separately, both `GLARA_EXPO_ENABLED=true` flags. This is a campaign-only MFA exception; MFA is not verified or passed. No general M10B, staff rollout, provider activation or customer migration is approved.
+
+Production campaign `v5760jp40rejwf5zvh8m30qcen8f2wzr` is the production instance of existing slug `pacificwest-2026`, with the exact approved terms. The existing development campaign is unchanged. One private non-login Owner assignment was provisioned; no password, auth account, session or invitation was created. The provisioning flag is false again.
+
+The isolated frontend `glara-giveaway-production` connects only to `terrific-seahorse-419`. Website repository `daryan-kf/Glara-Design`, commit `8a616082eb96de3176ea4b8eea1b9b81b9d64d0c`, mounts `/win`, `/api/giveaway` and `/glara-win-assets/*`. The apex domain's blanket redirect was replaced with equivalent application redirects for all other pages. DNS was not changed. `www.glarahome.com/win` redirects to the canonical apex URL.
+
+The Vercel rewrite changes the destination host. Only this public Vercel deployment sets server-only `GLARA_EXPO_UPSTREAM_ORIGIN=https://glara-giveaway-production.vercel.app`; the browser Origin must still exactly equal `SITE_URL=https://glarahome.com`. The adapter never uses caller-controlled forwarded-host headers. Ingress still validates Vercel's overwritten client-IP header and signs requests using a production-only secret.
+
+Final acceptance: 21 Node and 618 Vitest tests passed (42 Vitest files), TypeScript, lint, formatting, secret scan and final cloud production builds passed. The existing 29-scenario disposable browser rehearsal covers the full fictional registration/draw/award lifecycle. Final public desktop and mobile tests passed with no overflow, failed resources or browser errors. A valid fictional request through the real domain returned HTTP 409 before opening; foreign origin returned 403; invalid input returned 400. No production entry or CRM customer was created. Public-only login/dashboard/auth/other campaign paths returned 404. Provider execution tables remain empty; Email, Calendar, auth email, AI and Automation flags are false.
+
+The first frontend deployment inherited an unintended development configuration because the CLI ran from the parent working directory. It was contained and replaced before the website mount. The final artifact is built from committed files from its own working directory with an explicit minimal local Vercel configuration and project-scoped production variables. Never deploy this campaign using the repository's development `vercel.json`. Evidence and exact source/deployment identifiers are in `pacificwest-production-launch.json`.
+
+No further action is needed to display the page or trigger its scheduled opening. Separate operational items remain: private backup export awaits the specifically requested Owner approval after automatic review rejected it; no backup/restore acceptance is claimed. Staff/campaign administration and MFA are outside this public-only launch and must be arranged before administering entries or performing the winner draw. Existing deferred production email/auth requirements remain deferred. None of these historical gates is rewritten as passed.
+
+Emergency intake stop: set `GLARA_EXPO_ENABLED=false` on `terrific-seahorse-419` first; this immediately rejects submissions. Mirror false in the Vercel project's production environment and redeploy the same isolated artifact. Keep the information page available and preserve all entries. Do not change the campaign dates, credentials, rules or winner state to stop intake.
+
+## Historical preparation and rehearsal
+
+The following sections record earlier preparation. Current production state is the result above and the machine-readable production launch evidence.
 
 ## Final campaign content
 
@@ -82,7 +106,7 @@ The owner-supplied visual reference is implemented as a two-column desktop layou
 
 The photograph is reused from Glara's public portfolio: `https://www.glarahome.com/images/portfolio/glara-living-kitchen-slatwall.jpg`. It is bundled locally as an imported static asset, including the existing optional `/glara-win-assets` prefix. No external image fetch, new tracking integration, new campaign or provider activation is introduced. Full rules, contact details, optional consent wording and prize terms remain unchanged.
 
-## Current publication request — September 25, 2026
+## Historical initial publication request — September 25, 2026
 
 The owner explicitly requested public publication now with registration opening and closing at the approved times, after declining MFA enablement. Record this as a requested campaign-scoped exception, **not MFA passed** and not general Glara OS production readiness. Owner identity was supplied privately; no Owner name, email or recovery phone is published in this repository. Recovery-contact independence remains unverified.
 
