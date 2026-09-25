@@ -1,0 +1,24 @@
+{
+  "size_inches": [8.5, 11],
+  "pages": 1,
+  "print_render_pixels": [2550, 3300],
+  "qr_vector": true,
+  "qr_tests": [
+    {
+      "render_width": 2550,
+      "decoded_url": "https://glarahome.com/win"
+    },
+    {
+      "render_width": 1275,
+      "decoded_url": "https://glarahome.com/win"
+    },
+    {
+      "render_width": 850,
+      "decoded_url": "https://glarahome.com/win"
+    }
+  ],
+  "text_bounds": "PASS",
+  "terms_check": "PASS",
+  "canonical_url": "https://glarahome.com/win",
+  "print_instruction": "US Letter, Actual size / 100%, portrait; no bleed required"
+}
