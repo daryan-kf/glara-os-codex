@@ -1,0 +1,21 @@
+{
+  "page_count": 1,
+  "trim_inches": [23, 23],
+  "trim_mm": [584.2, 584.2],
+  "page_points": [1656, 1656],
+  "fonts": [
+    {
+      "embedded": true,
+      "name": "AAAAAA+Georgia"
+    },
+    {
+      "embedded": true,
+      "name": "BAAAAA+ArialMT"
+    }
+  ],
+  "vector_logo": true,
+  "logo_source": "public/glara-logo.svg",
+  "text_bounds": "PASS",
+  "visual_review": "PASS",
+  "print_instruction": "Print at 100% / Actual Size on a 23 x 23 inch board. PDF uses exact trim size, without added bleed."
+}
