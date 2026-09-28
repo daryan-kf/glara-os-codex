@@ -1,6 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import {
+  CAMPAIGN_PASSWORD_MIN_LENGTH,
+  CAMPAIGN_PASSWORD_MAX_LENGTH,
+  campaignPasswordValid,
+} from "@/lib/campaigns/portal";
+import {
   useConvexAuth,
   useQuery,
   usePaginatedQuery,
@@ -103,8 +108,13 @@ function PortalSignIn() {
         );
       } else if (mode === "code") {
         const password = String(form.get("password") ?? "");
-        if (password.length < 12 || password !== form.get("confirm")) {
-          setMessage("Use at least 12 characters and matching passwords.");
+        if (
+          !campaignPasswordValid(password) ||
+          password !== form.get("confirm")
+        ) {
+          setMessage(
+            `Use at least ${CAMPAIGN_PASSWORD_MIN_LENGTH} characters and matching passwords.`,
+          );
           return;
         }
         await signIn("password", {
@@ -158,7 +168,7 @@ function PortalSignIn() {
             label="Verification code"
             name="code"
             autoComplete="one-time-code"
-            maxLength={128}
+            maxLength={CAMPAIGN_PASSWORD_MAX_LENGTH}
             required
             disabled={busy}
           />
@@ -170,8 +180,8 @@ function PortalSignIn() {
             name="password"
             type="password"
             autoComplete={mode === "code" ? "new-password" : "current-password"}
-            minLength={mode === "code" ? 12 : 1}
-            maxLength={128}
+            minLength={mode === "code" ? CAMPAIGN_PASSWORD_MIN_LENGTH : 1}
+            maxLength={CAMPAIGN_PASSWORD_MAX_LENGTH}
             required
             disabled={busy}
           />
@@ -183,8 +193,8 @@ function PortalSignIn() {
             name="confirm"
             type="password"
             autoComplete="new-password"
-            minLength={12}
-            maxLength={128}
+            minLength={CAMPAIGN_PASSWORD_MIN_LENGTH}
+            maxLength={CAMPAIGN_PASSWORD_MAX_LENGTH}
             required
             disabled={busy}
           />

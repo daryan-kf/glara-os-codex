@@ -1,5 +1,8 @@
 import { expect, test } from "vitest";
-import { campaignRequestOriginAllowed } from "../../src/lib/campaigns/request-origin";
+import {
+  campaignRequestOriginAllowed,
+  campaignAuthenticationHeaders,
+} from "../../src/lib/campaigns/request-origin";
 const canonical = "https://glarahome.com";
 const upstream = "https://glara-giveaway-production.vercel.app";
 const env = {
@@ -62,3 +65,25 @@ test.each([
     }),
   ).toBe(false);
 });
+
+test("auth SDK receives canonical Host only after exact origin and upstream validation", () => {
+  const original = request(upstream, canonical, "attacker.test");
+  original.headers.set("host", new URL(upstream).host);
+  original.headers.set("cookie", "test-session=fictional");
+  const normalized = campaignAuthenticationHeaders(original, env);
+  expect(normalized?.get("host")).toBe("glarahome.com");
+  expect(normalized?.get("origin")).toBe(canonical);
+  expect(normalized?.get("cookie")).toBe("test-session=fictional");
+  expect(original.headers.get("host")).toBe(new URL(upstream).host);
+});
+test.each([
+  request(upstream, "https://attacker.test", "glarahome.com"),
+  request("https://attacker.test", canonical, "glarahome.com"),
+  request(upstream, undefined, "glarahome.com"),
+  request("http://glara-giveaway-production.vercel.app", canonical),
+])(
+  "auth normalization never authorizes forged origin or forwarded headers",
+  (input) => {
+    expect(campaignAuthenticationHeaders(input, env)).toBeNull();
+  },
+);

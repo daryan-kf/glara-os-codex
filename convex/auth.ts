@@ -1,4 +1,7 @@
-import { campaignPortalEnabled } from "../src/lib/campaigns/portal";
+import {
+  campaignPortalEnabled,
+  campaignPasswordValid,
+} from "../src/lib/campaigns/portal";
 import { portalOwner } from "./campaignPortalAccess";
 import {
   applicationOrigin,
@@ -100,7 +103,7 @@ passwordOptions.authorize = async (params, ctx) => {
   if (
     process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true" &&
     flow === "reset-verification" &&
-    !z.string().min(12).max(128).safeParse(params.newPassword).success
+    !campaignPasswordValid(params.newPassword)
   )
     throw failure();
   const digest = Array.from(

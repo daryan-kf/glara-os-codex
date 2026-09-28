@@ -1,4 +1,4 @@
-import { campaignRequestOriginAllowed } from "@/lib/campaigns/request-origin";
+import { campaignAuthenticationHeaders } from "@/lib/campaigns/request-origin";
 import {
   campaignPortalEnabled,
   campaignPortalPathAllowed,
@@ -54,12 +54,17 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
         { status, headers: { "Cache-Control": "no-store" } },
       );
     if (request.method !== "POST") return failure(405);
+    const campaignHeaders = campaignOnly
+      ? campaignAuthenticationHeaders(request, process.env)
+      : null;
     if (
       campaignOnly
-        ? !campaignRequestOriginAllowed(request, process.env)
+        ? !campaignHeaders
         : request.headers.get("origin") !== request.nextUrl.origin
     )
       return failure(403);
+    if (campaignHeaders)
+      request = new NextRequest(request, { headers: campaignHeaders });
     if (
       !["application/json", "text/plain"].includes(
         (request.headers.get("content-type") ?? "").split(";")[0].trim(),

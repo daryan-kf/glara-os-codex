@@ -1,3 +1,4 @@
+import { campaignPasswordValid } from "../../src/lib/campaigns/portal";
 import { afterEach, expect, it, vi } from "vitest";
 import { convexTest } from "convex-test";
 import schema from "../../convex/schema";
@@ -365,4 +366,13 @@ it("access audit actor comes from session and repeated openings do not duplicate
   expect(views).toHaveLength(1);
   expect(views[0].actor_id).toBe(f.actor.userId);
   expect(views[0].new_value).toEqual({ scope: "pacificwest-2026:read" });
+});
+
+it("portal password policy accepts eight characters and rejects out-of-bounds or non-string input", () => {
+  expect(campaignPasswordValid("Test123!")).toBe(true);
+  expect(campaignPasswordValid("Short7!")).toBe(false);
+  expect(campaignPasswordValid("x".repeat(128))).toBe(true);
+  expect(campaignPasswordValid("x".repeat(129))).toBe(false);
+  expect(campaignPasswordValid(null)).toBe(false);
+  expect(campaignPasswordValid({ length: 8 })).toBe(false);
 });

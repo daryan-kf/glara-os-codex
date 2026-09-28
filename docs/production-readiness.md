@@ -1,5 +1,7 @@
 # Production readiness and milestone sequencing
 
+> Scoped exception: the product owner has explicitly authorized password-only access to the read-only PacificWest registration portal, including one Owner onboarding and its authentication email configuration. See [portal scope and evidence](pacificwest-private-portal.md). This supersedes the portal-specific MFA hold only; the broader readiness and MFA gates below remain unresolved.
+
 > Current follow-up: see [production preparation](production-preparation.md) and [post-M10A review](post-M10A-review.md). Isolated production infrastructure is now authorized and its empty shell is configured OFF; production code deployment was rejected by automatic approval review. The evidence below describes the historical M10A execution and is not current-HEAD recertification. No go-live is authorized.
 
 ## Current boundary

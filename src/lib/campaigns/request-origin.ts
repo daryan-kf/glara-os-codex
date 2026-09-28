@@ -24,3 +24,15 @@ export function campaignRequestOriginAllowed(
     return false;
   }
 }
+
+// Convex Auth compares Origin with Host again after the external rewrite.
+// Normalize only after our canonical-origin and exact-upstream checks pass.
+export function campaignAuthenticationHeaders(
+  request: Request,
+  env: Record<string, string | undefined>,
+) {
+  if (!campaignRequestOriginAllowed(request, env)) return null;
+  const headers = new Headers(request.headers);
+  headers.set("host", new URL(env.SITE_URL!).host);
+  return headers;
+}

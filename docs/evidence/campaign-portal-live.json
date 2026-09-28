@@ -1,0 +1,103 @@
+{
+  "at": "2026-09-28T06:13:11.801Z",
+  "results": [
+    {
+      "view": "desktop",
+      "status": 200,
+      "layout": "PASS",
+      "unauthenticated_data": "NOT EXPOSED",
+      "reset_form": "PASS",
+      "cache": "private-no-store",
+      "errors": 0
+    },
+    {
+      "view": "mobile",
+      "status": 200,
+      "layout": "PASS",
+      "unauthenticated_data": "NOT EXPOSED",
+      "reset_form": "PASS",
+      "cache": "private-no-store",
+      "errors": 0
+    }
+  ],
+  "canonical_redirect": "PASS",
+  "origin_validation": "PASS",
+  "cookie_security": "PASS",
+  "anonymous_backend": "DENIED",
+  "staff_routes": "CLOSED",
+  "public_giveaway": "PASS",
+  "real_signin": "OWNER CONFIRMED LOGIN AND VISIBLE REGISTRATIONS",
+  "mfa": "OWNER-APPROVED SCOPED EXCEPTION",
+  "entries_created": 0,
+  "emails_sent": 0,
+  "flags": {
+    "GLARA_EXPO_ADMIN_ENABLED": "true",
+    "GLARA_PRODUCTION_EXPO_ADMIN_APPROVED": "true",
+    "AUTH_EMAIL_ENABLED": "true",
+    "GLARA_PRODUCTION_AUTH_EMAIL_APPROVED": "true",
+    "GLARA_PRODUCTION_ONBOARDING_APPROVED": "false",
+    "M9_EMAIL_ENABLED": "false",
+    "M9_CALENDAR_ENABLED": "false",
+    "GLARA_AI_SECURITY_APPROVED": "false",
+    "GLARA_AUTOMATION_ENABLED": "false"
+  },
+  "email_setup": {
+    "requests": 1,
+    "provider_delivery": "delivered",
+    "owner_receipt": "OWNER CONFIRMED SUCCESSFUL SETUP/LOGIN",
+    "code_inspected": false,
+    "mailbox_inspected_by_codex": false
+  },
+  "observed_registration_count": 1,
+  "source_validation": {
+    "campaign_regression": 45,
+    "portal_origin_tests": 29,
+    "typescript": "PASS",
+    "eslint": "PASS",
+    "production_frontend_build": "PASS",
+    "website_build": "PASS"
+  },
+  "owner_mfa_exception": {
+    "scope": "Read-only PacificWest registration portal only",
+    "password_required": true,
+    "approved": true,
+    "broader_MFA_gate": "NOT PASSED"
+  },
+  "decision": "SCOPED PORTAL LIVE — OWNER ACCEPTED",
+  "password_policy": {
+    "minimum": 8,
+    "maximum": 128,
+    "server_validation": "PASS",
+    "existing_password_changed": false,
+    "owner_requested_shorter_minimum": true,
+    "hosted_form": "PASS",
+    "checked_at": "2026-09-28T06:21:14.196Z"
+  },
+  "final_hosted_recheck": {
+    "at": "2026-09-28T06:21:12.051Z",
+    "results": [
+      {
+        "view": "desktop",
+        "status": 200,
+        "layout": "PASS",
+        "unauthenticated_data": "NOT EXPOSED",
+        "reset_form": "PASS",
+        "cache": "private-no-store",
+        "errors": 0
+      },
+      {
+        "view": "mobile",
+        "status": 200,
+        "layout": "PASS",
+        "unauthenticated_data": "NOT EXPOSED",
+        "reset_form": "PASS",
+        "cache": "private-no-store",
+        "errors": 0
+      }
+    ],
+    "origin_validation": "PASS",
+    "cookie_security": "PASS",
+    "anonymous_backend": "DENIED",
+    "public_giveaway": "PASS"
+  }
+}

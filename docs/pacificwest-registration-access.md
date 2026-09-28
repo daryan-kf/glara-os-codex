@@ -38,6 +38,8 @@ Validation: 3 shortcut security/configuration tests and 56 existing campaign, la
 
 No production schema, records, flags, authentication settings or deployments changed in this access task. The public campaign remains public-only; general staff production login has not been enabled. General Email and Calendar remain disabled. The separately approved registration-receipt capability remains enabled. This is not approval or completion of general M10B, staff authentication/MFA, recovery, or backup readiness.
 
-## Private in-site portal preparation
+## Private in-site portal
 
-A dedicated read-only `/campaign-admin` portal has now been implemented and rehearsed with fictional data on localhost. It has not been deployed or enabled in production. The product owner requires working two-factor authentication before activation. See [portal readiness and security boundaries](pacificwest-private-portal.md). Until those requirements are completed, the authenticated console links above remain the live access route.
+The read-only portal at https://glarahome.com/campaign-admin reads the existing production campaign and linked CRM records directly. The Owner explicitly approved a password-only exception for this limited view and one secure password-setup email. Use the approved Owner email, select **I have a code** to set an initial password, then sign in. If the code has expired, use **Set or reset password** to request a new one. Codes expire after 15 minutes; do not share them or passwords in chat.
+
+This does not make the local development Realtor list a production list, grant staff app access, or enable exports/editing/draws. See [portal readiness and security boundaries](pacificwest-private-portal.md) for actual deployment evidence and remaining Owner-side acceptance.
