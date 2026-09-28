@@ -2,7 +2,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { convexTest } from "convex-test";
 import schema from "../../convex/schema";
 import { api, internal } from "../../convex/_generated/api";
-import approved from "../../docs/pacificwest-campaign.json";
+import approved from "../fixtures/pacificwest-initial-launch.json";
 import { campaignPathAllowed } from "../../src/lib/campaigns/public-deployment";
 const modules = import.meta.glob("../../convex/**/*.ts");
 afterEach(() => {
@@ -165,4 +165,101 @@ it("production-only campaign preserves exact boundaries, CRM writes and duplicat
     expect(await ctx.db.query("realtors").collect()).toHaveLength(1);
     expect(await ctx.db.query("payments").collect()).toHaveLength(0);
   });
+});
+
+it("Owner schedule correction opens immediately, preserves prize terms, audits and closes Friday", async () => {
+  const t = fixture();
+  await t.mutation(internal.campaignLaunch.preparePacificWest, owner);
+  vi.setSystemTime(Date.parse("2026-09-28T02:02:38Z"));
+  vi.stubEnv("GLARA_PACIFICWEST_SCHEDULE_CHANGE_APPROVED", "true");
+  vi.stubEnv("GLARA_EXPO_ENABLED", "true");
+  const result = await t.mutation(internal.campaignLaunch.openPacificWestNow, {
+    expected_version: 1,
+  });
+  expect(result.starts_at).toBe(Date.now());
+  expect(result.closes_at).toBe(Date.parse("2026-10-03T00:00:00Z"));
+  expect(result.official_rules).toContain(
+    "September 27, 2026 at 7:02:38 PM Pacific Time",
+  );
+  expect(result.official_rules).not.toContain("September 29, 2026 at 5:00 PM");
+  expect(
+    (await t.query(api.campaigns.publicCampaign, { slug: approved.slug }))
+      ?.state,
+  ).toBe("open");
+  await t.run(async (ctx) => {
+    const c = await ctx.db.get(result.campaign_id);
+    expect(c?.prize_terms).toBe(approved.prize_terms);
+    expect(c?.consent_text).toBe(approved.consent_text);
+    const audits = await ctx.db.query("audit_logs").collect();
+    expect(audits.at(-1)?.action).toBe(
+      "PLATFORM_OWNER_APPROVED_CAMPAIGN_SCHEDULE_CHANGED",
+    );
+    expect(audits.at(-1)?.actor_id).toBeNull();
+  });
+  await expect(
+    t.mutation(internal.campaignLaunch.openPacificWestNow, {
+      expected_version: 1,
+    }),
+  ).rejects.toThrow();
+  vi.setSystemTime(result.closes_at - 1);
+  expect(
+    (await t.query(api.campaigns.publicCampaign, { slug: approved.slug }))
+      ?.state,
+  ).toBe("open");
+  vi.setSystemTime(result.closes_at);
+  expect(
+    (await t.query(api.campaigns.publicCampaign, { slug: approved.slug }))
+      ?.state,
+  ).toBe("closed");
+});
+it("schedule correction fails closed without approval, with unsafe providers, or stale version", async () => {
+  const t = fixture();
+  await t.mutation(internal.campaignLaunch.preparePacificWest, owner);
+  vi.setSystemTime(Date.parse("2026-09-28T02:02:38Z"));
+  await expect(
+    t.mutation(internal.campaignLaunch.openPacificWestNow, {
+      expected_version: 1,
+    }),
+  ).rejects.toThrow();
+  vi.stubEnv("GLARA_PACIFICWEST_SCHEDULE_CHANGE_APPROVED", "true");
+  await expect(
+    t.mutation(internal.campaignLaunch.openPacificWestNow, {
+      expected_version: 2,
+    }),
+  ).rejects.toThrow();
+  vi.stubEnv("M9_EMAIL_ENABLED", "true");
+  await expect(
+    t.mutation(internal.campaignLaunch.openPacificWestNow, {
+      expected_version: 1,
+    }),
+  ).rejects.toThrow();
+});
+
+it("schedule correction refuses a frozen draw even if the campaign still looks scheduled", async () => {
+  const t = fixture();
+  const id = await t.mutation(
+    internal.campaignLaunch.preparePacificWest,
+    owner,
+  );
+  vi.setSystemTime(Date.parse("2026-09-28T02:02:38Z"));
+  vi.stubEnv("GLARA_PACIFICWEST_SCHEDULE_CHANGE_APPROVED", "true");
+  await t.run(async (ctx) => {
+    const c = (await ctx.db.get(id))!;
+    await ctx.db.insert("campaign_draws", {
+      campaign_id: id,
+      rules_version: c.rules_version,
+      closed_at: Date.now(),
+      entry_ids: [],
+      eligible_count: 0,
+      operator_id: c.assigned_to,
+      created_at: Date.now(),
+      algorithm: "node-crypto-randomInt-v1",
+      reason: "Fictional test",
+    });
+  });
+  await expect(
+    t.mutation(internal.campaignLaunch.openPacificWestNow, {
+      expected_version: 1,
+    }),
+  ).rejects.toThrow("Entries or draws exist");
 });

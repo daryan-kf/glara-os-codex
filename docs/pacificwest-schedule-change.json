@@ -1,0 +1,85 @@
+{
+  "campaign_id": "v5760jp40rejwf5zvh8m30qcen8f2wzr",
+  "slug": "pacificwest-2026",
+  "url": "https://glarahome.com/win",
+  "starts_at": 1790561351947,
+  "closes_at": 1790985600000,
+  "timezone": "America/Vancouver",
+  "status": "open",
+  "rules_version": "pacificwest-2026-final-2",
+  "authorization": "Product owner requested immediate opening through Friday; prior 17:00 Vancouver closing hour retained.",
+  "mutation": "campaignLaunch:openPacificWestNow",
+  "atomic_guards": [
+    "Original approved scheduled campaign, version 1",
+    "No entries or draws",
+    "Production/public-campaign-only deployment",
+    "Explicit temporary schedule authorization",
+    "External capabilities disabled"
+  ],
+  "one_time_approval_final": false,
+  "email_enabled": false,
+  "calendar_enabled": false,
+  "auth_email_enabled": false,
+  "ai_enabled": false,
+  "automation_enabled": false,
+  "production_test_entry_created": false,
+  "browser": {
+    "checked_at": "2026-09-28T02:09:36.777Z",
+    "results": [
+      {
+        "name": "desktop",
+        "status": 200,
+        "url": "https://glarahome.com/win",
+        "canonical": "https://glarahome.com/win",
+        "h1": "Win a $2,000 Glara Staging Credit",
+        "disabled": false,
+        "overflow": false,
+        "images": [
+          {
+            "complete": true,
+            "width": 1600
+          }
+        ],
+        "errors": [],
+        "failed": [],
+        "rulesVisible": true,
+        "revisedClosing": true,
+        "enabledInputs": 15,
+        "contact": true
+      },
+      {
+        "name": "mobile",
+        "status": 200,
+        "url": "https://glarahome.com/win",
+        "canonical": "https://glarahome.com/win",
+        "h1": "Win a $2,000 Glara Staging Credit",
+        "disabled": false,
+        "overflow": false,
+        "images": [
+          {
+            "complete": true,
+            "width": 1600
+          }
+        ],
+        "errors": [],
+        "failed": [],
+        "rulesVisible": true,
+        "revisedClosing": true,
+        "enabledInputs": 15,
+        "contact": true
+      }
+    ]
+  },
+  "validation": {
+    "typecheck": "PASS",
+    "node_tests": 21,
+    "vitest_tests": 621,
+    "vitest_files": 42,
+    "lint": "PASS",
+    "secret_scan": "PASS",
+    "production_build": "PASS",
+    "format": "PASS"
+  },
+  "scope": "Existing isolated production campaign only. No general M10B/staff rollout/provider enablement.",
+  "print_files": "UNCHANGED — product owner requested no print revisions"
+}

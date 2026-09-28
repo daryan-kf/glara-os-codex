@@ -4,7 +4,13 @@ Canonical public and QR URL: **https://glarahome.com/win** (no query string requ
 
 Historical preparation state (superseded by the production result below): prepared, not published. No QR pointing at development is approved. The existing development campaign is `zh7ff069fkks1vz221ws40vdzx8f26fr`, slug `pacificwest-2026`, on `woozy-jaguar-392`. `/win` internally rewrites to `/giveaway/pacificwest-2026`, preserving the visible URL and query attribution. It does not create another campaign. Canonical metadata on either path identifies `/win`.
 
-## Production result — September 25, 2026
+## Current schedule — Owner-approved September 27 revision
+
+Registration is **OPEN NOW** at https://glarahome.com/win. The existing production campaign opened on September 27, 2026 at 19:09:11.947 America/Vancouver and closes Friday **October 2, 2026 at 17:00 America/Vancouver** (exclusive boundary). Rules version is `pacificwest-2026-final-2`. The Owner explicitly requested immediate registration and extension through Friday; the prior closing hour was retained. No entries or draws existed when the atomic correction ran. Prize, eligibility, privacy and optional consent terms are unchanged. The original launch fixture and historical evidence below retain their original dates.
+
+The live mobile/desktop form and submit button are enabled; October 2 appears in the public rules. Email, Calendar, auth email, AI and Automation remain disabled. The one-time internal schedule-change authorization was revoked after success. At the Owner's request, printed files are unchanged. Existing printed QR codes still point to the same canonical page; the online rules carry the revised deadline. No fictional production entry was submitted. Current machine-readable evidence: `pacificwest-schedule-change.json`.
+
+## Historical production result — September 25, 2026
 
 **LIVE: https://glarahome.com/win. Scheduled registration is armed in both production environments.** Registration remains server-blocked before September 28, 2026 at 08:00 America/Vancouver and at/after September 29 at 17:00. The full page/form is visible now with a disabled button; it refreshes at the opening/closing boundary. No manual activation is needed at opening. The permanent QR payload is `https://glarahome.com/win`.
 
@@ -26,7 +32,7 @@ Emergency intake stop: set `GLARA_EXPO_ENABLED=false` on `terrific-seahorse-419`
 
 ## Historical preparation and rehearsal
 
-The following sections record earlier preparation. Current production state is the result above and the machine-readable production launch evidence.
+The following sections record earlier preparation. Current production state is the September 27 revision above and the machine-readable production launch evidence.
 
 ## Final campaign content
 

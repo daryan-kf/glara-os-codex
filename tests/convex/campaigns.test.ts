@@ -726,8 +726,8 @@ describe("expo registration and draw security", () => {
 });
 
 describe("PacificWest configuration acceptance", () => {
-  const starts = Date.parse("2026-09-28T08:00:00-07:00");
-  const closes = Date.parse("2026-09-29T17:00:00-07:00");
+  const starts = pacificwest.starts_at;
+  const closes = pacificwest.closes_at;
   const terms = pacificwest.prize_terms;
   const settings = { ...pacificwest, prize_expires_at: undefined };
   async function pacific() {
@@ -743,7 +743,7 @@ describe("PacificWest configuration acceptance", () => {
     await f.transition("scheduled");
     return f;
   }
-  it("opens exactly September 28 at 08:00 PT, attributes both days, and closes exclusively September 29 at 17:00 PT", async () => {
+  it("opens at the revised approved start, attributes campaign days, and closes exclusively Friday October 2 at 17:00 PT", async () => {
     const f = await pacific();
     vi.setSystemTime(starts - 1);
     expect(
@@ -757,7 +757,7 @@ describe("PacificWest configuration acceptance", () => {
     expect((await f.enter(1, { licensed_in_bc: true })).status).toBe(
       "received",
     );
-    vi.setSystemTime(Date.parse("2026-09-29T00:00:00-07:00"));
+    vi.setSystemTime(starts + 86400000);
     expect((await f.enter(2, { licensed_in_bc: true })).status).toBe(
       "received",
     );
@@ -770,7 +770,7 @@ describe("PacificWest configuration acceptance", () => {
     expect((await f.rows()).map((x) => x.event_day)).toEqual([
       "day_1",
       "day_2",
-      "day_2",
+      "other",
     ]);
     expect(
       await f.t.query(api.campaigns.publicCampaign, { slug: f.input.slug }),
