@@ -10,7 +10,11 @@
     },
     {
       "embedded": true,
-      "name": "BAAAAA+ArialMT"
+      "name": "BAAAAA+Georgia-Bold"
+    },
+    {
+      "embedded": true,
+      "name": "CAAAAA+Arial-BoldMT"
     }
   ],
   "vector_logo": true,
@@ -19,5 +23,7 @@
   "visual_review": "PASS",
   "print_instruction": "Print at 100% / Actual Size on a 23 x 23 inch board. PDF uses exact trim size, without added bleed.",
   "home_staging_type_scale": 2.125,
-  "home_staging_font_svg_units": 34
+  "home_staging_font_svg_units": 34,
+  "text_weight": "Bold (700)",
+  "main_text_color": "#4c4037"
 }
