@@ -6,7 +6,9 @@ The public form at https://glarahome.com/win saves to the isolated production de
 
 The Owner confirmed access to the authenticated live data console on September 27, 2026 (America/Vancouver).
 
-In Marketing or Campaigns, use the Owner shortcuts:
+In **Marketing → Giveaway registrations**, the Owner can open https://glarahome.com/campaign-admin in a new tab. This opens the read-only live registration portal and retains its separate production login and server-side authorization. No participant data or session credentials are passed in the link.
+
+The existing live-console shortcuts remain available in Marketing or Campaigns:
 
 - **View live registrations** opens `campaign_entries`.
 - **View live Realtor profiles** opens `realtors`.

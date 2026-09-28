@@ -8,12 +8,27 @@ export default async function Page() {
   return (
     <>
       <LiveCampaignAccess roles={user.roles} />
-      <Link
-        href="/marketing/campaigns"
-        className="mb-6 inline-block rounded-lg border bg-card px-5 py-3 font-medium"
+      <nav
+        aria-label="Marketing shortcuts"
+        className="mb-6 flex flex-wrap gap-3"
       >
-        Campaigns & giveaways →
-      </Link>
+        {user.roles.includes("owner") && (
+          <a
+            href="https://glarahome.com/campaign-admin"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 items-center rounded-lg bg-primary px-5 py-3 font-medium text-primary-foreground"
+          >
+            Giveaway registrations ↗
+          </a>
+        )}
+        <Link
+          href="/marketing/campaigns"
+          className="inline-flex min-h-11 items-center rounded-lg border bg-card px-5 py-3 font-medium"
+        >
+          Campaigns & giveaways →
+        </Link>
+      </nav>
       {user.roles.some((r) => r === "owner" || r === "marketing") ? (
         <MarketingCenter />
       ) : (
