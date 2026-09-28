@@ -1,29 +1,27 @@
 {
-  "page_count": 1,
+  "pages": 1,
   "trim_inches": [23, 23],
-  "trim_mm": [584.2, 584.2],
-  "page_points": [1656, 1656],
+  "design_palette": {
+    "brown": "#513b2e",
+    "beige": "#f2e9dc",
+    "accent": "#b39b88"
+  },
   "fonts": [
     {
-      "embedded": true,
-      "name": "AAAAAA+Georgia"
+      "name": "AAAAAA+Georgia",
+      "embedded": true
     },
     {
-      "embedded": true,
-      "name": "BAAAAA+Georgia-Bold"
+      "name": "BAAAAA+Georgia-Bold",
+      "embedded": true
     },
     {
-      "embedded": true,
-      "name": "CAAAAA+Arial-BoldMT"
+      "name": "CAAAAA+Arial-BoldMT",
+      "embedded": true
     }
   ],
-  "vector_logo": true,
-  "logo_source": "public/glara-logo.svg",
   "text_bounds": "PASS",
+  "vector_text_and_logo": true,
   "visual_review": "PASS",
-  "print_instruction": "Print at 100% / Actual Size on a 23 x 23 inch board. PDF uses exact trim size, without added bleed.",
-  "home_staging_type_scale": 2.125,
-  "home_staging_font_svg_units": 34,
-  "text_weight": "Bold (700)",
-  "main_text_color": "#4c4037"
+  "print_instruction": "Print at 100% / Actual Size. No added bleed."
 }
