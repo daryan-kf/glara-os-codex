@@ -104,6 +104,9 @@ export const verifyEvent = internalAction({
           kind,
           occurred_at: Date.parse(parsed.data.created_at),
         });
+        await ctx.runMutation(internal.campaignReceipts.delivery, {
+          provider_id: parsed.data.data.email_id,
+        });
         return true;
       } catch {
         /* Rotation accepts either current or previous signature, never unsigned payloads. */

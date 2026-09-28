@@ -15,4 +15,9 @@ crons.interval(
   { minutes: 1 },
   makeFunctionReference<"action">("communicationProvider:tick"),
 );
+crons.interval(
+  "expo-registration-receipts",
+  { minutes: 1 },
+  makeFunctionReference<"action">("campaignReceiptProvider:tick"),
+);
 export default crons;

@@ -1,3 +1,4 @@
+import { enqueueReceipt } from "./campaignReceipts";
 import { applicationOrigin } from "../src/lib/security/origin";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
@@ -566,6 +567,7 @@ export const register = internalMutation({
       rules_version: c.rules_version,
       marketing_consent: d.marketing_consent,
     });
+    await enqueueReceipt(ctx, id);
     return {
       status: eligible ? ("received" as const) : ("ineligible" as const),
     };

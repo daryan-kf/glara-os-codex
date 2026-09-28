@@ -6,6 +6,39 @@ import {
   listingRanges,
 } from "../src/lib/campaigns/model";
 export const campaignTables = {
+  campaign_receipts: defineTable({
+    entry_id: v.optional(v.id("campaign_entries")),
+    campaign_id: v.id("marketing_campaigns"),
+    key: v.string(),
+    email: v.string(),
+    subject: v.string(),
+    body: v.string(),
+    template_version: v.string(),
+    rules_version: v.string(),
+    test: v.boolean(),
+    status: v.union(
+      ...[
+        "ready",
+        "sending",
+        "accepted",
+        "delivered",
+        "unknown",
+        "blocked",
+        "failed",
+        "hard_bounce",
+        "complaint",
+      ].map(v.literal),
+    ),
+    attempts: v.number(),
+    next_at: v.number(),
+    created_at: v.number(),
+    updated_at: v.number(),
+    provider_id: v.optional(v.string()),
+    last_code: v.optional(v.string()),
+  })
+    .index("by_key", ["key"])
+    .index("by_due", ["status", "next_at"])
+    .index("by_provider", ["provider_id"]),
   marketing_campaigns: defineTable({
     name: v.string(),
     slug: v.string(),

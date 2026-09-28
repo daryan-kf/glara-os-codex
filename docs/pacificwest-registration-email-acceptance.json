@@ -1,0 +1,104 @@
+{
+  "checked_at": "2026-09-28T02:25:03.813Z",
+  "deployment": "terrific-seahorse-419",
+  "campaign": "pacificwest-2026",
+  "status": "LIVE — REGISTRATION RECEIPTS ONLY",
+  "sender": "Support@glarahome.com",
+  "controlled_test": {
+    "receipt_id": "zn79eq3n82nqxsvwm0ztb2qxcn8f8ct2",
+    "provider_id": "01a0e5d2-ea1b-702e-bf8f-9a9d6267b1be",
+    "attempts": 1,
+    "status": "delivered",
+    "exact_provider_content_match": true,
+    "authenticated_webhook_events": [
+      {
+        "event_id": "msg_3JwBMWvBpePP9e1zgg87yvOxJNP",
+        "kind": "delivered"
+      },
+      {
+        "event_id": "msg_3JwBMPXO50cCp1cljJ97jO91Tsl",
+        "kind": "accepted"
+      }
+    ],
+    "created_campaign_entry": false,
+    "inbox_receipt": "NOT INSPECTED — provider delivered evidence only"
+  },
+  "flags": {
+    "GLARA_EXPO_RECEIPTS_ENABLED": "true",
+    "GLARA_EXPO_RECEIPTS_MODE": "live",
+    "GLARA_EXPO_RECEIPTS_VERIFIED": "true",
+    "GLARA_PRODUCTION_EXPO_RECEIPTS_APPROVED": "true",
+    "GLARA_PRODUCTION_EMAIL_APPROVED": "true",
+    "GLARA_EXPO_RECEIPT_TEST_APPROVED": "false",
+    "M9_EMAIL_ENABLED": "false",
+    "M9_CALENDAR_ENABLED": "false",
+    "AUTH_EMAIL_ENABLED": "false",
+    "GLARA_AI_SECURITY_APPROVED": "false",
+    "GLARA_AUTOMATION_ENABLED": "false"
+  },
+  "validation": {
+    "node_tests": 21,
+    "vitest_tests": 629,
+    "vitest_files": 43,
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "format": "PASS",
+    "secret_scan": "PASS",
+    "build": "PASS"
+  },
+  "limitations": [
+    "No historical backfill",
+    "Identity-review and ineligible entries excluded",
+    "Uncertain delivery is not automatically retried",
+    "General M9 messaging remains disabled",
+    "No production staff/MFA/recovery gate changes"
+  ],
+  "printing": "unchanged",
+  "browser": {
+    "checked_at": "2026-09-28T02:25:08.985Z",
+    "results": [
+      {
+        "name": "desktop",
+        "status": 200,
+        "url": "https://glarahome.com/win",
+        "canonical": "https://glarahome.com/win",
+        "h1": "Win a $2,000 Glara Staging Credit",
+        "disabled": false,
+        "overflow": false,
+        "images": [
+          {
+            "complete": true,
+            "width": 1600
+          }
+        ],
+        "errors": [],
+        "failed": [],
+        "rulesVisible": true,
+        "revisedClosing": true,
+        "enabledInputs": 15,
+        "contact": true
+      },
+      {
+        "name": "mobile",
+        "status": 200,
+        "url": "https://glarahome.com/win",
+        "canonical": "https://glarahome.com/win",
+        "h1": "Win a $2,000 Glara Staging Credit",
+        "disabled": false,
+        "overflow": false,
+        "images": [
+          {
+            "complete": true,
+            "width": 1600
+          }
+        ],
+        "errors": [],
+        "failed": [],
+        "rulesVisible": true,
+        "revisedClosing": true,
+        "enabledInputs": 15,
+        "contact": true
+      }
+    ]
+  }
+}
