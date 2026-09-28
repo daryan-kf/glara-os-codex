@@ -1,0 +1,23 @@
+{
+  "pages": 1,
+  "trim_cm": [150, 70],
+  "orientation": "landscape",
+  "fonts": [
+    {
+      "name": "AAAAAA+Georgia",
+      "embedded": true
+    },
+    {
+      "name": "BAAAAA+Georgia-Bold",
+      "embedded": true
+    },
+    {
+      "name": "CAAAAA+Arial-BoldMT",
+      "embedded": true
+    }
+  ],
+  "text_bounds": "PASS",
+  "vector_artwork": true,
+  "visual_review": "PASS",
+  "print_instruction": "Print at 100% / Actual Size. Final trim 150 cm wide x 70 cm high. No added bleed."
+}
