@@ -1,3 +1,4 @@
+import { LiveCampaignAccess } from "@/components/campaigns/live-access";
 import { EmptyState } from "@/components/primitives";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
@@ -16,9 +17,12 @@ export default async function Page() {
       />
     );
   return (
-    <CampaignCenter
-      owner={user.id}
-      manage={user.roles.some((r) => managerRoles.some((x) => x === r))}
-    />
+    <>
+      <LiveCampaignAccess roles={user.roles} />
+      <CampaignCenter
+        owner={user.id}
+        manage={user.roles.some((r) => managerRoles.some((x) => x === r))}
+      />
+    </>
   );
 }

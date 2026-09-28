@@ -10,6 +10,10 @@ Registration is **OPEN NOW** at https://glarahome.com/win. The existing producti
 
 The live mobile/desktop form and submit button are enabled; October 2 appears in the public rules. General M9 email, Calendar, auth email, AI and Automation remain disabled. The separately Owner-authorized transactional registration receipt is now live; see `pacificwest-registration-email.md` and its acceptance evidence. The one-time internal schedule-change authorization was revoked after success. At the Owner's request, printed files are unchanged. Existing printed QR codes still point to the same canonical page; the online rules carry the revised deadline. No fictional production entry was submitted. Current machine-readable evidence: `pacificwest-schedule-change.json`.
 
+## Live registration access — September 27, 2026
+
+The Owner has confirmed access to the live Convex registration table. Registration/CRM/receipt integrity passed a read-only production check. Owner-only shortcuts in the local Marketing and Campaigns pages point to the secure production console; they do not copy customer data into development or enable public staff login. See [registration access](pacificwest-registration-access.md). The historical staff application/MFA restrictions below remain in force.
+
 ## Historical production result — September 25, 2026
 
 **LIVE: https://glarahome.com/win. Scheduled registration is armed in both production environments.** Registration remains server-blocked before September 28, 2026 at 08:00 America/Vancouver and at/after September 29 at 17:00. The full page/form is visible now with a disabled button; it refreshes at the opening/closing boundary. No manual activation is needed at opening. The permanent QR payload is `https://glarahome.com/win`.

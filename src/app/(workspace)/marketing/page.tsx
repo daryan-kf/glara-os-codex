@@ -1,3 +1,4 @@
+import { LiveCampaignAccess } from "@/components/campaigns/live-access";
 import Link from "next/link";
 import { requireModule } from "@/lib/auth";
 import { MarketingCenter } from "@/components/analytics/marketing";
@@ -6,6 +7,7 @@ export default async function Page() {
   const user = await requireModule("marketing");
   return (
     <>
+      <LiveCampaignAccess roles={user.roles} />
       <Link
         href="/marketing/campaigns"
         className="mb-6 inline-block rounded-lg border bg-card px-5 py-3 font-medium"
