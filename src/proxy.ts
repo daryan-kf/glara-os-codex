@@ -1,3 +1,8 @@
+import { campaignRequestOriginAllowed } from "@/lib/campaigns/request-origin";
+import {
+  campaignPortalEnabled,
+  campaignPortalPathAllowed,
+} from "@/lib/campaigns/portal";
 import { convexAuthNextjsMiddleware } from "@convex-dev/auth/nextjs/server";
 import { NextResponse, NextRequest, type NextFetchEvent } from "next/server";
 import { productionCapabilityAllowed } from "@/lib/security/preflight";
@@ -9,9 +14,20 @@ const authProxy = convexAuthNextjsMiddleware(undefined, {
   cookieConfig: { maxAge: 7 * 24 * 60 * 60 },
   shouldHandleCode: false,
 });
+const portalAuthProxy = convexAuthNextjsMiddleware(undefined, {
+  apiRoute: "/api/campaign-auth",
+  cookieConfig: { maxAge: 24 * 60 * 60 },
+  shouldHandleCode: false,
+});
 export async function proxy(request: NextRequest, event: NextFetchEvent) {
   const campaignOnly = process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true";
-  if (campaignOnly && !campaignPathAllowed(request.nextUrl.pathname))
+  const portalEnabled = campaignPortalEnabled(process.env);
+  const portalPath = campaignPortalPathAllowed(request.nextUrl.pathname);
+  if (
+    campaignOnly &&
+    !campaignPathAllowed(request.nextUrl.pathname) &&
+    !(portalEnabled && portalPath)
+  )
     return new NextResponse("Not found", {
       status: 404,
       headers: { "Cache-Control": "no-store" },
@@ -30,14 +46,19 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
         "X-Robots-Tag": "noindex, nofollow",
       },
     });
-  if (request.nextUrl.pathname.replace(/\/$/, "") === "/api/auth") {
+  const authPath = campaignOnly ? "/api/campaign-auth" : "/api/auth";
+  if (request.nextUrl.pathname.replace(/\/$/, "") === authPath) {
     const failure = (status: number) =>
       NextResponse.json(
         { error: "Authentication request unavailable." },
         { status, headers: { "Cache-Control": "no-store" } },
       );
     if (request.method !== "POST") return failure(405);
-    if (request.headers.get("origin") !== request.nextUrl.origin)
+    if (
+      campaignOnly
+        ? !campaignRequestOriginAllowed(request, process.env)
+        : request.headers.get("origin") !== request.nextUrl.origin
+    )
       return failure(403);
     if (
       !["application/json", "text/plain"].includes(
@@ -83,12 +104,12 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
   request.headers.set("x-nonce", nonce);
   request.headers.set("Content-Security-Policy", csp);
   let response =
-    isConfigured() && !campaignOnly
-      ? await authProxy(request, event)
+    isConfigured() && (!campaignOnly || (portalEnabled && portalPath))
+      ? await (campaignOnly ? portalAuthProxy : authProxy)(request, event)
       : NextResponse.next({ request: { headers: request.headers } });
   if (
     response &&
-    request.nextUrl.pathname.replace(/\/$/, "") === "/api/auth" &&
+    request.nextUrl.pathname.replace(/\/$/, "") === authPath &&
     response.status >= 400
   ) {
     response = new NextResponse(

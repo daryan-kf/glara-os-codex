@@ -1,0 +1,41 @@
+{
+  "environment": "isolated_localhost",
+  "production_modified": false,
+  "shared_development_modified": false,
+  "provider_calls": 0,
+  "results": [
+    {
+      "view": "desktop",
+      "login": "PASS",
+      "realtime": "PASS",
+      "search": "PASS",
+      "layout": "PASS",
+      "scope": "PASS",
+      "logout": "PASS"
+    },
+    {
+      "view": "mobile",
+      "login": "PASS",
+      "realtime": "PASS",
+      "search": "PASS",
+      "layout": "PASS",
+      "scope": "PASS",
+      "logout": "PASS"
+    }
+  ],
+  "disabled_signin": "PASS",
+  "status": "PASS",
+  "finished_at": "2026-09-28T05:35:13.183Z",
+  "production_acceptance": "NOT RUN — MFA and Owner onboarding required",
+  "owner_decision": "Activate only after two-factor authentication is ready; no password-only exception",
+  "quality_gates": {
+    "node_tests": 24,
+    "vitest_tests": 639,
+    "vitest_files": 44,
+    "portal_security_tests": 10,
+    "typescript": "PASS",
+    "eslint": "PASS",
+    "build_webpack": "PASS",
+    "secret_scan": "PASS"
+  }
+}

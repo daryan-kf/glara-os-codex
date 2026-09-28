@@ -1,3 +1,5 @@
+import { campaignPortalEnabled } from "../src/lib/campaigns/portal";
+import { portalOwner } from "./campaignPortalAccess";
 import {
   applicationOrigin,
   authenticationRedirect,
@@ -43,7 +45,10 @@ const resetEmail = Email({
           token +
           "\n\nOpen " +
           origin +
-          "/update-password and enter your email, this code and a new password. The code expires in 15 minutes. If you did not request this, ignore this email. Support: Support@glarahome.com",
+          (campaignPortalEnabled(process.env)
+            ? "/campaign-admin"
+            : "/update-password") +
+          " and enter your email, this code and a new password. The code expires in 15 minutes. If you did not request this, ignore this email. Support: Support@glarahome.com",
       }),
     });
     if (!response.ok) throw new Error("Email delivery failed.");
@@ -92,6 +97,12 @@ passwordOptions.authorize = async (params, ctx) => {
     JSON.stringify(params).length > 4096
   )
     throw failure();
+  if (
+    process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true" &&
+    flow === "reset-verification" &&
+    !z.string().min(12).max(128).safeParse(params.newPassword).success
+  )
+    throw failure();
   const digest = Array.from(
     new Uint8Array(
       await crypto.subtle.digest("SHA-256", new TextEncoder().encode(email)),
@@ -135,6 +146,14 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         .withIndex("by_user", (q) => q.eq("userId", userId))
         .unique();
       if (!profile || profile.deleted_at || !profile.roles.length)
+        throw new Error("Access denied");
+      if (
+        process.env.GLARA_PUBLIC_CAMPAIGN_ONLY === "true" &&
+        !(await portalOwner(
+          ctx as unknown as import("./_generated/server").MutationCtx,
+          userId,
+        ))
+      )
         throw new Error("Access denied");
     },
     async redirect({ redirectTo }) {
