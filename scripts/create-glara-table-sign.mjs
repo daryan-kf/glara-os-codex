@@ -17,6 +17,7 @@ body { background: #f8f5ef; -webkit-print-color-adjust: exact; print-color-adjus
 .brand { position: absolute; top: 1.65in; left: 3.65in; width: 15.7in; }
 .brand svg { display: block; width: 100%; height: auto; overflow: visible; }
 .brand svg .mono, .brand svg .word, .brand svg .sub { font-family: Georgia, serif; }
+.brand svg .sub { font-size: 34px; letter-spacing: 4px; transform: translateY(16px); }
 .tagline { position: absolute; left: 1in; right: 1in; top: 16.9in; margin: 0; text-align: center; font: 36pt/1.35 Georgia, serif; letter-spacing: .025em; }
 .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 3.85in; background: #173f35; color: #f8f5ef; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .24in; padding-bottom: .14in; }
 .footer .region { margin: 0; font: 20pt/1.2 Arial, sans-serif; letter-spacing: .24em; }

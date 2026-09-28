@@ -17,5 +17,7 @@
   "logo_source": "public/glara-logo.svg",
   "text_bounds": "PASS",
   "visual_review": "PASS",
-  "print_instruction": "Print at 100% / Actual Size on a 23 x 23 inch board. PDF uses exact trim size, without added bleed."
+  "print_instruction": "Print at 100% / Actual Size on a 23 x 23 inch board. PDF uses exact trim size, without added bleed.",
+  "home_staging_type_scale": 2.125,
+  "home_staging_font_svg_units": 34
 }
